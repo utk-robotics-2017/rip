@@ -1,0 +1,15 @@
+--style=allman
+--indent=spaces=4
+--indent-switches
+--indent-namespaces
+--pad-oper
+--pad-comma
+--unpad-paren
+--align-pointer=type
+--align-reference=type
+--break-closing-braces
+--break-one-line-headers
+--add-braces
+--convert-tabs
+--max-code-length=100
+--break-after-logical

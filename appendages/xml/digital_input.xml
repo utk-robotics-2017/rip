@@ -1,0 +1,16 @@
+<constructors type="char" variable_name="digital_inputs">
+	<parameter name="pin" type="int"/>
+</constructors>
+
+<setup>
+	<!-- TODO -->
+</setup>
+
+<commands>
+	<command id="kReadDigitalInput" name="readDigitalInput">
+		<return_value name="rv" type="char"/>
+		<code>
+			rv = digitalRead(digital_inputs[index_num]);
+		</code>
+	</command>
+</commands>

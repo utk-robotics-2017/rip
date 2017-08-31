@@ -1,0 +1,4 @@
+<includes>
+    <include>Something.h</include>
+    <include>Somethingelse.h</include>
+</includes>

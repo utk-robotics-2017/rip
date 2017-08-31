@@ -1,0 +1,16 @@
+<constructors type="char" variable_name="analog_inputs">
+	<parameter name="pin" type="int"/>
+</constructors>
+
+<setup>
+	<!-- TODO -->
+</setup>
+
+<commands>
+	<command id="kReadAnalogInput" name="readAnalogInput">
+		<return_value name="rv" type="int"/>
+		<code>
+			rv = analogRead(analog_inputs[index_num]);
+		</code>
+	</command>
+</commands>
