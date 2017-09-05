@@ -5,33 +5,41 @@
 
 #include <gtest/gtest.h>
 
-using Roboclaw = roboclawmocks::MockRoboclaw;
-using Command = roboclaw::Roboclaw::Command;
-
-namespace roboclawtest
+namespace rip
 {
-    TEST(Roboclaw, loadJson)
+    namespace utilities
     {
+        namespace roboclaw
+        {
+            using Roboclaw = mocks::MockRoboclaw;
 
-    }
+            namespace tests
+            {
+                TEST(Roboclaw, loadJson)
+                {
 
-    TEST(Roboclaw, DriveM1Forward)
-    {
+                }
 
-    }
+                TEST(Roboclaw, DriveM1Forward)
+                {
 
-    TEST(Roboclaw, DriveM1Backward)
-    {
+                }
 
-    }
+                TEST(Roboclaw, DriveM1Backward)
+                {
 
-    TEST(Roboclaw, DriveM2Forward)
-    {
+                }
 
-    }
+                TEST(Roboclaw, DriveM2Forward)
+                {
 
-    TEST(Roboclaw, DriveM2Backward)
-    {
+                }
 
+                TEST(Roboclaw, DriveM2Backward)
+                {
+
+                }
+            }
+        }
     }
 }

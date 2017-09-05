@@ -1,51 +1,56 @@
-#ifndef EXCEPTIONS_HPP
-#define EXCEPTIONS_HPP
+/*
+ * The RIP License (Revision 0.3):
+ * This software is available without warranty and without support.
+ * Use at your own risk. Literally. It might delete your filesystem or
+ * eat your cat. As long as you retain this notice, you can do whatever
+ * you want with this. If we meet some day, you owe me a beer.
+ *
+ * Go Vols!
+ *
+ *  __    __  ________  __    __        _______   ______  _______
+ * |  \  |  \|        \|  \  /  \      |       \ |      \|       \
+ * | $$  | $$ \$$$$$$$$| $$ /  $$      | $$$$$$$\ \$$$$$$| $$$$$$$\
+ * | $$  | $$   | $$   | $$/  $$       | $$__| $$  | $$  | $$__/ $$
+ * | $$  | $$   | $$   | $$  $$        | $$    $$  | $$  | $$    $$
+ * | $$  | $$   | $$   | $$$$$\        | $$$$$$$\  | $$  | $$$$$$$
+ * | $$__/ $$   | $$   | $$ \$$\       | $$  | $$ _| $$_ | $$
+ *  \$$    $$   | $$   | $$  \$$\      | $$  | $$|   $$ \| $$
+ *   \$$$$$$     \$$    \$$   \$$       \$$   \$$ \$$$$$$ \$$
+ */
+#ifndef ROBOCLAW_EXCEPTIONS_HPP
+#define ROBOCLAW_EXCEPTIONS_HPP
+#include <exception_base.hpp>
 
-#define NEW_EX(name) \
-class name : public Exception \
-{ \
-public: \
-    name(std::string message = "") : Exception(#name ": " + message) {} \
-}
-
-namespace roboclaw
+namespace rip
 {
-    class Exception : public std::exception
+    namespace utilities
     {
-    protected:
-        std::string m_message;
-
-    public:
-        Exception(std::string message = "") : m_message(message) {}
-        const char* what() const throw()
+        namespace roboclaw
         {
-            return m_message.c_str();
+            /**
+             * @class CommandFailure
+             * @brief An exception for when the command fails
+             */
+            NEW_EX(CommandFailure);
+
+            /**
+             * @class ReadFailure
+             * @brief An exception for when the response for a read command fails
+             */
+            NEW_EX(ReadFailure);
+
+            /**
+             * @class OutOfRange
+             * @brief An exception for when something falls out of range
+             */
+            NEW_EX(OutOfRange);
+
+            /**
+             * @class UnknownDType
+             * @brief Unknown combination of motor dynamic parameters
+             */
+            NEW_EX(UnknownDType);
         }
-    };
-
-    /**
-     * @class CommandFailure
-     * @brief An exception for when the command fails
-     */
-    NEW_EX(CommandFailure);
-
-    /**
-     * @class ReadFailure
-     * @brief An exception for when the response for a read command fails
-     */
-    NEW_EX(ReadFailure);
-
-    /**
-     * @class OutOfRange
-     * @brief An exception for when something falls out of range
-     */
-    NEW_EX(OutOfRange);
-
-    /**
-     * @class UnknownDType
-     * @brief Unknown combination of motor dynamic parameters
-     */
-    NEW_EX(UnknownDType);
+    }
 }
-
-#endif //EXCEPTIONS_HPP
+#endif //ROBOCLAW_EXCEPTIONS_HPP

@@ -3,18 +3,27 @@
 
 #include "roboclaw.hpp"
 
-namespace roboclawmocks
+namespace rip
 {
-    class MockRoboclaw
+    namespace utilities
     {
-    public:
-        size_t MockRoboclaw::write(const std::string& message) override;
+        namespace roboclaw
+        {
+            namespace mocks
+            {
+                class MockRoboclaw
+                {
+                public:
+                    size_t MockRoboclaw::write(const std::string& message) override;
 
-        std::string MockRoboclaw::getLastSent();
+                    std::string MockRoboclaw::getLastSent();
 
-        void MockRoboclaw::setResponse(const std::string& response);
+                    void MockRoboclaw::setResponse(const std::string& response);
 
-        std::string MockRoboclaw::read(size_t n) override;
-    };
+                    std::string MockRoboclaw::read(size_t n) override;
+                };
+            }
+        }
+    }
 }
 #endif //MOCK_ROBOCLAW_HPP
