@@ -1,46 +1,29 @@
-#ifndef EXCEPTIONS_HPP
-#define EXCEPTIONS_HPP
-#include <string>
+#ifndef ARDUINOGEN_EXCEPTIONS_HPP
+#define ARDUINOGEN_EXCEPTIONS_HPP
+#include <exception_base.hpp>
 
-#define NEW_EX(name) \
-class name : public Exception \
-{ \
-public: \
-    name(std::string message = "") : Exception(#name ": " + message) {} \
-}
-
-namespace roboclaw
+namespace rip
 {
-    class Exception : public std::exception
+    namespace arduinogen
     {
-    protected:
-        std::string m_message;
+        /**
+         * @class AppendageDataException
+         * @brief An exception for when there is an issue with data in an appendage
+         */
+        NEW_EX(AppendageDataException);
 
-    public:
-        Exception(std::string message = "") : m_message(message) {}
-        const char* what() const throw()
-        {
-            return m_message.c_str();
-        }
-    };
+        /**
+         * @class AttributeException
+         * @brief An exception for when there is an xml attribute issue in the TemplateParser
+         */
+        NEW_EX(AttributeException);
 
-    /**
-     * @class AppendageDataException
-     * @brief An exception for when there is an issue with data in an appendage
-     */
-    NEW_EX(AppendageDataException);
-
-    /**
-     * @class AttributeException
-     * @brief An exception for when there is an xml attribute issue in the TemplateParser
-     */
-    NEW_EX(AttributeException);
-
-    /**
-     * @class TypeException
-     * @brief An exception for when there is a type error
-     */
-    NEW_EX(TypeException);
+        /**
+         * @class TypeException
+         * @brief An exception for when there is a type error
+         */
+        NEW_EX(TypeException);
+    }
 }
 
-#endif // EXCEPTIONS_HPP
+#endif // ARDUINOGEN_EXCEPTIONS_HPP

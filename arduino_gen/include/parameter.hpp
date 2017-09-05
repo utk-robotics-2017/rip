@@ -8,38 +8,41 @@ namespace tinyxml2
     class XMLElement;
 } // tinyxml2
 
-namespace arduinogen
+namespace rip
 {
-    /**
-     * @class Parameter
-     * @brief A single parameter for a command's callback function
-     */
-    class Parameter
+    namespace arduinogen
     {
-    public:
         /**
-         * @brief Default Constructor
+         * @class Parameter
+         * @brief A single parameter for a command's callback function
          */
-        Parameter() = default;
+        class Parameter
+        {
+        public:
+            /**
+             * @brief Default Constructor
+             */
+            Parameter() = default;
 
-        /**
-         * @brief Constructor
-         *
-         * @param xml The xml to parse for constructing this parameter
-         * @param id The id of the command that this parameter is a part of
-         */
-        Parameter(tinyxml2::XMLElement* xml, std::string id);
+            /**
+             * @brief Constructor
+             *
+             * @param xml The xml to parse for constructing this parameter
+             * @param id The id of the command that this parameter is a part of
+             */
+            Parameter(tinyxml2::XMLElement* xml, std::string id);
 
-        /**
-         *  @brief Creates the code for recieving the parameter in a command's callback function
-         */
-        std::string receive() const;
+            /**
+             *  @brief Creates the code for recieving the parameter in a command's callback function
+             */
+            std::string receive() const;
 
-    private:
-        std::string m_name;
-        std::string m_type;
-        std::string m_id;
-    };
+        private:
+            std::string m_name;
+            std::string m_type;
+            std::string m_id;
+        };
+    }
 }
 
 #endif // PARAMETER_HPP

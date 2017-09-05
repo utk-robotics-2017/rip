@@ -5,35 +5,38 @@
 
 #include "exceptions.hpp"
 
-namespace arduinogen
+namespace rip
 {
-    Parameter::Parameter(tinyxml2::XMLElement* xml, std::string id)
-        : m_id(id)
+    namespace arduinogen
     {
-        const char* name = xml->Attribute("name");
-        if(!name)
+        Parameter::Parameter(tinyxml2::XMLElement* xml, std::string id)
+            : m_id(id)
         {
-            throw AttributeException(fmt::format("Parameter name missing on line number {}",
-                                                 xml->GetLineNum()));
-        }
-        m_name = name;
+            const char* name = xml->Attribute("name");
+            if (!name)
+            {
+                throw AttributeException(fmt::format("Parameter name missing on line number {}",
+                                                     xml->GetLineNum()));
+            }
+            m_name = name;
 
-        const char* type = xml->Attribute("type");
-        if(!type)
+            const char* type = xml->Attribute("type");
+            if (!type)
+            {
+                throw AttributeException(fmt::format("Parameter type missing on line number {}",
+                                                     xml->GetLineNum()));
+            }
+            m_type = type;
+        }
+
+        std::string Parameter::receive() const
         {
-            throw AttributeException(fmt::format("Parameter type missing on line number {}",
-                                                 xml->GetLineNum()));
+            std::string rv = fmt::format("\t{1} {0} = cmdMessenger.readBinArg<{1}>()", m_name, m_type);
+            rv += "\tif(!cmdMessenger.isArgOk()){\n";
+            rv += fmt::format("\t\tcmdMessenger.sendBinCmd(kError, {});\n", m_id);
+            rv += "\t\treturn;\n";
+            rv += "\t}";
+            return rv;
         }
-        m_type = type;
-    }
-
-    std::string Parameter::receive() const
-    {
-        std::string rv = fmt::format("\t{1} {0} = cmdMessenger.readBinArg<{1}>()", m_name, m_type);
-        rv += "\tif(!cmdMessenger.isArgOk()){\n";
-        rv += fmt::format("\t\tcmdMessenger.sendBinCmd(kError, {});\n", m_id);
-        rv += "\t\treturn;\n";
-        rv += "\t}";
-        return rv;
     }
 }

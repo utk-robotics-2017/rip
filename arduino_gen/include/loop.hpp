@@ -10,32 +10,34 @@ namespace tinyxml2
     class XMLElement;
 }
 
-namespace arduinogen
+namespace rip
 {
-    class Appendage;
-
-    /**
-     * @class Loop
-     * @brief
-     */
-    class Loop
+    namespace arduinogen
     {
-    public:
-        /**
-         * @brief Constructor
-         * @param xml
-         */
-        Loop(tinyxml2::XMLElement* xml);
+        class Appendage;
 
         /**
-         * Creates the part of the loop code for this appendage
-         * @return [description]
+         * @class Loop
+         * @brief
          */
-        std::string toString(std::vector< std::shared_ptr<Appendage> > appendages);
+        class Loop
+        {
+        public:
+            /**
+             * @brief Constructor
+             * @param xml
+             */
+            Loop(tinyxml2::XMLElement* xml);
 
-    private:
-        std::string m_code;
-    };
-} // namespace arduinogen
+            /**
+             * Creates the part of the loop code for this appendage
+             * @return [description]
+             */
+            std::string toString(std::vector< std::shared_ptr<Appendage> > appendages);
 
+        private:
+            std::string m_code;
+        };
+    } // namespace arduinogen
+}
 #endif // LOOP_HPP

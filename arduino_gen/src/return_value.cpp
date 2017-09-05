@@ -5,34 +5,37 @@
 
 #include "exceptions.hpp"
 
-namespace arduinogen
+namespace rip
 {
-    ReturnValue::ReturnValue(tinyxml2::XMLElement* xml)
+    namespace arduinogen
     {
-        const char* name = xml->Attribute("name");
-        if(!name)
+        ReturnValue::ReturnValue(tinyxml2::XMLElement* xml)
         {
-            throw AttributeException(fmt::format("Return Value name missing on line number {}",
-                                                 xml->GetLineNum()));
-        }
-        m_name = name;
+            const char* name = xml->Attribute("name");
+            if (!name)
+            {
+                throw AttributeException(fmt::format("Return Value name missing on line number {}",
+                                                     xml->GetLineNum()));
+            }
+            m_name = name;
 
-        const char* type = xml->Attribute("type");
-        if(!type)
+            const char* type = xml->Attribute("type");
+            if (!type)
+            {
+                throw AttributeException(fmt::format("Return Value type missing on line number {}",
+                                                     xml->GetLineNum()));
+            }
+            m_type = type;
+        }
+
+        std::string ReturnValue::declare() const
         {
-            throw AttributeException(fmt::format("Return Value type missing on line number {}",
-                                                 xml->GetLineNum()));
+            return fmt::format("\t{} {};\n", m_type, m_name);
         }
-        m_type = type;
-    }
 
-    std::string ReturnValue::declare() const
-    {
-        return fmt::format("\t{} {};\n", m_type, m_name);
-    }
-
-    std::string ReturnValue::send() const
-    {
-        return fmt::format("\tcmdMessenger.sendBinArg({});\n", m_name);
+        std::string ReturnValue::send() const
+        {
+            return fmt::format("\tcmdMessenger.sendBinArg({});\n", m_name);
+        }
     }
 }

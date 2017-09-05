@@ -10,34 +10,36 @@ namespace tinyxml2
     class XMLElement;
 }
 
-namespace arduinogen
+namespace rip
 {
-    class Appendage;
-
-    /**
-     * @class Setup
-     * @brief The container for the setup part of
-     */
-    class Setup
+    namespace arduinogen
     {
-    public:
-        /**
-         * @brief Constructor
-         */
-        Setup(tinyxml2::XMLElement* xml);
+        class Appendage;
 
         /**
-         * Create the code for the part of the setup function for this appendage type
-         *
-         * @param appendages The list of appendages of a single type
-         * 
-         * @return The code for the part of the setup function for this appendage type
+         * @class Setup
+         * @brief The container for the setup part of
          */
-        std::string toString(std::vector< std::shared_ptr<Appendage> > appendages) const ;
+        class Setup
+        {
+        public:
+            /**
+             * @brief Constructor
+             */
+            Setup(tinyxml2::XMLElement* xml);
 
-    private:
-        std::string m_code;
-    };
-} // arduinogen
+            /**
+             * Create the code for the part of the setup function for this appendage type
+             *
+             * @param appendages The list of appendages of a single type
+             *
+             * @return The code for the part of the setup function for this appendage type
+             */
+            std::string toString(std::vector< std::shared_ptr<Appendage> > appendages) const ;
 
-#endif 
+        private:
+            std::string m_code;
+        };
+    } // arduinogen
+}
+#endif

@@ -10,42 +10,43 @@ namespace tinyxml2
     class XMLElement;
 } // tinyxml2
 
-
-namespace arduinogen
+namespace rip
 {
-    class Appendage;
-
-    /**
-     * @class Argument
-     * @brief
-     */
-    class Argument
+    namespace arduinogen
     {
-    public:
+        class Appendage;
 
         /**
-         * @brief Default Constructor
+         * @class Argument
+         * @brief
          */
-        Argument() = default;
+        class Argument
+        {
+        public:
 
-        /**
-         * @brief Constructor
-         *
-         * @param xml The xml element to parse for this argument
-         */
-        Argument(tinyxml2::XMLElement* xml);
+            /**
+             * @brief Default Constructor
+             */
+            Argument() = default;
 
-        /**
-         * @brief Creates the code for a single argument in a constructor
-         * @param  appendage The appendage used for the single constructor
-         * @return The code for a single argument in a constructor
-         */
-        std::string toString(std::shared_ptr<Appendage> appendage) const;
+            /**
+             * @brief Constructor
+             *
+             * @param xml The xml element to parse for this argument
+             */
+            Argument(tinyxml2::XMLElement* xml);
 
-    private:
-        std::string m_name;
-        std::string m_type;
-    };
-} // arduinogen
+            /**
+             * @brief Creates the code for a single argument in a constructor
+             * @param  appendage The appendage used for the single constructor
+             * @return The code for a single argument in a constructor
+             */
+            std::string toString(std::shared_ptr<Appendage> appendage) const;
 
+        private:
+            std::string m_name;
+            std::string m_type;
+        };
+    } // arduinogen
+}
 #endif // ARGUMENT_HPP

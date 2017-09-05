@@ -10,39 +10,42 @@ namespace tinyxml2
     class XMLElement;
 } // tinyxml2
 
-namespace arduinogen
+namespace rip
 {
-    class Argument;
-    class Appendage;
-
-    /**
-     * @class Constructors
-     * @brief A container for the constructors part of the arduino code for this type
-     */
-    class Constructors
+    namespace arduinogen
     {
-    public:
-        /**
-         * @brief Constructor
-         *
-         * @param xml The xml element to parse
-         */
-        Constructors(tinyxml2::XMLElement* xml);
+        class Argument;
+        class Appendage;
 
         /**
-         * @brief Returns the arduino code for these constructors
-         * @param  appendages The appendages of this type
-         * @return The code for these constructors
+         * @class Constructors
+         * @brief A container for the constructors part of the arduino code for this type
          */
-        std::string toString(std::vector< std::shared_ptr<Appendage> >& appendages) const;
+        class Constructors
+        {
+        public:
+            /**
+             * @brief Constructor
+             *
+             * @param xml The xml element to parse
+             */
+            Constructors(tinyxml2::XMLElement* xml);
 
-    private:
-        std::vector< Argument > m_arguments;
+            /**
+             * @brief Returns the arduino code for these constructors
+             * @param  appendages The appendages of this type
+             * @return The code for these constructors
+             */
+            std::string toString(std::vector< std::shared_ptr<Appendage> >& appendages) const;
 
-        bool m_exists;
-        std::string m_type;
-        std::string m_variable;
-    };
+        private:
+            std::vector< Argument > m_arguments;
+
+            bool m_exists;
+            std::string m_type;
+            std::string m_variable;
+        };
+    }
 } // arduinogen
 
 #endif // CONSTRUCTORS_HPP
