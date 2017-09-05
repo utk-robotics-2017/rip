@@ -23,47 +23,52 @@
 
 #include <string>
 
-namespace cmdmessenger
+namespace rip
 {
-    /**
-     * @class Command
-     * @brief Class containing the metadata for an individual command
-     */
-    class Command
+    namespace utilities
     {
-    public:
-        /**
-         * @brief Constructor
-         *
-         * @param id The name of the command
-         * @param enum_ The enum number for this commane
-         */
-        Command(std::string id, int enum_, std::string argument_types);
+        namespace cmdmessenger
+        {
+            /**
+             * @class Command
+             * @brief Class containing the metadata for an individual command
+             */
+            class Command
+            {
+            public:
+                /**
+                 * @brief Constructor
+                 *
+                 * @param id The name of the command
+                 * @param enum_ The enum number for this commane
+                 */
+                Command(std::string id, int enum_, std::string argument_types);
 
-        /**
-         * @brief Returns the name of the command
-         *
-         * @return The name of the command
-         */
-        std::string getId();
+                /**
+                 * @brief Returns the name of the command
+                 *
+                 * @return The name of the command
+                 */
+                std::string getId();
 
-        /**
-         * @brief Returns the enum number for this command
-         * @return The enum number for this command
-         */
-        int getEnum();
+                /**
+                 * @brief Returns the enum number for this command
+                 * @return The enum number for this command
+                 */
+                int getEnum();
 
-        /**
-         * @brief Gets the argument types for this command
-         * @return The argument types for this command
-         */
-        std::string getArgumentTypes();
+                /**
+                 * @brief Gets the argument types for this command
+                 * @return The argument types for this command
+                 */
+                std::string getArgumentTypes();
 
-    private:
-        std::string m_id;
-        int m_enum;
-        std::string m_argument_types;
-    };
+            private:
+                std::string m_id;
+                int m_enum;
+                std::string m_argument_types;
+            };
+        }
+    }
 }
-
 #endif // COMMAND_HPP

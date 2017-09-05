@@ -19,87 +19,27 @@
  */
 #ifndef EXCEPTIONS_HPP
 #define EXCEPTIONS_HPP
-#include <string>
+#include <exceptions_base.hpp>
 
-namespace cmdmessenger
+namespace rip
 {
-    class Exception : public std::exception
+    namespace utilities
     {
-    protected:
-        std::string m_message;
-
-    public:
-        Exception(std::string message = "") : m_message(message) {}
-        const char* what() const throw()
+        namespace cmdmessenger
         {
-            return m_message.c_str();
+            NEW_EX(EmptyDevice);
+            NEW_EX(EmptyCommand);
+
+            NEW_EX(IncorrectAcknowledgementCommand);
+            NEW_EX(IncorrectArgumentListSize);
+            NEW_EX(IncorrectCommandSeparator);
+            NEW_EX(IncorrectFieldSeparator);
+            NEW_EX(IncorrectResponseCommand);
+            NEW_EX(OutOfBounds);
+            NEW_EX(NoLastDeviceException);
+            NEW_EX(UnconvertibleArgument);
+            NEW_EX(UnknownArgument);
         }
-    };
-
-    class EmptyDevice : public Exception
-    {
-    public:
-        EmptyDevice(std::string message = "") : Exception(message) {}
-    };
-
-    class EmptyCommand : public Exception
-    {
-    public:
-        EmptyCommand(std::string message = "") : Exception(message) {}
-    };
-
-    class IncorrectAcknowledgementCommand : public Exception
-    {
-    public:
-        IncorrectAcknowledgementCommand(std::string message = "") : Exception(message) {}
-    };
-
-    class IncorrectArgumentListSize : public Exception
-    {
-    public:
-        IncorrectArgumentListSize(std::string message = "") : Exception(message) {}
-    };
-
-    class IncorrectCommandSeparator : public Exception
-    {
-    public:
-        IncorrectCommandSeparator(std::string message = "") : Exception(message) {}
-    };
-
-    class IncorrectFieldSeparator : public Exception
-    {
-    public:
-        IncorrectFieldSeparator(std::string message = "") : Exception(message) {}
-    };
-
-    class IncorrectResponseCommand : public Exception
-    {
-    public:
-        IncorrectResponseCommand(std::string message = "") : Exception(message) {}
-    };
-
-    class OutOfBounds : public Exception
-    {
-    public:
-        OutOfBounds(std::string message = "") : Exception(message) {}
-    };
-
-    class NoLastDeviceException : public Exception
-    {
-    public:
-        NoLastDeviceException(std::string message = "") : Exception(message) {}
-    };
-
-    class UnconvertibleArgument : public Exception
-    {
-    public:
-        UnconvertibleArgument(std::string message = "") : Exception(message) {}
-    };
-
-    class UnknownArgument : public Exception
-    {
-    public:
-        UnknownArgument(std::string message = "") : Exception(message) {}
-    };
+    } // utilities
 }
 #endif // EXCEPTIONS_HPP

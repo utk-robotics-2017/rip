@@ -25,29 +25,35 @@
 #include <serial/serial.h>
 #include <units.hpp>
 
-namespace cmdmessenger {
-    /**
-     * @class Device
-     * @brief
-     */
-    class Device : public serial::Serial
+namespace rip
+{
+    namespace utilities
     {
-    public:
-        /**
-         * @brief Constructor
-         *
-         * @param port The port for the serial connection
-         * @param baud_rate The speed for sending and receiving messages
-         * @param timeout The timeout to allow for communication
-         */
-        Device(std::string port, unsigned long baud_rate = 115200, units::Time timeout = 1.0);
+        namespace cmdmessenger
+        {
+            /**
+             * @class Device
+             * @brief
+             */
+            class Device : public serial::Serial
+            {
+            public:
+                /**
+                 * @brief Constructor
+                 *
+                 * @param port The port for the serial connection
+                 * @param baud_rate The speed for sending and receiving messages
+                 * @param timeout The timeout to allow for communication
+                 */
+                Device(std::string port, unsigned long baud_rate = 115200, units::Time timeout = 1.0);
 
-        /**
-         * @brief Sets the timeout to allow for communication
-         * @param timeout The timeout to set
-         */
-        void setTimeout(units::Time timeout);
-    };
-}
+                /**
+                 * @brief Sets the timeout to allow for communication
+                 * @param timeout The timeout to set
+                 */
+                void setTimeout(units::Time timeout);
+            };
+        }
+    }
 
 #endif // DEVICE_HPP

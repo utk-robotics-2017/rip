@@ -20,25 +20,32 @@
 
 #include "command.hpp"
 
-namespace cmdmessenger {
-    Command::Command(std::string id, int enum_, std::string argument_types)
-        : m_id(id)
-        , m_enum(enum_)
-        , m_argument_types(argument_types)
-    {}
-
-    std::string Command::getId()
+namespace rip
+{
+    namespace utilities
     {
-        return m_id;
-    }
+        namespace cmdmessenger
+        {
+            Command::Command(std::string id, int enum_, std::string argument_types)
+                : m_id(id)
+                , m_enum(enum_)
+                , m_argument_types(argument_types)
+            {}
 
-    int Command::getEnum()
-    {
-        return m_enum;
-    }
+            std::string Command::getId()
+            {
+                return m_id;
+            }
 
-    std::string Command::getArgumentTypes()
-    {
-        return m_argument_types;
+            int Command::getEnum()
+            {
+                return m_enum;
+            }
+
+            std::string Command::getArgumentTypes()
+            {
+                return m_argument_types;
+            }
+        }
     }
 }
