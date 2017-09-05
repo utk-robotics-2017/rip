@@ -1,22 +1,35 @@
 #ifndef ANALOG_INPUT_HPP
 #define ANALOG_INPUT_HPP
 
-namespace appendages
+#include <appendage.hpp>
+
+namespace rip
 {
-    class AnalogInput : public Appendage
+    namespace appendages
     {
+        /**
+         * @class AnalogInput
+         *
+         * @brief A simple analog input
+         */
+        class AnalogInput : public Appendage
+        {
         public:
-            bool read();
+            /**
+             * Reads the analog port
+             * @returns The analog value [0 - 1023]
+             */
+            int read();
 
         protected:
-            std::shared_ptr<Appendage> create(const nlohmann::json& config, const std::map<std::string, int>& command_map, std::shared_ptr<cmdmessenger::Device> device);
+            std::shared_ptr<Appendage> create(const nlohmann::json& config, const std::map<std::string, int>& command_map, std::shared_ptr<cmdmessenger::Device> device) override;
 
         private:
-            AnalogInput(const nlohmann::json& config, config std::map<std::string, int>& command_map, std::shared_ptr<cmdmessenger::Device> device);
+            AnalogInput(const nlohmann::json& config, const std::map<std::string, int>& command_map, std::shared_ptr<cmdmessenger::Device> device);
 
             int m_read;
             int m_read_result;
-    }; // class AnalogInput
-} // namespace appendages
-
+        }; // class AnalogInput
+    } // namespace appendages
+}
 #endif // ANALOG_INPUT_HPP

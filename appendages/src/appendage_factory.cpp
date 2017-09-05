@@ -4,39 +4,42 @@
 #include "digital_input.hpp"
 #include "analog_input.hpp"
 
-namespace appendages
+namespace rip
 {
-    std::shared_ptr<AppendageFactory> AppendageFactory::m_singleton = std::shared_ptr<AppendageFactory>(nullptr);
-
-    std::shared_ptr<AppendageFactory> AppendageFactory::getInstance()
+    namespace appendages
     {
-        if(!m_singleton)
-        {
-            m_singleton = std::make_shared<AppendageFactory>();
-        }
-        return m_singleton;
-    }
+        std::shared_ptr<AppendageFactory> AppendageFactory::m_singleton = std::shared_ptr<AppendageFactory>(nullptr);
 
-    std::shared_ptr<Appendage> AppendageFactory::makeAppendage(const nlohmann::json& config, const std::map<std::string, int>& command_map, std::shared_ptr<cmdmessenger::Device> device)
-    {
-        if(config.find("type") == config.end())
+        std::shared_ptr<AppendageFactory> AppendageFactory::getInstance()
         {
-            throw AppendageWithoutType(fmt::format("{} appendage {} missing type", device->getName(), config.dump()));
+            if (!m_singleton)
+            {
+                m_singleton = std::make_shared<AppendageFactory>();
+            }
+            return m_singleton;
         }
 
-        return m_constructors["type"](std::forward<nlohmann::json>(config), std::forward< std::map<std::string, int> >(command_map), std::shared_ptr<cmdmessenger::Device>(device));
-    }
+        std::shared_ptr<Appendage> AppendageFactory::makeAppendage(const nlohmann::json& config, const std::map<std::string, int>& command_map, std::shared_ptr<cmdmessenger::Device> device)
+        {
+            if (config.find("type") == config.end())
+            {
+                throw AppendageWithoutType(fmt::format("{} appendage {} missing type", device->getName(), config.dump()));
+            }
 
-    void registerAppendage(std::string type, std::shared_ptr<Appendage> (*constructor)[](const nlohmann::json&,
-                                                                           const std::map<std::string, int>&,
-                                                                           std::shared_ptr<cmdmessenger::Device>))
-    {
-        m_constructors[type] = constructor;
-    }
+            return m_constructors["type"](std::forward<nlohmann::json>(config), std::forward< std::map<std::string, int> >(command_map), std::shared_ptr<cmdmessenger::Device>(device));
+        }
 
-    AppendageFactory::AppendageFactory()
-    {
-        registerAppendage("Digital Input", &DigitalInput::create);
-        registerAppendage("Analog Input", &AnalogInput::create);
+        void registerAppendage(std::string type, std::shared_ptr<Appendage> (*constructor)[](const nlohmann::json&,
+                               const std::map<std::string, int>&,
+                               std::shared_ptr<cmdmessenger::Device>))
+        {
+            m_constructors[type] = constructor;
+        }
+
+        AppendageFactory::AppendageFactory()
+        {
+            registerAppendage("Digital Input", &DigitalInput::create);
+            registerAppendage("Analog Input", &AnalogInput::create);
+        }
     }
 }
