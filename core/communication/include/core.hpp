@@ -3,12 +3,14 @@
 
 namespace rip
 {
-    /**
-     * @class Spine
-     * @brief Handles creaing all the appendages from the config files and setting up communication
-     */
-    class Spine
+    namespace communication
     {
+        /**
+         * @class Spine
+         * @brief Handles creaing all the appendages from the config files and setting up communication
+         */
+        class Spine
+        {
         public:
             /**
              * @brief Returns the singleton
@@ -42,7 +44,7 @@ namespace rip
             template<class T>
             std::shared_ptr<T> get(std::string appendage_name)
             {
-                if(m_appendages.find(appendage_name) == m_appendages.end())
+                if (m_appendages.find(appendage_name) == m_appendages.end())
                 {
                     throw AppendageNotFound(fmt::format("Cannot find appendage named {}", appendage_name));
                 }
@@ -75,7 +77,8 @@ namespace rip
             std::map< std::string, std::shared_ptr<cmdmessenger::Device> > m_devices;
             std::map< std::string, std::shared_ptr<Appendage> > m_appendages;
 
-    }; // class Spine
+        }; // class Spine
+    }
 } // namespace rip
 
 #endif // SPINE_HPP
