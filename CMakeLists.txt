@@ -22,7 +22,7 @@ option(CMD_MESENGER "Build CmdMessenger" OFF)
 # Testing
 option(ENABLE_TESTING "Enable testing of the modules" OFF)
 
-add_subdirectory(utils)
+add_subdirectory(utilities)
 
 if(ALL OR RIP OR CORE OR RIPCOM)
     message("Adding appendages")
