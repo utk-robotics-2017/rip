@@ -22,7 +22,7 @@
 #include <string>
 
 #define NEW_EX(name) \
-class name : public rip::utilities::Exception \
+class name : public rip::utilities::ExceptionBase \
 { \
 public: \
     name(std::string message = "") : rip::utilities::ExceptionBase(#name ": " + message) {} \

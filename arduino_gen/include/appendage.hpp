@@ -6,6 +6,7 @@
 #include <memory>
 
 #include <json.hpp>
+
 namespace rip
 {
     namespace arduinogen

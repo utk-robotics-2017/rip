@@ -40,4 +40,5 @@ namespace rip
         };
     } // namespace arduinogen
 }
+
 #endif // LOOP_HPP

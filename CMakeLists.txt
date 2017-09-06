@@ -22,6 +22,8 @@ option(CMD_MESENGER "Build CmdMessenger" OFF)
 # Testing
 option(ENABLE_TESTING "Enable testing of the modules" OFF)
 
+LIST(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMakeModules)
+
 add_subdirectory(utilities)
 
 if(ALL OR RIP OR CORE OR RIPCOM)

@@ -11,7 +11,7 @@ set_property(TARGET _${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
 if(ENABLE_TESTING)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage")
 endif()
-target_link_libraries(_${PROJECT_NAME} fmt json spdlog tinyxml2 pathman)
+target_link_libraries(_${PROJECT_NAME} fmt json spdlog tinyxml2 pathman exceptions_base)
 target_include_directories(_${PROJECT_NAME} PUBLIC include)
 
 # Create arduino_gen executable, set to c++11, and link arduino_gen library
@@ -43,10 +43,6 @@ if(ENABLE_TESTING)
     set_property(TARGET ${PROJECT_NAME}_test PROPERTY CXX_STANDARD 11)
     target_link_libraries(${PROJECT_NAME}_test _${PROJECT_NAME})
     target_link_libraries(${PROJECT_NAME}_test gmock gtest googletest_rip_macros)
-
-
-    # In CMakeModules I include code coverage for c++
-    set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMakeModules)
 
     if(CMAKE_COMPILER_IS_GNUCXX)
         include(CodeCoverage)

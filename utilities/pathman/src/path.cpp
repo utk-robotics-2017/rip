@@ -12,6 +12,10 @@
 #include <cstring>
 #include <dirent.h>
 
+#if (_WIN32)
+#include <direct.h>
+#endif
+
 #include "../include/path.hpp"
 
 namespace rip
@@ -206,7 +210,11 @@ namespace rip
                     // handle the error
                 }
 
+                #if defined(_WIN32)
+                mkdir_rv = _mkdir(this->str().c_str());
+                #else
                 mkdir_rv = mkdir(this->str().c_str(), mode);
+                #endif
 
                 if (!mkdir_rv)
                 {
@@ -435,10 +443,9 @@ namespace rip
                 }
 
                 // Determine the type of the path (file, dir, symlink, other)
-                if (m_path_type != PathType::NOT_FOUND)
+                if(m_path_type != PathType::NOT_FOUND)
                 {
-                    switch (m_stat.get()->st_mode & S_IFMT)
-                    {
+                    switch (m_stat.get()->st_mode & S_IFMT) {
                         case S_IFDIR:
                         {
                             m_path_type = PathType::DIRECTORY;
@@ -451,6 +458,7 @@ namespace rip
                             break;
                         }
 
+                        #if defined(__linux)
                         case S_IFLNK:
                         {
                             m_path_type = PathType::SYMLINK;
@@ -458,9 +466,10 @@ namespace rip
                         }
 
                         case S_IFBLK:  // block device
+                        case S_IFSOCK: // socket
+                        #endif
                         case S_IFCHR:  // char device
                         case S_IFIFO:  // fifo/pipe
-                        case S_IFSOCK: // socket
                         default:
                         {
                             m_path_type = PathType::UNKNOWN;
@@ -479,7 +488,11 @@ namespace rip
 
                 // Clean the path string
                 std::replace(path.begin(), path.end(), '\\', '/');
+                #if defined(__linux__)
                 realpath(path.c_str(), path_cstr);
+                #else
+                _fullpath(path_cstr, path.c_str(), PATH_MAX);
+                #endif
 
                 if (path_cstr == nullptr)
                 {
@@ -506,14 +519,14 @@ namespace rip
                 updateStat();
             }
 
-            void Path::updatePath(std::vector<std::string>& path, bool is_relative)
+            void Path::updatePath(std::vector<std::string> &path, bool is_relative)
             {
                 std::stringstream ss;
                 std::string path_str;
                 std::string token;
 
                 // safety check
-                if (path.empty())
+                if(path.empty())
                 {
                     // throw exception - because that is silly
                     throw "Empty Path variable";
@@ -521,15 +534,21 @@ namespace rip
 
                 // make the relative path absolute
                 std::copy(path.begin(), path.end(), std::ostream_iterator<std::string>(ss, "/"));
+
+                #if defined(__linux__)
+                realpath(path.c_str(), path_cstr);
                 ss.str(realpath(ss.str().c_str(), nullptr));
+                #elif defined(_WIN32)
+                ss.str(_fullpath(nullptr, ss.str().c_str(), PATH_MAX));
+                #endif
 
                 // save the string
                 m_path_str = ss.str();
 
                 // Update the internal path vector
-                while (std::getline(ss, token, '/'))
+                while(std::getline(ss, token, '/'))
                 {
-                    if (!token.empty())
+                    if(!token.empty())
                     {
                         m_path_components.push_back(std::move(token));
                     }

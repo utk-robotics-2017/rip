@@ -1,0 +1,7 @@
+<command id="kEcho" name="Echo" index-num="true">
+    <parameter type="char" name="in" />
+    <return-value type="char" name="out" />
+    <code>
+        out = in;
+    </code>
+</command>

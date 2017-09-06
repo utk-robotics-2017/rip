@@ -45,7 +45,7 @@ namespace rip
             std::string m_type;
             std::string m_variable;
         };
-    }
-} // arduinogen
+    } // arduinogen
+}
 
 #endif // CONSTRUCTORS_HPP

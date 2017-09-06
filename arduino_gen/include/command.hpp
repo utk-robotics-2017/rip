@@ -34,7 +34,7 @@ namespace rip
             /**
              * @brief Constructor
              */
-            Command(tinyxml2::XMLElement* command);
+            Command(const tinyxml2::XMLElement* command);
 
             /**
              * @brief Gets the enum id for the CmdMessenger
@@ -72,6 +72,14 @@ namespace rip
             std::string callback(int num_appendages) const;
 
         private:
+            /**
+             * @brief Removes extra whitespace from the code element
+             *
+             * @param Raw string from the code element
+             * @return
+             */
+            std::string processCode(const std::string&);
+
             std::string m_id;
             std::string m_name;
             bool m_index_num;
@@ -81,4 +89,5 @@ namespace rip
         };
     }
 }
+
 #endif // COMMAND_HPP

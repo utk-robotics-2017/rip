@@ -4,8 +4,8 @@
 #include <gtest/gtest.h>
 #include <googletest_rip_macros.hpp>
 
-using arduinogen::Appendage;
-using arduinogen::AppendageDataException;
+using rip::arduinogen::Appendage;
+using rip::arduinogen::AppendageDataException;
 
 namespace rip
 {

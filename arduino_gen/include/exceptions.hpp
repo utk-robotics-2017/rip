@@ -1,5 +1,6 @@
-#ifndef ARDUINOGEN_EXCEPTIONS_HPP
-#define ARDUINOGEN_EXCEPTIONS_HPP
+#ifndef EXCEPTIONS_HPP
+#define EXCEPTIONS_HPP
+#include <string>
 #include <exception_base.hpp>
 
 namespace rip
@@ -14,16 +15,28 @@ namespace rip
 
         /**
          * @class AttributeException
-         * @brief An exception for when there is an xml attribute issue in the TemplateParser
+         * @brief An exception for when there is an xml attribute issue
          */
         NEW_EX(AttributeException);
+
+        /**
+         * @class ElementException
+         * @brief An exception for when there is an xml element issue
+         */
+        NEW_EX(ElementException);
 
         /**
          * @class TypeException
          * @brief An exception for when there is a type error
          */
         NEW_EX(TypeException);
+
+        /**
+         * @class FileIoException
+         * @brief An exception for when there is an error opening, reading, or writing a file.
+         */
+        NEW_EX(FileIoException);
     }
 }
 
-#endif // ARDUINOGEN_EXCEPTIONS_HPP
+#endif // EXCEPTIONS_HPP

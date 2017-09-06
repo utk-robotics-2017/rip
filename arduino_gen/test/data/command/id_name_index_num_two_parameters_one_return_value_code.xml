@@ -1,0 +1,10 @@
+<command id="kExponent" name="XToTheN" index-num="true">
+    <parameter type="int" name="x" />
+    <parameter type="int" name="n" />
+    <return-value type="int" name="rv" />
+    <code>
+        rv = 1;
+        for (int i = 0; i < n; i++)
+            rv *= x;
+    </code>
+</command>
