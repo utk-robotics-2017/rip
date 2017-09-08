@@ -1,5 +1,8 @@
 #include "spi.hpp"
 
+#include <sys/ioctl.h>
+#include <linux/spi/spidev.h>
+
 namespace rip
 {
     namespace pins
