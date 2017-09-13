@@ -16,3 +16,6 @@
 [submodule "utilities/googletest"]
 	path = utilities/googletest
 	url = git@github.com:utk-robotics-2017/googletest.git
+[submodule "utilities/uWebSockets"]
+	path = utilities/uWebSockets
+	url = git@github.com:utk-robotics-2017/uWebSockets.git
