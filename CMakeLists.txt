@@ -26,7 +26,7 @@ LIST(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMakeModules)
 
 add_subdirectory(utilities)
 
-if(ALL OR RIP OR CORE OR RIPCOM)
+if(ALL OR RIP OR CORE OR RIPCOM OR ARDUINO_GEN)
     message("Adding appendages")
     add_subdirectory(appendages)
 endif()
