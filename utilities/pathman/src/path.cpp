@@ -536,7 +536,6 @@ namespace rip
                 std::copy(path.begin(), path.end(), std::ostream_iterator<std::string>(ss, "/"));
 
                 #if defined(__linux__)
-                realpath(path.c_str(), path_cstr);
                 ss.str(realpath(ss.str().c_str(), nullptr));
                 #elif defined(_WIN32)
                 ss.str(_fullpath(nullptr, ss.str().c_str(), PATH_MAX));
