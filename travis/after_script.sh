@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 cd build
 lcov --directory . --capture --output-file coverage.info # capture coverage info
 lcov --remove coverage.info '/usr/*' --output-file coverage.info # filter out system

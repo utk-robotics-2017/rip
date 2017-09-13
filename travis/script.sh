@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # Checks if it compiles
 make -j4
 
