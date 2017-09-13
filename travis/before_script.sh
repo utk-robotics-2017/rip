@@ -9,7 +9,7 @@ else
 fi
 
 if [[ $BRANCH == "arduino_gen/"* ]]; then
-	cmake -G"Unix Makefiles" -DARDUINO_GEN:BOOL=ON -DENABLE_TESTING:BOOL=ON ..
+	cmake -DARDUINO_GEN:BOOL=ON -DENABLE_TESTING:BOOL=ON ..
 elif [[ $BRANCH == "pathfinder/"* ]]; then
 	cmake -DPATHFINDER:BOOL=ON -DENABLE_TESTING:BOOL=ON ..
 elif [[ $BRANCH == "roboclaw/"* ]]; then

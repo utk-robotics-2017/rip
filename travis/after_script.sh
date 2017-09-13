@@ -1,14 +1,17 @@
 #!/usr/bin/env bash
+
 cd build
+
 lcov --directory . --capture --output-file coverage.info # capture coverage info
 lcov --remove coverage.info '/usr/*' --output-file coverage.info # filter out system
-
 
 if [[ $2 ]]; then
 	BRANCH=$1
 else
 	BRANCH=$3
 fi
+
+# REVIEW: Do we need any of this?
 
 if [[ $BRANCH == "arduino_gen/"* ]]; then
 	lcov --remove coverage.info '/utilities/*' --output-file coverage.info # filter out utils
