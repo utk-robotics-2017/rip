@@ -8,7 +8,9 @@
 #include <fmt/format.h>
 #include <tinyxml2.h>
 
-#include "argument.hpp"
+#include "code.hpp"
+#include "parameter.hpp"
+#include "return_value.hpp"
 #include "appendage.hpp"
 #include "exceptions.hpp"
 
@@ -17,115 +19,59 @@ namespace rip
     namespace arduinogen
     {
         Command::Command(const tinyxml2::XMLElement* xml)
+            : XmlElement(xml)
         {
-            std::map<std::string, const tinyxml2::XMLAttribute*> attributes;
-            std::multimap<std::string, const tinyxml2::XMLElement*> elements;
+            // Get the id attribute
+            m_id = getAttribute("id")->Value();
 
-            // Loop through the attributes in the element and add them to the map
-            // auto -> const tinyxml2::XMLAttribute*
-            for (auto attr = xml->FirstAttribute(); attr != nullptr; attr = attr->Next())
-            {
-                attributes.emplace(attr->Name(), attr);
-            }
+            // Get the name attribute
+            m_name = getAttribute("name")->Value();
 
-            // Get the value for the id attribute, then erase it from the map
+            // Get the index-num attribute
             try
             {
-                m_id = attributes.at("id")->Value();
-                attributes.erase("id");
+                m_index_num = getAttribute("index-num")->BoolValue();
             }
-            catch (const std::out_of_range& e)
+            catch (const AttributeException& e)
             {
-                throw AttributeException(fmt::format("Command id missing on line number {}",
-                                                     xml->GetLineNum()));
-            }
-
-            // Get the value for the name attribute, then erase it from the map
-            try
-            {
-                m_name = attributes.at("name")->Value();
-                attributes.erase("name");
-            }
-            catch (const std::out_of_range& e)
-            {
-                throw AttributeException(fmt::format("Command name missing on line number {}",
-                                                     xml->GetLineNum()));
-            }
-
-            // Index num defaults to true
-            // Get the value for the index-num attribute, then erase it from the map
-            try
-            {
-                m_index_num = attributes.at("index-num")->BoolValue();
-                attributes.erase("index-num");
-            }
-            catch (const std::out_of_range& e)
-            {
+                // The index-num attribute is not in the XmlElement, default to true
                 m_index_num = true;
             }
 
-            // If there are any extra attributes in the map, throw an exception
-            if (!attributes.empty())
+            // Gets all of the parameter child elements, construct Parameters and store in the vector
+            for (const tinyxml2::XMLElement* ele : getElements("parameter"))
             {
-                throw AttributeException(fmt::format("Extra attribute for Command on line number {}",
-                                                     xml->GetLineNum()));
+                m_parameters.emplace_back(ele, m_id);
             }
 
-            // Loop through the child elements and add them to the map
-            // auto -> const tinyxml2::XMLElement*
-            for (auto ele = xml->FirstChildElement(); ele != nullptr; ele = ele->NextSiblingElement())
+            // Gets all of the return-value child elements, construct ReturnValue and store in the vector
+            for (const tinyxml2::XMLElement* ele : getElements("return-value"))
             {
-                elements.emplace(ele->Name(), ele);
-            }
-
-            // Loop through the parameter elements, and remove them after being processed
-            // auto -> std::pair<std::multimap<std::string, const tinyxml2::XMLElement*>::iterator,
-            //                   std::multimap<std::string, const tinyxml2::XMLElement*>::iterator>
-            auto parameter_range = elements.equal_range("parameter");
-            for (auto it = parameter_range.first; it != parameter_range.second; it = elements.erase(it))
-            {
-                m_parameters.emplace_back(it->second, m_id);
-
-            }
-
-            // Loop through the return-value elements, and remove them after being processed
-            // auto -> std::pair<std::multimap<std::string, const tinyxml2::XMLElement*>::iterator,
-            //                   std::multimap<std::string, const tinyxml2::XMLElement*>::iterator>
-            auto return_value_range = elements.equal_range("return-value");
-            for (auto it = return_value_range.first; it != return_value_range.second; it = elements.erase(it))
-            {
-                m_return_values.emplace_back(it->second);
+                m_return_values.emplace_back(ele);
             }
 
             // Ensure there is only one code element, then process the code text
-            // auto -> std::pair<std::multimap<std::string, const tinyxml2::XMLElement*>::iterator,
-            //                   std::multimap<std::string, const tinyxml2::XMLElement*>::iterator>
-            auto code_range = elements.equal_range("code");
-            if (std::distance(code_range.first, code_range.second) == 1)
+            std::vector<const tinyxml2::XMLElement*> code_elements = getElements("code");
+            if (code_elements.size() == 1)
             {
-                auto it = code_range.first;
-                const char* code_text = it->second->GetText();
-
-                if (code_text != nullptr)
-                {
-                    m_code = processCode(it->second->GetText());
-                }
-                else
-                {
-                    m_code = "";
-                }
-
-                elements.erase(it);
+                m_code = std::unique_ptr<Code>(new Code(code_elements[0]));
             }
             else
             {
                 throw ElementException("Command requires 1 code element");
             }
 
-            // If there are any extra elements in the map, throw an exception
-            if (!elements.empty())
+            // If there are any extra attributes, throw an exception
+            if (!isAttributesEmpty())
             {
-                throw ElementException(fmt::format("Extra child element for Command on line number {}",
+                throw AttributeException(fmt::format("Extra attribute for Command on line number {}",
+                                                     xml->GetLineNum()));
+            }
+
+            // If there are any extra elements, throw an exception
+            if (!isElementsEmpty())
+            {
+                throw ElementException(fmt::format("Extra element for Command on line number {}",
                                                    xml->GetLineNum()));
             }
         }
@@ -152,7 +98,7 @@ namespace rip
 
         std::string Command::getCode() const
         {
-            return m_code;
+            return m_code->getText();
         }
 
         std::string Command::callback(int num_appendages) const
@@ -179,7 +125,7 @@ namespace rip
                 rv += return_value.declare();
             }
 
-            rv += m_code;
+            rv += m_code->getText();
 
             rv += fmt::format("\tcmdMessenger.sendBindCmd(kAcknowledge, {});\n", m_id);
 
@@ -196,48 +142,6 @@ namespace rip
             }
 
             rv += "}\n";
-
-            return rv;
-        }
-
-        std::string Command::processCode(const std::string& code)
-        {
-            std::string rv = "";
-            std::list<std::string> lines;
-            std::istringstream input(code);
-
-            //Split full code string into a list of
-            for (std::string line; std::getline(input, line);)
-            {
-                lines.push_back(line);
-            }
-
-            lines.pop_front(); // Removes text on same line as code start tag <code>
-            lines.pop_back(); // Removes text on same line as code end tag </code>
-
-            // Get the number of whitespaces at the beginning of the first line of code
-            std::regex re("^(\\s+)"); // All of the whitespace starting at the beginning of the line
-            std::smatch match;
-            std::regex_search(lines.front(), match, re);
-            size_t num_whitespace_on_first_line = match.str(1).size();
-
-            for (std::string& line : lines)
-            {
-                // Get the number of whitespaces at beginning of this line of code
-                std::regex_search(line, match, re);
-                size_t num_whitespace_on_this_line = match.str(1).size();
-
-                // Select number of whitespaces to remove
-                size_t num_whitespace = (num_whitespace_on_this_line < num_whitespace_on_first_line) ?
-                                         num_whitespace_on_this_line : num_whitespace_on_first_line;
-
-                // Make a regex string to pull out the code
-                std::string reg = fmt::format("^\\s{{{num_whitespace}}}(.*?)\\s*$",
-                                              fmt::arg("num_whitespace", num_whitespace));
-                std::regex_search(line, match, std::regex(reg));
-
-                rv += "\t" + match.str(1) + "\n";
-            }
 
             return rv;
         }

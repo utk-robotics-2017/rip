@@ -5,6 +5,8 @@
 #include <vector>
 #include <memory>
 
+#include "xml_element.hpp"
+
 namespace tinyxml2
 {
     class XMLElement;
@@ -20,7 +22,7 @@ namespace rip
          * @class Argument
          * @brief
          */
-        class Argument
+        class Argument : public XmlElement
         {
         public:
 

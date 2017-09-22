@@ -3,7 +3,10 @@
 
 #include <string>
 #include <vector>
+#include <memory>
 
+#include "xml_element.hpp"
+#include "code.hpp"
 #include "parameter.hpp"
 #include "return_value.hpp"
 
@@ -20,7 +23,7 @@ namespace rip
          * @class Command
          * @brief Contains the parsed information for a single command
          */
-        class Command
+        class Command : public XmlElement
         {
         public:
 
@@ -72,20 +75,12 @@ namespace rip
             std::string callback(int num_appendages) const;
 
         private:
-            /**
-             * @brief Removes extra whitespace from the code element
-             *
-             * @param Raw string from the code element
-             * @return
-             */
-            std::string processCode(const std::string&);
-
             std::string m_id;
             std::string m_name;
             bool m_index_num;
             std::vector<Parameter> m_parameters;
             std::vector<ReturnValue> m_return_values;
-            std::string m_code;
+            std::unique_ptr<Code> m_code;
         };
     }
 }

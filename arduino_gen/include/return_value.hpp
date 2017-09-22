@@ -3,6 +3,8 @@
 
 #include <string>
 
+#include "xml_element.hpp"
+
 namespace tinyxml2
 {
     class XMLElement;
@@ -16,7 +18,7 @@ namespace rip
          * @class ReturnValue
          * @brief Container for the return value of a command's callback function
          */
-        class ReturnValue
+        class ReturnValue : public XmlElement
         {
         public:
             /**

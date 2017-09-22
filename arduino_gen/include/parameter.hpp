@@ -3,6 +3,8 @@
 
 #include <string>
 
+#include "xml_element.hpp"
+
 namespace tinyxml2
 {
     class XMLElement;
@@ -16,7 +18,7 @@ namespace rip
          * @class Parameter
          * @brief A single parameter for a command's callback function
          */
-        class Parameter
+        class Parameter : public XmlElement
         {
         public:
             /**

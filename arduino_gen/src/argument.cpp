@@ -10,23 +10,10 @@ namespace rip
 {
     namespace arduinogen
     {
-        Argument::Argument(tinyxml2::XMLElement* xml)
+        Argument::Argument(tinyxml2::XMLElement* xml) : XmlElement(xml)
         {
-            const char* name = xml->Attribute("name");
-            if(!name)
-            {
-                throw AttributeException(fmt::format("Constructor argument name missing on line number {}",
-                                                     xml->GetLineNum()));
-            }
-            m_name = name;
-
-            const char* type = xml->Attribute("type");
-            if(!type)
-            {
-                throw AttributeException(fmt::format("Constructor argument type missing on line number {}",
-                                                     xml->GetLineNum()));
-            }
-            m_type = type;
+            m_name = getAttribute("name")->Value();
+            m_type = getAttribute("type")->Value();
 
             if(m_type != "float" &&
                m_type != "int" &&
@@ -35,6 +22,20 @@ namespace rip
             {
                 throw AttributeException(fmt::format("Constructor argument unknown type on line number {}",
                                                      xml->GetLineNum()));
+            }
+
+            // If there are any extra attributes, throw an exception
+            if (!isAttributesEmpty())
+            {
+                throw AttributeException(fmt::format("Extra attribute for Argument on line number {}",
+                                                     xml->GetLineNum()));
+            }
+
+            // If there are any extra elements, throw an exception
+            if (!isElementsEmpty())
+            {
+                throw ElementException(fmt::format("Extra element for Argument on line number {}",
+                                                   xml->GetLineNum()));
             }
         }
 
