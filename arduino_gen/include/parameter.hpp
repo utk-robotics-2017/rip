@@ -18,7 +18,7 @@ namespace rip
          * @class Parameter
          * @brief A single parameter for a command's callback function
          */
-        class Parameter : public XmlElement
+        class Parameter : private XmlElement
         {
         public:
             /**

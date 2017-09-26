@@ -18,16 +18,7 @@ namespace rip
         Code::Code(const tinyxml2::XMLElement* xml)
             : XmlElement(xml)
         {
-            const char* code_text = xml->GetText();
-
-            if (code_text != nullptr)
-            {
-                m_text = processCode(code_text);
-            }
-            else
-            {
-                m_text = "";
-            }
+            m_code = processCode(getText());
 
             // If there are any extra attributes, throw an exception
             if (!isAttributesEmpty())
@@ -44,9 +35,9 @@ namespace rip
             }
         }
 
-        std::string Code::getText() const
+        std::string Code::getCode() const
         {
-            return m_text;
+            return m_code;
         }
 
         std::string Code::processCode(const std::string& code)
@@ -59,6 +50,11 @@ namespace rip
             for (std::string line; std::getline(input, line);)
             {
                 lines.push_back(line);
+            }
+
+            if (lines.size() == 0)
+            {
+                return code;
             }
 
             while (std::regex_match(lines.front().c_str(), std::regex("^\\s*$")))

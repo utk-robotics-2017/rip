@@ -98,7 +98,7 @@ namespace rip
 
         std::string Command::getCode() const
         {
-            return m_code->getText();
+            return m_code->getCode();
         }
 
         std::string Command::callback(int num_appendages) const
@@ -125,7 +125,7 @@ namespace rip
                 rv += return_value.declare();
             }
 
-            rv += m_code->getText();
+            rv += m_code->getCode();
 
             rv += fmt::format("\tcmdMessenger.sendBindCmd(kAcknowledge, {});\n", m_id);
 

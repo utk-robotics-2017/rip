@@ -16,7 +16,7 @@ namespace rip
          * @class Code
          * @brief The code section to be inserted into the arduino code
          */
-        class Code : public XmlElement
+        class Code : private XmlElement
         {
         public:
             /**
@@ -32,10 +32,10 @@ namespace rip
              */
             Code(const tinyxml2::XMLElement* xml);
 
-            std::string getText() const;
+            std::string getCode() const;
 
         private:
-            std::string m_text;
+            std::string m_code;
 
             /**
              * @brief Removes extra whitespace from the code element

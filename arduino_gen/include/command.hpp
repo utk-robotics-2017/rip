@@ -23,7 +23,7 @@ namespace rip
          * @class Command
          * @brief Contains the parsed information for a single command
          */
-        class Command : public XmlElement
+        class Command : private XmlElement
         {
         public:
 

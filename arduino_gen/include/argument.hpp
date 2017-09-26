@@ -22,7 +22,7 @@ namespace rip
          * @class Argument
          * @brief
          */
-        class Argument : public XmlElement
+        class Argument : private XmlElement
         {
         public:
 

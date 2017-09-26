@@ -18,7 +18,7 @@ namespace rip
          * @class ReturnValue
          * @brief Container for the return value of a command's callback function
          */
-        class ReturnValue : public XmlElement
+        class ReturnValue : private XmlElement
         {
         public:
             /**
