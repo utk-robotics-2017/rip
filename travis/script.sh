@@ -22,15 +22,15 @@ elif [[ $BRANCH == "pathfinder/"* ]]; then
 	./pathfinder_test
 	cd ../../core/navigation/pathfinder
 elif [[ $BRANCH == "roboclaw/"* ]]; then
-	cd roboclaw
+	cd utilities/roboclaw
 	./roboclaw_test
 	cd ../../utilities/roboclaw
 elif [[ $BRANCH == "cmd_messenger/"* ]]; then
-	cd cmd_messenger
+	cd utilities/cmd_messenger
 	./cmd_messenger_test
 	cd ../../utilities/cmd_messenger
 elif [[ $BRANCH == "pathman/"* ]]; then
-	cd pathman
+	cd utilities/pathman
 	./pathman_test
 	cd ../../utilities/pathman
 elif [[ $BRANCH == "navx/"* ]]; then
