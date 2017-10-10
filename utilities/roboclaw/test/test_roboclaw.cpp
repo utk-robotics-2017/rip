@@ -1,4 +1,4 @@
-#include <mock_roboclaw.hpp.hpp>
+#include "mock_roboclaw.hpp"
 #include <exceptions.hpp>
 
 #include <memory>
@@ -11,33 +11,33 @@ namespace rip
     {
         namespace roboclaw
         {
-            using Roboclaw = mocks::MockRoboclaw;
+            //using Roboclaw = mocks::MockRoboclaw;
 
             namespace tests
             {
-                TEST(Roboclaw, loadJson)
+                TEST(RoboclawCore, loadJson)
                 {
-
+                    FAIL() << "TODO: Implement Test";
                 }
 
-                TEST(Roboclaw, DriveM1Forward)
+                TEST(RoboclawCore, DriveM1Forward)
                 {
-
+                    FAIL() << "TODO: Implement Test";
                 }
 
-                TEST(Roboclaw, DriveM1Backward)
+                TEST(RoboclawCore, DriveM1Backward)
                 {
-
+                    FAIL() << "TODO: Implement Test";
                 }
 
-                TEST(Roboclaw, DriveM2Forward)
+                TEST(RoboclawCore, DriveM2Forward)
                 {
-
+                    FAIL() << "TODO: Implement Test";
                 }
 
-                TEST(Roboclaw, DriveM2Backward)
+                TEST(RoboclawCore, DriveM2Backward)
                 {
-
+                    FAIL() << "TODO: Implement Test";
                 }
             }
         }

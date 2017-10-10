@@ -8,7 +8,7 @@ if(ENABLE_TESTING)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage")
 endif()
 target_include_directories(${PROJECT_NAME} PUBLIC include)
-target_link_libraries(${PROJECT_NAME} json serial units fmt)
+target_link_libraries(${PROJECT_NAME} json serial units fmt exceptions_base)
 
 if(ENABLE_TESTING)
 	# Get test source files and test data files

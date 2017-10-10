@@ -1,6 +1,5 @@
 #include "mock_roboclaw.hpp"
 
-
 namespace rip
 {
     namespace utilities

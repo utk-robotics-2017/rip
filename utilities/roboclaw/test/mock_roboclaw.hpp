@@ -11,16 +11,20 @@ namespace rip
         {
             namespace mocks
             {
-                class MockRoboclaw
+                class MockRoboclaw : public Roboclaw
                 {
                 public:
-                    size_t MockRoboclaw::write(const std::string& message) override;
+                    size_t write(const std::string& message);
 
-                    std::string MockRoboclaw::getLastSent();
+                    std::string getLastSent();
 
-                    void MockRoboclaw::setResponse(const std::string& response);
+                    void setResponse(const std::string& response);
 
-                    std::string MockRoboclaw::read(size_t n) override;
+                    std::string read(size_t n);
+
+                private:
+                    std::string m_last_sent;
+                    std::string m_response;
                 };
             }
         }
