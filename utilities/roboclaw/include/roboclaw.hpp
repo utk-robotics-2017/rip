@@ -157,8 +157,8 @@ namespace rip
                  * @brief Constructor
                  * @param json config
                  */
-                Roboclaw(nlohmann::json config);
-
+                Roboclaw(nlohmann::json config, bool test);
+                void testConfig(nlohmann::json testcfg);
 //////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////// PWM /////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////
@@ -704,7 +704,7 @@ namespace rip
                  * @return N byte response
                  */
                 std::vector<uint8_t> readN(uint8_t n, Command cmd);
-
+                nlohmann::json m_data;
                 uint16_t m_crc;
                 units::Time m_timeout;
                 uint8_t m_address;

@@ -19,7 +19,7 @@
  */
 
 #include "roboclaw.hpp"
-
+#include <typeinfo>
 #include <fmt/format.h>
 namespace rip
 {
@@ -27,13 +27,16 @@ namespace rip
     {
         namespace roboclaw
         {
-            Roboclaw::Roboclaw(nlohmann::json config)
+            Roboclaw::Roboclaw(nlohmann::json config, bool test)
             {
                 // todo(Andrew): check config for all values
-                m_address = config["address"];
-                m_timeout = config["timeout"];
-                m_ticks_per_rev = config["ticks_per_rev"];
-                m_wheel_radius = config["wheel_radius"];
+                  if(test) {
+                    testConfig(config);
+                  }
+                  m_address = config["address"].get<uint8_t>();
+                  m_timeout = config["timeout"];
+                  m_ticks_per_rev = config["ticks_per_rev"];
+                  m_wheel_radius = config["wheel_radius"];
             }
 
             //////////////////////////////////////////////////////////////////////////////////////////////
@@ -701,6 +704,57 @@ namespace rip
                 }
 
                 throw ReadFailure();
+            }
+            void Roboclaw::testConfig(nlohmann::json testcfg)
+            {
+              std::string vars[] = {"address", "timeout", "ticks_per_rev", "wheel_radius"};
+              if(testcfg.empty()) {
+                throw BadJson("JSON file was null");
+              }
+              for(int i=0; i<4; i++) {
+                if (testcfg.find(vars[i]) == testcfg.end()) {
+                  throw BadJson(vars[i] + " was not found within json cfg.");
+              }}
+              if(testcfg.size()!= 4) {
+                throw BadJson("Incorrect size json, size: " + std::to_string(testcfg.size()));
+              }
+
+              if((testcfg["address"] > 255) || (testcfg["address"] < 0))
+              {
+                throw OutOfRange("Address should be between 0 and 255");
+              }
+              for(int i=0; i<4; i++)
+              {
+                if(testcfg[vars[i]] < 0.0)
+                {
+                  throw OutOfRange(vars[i] + " should be a positive value");
+                }
+              }
+
+              try {
+                m_address = testcfg["address"].get<uint8_t>();
+                m_timeout = testcfg["timeout"];
+                m_ticks_per_rev = testcfg["ticks_per_rev"];
+                m_wheel_radius = testcfg["wheel_radius"];
+              }
+              catch(...) {
+                throw BadJson("Failed to set 1 or more values");
+              }
+              if(!(typeid(m_address)==typeid(uint8_t))){
+                throw BadJson("m_address not hex");
+              }
+              if(!(typeid(m_timeout)==typeid(units::Time))){
+                throw BadJson("m_timeout not double");
+              }
+              if(!(typeid(m_ticks_per_rev)==typeid(double)))
+              {
+                throw BadJson("ticks per rev not double");
+              }
+              if(!(typeid(m_wheel_radius)==typeid(units::Distance)))
+              {
+                throw BadJson("wheel radius not double");
+              }
+              std::cout << "PASS" << std::endl;
             }
         }
     }
