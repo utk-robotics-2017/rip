@@ -19,7 +19,6 @@
  */
 
 #include "roboclaw.hpp"
-#include <typeinfo>
 #include <fmt/format.h>
 namespace rip
 {
@@ -31,12 +30,14 @@ namespace rip
             {
                 // todo(Andrew): check config for all values
                   if(test) {
-                    testConfig(config);
+                    validateConfig(config);
                   }
+                  else {
                   m_address = config["address"].get<uint8_t>();
                   m_timeout = config["timeout"];
                   m_ticks_per_rev = config["ticks_per_rev"];
                   m_wheel_radius = config["wheel_radius"];
+                }
             }
 
             //////////////////////////////////////////////////////////////////////////////////////////////
@@ -705,11 +706,11 @@ namespace rip
 
                 throw ReadFailure();
             }
-            void Roboclaw::testConfig(nlohmann::json testcfg)
+            void Roboclaw::validateConfig(nlohmann::json testcfg)
             {
               std::string vars[] = {"address", "timeout", "ticks_per_rev", "wheel_radius"};
               if(testcfg.empty()) {
-                throw BadJson("JSON file was null");
+                throw BadJson("JSON file was empty");
               }
               for(int i=0; i<4; i++) {
                 if (testcfg.find(vars[i]) == testcfg.end()) {
@@ -740,21 +741,6 @@ namespace rip
               catch(...) {
                 throw BadJson("Failed to set 1 or more values");
               }
-              if(!(typeid(m_address)==typeid(uint8_t))){
-                throw BadJson("m_address not hex");
-              }
-              if(!(typeid(m_timeout)==typeid(units::Time))){
-                throw BadJson("m_timeout not double");
-              }
-              if(!(typeid(m_ticks_per_rev)==typeid(double)))
-              {
-                throw BadJson("ticks per rev not double");
-              }
-              if(!(typeid(m_wheel_radius)==typeid(units::Distance)))
-              {
-                throw BadJson("wheel radius not double");
-              }
-              std::cout << "PASS" << std::endl;
             }
         }
     }
