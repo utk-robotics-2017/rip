@@ -1,0 +1,9 @@
+<loop>
+    <parameter name="Why would you ever" replacer="use two codes here?">
+    <code>
+        //The valid code block
+    </code>
+    <code>
+        //The code block that shouldn't exist
+    </code>
+</loop>
