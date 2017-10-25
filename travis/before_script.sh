@@ -27,7 +27,7 @@ elif [[ $BRANCH == "communication/"* ]]; then
 elif [[ $BRANCH == "appendages/"* ]]; then
 	cmake -DAPPENDAGES:BOOL=ON -DENABLE_TESTING:BOOL=ON ..
 elif [[ $BRANCH == "pins/"* ]]; then
-	cmake -DAPPENDAGES:BOOL=ON -DENABLE_TESTING:BOOL=ON ..
+	cmake -DPINS:BOOL=ON -DENABLE_TESTING:BOOL=ON ..
 else
 	cmake -DALL:BOOL=ON -DENABLE_TESTING:BOOL=ON ..
 fi
