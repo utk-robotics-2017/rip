@@ -1,5 +1,5 @@
 <loop>
-    <parameter name="Too many" replacer="Elements">
+    <parameter name="TooMany" replacer="Elements">
     <code>
         //Code goes here
     </code>

@@ -1,0 +1,7 @@
+<loop>
+    <parameter name="OriginalName" replacer="NewName">
+    <code>
+        $OriginalName$
+        //The rest of the code doesn't matter
+    </code>
+</loop>
