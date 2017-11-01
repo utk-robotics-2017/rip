@@ -36,6 +36,12 @@ namespace rip
          * @brief An exception for when there is an error opening, reading, or writing a file.
          */
         NEW_EX(FileIoException);
+
+        /**
+         * @class PatternNotFoundException
+         * @brief An exception for when a regex pattern was not found.
+         */
+        NEW_EX(PatternNotFoundException);
     }
 }
 

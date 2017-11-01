@@ -1,0 +1,8 @@
+<setup>
+    <parameter name="alpha" replacer="bravo" />
+    <parameter name="gamma" replacer="delta" />
+    <code>
+        {{alpha}}
+        {{gamma}}
+    </code>
+</setup>
