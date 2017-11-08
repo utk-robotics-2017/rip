@@ -1,6 +1,6 @@
 <loop>
-    <parameter name="Param1" replacer="IsValid">
-    <parameter name="Param2" replacer="IsValid">
+    <parameter name="Param1" replacer="IsValid" />
+    <parameter name="Param2" replacer="IsValid" />
     <code>
         //Code goes here
     </code>

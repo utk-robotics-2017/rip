@@ -1,5 +1,5 @@
 <setup>
-    <parameter name="alpha" replacer="bravo" />
+    <parameter name="alpha" />
     <code>
         {{gamma}}
     </code>

@@ -36,11 +36,8 @@ namespace rip
 
             std::string getName() const;
 
-            std::string getReplacer() const;
-
         private:
             std::string m_name;
-            std::string m_replacer;
         };
     }
 }

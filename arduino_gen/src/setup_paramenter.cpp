@@ -15,7 +15,6 @@ namespace rip
             : XmlElement(xml)
         {
             m_name = getAttribute("name")->Value();
-            m_replacer = getAttribute("replacer")->Value();
 
             // If there are any extra attributes, throw an exception
             if (!isAttributesEmpty())
@@ -35,11 +34,6 @@ namespace rip
         std::string SetupParameter::getName() const
         {
             return m_name;
-        }
-
-        std::string SetupParameter::getReplacer() const
-        {
-            return m_replacer;
         }
     }
 }

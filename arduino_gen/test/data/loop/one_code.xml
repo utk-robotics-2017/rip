@@ -1,5 +1,5 @@
 <loop>
-    <parameter name="GoodJob" parameter="YouKnowToIncludeCode">
+    <parameter name="GoodJob" parameter="YouKnowToIncludeCode" />
     <code>
         //Code Goes Here
     </code>
