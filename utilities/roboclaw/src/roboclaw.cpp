@@ -20,6 +20,7 @@
 
 #include "roboclaw.hpp"
 #include <fmt/format.h>
+
 namespace rip
 {
     namespace utilities
@@ -29,7 +30,8 @@ namespace rip
             Roboclaw::Roboclaw(nlohmann::json config, bool test)
             {
                 // todo(Andrew): check config for all values
-                  if(test) {
+                  Roboclaw::test = test;
+                  if(Roboclaw::test) {
                     validateConfig(config);
                   }
                   else {
@@ -585,6 +587,20 @@ namespace rip
                 return rv;
             }
 
+            units::Current Roboclaw::readCurrent(Motor motor)
+            {
+                std::array<units::Current, 2> rv = Roboclaw::readCurrents();
+                switch (motor)
+                {
+                    case Motor::kM1:
+                        return rv[0];
+                        break;
+                    case Motor::kM2:
+                        return rv[1];
+                        break;
+                }
+            }
+
             void Roboclaw::setMaxCurrent(Motor motor, units::Current current)
             {
                 uint32_t value = current.to(units::A) * 100; // Convert to 10 mA
@@ -630,6 +646,10 @@ namespace rip
             {
                 m_crc = 0;
             }
+            uint8_t Roboclaw::returnFF()
+            {
+              return 0xFF;
+            }
 
             void Roboclaw::crcUpdate(uint8_t data)
             {
@@ -669,6 +689,7 @@ namespace rip
                     {
                         crcUpdate(command[i]);
                     }
+
                     write(command);
 
                     std::vector<uint8_t> response;
@@ -731,7 +752,10 @@ namespace rip
                   throw OutOfRange(vars[i] + " should be a positive value");
                 }
               }
-
+              if(testcfg["wheel_radius"] == 0)
+              {
+                throw OutOfRange("wheel radius cannot = 0");
+              }
               try {
                 m_address = testcfg["address"].get<uint8_t>();
                 m_timeout = testcfg["timeout"];

@@ -34,6 +34,7 @@
 #include "pid_parameters.hpp"
 #include "config.hpp"
 
+
 namespace rip
 {
     namespace utilities
@@ -588,6 +589,10 @@ namespace rip
                  * @return
                  */
                 Status readStatus();
+                /*
+                Returns 0xFF for crc check. Overrided when using mock to bypass CRC check.
+                */
+                virtual uint8_t returnFF();
 
                 /**
                  * @brief Set the config for the roboclaw
@@ -652,7 +657,7 @@ namespace rip
                         command.push_back(static_cast<uint8_t>(crc >> 8));
                         command.push_back(static_cast<uint8_t>(crc));
                         write(command);
-                        if (static_cast<uint8_t>(read()[0]) == 0xFF)
+                        if (static_cast<uint8_t>(read()[0]) == returnFF())
                         {
                             return;
                         }
@@ -703,12 +708,13 @@ namespace rip
                  *
                  * @return N byte response
                  */
-                std::vector<uint8_t> readN(uint8_t n, Command cmd);
+                virtual std::vector<uint8_t> readN(uint8_t n, Command cmd);
                 uint16_t m_crc;
                 units::Time m_timeout;
                 uint8_t m_address;
                 double m_ticks_per_rev;
                 units::Distance m_wheel_radius;
+                bool test;
             }; // class Roboclaw
 
             inline uint8_t operator >>(const Roboclaw::Command& cmd, size_t shift)

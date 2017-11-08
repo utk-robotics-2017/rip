@@ -50,11 +50,15 @@ namespace rip
              * @brief Unknown combination of motor dynamic parameters
              */
             NEW_EX(UnknownDType);
-
-            NEW_EX(BadJson);
             /**
              * Json passed to Roboclaw constructor is null or has bad data.
              */
+            NEW_EX(BadJson);
+            /*
+            Exception due to a communication failure, device may be offline, o
+            or not connected via serial connections, or powered off.
+            */
+
         }
     }
 }
