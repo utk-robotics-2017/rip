@@ -14,16 +14,17 @@ namespace rip
                 kHigh = 1
             };
 
-            enum class DigitalPinDirection
+
+            enum class DigitalPinMode
             {
-                kOut,
-                kIn
+                kOutput,
+                kInput
             };
 
             /**
              *
              */
-            void setPinMode(uint8_t pin, DigitalPinDirection direction);
+            void setPinMode(uint8_t pin, DigitalPinMode mode);
 
             /**
              * [digitalWrite description]

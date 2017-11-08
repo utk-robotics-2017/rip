@@ -29,7 +29,7 @@ namespace rip
             /**
              * Constructor
              */
-            I2C(const std::string& device, int address)
+            I2C(const std::string& device, int address);
 
             /**
              * Destructor
@@ -98,7 +98,7 @@ namespace rip
             uint8_t m_fd;
             uint8_t m_slave_address;
 
-            static constexpr kDefaultDevice = "/dev/i2c-1";
+            const std::string kDefaultDevice = "/dev/i2c-1";
         };
     }
 }
