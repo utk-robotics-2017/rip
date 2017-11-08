@@ -14,6 +14,7 @@ add_subdirectory(serial)
 
 # custom
 message("Building custom utilities")
+add_subdirectory(exceptions_base)
 add_subdirectory(pathman)
 add_subdirectory(units)
 add_subdirectory(googletest_rip_macros)
