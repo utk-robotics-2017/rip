@@ -1,6 +1,8 @@
 #ifndef AHRS_HPP
 #define AHRS_HPP
 
+#include <units.h>
+
 namespace rip
 {
     namespace navigation
@@ -103,6 +105,7 @@ namespace rip
 
                 int getActualUpdateRate();
                 int getRequestedUpdateRate();
+
             private:
                 volatile float m_yaw;
                 volatile float m_pitch;

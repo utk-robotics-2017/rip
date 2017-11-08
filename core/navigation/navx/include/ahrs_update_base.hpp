@@ -30,7 +30,7 @@ namespace rip
                 uint8_t op_status;
                 uint8_t sensor_status;
                 uint8_t cal_status;
-                uint8_t selftest_status; hr
+                uint8_t selftest_status;
             };
         } // navx
     } // navigation
