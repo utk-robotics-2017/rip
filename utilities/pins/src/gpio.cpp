@@ -8,7 +8,7 @@ namespace rip
         {
             void setPinMode(uint8_t pin, DigitalPinMode mode)
             {
-                std::ofstream file("/sys/clas/gpio/export");
+                std::ofstream file("/sys/class/gpio/export");
                 if (file < 0)
                 {
                     throw PinModeError();
@@ -61,7 +61,7 @@ namespace rip
                 {
                     throw DigitalWriteError();
                 }
-                return static_cast<DigitlaPinValue>(value[0] - '0');
+                return static_cast<DigitalPinValue>(value[0] - '0');
             }
         }
     }
