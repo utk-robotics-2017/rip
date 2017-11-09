@@ -82,6 +82,10 @@ namespace rip
                 {
                     throw OutOfRange(fmt::format("Maximum main battery voltage of {} is out of the 6V-34V range", max()));
                 }
+                if(min()>=max())
+                {
+                    throw OutOfRange(fmt::format("Minimum battery voltage of {} should be less than the maximum battery voltage of {}.", min(), max()));
+                }
 
                 uint16_t min_v = min() * 10;
                 uint16_t max_v = max() * 10;
@@ -91,7 +95,7 @@ namespace rip
             units::Voltage Roboclaw::readMainBatteryVoltage()
             {
                 std::vector<uint8_t> response = readN(2, Command::kGetMBatt);
-                uint16_t v = static_cast<uint16_t>(response[0]) << 8 + response[1];
+                uint16_t v = static_cast<uint16_t>((response[0]) << 8) + response[1];
                 return static_cast<double>(v) / 10.0 * units::V;
             }
 
@@ -124,7 +128,10 @@ namespace rip
                 {
                     throw OutOfRange(fmt::format("Maximum logic battery voltage of {} is out of the 6V-34V range", max()));
                 }
-
+                if(min()>=max())
+                {
+                    throw OutOfRange(fmt::format("Minimum battery voltage of {} should be less than the maximum battery voltage of {}.", min(), max()));
+                }
                 uint16_t min_v = min() * 10;
                 uint16_t max_v = max() * 10;
                 writeN(Command::kSetLogicVoltages, min_v, max_v);
@@ -133,7 +140,7 @@ namespace rip
             units::Voltage Roboclaw::readLogicBatteryVoltage()
             {
                 std::vector<uint8_t> response = readN(2, Command::kGetLBatt);
-                uint16_t v = static_cast<uint16_t>(response[0]) << 8 + response[1];
+                uint16_t v = static_cast<uint16_t>((response[0]) << 8) + response[1];
                 return static_cast<double>(v) / 10.0 * units::V;
             }
 
