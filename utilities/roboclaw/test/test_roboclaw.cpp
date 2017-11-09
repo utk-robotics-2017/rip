@@ -69,7 +69,7 @@ namespace rip
                     //CRC check failure throws command failure
                     testClaw->setBytes(55);
                     ASSERT_THROW(testClaw->drive(Roboclaw::Motor::kM1, Roboclaw::kFullSpeedForward), CommandFailure);
-                    testClaw->setBytes();
+                    testClaw->setBytes(0);
                     //sends correct message: addr, 32 or 33, duty, CRC
                     ASSERT_EQ(testClaw->getLastCmd()[0],0x80);
                     ASSERT_EQ(testClaw->getLastCmd()[1],32);
@@ -78,6 +78,7 @@ namespace rip
                     ASSERT_EQ(testClaw->getLastCmd()[3], 0xff);
                     //final test: given proper conditions, does not throw an exception
                     //correct size of byte array
+                    ASSERT_EQ(testClaw->getLastCmd().size(), 6);
                     testClaw->drive(Roboclaw::Motor::kM1, Roboclaw::kFullSpeedForward);
                     ASSERT_NO_THROW(testClaw->drive(Roboclaw::Motor::kM1, Roboclaw::kFullSpeedForward));
                 }
@@ -88,8 +89,8 @@ namespace rip
                     std::vector<uint8_t> response;
                     testClaw->setBytes(55);
                     ASSERT_THROW(testClaw->drive(Roboclaw::Motor::kM1, Roboclaw::kFullSpeedBackward), CommandFailure);
-                    testClaw->setBytes();
-                    testClaw->printResponse();
+                    testClaw->setBytes(0);
+
                     //sends correct message: addr, 32 or 33, duty, CRC
                     ASSERT_EQ(testClaw->getLastCmd()[0],0x80);
                     ASSERT_EQ(testClaw->getLastCmd()[1],32);
@@ -97,6 +98,7 @@ namespace rip
                     ASSERT_EQ(testClaw->getLastCmd()[2],0x80);
                     ASSERT_EQ(testClaw->getLastCmd()[3], 0x1);
                     //correct size of byte array
+                    ASSERT_EQ(testClaw->getLastCmd().size(), 6);
                     //final test: given proper conditions, does not throw an exception
                     ASSERT_NO_THROW(testClaw->drive(Roboclaw::Motor::kM1, Roboclaw::kFullSpeedBackward));
                 }
@@ -108,8 +110,8 @@ namespace rip
 
                     testClaw->setBytes(55);
                     ASSERT_THROW(testClaw->drive(Roboclaw::Motor::kM2, Roboclaw::kFullSpeedForward), CommandFailure);
-                    testClaw->setBytes();
-                    testClaw->printResponse();
+                    testClaw->setBytes(0);
+
                     //sends correct message: addr, 32 or 33, duty, CRC
                     ASSERT_EQ(testClaw->getLastCmd()[0],0x80);
                     ASSERT_EQ(testClaw->getLastCmd()[1],33);
@@ -117,8 +119,9 @@ namespace rip
                     ASSERT_EQ(testClaw->getLastCmd()[2],0x7f);
                     ASSERT_EQ(testClaw->getLastCmd()[3], 0xff);
                     //correct size of byte array
+                    ASSERT_EQ(testClaw->getLastCmd().size(), 6);
                     //final test: given proper conditions, does not throw an exception
-                    //ASSERT_NO_THROW(testClaw->drive(Roboclaw::Motor::kM2, Roboclaw::kFullSpeedForward));
+                    ASSERT_NO_THROW(testClaw->drive(Roboclaw::Motor::kM2, Roboclaw::kFullSpeedForward));
                 }
 
                 TEST(RoboclawCore, DriveM2Backward)
@@ -128,17 +131,18 @@ namespace rip
 
                     testClaw->setBytes(55);
                     ASSERT_THROW(testClaw->drive(Roboclaw::Motor::kM1, Roboclaw::kFullSpeedBackward), CommandFailure);
-                    testClaw->setBytes();
-                    testClaw->printResponse();
+                    testClaw->setBytes(0);
+
                     //sends correct message: addr, 32 or 33, duty, CRC
                     ASSERT_EQ(testClaw->getLastCmd()[0],0x80);
-                    ASSERT_EQ(testClaw->getLastCmd()[1],33);
+                    ASSERT_EQ(testClaw->getLastCmd()[1],32);
                     //concatenating elements 2 and 3 should give duty
                     ASSERT_EQ(testClaw->getLastCmd()[2],0x80);
                     ASSERT_EQ(testClaw->getLastCmd()[3], 0x1);
                     //correct size of byte array
+                    ASSERT_EQ(testClaw->getLastCmd().size(), 6);
                     //final test: given proper conditions, does not throw an exception
-                    //ASSERT_NO_THROW(testClaw->drive(Roboclaw::Motor::kM2, Roboclaw::kFullSpeedBackward));
+                    ASSERT_NO_THROW(testClaw->drive(Roboclaw::Motor::kM2, Roboclaw::kFullSpeedBackward));
                 }
                 TEST(RoboclawCore, DriveForward)
                 {
@@ -147,8 +151,8 @@ namespace rip
 
                     testClaw->setBytes(55);
                     ASSERT_THROW(testClaw->drive(Roboclaw::kFullSpeedForward), CommandFailure);
-                    testClaw->setBytes();
-                    testClaw->printResponse();
+                    testClaw->setBytes(0);
+
                     //sends correct message: addr, 34, duty, CRC
                     ASSERT_EQ(testClaw->getLastCmd()[0],0x80);
                     ASSERT_EQ(testClaw->getLastCmd()[1],34);
@@ -158,8 +162,9 @@ namespace rip
                     ASSERT_EQ(testClaw->getLastCmd()[4],0x7f);
                     ASSERT_EQ(testClaw->getLastCmd()[5], 0xff);
                     //correct size of byte array
+                    ASSERT_EQ(testClaw->getLastCmd().size(), 8);
                     //final test: given proper conditions, does not throw an exception
-                    //ASSERT_NO_THROW(testClaw->drive(Roboclaw::kFullSpeedForward));
+                    ASSERT_NO_THROW(testClaw->drive(Roboclaw::kFullSpeedForward));
                 }
                 TEST(RoboclawCore, DriveBackward)
                 {
@@ -168,8 +173,8 @@ namespace rip
 
                     testClaw->setBytes(55);
                     ASSERT_THROW(testClaw->drive(Roboclaw::kFullSpeedBackward), CommandFailure);
-                    testClaw->setBytes();
-                    testClaw->printResponse();
+                    testClaw->setBytes(0);
+
                     //sends correct message: addr, 34, duty, CRC
                     ASSERT_EQ(testClaw->getLastCmd()[0],0x80);
                     ASSERT_EQ(testClaw->getLastCmd()[1],34);
@@ -179,57 +184,94 @@ namespace rip
                     ASSERT_EQ(testClaw->getLastCmd()[4],0x80);
                     ASSERT_EQ(testClaw->getLastCmd()[5], 0x1);
                     //correct size of byte array
+                    ASSERT_EQ(testClaw->getLastCmd().size(), 8);
                     //final test: given proper conditions, does not throw an exception
-                    //ASSERT_NO_THROW(testClaw->drive(Roboclaw::kFullSpeedBackward));
+                    ASSERT_NO_THROW(testClaw->drive(Roboclaw::kFullSpeedBackward));
                 }
-                TEST(RoboclawCore, BatteryTests)
+                TEST(RoboclawCore, Battery)
                 {
-                    FAIL() << "Complete test";
+                    /*
+                    Note: Roboclaw treats numbers for voltage in deciVolts, since protocol
+                    does not use floats. Current responses are increments of 10 mA.
+                    */
                     std::shared_ptr<Roboclaw> testClaw(new Roboclaw);
-                    std::vector<uint8_t> response={8,24, 0xFF};
+                    std::vector<uint8_t> response={0,80};
                     units::Voltage v;
+                    units::Current a;
                     std::array<units::Voltage, 2> rv;
+                    testClaw->setBytes(0);
                     //voltage out of range
                     ASSERT_THROW(std::make_shared<Roboclaw>(j)->setLogicVoltages(-3 * units::V,8 * units::V), OutOfRange);
                     ASSERT_THROW(std::make_shared<Roboclaw>(j)->setLogicVoltages(6, 300), OutOfRange);
                     ASSERT_THROW(std::make_shared<Roboclaw>(j)->setMainVoltages(-3,8), OutOfRange);
                     ASSERT_THROW(std::make_shared<Roboclaw>(j)->setMainVoltages(6, 300), OutOfRange);
                     //min voltage should be less than max voltage
+                    ASSERT_THROW(std::make_shared<Roboclaw>(j)->setMainVoltages(18, 6), OutOfRange);
 
                     //set voltage, check to see if that is actual voltage
+                    //verify proper command transmission
                     testClaw->setLogicVoltages(8*units::V, 24*units::V);
+                    ASSERT_EQ(testClaw->getLastCmd()[0],0x80);
+                    ASSERT_EQ(testClaw->getLastCmd()[1],58);
+                    ASSERT_DOUBLE_EQ(static_cast<uint16_t>((testClaw->getLastCmd()[2] << 8) + testClaw->getLastCmd()[3]), 80.0);
+                    ASSERT_DOUBLE_EQ(static_cast<uint16_t>((testClaw->getLastCmd()[4] << 8) + testClaw->getLastCmd()[5]), 240.0);
                     testClaw->setcResponse(response);
+                    //initial voltage should be set to minimum voltage
                     v = testClaw->readLogicBatteryVoltage();
                     EXPECT_DOUBLE_EQ(v(), 8.0);
-                    testClaw->setMainVoltages(8, 24);
+                    //verify proper command transmission
+                    testClaw->setMainVoltages(8*units::V, 24*units::V);
+                    ASSERT_EQ(testClaw->getLastCmd()[0],0x80);
+                    ASSERT_EQ(testClaw->getLastCmd()[1],57);
+                    ASSERT_DOUBLE_EQ(static_cast<uint16_t>((testClaw->getLastCmd()[2] << 8) + testClaw->getLastCmd()[3]), 80.0);
+                    ASSERT_DOUBLE_EQ(static_cast<uint16_t>((testClaw->getLastCmd()[4] << 8) + testClaw->getLastCmd()[5]), 240.0);
+
+                    response={0,80,0,240};
+                    testClaw->setcResponse(response);
                     rv=testClaw->readMinMaxMainVoltages();
                     EXPECT_DOUBLE_EQ(rv[0](), 8.0);
                     EXPECT_DOUBLE_EQ(rv[1](), 24.0);
+                    v=testClaw->readMainBatteryVoltage();
 
                     //readCurrent returns diff. than actual
+                    //verify proper command transmission
+                    /*
+                    Send: [Address, 134, MaxCurrent(4 bytes), 0, 0, 0, 0, CRC(2 bytes)]
+                    */
                     testClaw->setMaxCurrent(Roboclaw::Motor::kM1, 5*units::A);
+                    ASSERT_EQ(testClaw->getLastCmd()[0],0x80);
+                    ASSERT_EQ(testClaw->getLastCmd()[1],133);
+                    ASSERT_DOUBLE_EQ(static_cast<uint32_t>((testClaw->getLastCmd()[2] << 8*3) + (testClaw->getLastCmd()[3] << 8*2) + (testClaw->getLastCmd()[4] << 8) + testClaw->getLastCmd()[5]), 500.0);
+                    //min current should always be 0
+                    ASSERT_DOUBLE_EQ(static_cast<uint32_t>((testClaw->getLastCmd()[6] << 8*3) + (testClaw->getLastCmd()[7] << 8*2) + (testClaw->getLastCmd()[8] << 8) + testClaw->getLastCmd()[9]), 0.0);
+                    //Receive: [MaxCurrent(4 bytes), MinCurrent(4 bytes), CRC(2 bytes)]
+                    response={0,0,1, 0xF4};
+                    testClaw->setcResponse(response);
                     ASSERT_LE(testClaw->readCurrent(Roboclaw::Motor::kM1), 5*units::A);
                     ASSERT_EQ(testClaw->readMaxCurrent(Roboclaw::Motor::kM1),5*units::A);
+                    ASSERT_EQ(testClaw->readCurrent(Roboclaw::Motor::kM1),5*units::A);
+                    ASSERT_EQ(testClaw->readCurrents()[0],5*units::A);
 
                 }
-                TEST(RoboclawCore, StatusTests)
+                TEST(RoboclawCore, Status)
                 {
                     std::shared_ptr<Roboclaw> testClaw(new Roboclaw);
                     std::vector<uint8_t> response;
-
+                    testClaw->setBytes(0);
 
                     //readstatus tests
 
                     FAIL() << "TODO: Implement Test";
                 }
-                TEST(RoboclawCore, Encoders)
+                TEST(RoboclawCore, Encoder)
                 {
-                    FAIL() << "Complete test";
+                    FAIL() << "TODO: Complete Test";
                     std::shared_ptr<Roboclaw> testClaw(new Roboclaw);
                     std::vector<uint8_t> response;
                     units::Velocity v;
                     units::Distance d;
                     d=testClaw->readEncoder(Roboclaw::Motor::kM1);
+                    testClaw->setBytes(0);
                     //encoder velocity = 0 when not moving
                     v=testClaw->readEncoderVelocity(Roboclaw::Motor::kM1);
                     EXPECT_DOUBLE_EQ(d(), 0.0);
@@ -239,6 +281,20 @@ namespace rip
                     testClaw->setEncoder(Roboclaw::Motor::kM1, 1.0);
                     EXPECT_DOUBLE_EQ(d(), 1.0);
                     testClaw->resetEncoders();
+                }
+                TEST(RoboclawCore, Dynamics)
+                {
+                    FAIL() << "TODO: Implement Test";
+                    std::shared_ptr<Roboclaw> testClaw(new Roboclaw);
+                    std::vector<uint8_t> response;
+                    testClaw->setBytes(0);
+                }
+                TEST(RoboclawCore, PID)
+                {
+                    FAIL() << "TODO: Implement Test";
+                    std::shared_ptr<Roboclaw> testClaw(new Roboclaw);
+                    std::vector<uint8_t> response;
+                    testClaw->setBytes(0);
                 }
             }
         }

@@ -84,7 +84,7 @@ namespace rip
                 }
                 if(min()>=max())
                 {
-                    throw OutOfRange(fmt::format("Minimum battery voltage of {} should be less than the maximum battery voltage of {}.", min(), max()));
+                    throw OutOfRange(fmt::format("Minimum main battery voltage of {} should be less than the maximum main battery voltage of {}.", min(), max()));
                 }
 
                 uint16_t min_v = min() * 10;
@@ -95,7 +95,7 @@ namespace rip
             units::Voltage Roboclaw::readMainBatteryVoltage()
             {
                 std::vector<uint8_t> response = readN(2, Command::kGetMBatt);
-                uint16_t v = static_cast<uint16_t>((response[0]) << 8) + response[1];
+                uint16_t v = static_cast<uint16_t>((response[0] << 8) + response[1]);
                 return static_cast<double>(v) / 10.0 * units::V;
             }
 
@@ -105,8 +105,8 @@ namespace rip
                 std::vector<uint8_t> response = readN(4, Command::kGetMinMaxMainVoltages);
                 for (uint8_t i = 0; i < 2; i++)
                 {
-                    rv[0] += static_cast<double>(static_cast<uint16_t>(response[2 + i]) << (8 * (1 - i)));
-                    rv[1] += static_cast<double>(static_cast<uint16_t>(response[i]) << (8 * (1 - i)));
+                    rv[1] += static_cast<double>(static_cast<uint16_t>(response[2 + i]) << (8 * (1 - i)));
+                    rv[0] += static_cast<double>(static_cast<uint16_t>(response[i]) << (8 * (1 - i)));
                 }
                 rv[0] = rv[0]() / 10.0 * units::V;
                 rv[1] = rv[1]() / 10.0 * units::V;
@@ -130,7 +130,7 @@ namespace rip
                 }
                 if(min()>=max())
                 {
-                    throw OutOfRange(fmt::format("Minimum battery voltage of {} should be less than the maximum battery voltage of {}.", min(), max()));
+                    throw OutOfRange(fmt::format("Minimum logic battery voltage of {} should be less than the maximum logic battery voltage of {}.", min(), max()));
                 }
                 uint16_t min_v = min() * 10;
                 uint16_t max_v = max() * 10;
@@ -140,7 +140,7 @@ namespace rip
             units::Voltage Roboclaw::readLogicBatteryVoltage()
             {
                 std::vector<uint8_t> response = readN(2, Command::kGetLBatt);
-                uint16_t v = static_cast<uint16_t>((response[0]) << 8) + response[1];
+                uint16_t v = static_cast<uint16_t>((response[0] << 8) + response[1]);
                 return static_cast<double>(v) / 10.0 * units::V;
             }
 
@@ -638,7 +638,7 @@ namespace rip
                 }
                 std::vector<uint8_t> response = readN(4, cmd);
                 // last 2 bytes are 0 because the minimum current is always 0
-                return static_cast<double>(static_cast<uint16_t>(response[0]) + response[1]) / 100.0 * units::A;
+                return static_cast<double>(static_cast<uint32_t>((response[0] << 8*3) + (response[1] << 8*2) + (response[2] << 8) + response[3])) / 100.0 * units::A;
 
             }
 
