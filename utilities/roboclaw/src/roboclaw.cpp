@@ -645,7 +645,7 @@ namespace rip
             units::Temperature Roboclaw::readTemperature()
             {
                 std::vector<uint8_t> response = readN(2, Command::kGetTemp);
-                uint16_t value = static_cast<uint16_t>(response[0]) << 8 + response[1];
+                uint16_t value = static_cast<uint16_t>((response[0] << 8) + response[1]);
                 return static_cast<double>(value) / 10.0 * units::degC; //todo(Andrew): Figure out the units
             }
 
@@ -653,6 +653,7 @@ namespace rip
             {
                 m_crc = 0;
             }
+
             uint8_t Roboclaw::returnFF()
             {
               return 0xFF;
@@ -679,6 +680,69 @@ namespace rip
                 return m_crc;
             }
 
+            bool Roboclaw::readStatus(Roboclaw::Status s)
+            {
+                std::vector<uint8_t> response = readN(2, Command::kGetTemp);
+                uint16_t value = static_cast<uint16_t>((response[0] << 8) + response[1]);
+                uint16_t status = static_cast<uint16_t>(s);
+                //ASSUMPTION MADE: If there is any error, status:normal is false.
+                if(status == 0)
+                {
+                    if(value == 0)
+                    {
+                        //status normal
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+                if((value & status) == status)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+
+            std::array<bool, 17> Roboclaw::readStatus()
+            {
+                //ASSUMPTION MADE: If there is any error, status:normal is false.
+                std::vector<uint8_t> response = readN(2, Command::kGetError);
+                uint16_t value = static_cast<uint16_t>((response[0] << 8) + response[1]);
+                std::array<bool, 17> status;
+                uint16_t mask = 1;
+                if(value == 0)
+                {
+                    //status normal
+                    status[0] = true;
+                    for(int i=1; i<17; i++)
+                    {
+                        status[i] = false;
+                    }
+                    return status;
+                }
+                else
+                {
+                    status[0] == false;
+                    for(int i=1; i<17; i++)
+                    {
+                        if((value & mask) == mask)
+                        {
+                            status[i] == true;
+                        }
+                        else
+                        {
+                            status[i] == false;
+                        }
+                        mask = (mask << 1);
+                    }
+                    return status;
+                }
+            }
 
             std::vector<uint8_t> Roboclaw::readN(uint8_t n, Command cmd)
             {

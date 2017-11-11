@@ -581,14 +581,24 @@ namespace rip
                 };
 
                 /**
-                 * @brief Returns the roboclaw status
-                 *
+                 * @brief Returns the complete roboclaw status as an array of bools
+                 * corresponding to each status in order.
                  * Send: [Address, 90]
                  * Receive: [Status, CRC(2 bytes)]
                  *
                  * @return
                  */
-                Status readStatus();
+                std::array<bool, 17> readStatus();
+                /**
+                 * @brief Returns the status of a specific status as a bool
+                 * 
+                 * Send: [Address, 90]
+                 * Receive: [Status, CRC(2 bytes)]
+                 *
+                 * @return
+                 */
+                bool readStatus(Status s);
+
                 /*
                 Returns 0xFF for crc check. Overrided when using mock to bypass CRC check.
                 */

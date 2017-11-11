@@ -106,7 +106,7 @@ namespace rip
                 TEST(RoboclawCore, DriveM2Forward)
                 {
                     std::shared_ptr<Roboclaw> testClaw(new Roboclaw);
-                    std::vector<int8_t> response;
+                    std::vector<uint8_t> response;
 
                     testClaw->setBytes(55);
                     ASSERT_THROW(testClaw->drive(Roboclaw::Motor::kM2, Roboclaw::kFullSpeedForward), CommandFailure);
@@ -127,7 +127,7 @@ namespace rip
                 TEST(RoboclawCore, DriveM2Backward)
                 {
                     std::shared_ptr<Roboclaw> testClaw(new Roboclaw);
-                    std::vector<int8_t> response;
+                    std::vector<uint8_t> response;
 
                     testClaw->setBytes(55);
                     ASSERT_THROW(testClaw->drive(Roboclaw::Motor::kM1, Roboclaw::kFullSpeedBackward), CommandFailure);
@@ -147,7 +147,7 @@ namespace rip
                 TEST(RoboclawCore, DriveForward)
                 {
                     std::shared_ptr<Roboclaw> testClaw(new Roboclaw);
-                    std::vector<int8_t> response;
+                    std::vector<uint8_t> response;
 
                     testClaw->setBytes(55);
                     ASSERT_THROW(testClaw->drive(Roboclaw::kFullSpeedForward), CommandFailure);
@@ -169,7 +169,7 @@ namespace rip
                 TEST(RoboclawCore, DriveBackward)
                 {
                     std::shared_ptr<Roboclaw> testClaw(new Roboclaw);
-                    std::vector<int8_t> response;
+                    std::vector<uint8_t> response;
 
                     testClaw->setBytes(55);
                     ASSERT_THROW(testClaw->drive(Roboclaw::kFullSpeedBackward), CommandFailure);
@@ -261,7 +261,7 @@ namespace rip
 
                     //readstatus tests
 
-                    FAIL() << "TODO: Implement Test";
+                    FAIL() << "TODO: Status Implementation";
                 }
                 TEST(RoboclawCore, Encoder)
                 {
@@ -270,9 +270,10 @@ namespace rip
                     std::vector<uint8_t> response;
                     units::Velocity v;
                     units::Distance d;
-                    d=testClaw->readEncoder(Roboclaw::Motor::kM1);
+
                     testClaw->setBytes(0);
                     //encoder velocity = 0 when not moving
+                    d=testClaw->readEncoder(Roboclaw::Motor::kM1);
                     v=testClaw->readEncoderVelocity(Roboclaw::Motor::kM1);
                     EXPECT_DOUBLE_EQ(d(), 0.0);
                     EXPECT_DOUBLE_EQ(v(), 0.0);
@@ -288,6 +289,9 @@ namespace rip
                     std::shared_ptr<Roboclaw> testClaw(new Roboclaw);
                     std::vector<uint8_t> response;
                     testClaw->setBytes(0);
+                    /*
+                    Implement setDynamics setPinFunctions
+                    */
                 }
                 TEST(RoboclawCore, PID)
                 {
@@ -295,6 +299,21 @@ namespace rip
                     std::shared_ptr<Roboclaw> testClaw(new Roboclaw);
                     std::vector<uint8_t> response;
                     testClaw->setBytes(0);
+                }
+                TEST(RoboclawCore, Misc)
+                {
+                    FAIL() << "TODO: Implement Test";
+                    std::shared_ptr<Roboclaw> testClaw(new Roboclaw);
+                    std::vector<uint8_t> response;
+                    testClaw->setBytes(0);
+                    units::Temperature t;
+                    /*
+                    readtemperature, temp is in celsius.
+                    */
+                    response = {0, 500};
+                    testClaw->setcResponse(response);
+                    t = testClaw->readTemperature();
+
                 }
             }
         }
