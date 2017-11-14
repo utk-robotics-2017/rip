@@ -50,7 +50,9 @@ namespace rip
                     //wheel radius cannot = 0
                     j["wheel_radius"] = 0;
                     ASSERT_THROW(std::make_shared<Roboclaw>(j), OutOfRange);
-
+                    //ticks per rev should be a pos. #
+                    j["ticks_per_rev"] = -100.0;
+                    ASSERT_THROW(std::make_shared<Roboclaw>(j), OutOfRange);
                     j["timeout"] = t.to(units::ms);
                     j["ticks_per_rev"] = 100.0;
                     j["wheel_radius"] = d.to(units::cm);
@@ -258,30 +260,275 @@ namespace rip
                     std::shared_ptr<Roboclaw> testClaw(new Roboclaw);
                     std::vector<uint8_t> response;
                     testClaw->setBytes(0);
-
-                    //readstatus tests
-
-                    FAIL() << "TODO: Status Implementation";
+                    std::array<bool, 17> status;
+                    //readstatus tests, status normal
+                    response = {0,0};
+                    testClaw->setcResponse(response);
+                    status = testClaw->readStatus();
+                    EXPECT_TRUE(testClaw->readStatus(Roboclaw::Status::kNormal));
+                    for(int i=1; i<17; i++)
+                    {
+                        EXPECT_FALSE(status[i]);
+                    }
+                    //opposite of above case, normal is false but all other statuses true
+                    response = {0xFF, 0xFF};
+                    testClaw->setcResponse(response);
+                    status = testClaw->readStatus();
+                    EXPECT_FALSE(testClaw->readStatus(Roboclaw::Status::kNormal));
+                    for(int i=1; i<17; i++)
+                    {
+                        EXPECT_TRUE(status[i]);
+                    }
+                    //m1 and m2 over current warning
+                    response = {0, 3};
+                    testClaw->setcResponse(response);
+                    EXPECT_FALSE(testClaw->readStatus(Roboclaw::Status::kNormal));
+                    EXPECT_TRUE(testClaw->readStatus(Roboclaw::Status::kM1OverCurrentWarning));
+                    EXPECT_TRUE(testClaw->readStatus(Roboclaw::Status::kM2OverCurrentWarning));
                 }
                 TEST(RoboclawCore, Encoder)
                 {
-                    FAIL() << "TODO: Complete Test";
+                    //TODO: split into multiple test cases
                     std::shared_ptr<Roboclaw> testClaw(new Roboclaw);
                     std::vector<uint8_t> response;
                     units::Velocity v;
-                    units::Distance d;
+                    units::Distance d, d2;
+                    double ticks_per_rev = 360.0, wheel_radius=.04;//base unit meter?
+                    uint32_t ticks, ticksc;
 
                     testClaw->setBytes(0);
-                    //encoder velocity = 0 when not moving
-                    d=testClaw->readEncoder(Roboclaw::Motor::kM1);
-                    v=testClaw->readEncoderVelocity(Roboclaw::Motor::kM1);
-                    EXPECT_DOUBLE_EQ(d(), 0.0);
-                    EXPECT_DOUBLE_EQ(v(), 0.0);
+                    //Receive: [Enc1(4 bytes), Status, CRC(2 bytes)]
+
+                    //distance tests
+                      //motor 1
+                        //no movement
+                    response = {0x0, 0x0, 0x0, 0x0, 0x0};
+                    testClaw->setcResponse(response);
+
                     EXPECT_DOUBLE_EQ(testClaw->readEncoderRaw(Roboclaw::Motor::kM1), 0.0);
-                    //do for raw as well
-                    testClaw->setEncoder(Roboclaw::Motor::kM1, 1.0);
-                    EXPECT_DOUBLE_EQ(d(), 1.0);
+                    d=testClaw->readEncoder(Roboclaw::Motor::kM1);
+                    EXPECT_DOUBLE_EQ(d(), 0.0);
+
+                        //no movement (backwards) (could cause trouble during type conversions)
+                    response = {0x0, 0x0, 0x0, 0x0, 2};
+                    testClaw->setcResponse(response);
+
+                    EXPECT_DOUBLE_EQ(testClaw->readEncoderRaw(Roboclaw::Motor::kM1), 0.0);
+                    d=testClaw->readEncoder(Roboclaw::Motor::kM1);
+                    EXPECT_DOUBLE_EQ(d(), 0.0);
+
+                        //forward test
+                    response = {0xDE, 0xAD, 0xBE, 0xEF, 0x0};
+                    testClaw->setcResponse(response);
+
+                    EXPECT_DOUBLE_EQ(testClaw->readEncoderRaw(Roboclaw::Motor::kM1), 0xDEADBEEF);
+                    d=testClaw->readEncoder(Roboclaw::Motor::kM1);
+                    EXPECT_DOUBLE_EQ(d(), static_cast<double>(0xDEADBEEF) / ticks_per_rev * wheel_radius);
+                        //backwards/negative
+
+                    response ={0xDE, 0xAD, 0xBE, 0xEF, 2};
+                    testClaw->setcResponse(response);
+                    EXPECT_DOUBLE_EQ(testClaw->readEncoderRaw(Roboclaw::Motor::kM1), -0xDEADBEEF);
+                    d=testClaw->readEncoder(Roboclaw::Motor::kM1);
+                    EXPECT_DOUBLE_EQ(d(), static_cast<double>(-0xDEADBEEF) / ticks_per_rev * wheel_radius);
+                      //motor 2
+                        //no movement
+                    response = {0x0, 0x0, 0x0, 0x0, 0x0};
+                    testClaw->setcResponse(response);
+
+                    EXPECT_DOUBLE_EQ(testClaw->readEncoderRaw(Roboclaw::Motor::kM2), 0.0);
+                    d=testClaw->readEncoder(Roboclaw::Motor::kM2);
+                    EXPECT_DOUBLE_EQ(d(), 0.0);
+
+                        //no movement (backwards) (could cause trouble during type conversions)
+                    response = {0x0, 0x0, 0x0, 0x0, 2};
+                    testClaw->setcResponse(response);
+
+                    EXPECT_DOUBLE_EQ(testClaw->readEncoderRaw(Roboclaw::Motor::kM2), 0.0);
+                    d=testClaw->readEncoder(Roboclaw::Motor::kM2);
+                    EXPECT_DOUBLE_EQ(d(), 0.0);
+
+                        //forward test
+                    response = {0xFE, 0xEB, 0xDA, 0xED, 0x0};
+                    testClaw->setcResponse(response);
+
+                    EXPECT_DOUBLE_EQ(testClaw->readEncoderRaw(Roboclaw::Motor::kM2), 0xFEEBDAED);
+                    d=testClaw->readEncoder(Roboclaw::Motor::kM2);
+                    EXPECT_DOUBLE_EQ(d(), static_cast<double>(0xFEEBDAED) / ticks_per_rev * wheel_radius);
+                        //backwards/negative
+
+                    response ={0xDE, 0xAD, 0xBE, 0xEF, 2};
+                    testClaw->setcResponse(response);
+                    EXPECT_DOUBLE_EQ(testClaw->readEncoderRaw(Roboclaw::Motor::kM2), -0xFEEBDAED);
+                    d=testClaw->readEncoder(Roboclaw::Motor::kM2);
+                    EXPECT_DOUBLE_EQ(d(), static_cast<double>(-0xFEEBDAED) / ticks_per_rev * wheel_radius);
+
+
+                    //velocity tests
+                      //motor 1
+                        //still
+                    response = {0x0, 0x0, 0x0, 0x0, 0x0};
+                    testClaw->setcResponse(response);
+                    EXPECT_DOUBLE_EQ(testClaw->readEncoderVelocityRaw(Roboclaw::Motor::kM1), 0.0);
+                    v=testClaw->readEncoderVelocity(Roboclaw::Motor::kM1);
+                    EXPECT_DOUBLE_EQ(v(), 0.0);
+                        //still(negative)
+                    response = {0x0, 0x0, 0x0, 0x0, 2};
+                    testClaw->setcResponse(response);
+                    EXPECT_DOUBLE_EQ(testClaw->readEncoderVelocityRaw(Roboclaw::Motor::kM1), 0.0);
+                    v=testClaw->readEncoderVelocity(Roboclaw::Motor::kM1);
+                    EXPECT_DOUBLE_EQ(v(), 0.0);
+
+                        //Forward
+                    response = {0x0, 0x0, 0xFF, 0x0, 0x0};
+                    testClaw->setcResponse(response);
+                    EXPECT_DOUBLE_EQ(testClaw->readEncoderVelocityRaw(Roboclaw::Motor::kM1), 0xFF00);
+                    v=testClaw->readEncoderVelocity(Roboclaw::Motor::kM1);
+                    EXPECT_DOUBLE_EQ(v(),static_cast<double>(0xFF00) / ticks_per_rev * wheel_radius);
+                        //backward
+                    response = {0x0, 0x0, 0xFF, 0x0, 0x2};
+                    testClaw->setcResponse(response);
+                    v=testClaw->readEncoderVelocity(Roboclaw::Motor::kM1);
+                    EXPECT_DOUBLE_EQ(testClaw->readEncoderVelocityRaw(Roboclaw::Motor::kM1), -0xFF00);
+                    EXPECT_DOUBLE_EQ(v(),static_cast<double>(-0xFF00) / ticks_per_rev * wheel_radius);
+                      //motor 2
+                        //still
+                    response = {0x0, 0x0, 0x0, 0x0, 0x0};
+                    testClaw->setcResponse(response);
+                    EXPECT_DOUBLE_EQ(testClaw->readEncoderVelocityRaw(Roboclaw::Motor::kM2), 0.0);
+                    v=testClaw->readEncoderVelocity(Roboclaw::Motor::kM2);
+                    EXPECT_DOUBLE_EQ(v(), 0.0);
+                        //still(negative)
+                    response = {0x0, 0x0, 0x0, 0x0, 2};
+                    testClaw->setcResponse(response);
+                    EXPECT_DOUBLE_EQ(testClaw->readEncoderVelocityRaw(Roboclaw::Motor::kM2), 0.0);
+                    v=testClaw->readEncoderVelocity(Roboclaw::Motor::kM2);
+                    EXPECT_DOUBLE_EQ(v(), 0.0);
+
+                        //Forward
+                    response = {0x0, 0x0, 0xFF, 0xFF, 0x0};
+                    testClaw->setcResponse(response);
+                    EXPECT_DOUBLE_EQ(testClaw->readEncoderVelocityRaw(Roboclaw::Motor::kM2), 0xFFFF);
+                    v=testClaw->readEncoderVelocity(Roboclaw::Motor::kM2);
+                    EXPECT_DOUBLE_EQ(v(),static_cast<double>(0xFFFF) / ticks_per_rev * wheel_radius);
+                        //backward
+                    response = {0x0, 0x0, 0xFF, 0x0, 0x2};
+                    testClaw->setcResponse(response);
+                    v=testClaw->readEncoderVelocity(Roboclaw::Motor::kM2);
+                    EXPECT_DOUBLE_EQ(testClaw->readEncoderVelocityRaw(Roboclaw::Motor::kM2), -0xFFFF);
+                    EXPECT_DOUBLE_EQ(v(),static_cast<double>(-0xFFFF) / ticks_per_rev * wheel_radius);
+
+                    //plural tests
+                    //readEncodersRaw, readEncoderVelocityRaw lack status/sign byte?
+                    //TODO: a bit more responses
+                      //stationary, +
+                    response = {0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0};
+                    testClaw->setcResponse(response);
+
+                    d=testClaw->readEncoder(Roboclaw::Motor::kM1);
+                    d2=testClaw->readEncoders()[0];
+                    EXPECT_DOUBLE_EQ(d2(), d());
+                    d=testClaw->readEncoder(Roboclaw::Motor::kM2);
+                    d2=testClaw->readEncoders()[1];
+                    EXPECT_DOUBLE_EQ(d2(), d());
+
+                    EXPECT_DOUBLE_EQ(testClaw->readEncodersRaw()[0], 0.0);
+                    EXPECT_DOUBLE_EQ(testClaw->readEncodersRaw()[1], 0.0);
+                    EXPECT_DOUBLE_EQ(v(), 0.0);
+                    v=testClaw->readEncodersVelocity()[1];
+                    EXPECT_DOUBLE_EQ(v(), 0.0);
+
+                    v=testClaw->readEncodersVelocity()[0];
+
+                      //stationary, -
+                    response = {0x0, 0x0, 0x0, 0x0, 0,0 ,0, 0, 0x2, 0x2};
+                    testClaw->setcResponse(response);
+
+                    d=testClaw->readEncoder(Roboclaw::Motor::kM1);
+                    d2=testClaw->readEncoders()[0];
+                    EXPECT_DOUBLE_EQ(d2(), d());
+
+                    d=testClaw->readEncoder(Roboclaw::Motor::kM2);
+                    d2=testClaw->readEncoders()[1];
+                    EXPECT_DOUBLE_EQ(d2(), d());
+
+                    EXPECT_DOUBLE_EQ(testClaw->readEncodersRaw()[0], 0.0);
+                    EXPECT_DOUBLE_EQ(testClaw->readEncodersRaw()[1], 0.0);
+
+                    EXPECT_DOUBLE_EQ(testClaw->readEncodersVelocityRaw()[0], 0.0);
+                    EXPECT_DOUBLE_EQ(testClaw->readEncodersVelocityRaw()[1], 0.0);
+
+                    v=testClaw->readEncodersVelocity()[0];
+                    EXPECT_DOUBLE_EQ(v(), 0.0);
+                    v=testClaw->readEncodersVelocity()[1];
+                    EXPECT_DOUBLE_EQ(v(), 0.0);
+
+                      //Forward
+                    response = {0x0, 0x0, 0xAB, 0x1, 0x0, 0x0, 0xAB, 0x1, 0x0, 0x0};
+                    testClaw->setcResponse(response);
+                    d=testClaw->readEncoder(Roboclaw::Motor::kM1);
+                    d2=testClaw->readEncoders()[0];
+                    EXPECT_DOUBLE_EQ(d2(), d());
+                    d=testClaw->readEncoder(Roboclaw::Motor::kM2);
+                    d2=testClaw->readEncoders()[1];
+                    EXPECT_DOUBLE_EQ(d2(), d());
+
+                    EXPECT_DOUBLE_EQ(testClaw->readEncodersRaw()[0], 0xAB01);
+                    EXPECT_DOUBLE_EQ(testClaw->readEncodersRaw()[1], 0xAB01);
+
+                    EXPECT_DOUBLE_EQ(testClaw->readEncodersVelocityRaw()[0], 0xAB01);
+                    EXPECT_DOUBLE_EQ(testClaw->readEncodersVelocityRaw()[1], 0xAB01);
+
+                    v=testClaw->readEncodersVelocity()[0];
+                    EXPECT_DOUBLE_EQ(v(), static_cast<double>(0xAB01) / ticks_per_rev * wheel_radius);
+                    v=testClaw->readEncodersVelocity()[1];
+                    EXPECT_DOUBLE_EQ(v(), static_cast<double>(0xAB01) / ticks_per_rev * wheel_radius);
+
+                      //backwards
+                    response = {0x0, 0x0, 0xAB, 0x1, 0x0, 0x0, 0xAB, 0x1, 0x2, 0x2};
+                    testClaw->setcResponse(response);
+
+                    d=testClaw->readEncoder(Roboclaw::Motor::kM1);
+                    d2=testClaw->readEncoders()[0];
+                    EXPECT_DOUBLE_EQ(d2(), d());
+                    d=testClaw->readEncoder(Roboclaw::Motor::kM2);
+                    d2=testClaw->readEncoders()[1];
+                    EXPECT_DOUBLE_EQ(d2(), d());
+
+                    EXPECT_DOUBLE_EQ(testClaw->readEncodersRaw()[0], -0xAB01);
+                    EXPECT_DOUBLE_EQ(testClaw->readEncodersRaw()[1], -0xAB01);
+
+                    EXPECT_DOUBLE_EQ(testClaw->readEncodersVelocityRaw()[0], -0xAB01);
+                    EXPECT_DOUBLE_EQ(testClaw->readEncodersVelocityRaw()[1], -0xAB01);
+
+                    v=testClaw->readEncodersVelocity()[0];
+                    EXPECT_DOUBLE_EQ(v(), static_cast<double>(-0xAB01) / ticks_per_rev * wheel_radius);
+                    v=testClaw->readEncodersVelocity()[1];
+                    EXPECT_DOUBLE_EQ(v(), static_cast<double>(-0xAB01) / ticks_per_rev * wheel_radius);
+
+                    //ensure proper transmission of setters
+                    ticks = 0xABCD;
+                    testClaw->setEncoderRaw(Roboclaw::Motor::kM1, ticks);
+                    ASSERT_EQ(testClaw->getLastCmd()[0], 0x80);
+                    ASSERT_EQ(testClaw->getLastCmd()[1], static_cast<uint8_t>(Roboclaw::Command::kSetM1EncCount));
+                    for (uint8_t i = 2; i < 6; i++)
+                    {
+                        ticksc += testClaw->getLastCmd()[i] << (8 * (3 - i ));
+                    }
+                    ASSERT_EQ(ticks, ticksc);
+
+                    testClaw->setEncoderRaw(Roboclaw::Motor::kM2, ticks);
+                    ASSERT_EQ(testClaw->getLastCmd()[0], 0x80);
+                    ASSERT_EQ(testClaw->getLastCmd()[1], static_cast<uint8_t>(Roboclaw::Command::kSetM2EncCount));
+                    for (uint8_t i = 2; i < 6; i++)
+                    {
+                        ticksc += testClaw->getLastCmd()[i] << (8 * (3 - i ));
+                    }
+                    ASSERT_EQ(ticks, ticksc);
+
                     testClaw->resetEncoders();
+                    ASSERT_EQ(testClaw->getLastCmd()[0], 0x80);
+                    ASSERT_EQ(testClaw->getLastCmd()[1], static_cast<uint8_t>(Roboclaw::Command::kResetEnc));
                 }
                 TEST(RoboclawCore, Dynamics)
                 {
@@ -299,6 +546,12 @@ namespace rip
                     std::shared_ptr<Roboclaw> testClaw(new Roboclaw);
                     std::vector<uint8_t> response;
                     testClaw->setBytes(0);
+                    /*
+                    testClaw->
+                    testClaw->
+                    testClaw->
+                    testClaw->
+                    */
                 }
                 TEST(RoboclawCore, Misc)
                 {
@@ -309,11 +562,16 @@ namespace rip
                     units::Temperature t;
                     /*
                     readtemperature, temp is in celsius.
-                    */
-                    response = {0, 500};
+
+                    response = {0x1, 0xF4};
                     testClaw->setcResponse(response);
                     t = testClaw->readTemperature();
 
+                    testClaw->readVersion();
+                    testClaw->getConfig();
+                    testClaw->setConfig();
+                    testClaw->setPinModes();
+                    */
                 }
             }
         }

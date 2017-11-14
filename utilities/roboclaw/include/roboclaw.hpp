@@ -588,10 +588,10 @@ namespace rip
                  *
                  * @return
                  */
-                std::array<bool, 17> readStatus();
+                std::array<bool,17> readStatus();
                 /**
                  * @brief Returns the status of a specific status as a bool
-                 * 
+                 *
                  * Send: [Address, 90]
                  * Receive: [Status, CRC(2 bytes)]
                  *

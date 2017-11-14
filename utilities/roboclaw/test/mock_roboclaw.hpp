@@ -17,7 +17,7 @@ namespace rip
                     size_t write(const std::string &message) override;
                     //MockRoboclaw();
                     MockRoboclaw(nlohmann::json config={{"address", 0x80},{"timeout", 100 * units::ms},
-                    {"ticks_per_rev", 100.0},{"wheel_radius", 4 * units::cm}}, bool test=1);
+                    {"ticks_per_rev", 360.0},{"wheel_radius", 4 * units::cm}}, bool test=1);
                     size_t write(const std::vector<uint8_t> &data) override;
                     void setcResponse(const std::vector<uint8_t> response);
                     void setResponse(const std::string& response);

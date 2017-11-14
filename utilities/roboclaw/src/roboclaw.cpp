@@ -187,12 +187,10 @@ namespace rip
                 // Bit1 - Direction (0 = Forward, 1 = Backward)
                 // Bit2 - Counter Overflow (1 = Overflow Occurred, Clear After Reading)
                 // Bit3-7 - Reserved
-                if (response[1] & 2)
+                if ((response[4] & 2)==2)
                 {
                     rv *= -1;
                 }
-
-
                 return rv;
             }
 
@@ -211,7 +209,7 @@ namespace rip
             units::Distance Roboclaw::readEncoder(Motor motor)
             {
                 long ticks = readEncoderRaw(motor);
-                return static_cast<double>(ticks) / m_ticks_per_rev * m_wheel_radius;
+                return static_cast<double>(ticks) / m_ticks_per_rev * m_wheel_radius();
             }
 
             std::array<units::Distance, 2> Roboclaw::readEncoders()
@@ -268,7 +266,7 @@ namespace rip
                 }
 
                 // Status indicates the direction (0 – forward, 1 - backward).
-                if (response[4])
+                if ((response[4] & 2)==2)//used to be response[4]
                 {
                     rv *= -1;
                 }
@@ -684,7 +682,9 @@ namespace rip
             {
                 std::vector<uint8_t> response = readN(2, Command::kGetTemp);
                 uint16_t value = static_cast<uint16_t>((response[0] << 8) + response[1]);
+                \
                 uint16_t status = static_cast<uint16_t>(s);
+
                 //ASSUMPTION MADE: If there is any error, status:normal is false.
                 if(status == 0)
                 {
@@ -727,18 +727,19 @@ namespace rip
                 }
                 else
                 {
-                    status[0] == false;
+                    status[0] = false;
                     for(int i=1; i<17; i++)
                     {
                         if((value & mask) == mask)
                         {
-                            status[i] == true;
+                            status[i] = true;
                         }
                         else
                         {
-                            status[i] == false;
+                            status[i] = false;
                         }
                         mask = (mask << 1);
+
                     }
                     return status;
                 }
