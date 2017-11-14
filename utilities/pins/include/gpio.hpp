@@ -7,37 +7,40 @@ namespace rip
     {
         namespace pins
         {
-
-            enum class DigitalPinValue
+            namespace gpio
             {
-                kLow = 0,
-                kHigh = 1
-            };
+                enum class DigitalPinValue
+                {
+                    kLow = 0,
+                    kHigh = 1
+                };
 
-            enum class DigitalPinDirection
-            {
-                kOut,
-                kIn
-            };
 
-            /**
-             *
-             */
-            void setPinMode(uint8_t pin, DigitalPinDirection direction);
+                enum class DigitalPinMode
+                {
+                    kOutput,
+                    kInput
+                };
 
-            /**
-             * [digitalWrite description]
-             * @param pin   [description]
-             * @param value [description]
-             */
-            void digitalWrite(uint8_t pin, DigitalPinValue value);
+                /**
+                 *
+                 */
+                void setPinMode(uint8_t pin, DigitalPinMode mode);
 
-            /**
-             * [digitalRead description]
-             * @param  pin [description]
-             * @return     [description]
-             */
-            DigitalPinValue digitalRead(uint8_t pin);
+                /**
+                 * [digitalWrite description]
+                 * @param pin   [description]
+                 * @param value [description]
+                 */
+                void digitalWrite(uint8_t pin, DigitalPinValue value);
+
+                /**
+                 * [digitalRead description]
+                 * @param  pin [description]
+                 * @return     [description]
+                 */
+                DigitalPinValue digitalRead(uint8_t pin);
+            } // gpio
         } // pins
     } // utilities
 } // rip

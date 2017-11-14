@@ -11,7 +11,7 @@ namespace rip
         {}
 
         I2C::I2C(int address)
-            : I2C(kDefaultDevice. address)
+            : I2C(kDefaultDevice, address)
         {}
 
         I2C::I2C(const std::string& device, int address)
