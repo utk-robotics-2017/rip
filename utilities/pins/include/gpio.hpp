@@ -3,9 +3,9 @@
 
 namespace rip
 {
-    namespace pins
+    namespace utilites
     {
-        namespace gpio
+        namespace pins
         {
 
             enum class DigitalPinValue
@@ -38,8 +38,8 @@ namespace rip
              * @return     [description]
              */
             DigitalPinValue digitalRead(uint8_t pin);
-        };
-    } // pins
+        } // pins
+    } // utilities
 } // rip
 
 #endif // GPIO_HPP
