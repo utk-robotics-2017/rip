@@ -161,7 +161,7 @@ namespace rip
             //////////////////////////////////////////////////////////////////////////////////////////////
             //////////////////////////////////////// Encoders ////////////////////////////////////////////
             //////////////////////////////////////////////////////////////////////////////////////////////
-            long Roboclaw::readEncoderRaw(Motor motor)
+            double Roboclaw::readEncoderRaw(Motor motor)
             {
                 Command cmd;
                 switch (motor)
@@ -174,13 +174,11 @@ namespace rip
                         break;
                 }
                 std::vector<uint8_t> response = readN(5, cmd);
-                long rv;
+
+                int64_t rv=0;
 
                 // First 4 bytes are the ticks per second
-                for (uint8_t i = 0; i < 4; i++)
-                {
-                    rv += response[i] << (8 * (3 - i ));
-                }
+                rv = (static_cast<uint32_t>((response[0] << 8*3) + (response[1] << 8*2) + (response[2] << 8) + response[3]));
 
                 // Status:
                 // Bit0 - Counter Underflow (1= Underflow Occurred, Clear After Reading)
@@ -198,18 +196,15 @@ namespace rip
             {
                 std::vector<uint8_t> response = readN(8, Command::kGetEncoders);
                 std::array<long, 2> rv;
-                for (uint8_t i = 0; i < 4; i++)
-                {
-                    rv[0] |= response[i] << (8 * (3 - i));
-                    rv[1] |= response[4 + i] << (8 * (3 - i));
-                }
+                rv[0] = static_cast<uint32_t>((response[0] << 8*3) + (response[1] << 8*2) + (response[2] << 8) + response[3]);
+                rv[1] = static_cast<uint32_t>((response[4] << 8*3) + (response[5] << 8*2) + (response[6] << 8) + response[7]);
                 return rv;
             }
 
             units::Distance Roboclaw::readEncoder(Motor motor)
             {
                 long ticks = readEncoderRaw(motor);
-                return static_cast<double>(ticks) / m_ticks_per_rev * m_wheel_radius();
+                return (static_cast<double>(ticks) / m_ticks_per_rev) * m_wheel_radius();
             }
 
             std::array<units::Distance, 2> Roboclaw::readEncoders()
@@ -219,7 +214,9 @@ namespace rip
                 ticks[1] = readEncoder(Motor::kM2);
                 return ticks;
             }
-
+            /*
+            Currently broken, sign conversions
+            */
             void Roboclaw::setEncoderRaw(Motor motor, int ticks)
             {
                 Command cmd;
@@ -260,10 +257,7 @@ namespace rip
 
                 long rv;
                 // First 4 bytes are the ticks per second
-                for (uint8_t i = 0; i < 4; i++)
-                {
-                    rv += response[i] << (8 * (3 - i ));
-                }
+                rv = (static_cast<uint32_t>((response[0] << 8*3) + (response[1] << 8*2) + (response[2] << 8) + response[3]));
 
                 // Status indicates the direction (0 – forward, 1 - backward).
                 if ((response[4] & 2)==2)//used to be response[4]
