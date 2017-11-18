@@ -36,6 +36,10 @@ namespace rip
 
             void MotorDynamics::setDistance(units::Distance distance)
             {
+                if(distance() < 0.0)
+                {
+                    throw OutOfRange("Distance should be a positive value.");
+                }
                 m_distance = std::make_shared<units::Distance>(distance());
             }
 
@@ -56,6 +60,10 @@ namespace rip
 
             void MotorDynamics::setAcceleration(units::Acceleration acceleration)
             {
+                if(acceleration() < 0.0)
+                {
+                    throw OutOfRange("Acceleration should be a positive value.");
+                }
                 m_acceleration = std::make_shared<units::Acceleration>(acceleration());
             }
 
@@ -66,6 +74,10 @@ namespace rip
 
             void MotorDynamics::setDeceleration(units::Acceleration deceleration)
             {
+                if(deceleration() < 0.0)
+                {
+                    throw OutOfRange("deceleration should be a positive value.");
+                }
                 m_deceleration = std::make_shared<units::Acceleration>(deceleration());
             }
 
