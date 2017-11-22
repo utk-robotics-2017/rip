@@ -510,6 +510,16 @@ namespace rip
                  */
                 units::Temperature readTemperature();
 
+                /*
+                @brief: reads the number of commands in the buffer for
+                both motors.
+                Send: [Address, 47]
+                Receive: [BufferM1, BufferM2, CRC(2 bytes)]
+
+                @returns Buffer length for motors 1 and 2
+                */
+                std::array<uint8_t, 2> readBufferLen();
+
                 enum class S3Modes
                 {
                     kDefault       = 0, //< Flip switch if in RC/Analog mode or E-Stop (latching) in Serial modes

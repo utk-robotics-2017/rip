@@ -42,11 +42,13 @@ namespace rip
 
             struct VelocityPIDParameters : public PIDParameters
             {
+                bool initialized=false;//throws UninitializedStruct unless set to true.
                 uint32_t qpps; //< Quadrature Pulses Per Second - Maximum number of ticks per second
             }; // struct VelcityPIDParameters
 
             struct PositionPIDParameters : public PIDParameters
             {
+                bool initialized=false;
                 uint32_t kiMax; //< Maximum Integral Windup
                 uint32_t deadzone; //< Deadzone in encoder counts
                 uint32_t min; //< Minimum Position

@@ -55,9 +55,9 @@ namespace rip
              */
             NEW_EX(BadJson);
             /*
-            Exception due to a communication failure, device may be offline, o
-            or not connected via serial connections, or powered off.
+            Attempt to read PID values that have not been initialized.
             */
+            NEW_EX(UninitializedStruct);
 
         }
     }
