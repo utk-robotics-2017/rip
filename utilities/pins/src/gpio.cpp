@@ -8,11 +8,11 @@
 #include "exceptions.hpp"
 #include "gpio.hpp"
 
-std::ostream& operator<<(std::ostream& estream, const rip::pins::gpio::DigitalPinValue& pinvalue) {
-    if (pinvalue == rip::pins::gpio::DigitalPinValue::kLow) {
+std::ostream& operator<<(std::ostream& estream, const rip::utilities::pins::gpio::DigitalPinValue& pinvalue) {
+    if (pinvalue == rip::utilities::pins::gpio::DigitalPinValue::kLow) {
         estream << "0";
     }
-    else if (pinvalue == rip::pins::gpio::DigitalPinValue::kHigh) {
+    else if (pinvalue == rip::utilities::pins::gpio::DigitalPinValue::kHigh) {
         estream << "1";
     }
 

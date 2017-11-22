@@ -3,7 +3,7 @@
 
 namespace rip
 {
-    namespace utilites
+    namespace utilities
     {
         namespace pins
         {

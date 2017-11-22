@@ -1,3 +1,8 @@
+#include <stdint.h>
+#include <iostream>
+#include <fstream>
+
+#include "exceptions.hpp"
 #include "i2c.hpp"
 
 #include <linux/i2c-dev.h>
@@ -35,12 +40,12 @@ namespace rip
                 {
                     if (m_fd)
                     {
-                        close(fd);
+                        close(m_fd);
                         m_fd = 0;
                     }
                 }
 
-                void I2C::open()
+                int I2C::open()
                 {
                     if (m_fd)
                     {
@@ -53,21 +58,21 @@ namespace rip
                         throw SlaveAddressNotSet();
                     }
 
-                    if ((m_fd = open(m_device.c_str(), O_RDWR)) < 0)
+                    if ((m_fd = open(m_device.c_str(), I2C_RDWR)) < 0)
                     {
-                        throw OpenningError(fmt::format("Error opening {}\n", m_device));
+                        throw FileAccessError(fmt::format("Error opening {}\n", m_device));
                     }
 
                     if (ioctl(fd, kI2CSlave, m_slave_address) < 0)
                     {
-                        throw AddressError(fmt::format("Error with address {}\n", m_slave_address))
+                        throw BadAddressError(fmt::format("Error with address {}\n", m_slave_address))
                     }
                 }
 
                 void I2C::setAddress(int address)
                 {
                     m_slave_address = address;
-                    opend();
+                    open();
                 }
 
                 int I2C::getAddress()
@@ -85,7 +90,7 @@ namespace rip
                 {
                     if (length < 1)
                     {
-                        throw ReadError("Length must be 1 or greater");
+                        throw I2CReadError("Length must be 1 or greater");
                     }
 
                     if (!m_fd)
@@ -96,7 +101,7 @@ namespace rip
                     uint8_t* buffer = new uint8_t[length];
                     if (read(m_fd, buffer, length) != length)
                     {
-                        throw ReadError(fmt::format("I2C read error. Address: {} Device: {}\n", m_slave_address, m_device));
+                        throw I2CReadError(fmt::format("I2C read error. Address: {} Device: {}\n", m_slave_address, m_device));
                     }
 
                     return std::vector<uint8_t>(buffer, buffer + length);
@@ -106,7 +111,7 @@ namespace rip
                 {
                     if (length < 1)
                     {
-                        throw ReadError("Length must be 1 or greater");
+                        throw I2CReadError("Length must be 1 or greater");
                     }
 
                     if (!m_fd)
@@ -116,13 +121,13 @@ namespace rip
 
                     if (write(m_fd, &register_address, 1) != 1)
                     {
-                        throw WriteError("I2C write error\n");
+                        throw I2CWriteError("I2C write error\n");
                     }
 
                     uint8_t* buffer = new uint8_t[length];
                     if (read(m_fd, buffer, length) != length)
                     {
-                        throw ReadError(fmt::format("I2C read error. Address: {} Device: {}\n", m_slave_address, m_device));
+                        throw I2CReadError(fmt::format("I2C read error. Address: {} Device: {}\n", m_slave_address, m_device));
                     }
 
                     return std::vector<uint8_t>(buffer, buffer + length);
@@ -146,9 +151,9 @@ namespace rip
 
                     // The spec guarantees that vectors store their elements contiguously
                     // http://www.open-std.org/jtc1/sc22/wg21/docs/lwg-defects.html#69
-                    if (write(fd, &message[0], length) != length)
+                    if (write(m_fd, &message[0], length) != length)
                     {
-                        throw WriteError("I2C write error");
+                        throw I2CWriteError("Write returned non-zero on call");
                     }
                 }
 
@@ -168,9 +173,9 @@ namespace rip
 
                     // The spec guarantees that vectors store their elements contiguously
                     // http://www.open-std.org/jtc1/sc22/wg21/docs/lwg-defects.html#69
-                    if (write(fd, &message[0], length) != length)
+                    if (write(m_fd, &message[0], length) != length)
                     {
-                        throw WriteError("I2C write error");
+                        throw I2CWriteError("Write returned non-zero exit code");
                     }
                 }
             } // i2c

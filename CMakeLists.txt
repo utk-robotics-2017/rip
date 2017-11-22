@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.1)
 project(rip)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 option(ALL "Build everything" OFF)
 
 # RIP Modules
