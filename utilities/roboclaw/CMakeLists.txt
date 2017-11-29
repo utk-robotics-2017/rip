@@ -38,5 +38,12 @@ if(ENABLE_TESTING)
 	if(CMAKE_COMPILER_IS_GNUCXX)
 		include(CodeCoverage)
 		setup_target_for_coverage(${PROJECT_NAME}_coverage ${PROJECT_NAME}_test coverage)
+
+	endif()
+	if(ENABLE_HARDWARE)
+		add_executable(test_hardware ${${PROJECT_NAME}_TEST_SOURCES} ${copiedTestData})
+		set_property(TARGET test_hardware PROPERTY CXX_STANDARD 11)
+		target_link_libraries(test_hardware ${PROJECT_NAME})
+
 	endif()
 endif()

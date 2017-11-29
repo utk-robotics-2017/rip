@@ -48,7 +48,7 @@ namespace rip
              * @link http://www.ionmc.com/
              * @link https://www.pololu.com/category/124/roboclaw-motor-controllers
              */
-            class Roboclaw : serial::Serial
+            class Roboclaw : public serial::Serial
             {
             public:
                 enum class Motor

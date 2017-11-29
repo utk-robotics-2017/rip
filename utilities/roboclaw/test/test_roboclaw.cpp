@@ -1017,7 +1017,7 @@ namespace rip
                     Receive: [P(4 bytes), I(4 bytes), D(4 bytes), MaxI(4 byte), Deadzone(4 byte),
                     MinPos(4 byte), MaxPos(4 byte), CRC(2 bytes)]
                     */
-                  
+
                     ASSERT_THROW(testClaw->setPositionPID(Roboclaw::Motor::kM2, *pparams), UninitializedStruct);
 
                     response = {0xDE, 0xAD, 0xBE, 0xEF,//p
@@ -1079,14 +1079,39 @@ namespace rip
 
                 }
 
-                TEST(RoboclawCore, Config)
+                TEST(RoboclawConfig, ClassSetters)
                 {
-                    FAIL() << "TODO: Implement Test";
+                    FAIL() << "TODO: Implement Test & Config methods";
+                    std::shared_ptr<Config> config(new Config);
                     std::shared_ptr<Roboclaw> testClaw(new Roboclaw);
                     std::vector<uint8_t> response;
                     testClaw->setBytes(0);
+                    /*
+                    testClaw->Config::setCommMode()
 
+                    testClaw->Config::setBatteryMode()
 
+                    testClaw->Config::setBaudRate()
+                    testClaw->Config::setPacketAddress()
+
+                    testClaw->Config::setSwapButtons()
+                    testClaw->Config::setSwapEncoders()
+                    testClaw->Config::set()
+                    */
+
+                }
+                TEST(RoboclawConfig, ClassGetters)
+                {
+                  FAIL() << "TODO: Implement Test & Config methods";
+                  std::shared_ptr<Config> config(new Config);
+                  std::shared_ptr<Roboclaw> testClaw(new Roboclaw);
+                  std::vector<uint8_t> response;
+                  testClaw->setBytes(0);
+                  /*
+                  testClaw->Config::getPacketAddress()
+                  testClaw->Config::getBatteryMode()
+                  testClaw->Config::getCommMode()
+                  */
                 }
 
                 TEST(RoboclawCore, Misc)
@@ -1110,6 +1135,7 @@ namespace rip
                     testClaw->setPinModes();
                     */
                 }
+
             }
         }
     }
