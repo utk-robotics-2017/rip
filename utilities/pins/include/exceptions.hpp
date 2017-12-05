@@ -18,7 +18,14 @@ namespace rip
              * @brief Used when we don't get a proper read from a digital input (ex. not 0|1)
              */
             NEW_EX(DigitalReadError);
-
+            /* @class BaudRateError
+             * @brief Used when an invalid baud rate is used.
+             */
+            NEW_EX(BaudRateError);
+            /* @class OpenError
+             * @brief Open failure
+             */
+            NEW_EX(OpenError);
             namespace i2c
             {
                 /* @class I2CWriteError
@@ -39,7 +46,8 @@ namespace rip
                 /* @class BadAddressError
                  * @brief For when the I2C address is incorrect, improper, badly formatted
                  */
-                NEW_EX(BadAddressError)
+                NEW_EX(BadAddressError);
+
             }
         } // pins
     } // utilities

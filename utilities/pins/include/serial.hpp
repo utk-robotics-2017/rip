@@ -4,6 +4,9 @@
 #include <vector>
 #include <string>
 #include <stdint.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <termios.h>
 
 namespace rip
 {
@@ -55,10 +58,13 @@ namespace rip
                 private:
                     void open();
                     void close();
-                    terminos m_config;
+                    struct terminos m_config;
                     std::string m_device;
                     long m_baudrate;
                     int m_fd;
+                    const std::string kDefaultDevice = "/dev/ttyS0";
+                    const int kDefaultBaudRate = 115200;
+
 
                 };
             } //serial

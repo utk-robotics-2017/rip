@@ -1,4 +1,5 @@
 #include "serial.hpp"
+#include <fmt/format.h>
 
 namespace rip
 {
@@ -28,7 +29,7 @@ namespace rip
                 {
                     if (m_fd)
                     {
-                        close();
+                        ::close();
                         m_fd = 0;
                     }
 
@@ -80,85 +81,85 @@ namespace rip
                     switch (m_baudrate)
                     {
                         case 300:
-                            if (cfsetispeed(&m_config, B300) < 0 || cfsetospeed(&m_config, B300) < 0)
+                            if (::cfsetispeed(&m_config, B300) < 0 || ::cfsetospeed(&m_config, B300) < 0)
                             {
                                 throw BaudRateError("Error setting I/O Speed to 300");
                             }
                             break;
                         case 600:
-                            if (cfsetispeed(&m_config, B600) < 0 || cfsetospeed(&m_config, B600) < 0)
+                            if (::cfsetispeed(&m_config, B600) < 0 || ::cfsetospeed(&m_config, B600) < 0)
                             {
                                 throw BaudRateError("Error setting I/O Speed to 600");
                             }
                             break;
                         case 1200:
-                            if (cfsetispeed(&m_config, B1200) < 0 || cfsetospeed(&m_config, B1200) < 0)
+                            if (::cfsetispeed(&m_config, B1200) < 0 || ::cfsetospeed(&m_config, B1200) < 0)
                             {
                                 throw BaudRateError("Error setting I/O Speed to 1200");
                             }
                             break;
                         case 2400:
-                            if (cfsetispeed(&m_config, B2400) < 0 || cfsetospeed(&m_config, B2400) < 0)
+                            if (::cfsetispeed(&m_config, B2400) < 0 || ::cfsetospeed(&m_config, B2400) < 0)
                             {
                                 throw BaudRateError("Error setting I/O Speed to 2400");
                             }
                             break;
                         case 4800:
-                            if (cfsetispeed(&m_config, B4800) < 0 || cfsetospeed(&m_config, B4800) < 0)
+                            if (::cfsetispeed(&m_config, B4800) < 0 || ::cfsetospeed(&m_config, B4800) < 0)
                             {
                                 throw BaudRateError("Error setting I/O Speed to 4800");
                             }
                             break;
                         case 9600:
-                            if (cfsetispeed(&m_config, B9600) < 0 || cfsetospeed(&m_config, B9600) < 0)
+                            if (::cfsetispeed(&m_config, B9600) < 0 || ::cfsetospeed(&m_config, B9600) < 0)
                             {
                                 throw BaudRateError("Error setting I/O Speed to 9600");
                             }
                             break;
                         case 19200:
-                            if (cfsetispeed(&m_config, B19200) < 0 || cfsetospeed(&m_config, B19200) < 0)
+                            if (::cfsetispeed(&m_config, B19200) < 0 || ::cfsetospeed(&m_config, B19200) < 0)
                             {
                                 throw BaudRateError("Error setting I/O Speed to 19200");
                             }
                             break;
                         case 38400:
-                            if (cfsetispeed(&m_config, B38400) < 0 || cfsetospeed(&m_config, B38400) < 0)
+                            if (::cfsetispeed(&m_config, B38400) < 0 || ::cfsetospeed(&m_config, B38400) < 0)
                             {
                                 throw BaudRateError("Error setting I/O Speed to 38400");
                             }
                             break;
                         case 76800:
-                            if (cfsetispeed(&m_config, B76800) < 0 || cfsetospeed(&m_config, B76800) < 0)
+                            if (::cfsetispeed(&m_config, B76800) < 0 || ::cfsetospeed(&m_config, B76800) < 0)
                             {
                                 throw BaudRateError("Error setting I/O Speed to 76800");
                             }
                             break;
                         case 115200:
-                            if (cfsetispeed(&m_config, B115200) < 0 || cfsetospeed(&m_config, B115200) < 0)
+                            if (::cfsetispeed(&m_config, B115200) < 0 || ::cfsetospeed(&m_config, B115200) < 0)
                             {
                                 throw BaudRateError("Error setting I/O Speed to 115200");
                             }
                             break;
                         case 153600:
-                            if (cfsetispeed(&m_config, B153600) < 0 || cfsetospeed(&m_config, B153600) < 0)
+                            if (::cfsetispeed(&m_config, B153600) < 0 || ::cfsetospeed(&m_config, B153600) < 0)
                             {
                                 throw BaudRateError("Error setting I/O Speed to 153600");
                             }
                             break;
                         case 307200:
-                            if (cfsetispeed(&m_config, B307200) < 0 || cfsetospeed(&m_config, B307200) < 0)
+                            if (::cfsetispeed(&m_config, B307200) < 0 || ::cfsetospeed(&m_config, B307200) < 0)
                             {
                                 throw BaudRateError("Error setting I/O Speed to 307200");
                             }
                             break;
                         case 614400:
-                            if (cfsetispeed(&m_config, B614400) < 0 || cfsetospeed(&m_config, B614400) < 0)
+                            if (::cfsetispeed(&m_config, B614400) < 0 || ::cfsetospeed(&m_config, B614400) < 0)
                             {
                                 throw BaudRateError("Error setting I/O Speed to 614400");
                             }
                             break;
                         case 1228800:
-                            if (cfsetispeed(&m_config, B1228800) < 0 || cfsetospeed(&m_config, B1228800) < 0)
+                            if (::cfsetispeed(&m_config, B1228800) < 0 || ::cfsetospeed(&m_config, B1228800) < 0)
                             {
                                 throw BaudRateError("Error setting I/O Speed to 1228800");
                             }
@@ -168,7 +169,7 @@ namespace rip
                     }
 
                     // Finally apply the configuration
-                    if (tcsetattr(m_fd, TCSAFLUSH, &m_config) < 0)
+                    if (::tcsetattr(m_fd, TCSAFLUSH, &m_config) < 0)
                     {
                         throw OpenError("Error set attr\n");
                     }
@@ -178,7 +179,7 @@ namespace rip
                 {
                     if (m_fd)
                     {
-                        close(m_fd);
+                        ::close(m_fd);
                         m_fd = 0;
                     }
                 }
@@ -187,18 +188,18 @@ namespace rip
                 {
                     if (length < 1)
                     {
-                        throw ReadError("Length must be 1 or greater");
+                        throw SerialReadError("Length must be 1 or greater");
                     }
 
                     if (!m_fd)
                     {
-                        open()
+                        ::open()
                     }
 
                     uint8_t* buffer = new uint8_t[length];
-                    if (read(m_fd, buffer, length) != length)
+                    if (::read(m_fd, buffer, length) != length)
                     {
-                        throw ReadError(fmt::format("I2C read error. Address: {} Device: {}\n", m_slave_address, m_device));
+                        throw SerialReadError(fmt::format("Serial read error. Address: {} Device: {}\n", m_slave_address, m_device));
                     }
 
                     return std::vector<uint8_t>(buffer, buffer + length);
@@ -210,19 +211,19 @@ namespace rip
                     size_t length = message.size();
                     if (length < 1)
                     {
-
+                      throw IReadError("Length must be 1 or greater");
                     }
 
                     if (!m_fd)
                     {
-                        open();
+                        ::open();
                     }
 
                     // The spec guarantees that vectors store their elements contiguously
                     // http://www.open-std.org/jtc1/sc22/wg21/docs/lwg-defects.html#69
                     if (write(fd, &message[0], length) != length)
                     {
-                        throw WriteError("I2C write error");
+                        throw SerialWriteError("Serial write error");
                     }
                 }
             } // serial
