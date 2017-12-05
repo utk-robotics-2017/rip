@@ -3,12 +3,14 @@
 
 namespace rip
 {
-    namespace utilites
+    namespace utilities
     {
         namespace pins
         {
             namespace gpio
             {
+
+                // use as DigitalPinValue::kLow
                 enum class DigitalPinValue
                 {
                     kLow = 0,
@@ -22,24 +24,32 @@ namespace rip
                     kInput
                 };
 
-                /**
-                 *
-                 */
-                void setPinMode(uint8_t pin, DigitalPinMode mode);
+                class Gpio {
+                public:
+                    /**
+                     *
+                     */
+                    Gpio();
 
-                /**
-                 * [digitalWrite description]
-                 * @param pin   [description]
-                 * @param value [description]
-                 */
-                void digitalWrite(uint8_t pin, DigitalPinValue value);
+                    /**
+                     *
+                     */
+                    void setPinMode(uint8_t pin, DigitalPinMode mode);
 
-                /**
-                 * [digitalRead description]
-                 * @param  pin [description]
-                 * @return     [description]
-                 */
-                DigitalPinValue digitalRead(uint8_t pin);
+                    /**
+                     * [digitalWrite description]
+                     * @param pin   [description]
+                     * @param value [description]
+                     */
+                    void digitalWrite(uint8_t pin, DigitalPinValue value);
+
+                    /**
+                     * [digitalRead description]
+                     * @param  pin [description]
+                     * @return     [description]
+                     */
+                    DigitalPinValue digitalRead(uint8_t pin);
+                };
             } // gpio
         } // pins
     } // utilities

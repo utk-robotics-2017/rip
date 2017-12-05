@@ -8,11 +8,11 @@
 #include "exceptions.hpp"
 #include "gpio.hpp"
 
-std::ostream& operator<<(std::ostream& estream, const rip::pins::gpio::DigitalPinValue& pinvalue) {
-    if (pinvalue == rip::pins::gpio::DigitalPinValue::kLow) {
+std::ostream& operator<<(std::ostream& estream, const rip::utilities::pins::gpio::DigitalPinValue& pinvalue) {
+    if (pinvalue == rip::utilities::pins::gpio::DigitalPinValue::kLow) {
         estream << "0";
     }
-    else if (pinvalue == rip::pins::gpio::DigitalPinValue::kHigh) {
+    else if (pinvalue == rip::utilities::pins::gpio::DigitalPinValue::kHigh) {
         estream << "1";
     }
 
@@ -27,7 +27,7 @@ namespace rip
         {
             namespace gpio
             {
-                void setPinMode(uint8_t pin, DigitalPinMode mode)
+                void Gpio::setPinMode(uint8_t pin, DigitalPinMode mode)
                 {
                     std::ofstream file ("/sys/class/gpio/export", std::ofstream::out);
                     if (file.fail() || !file.is_open())
@@ -55,7 +55,7 @@ namespace rip
                     file.close();
                 }
 
-                void digitalWrite(uint8_t pin, DigitalPinValue value)
+                void Gpio::digitalWrite(uint8_t pin, DigitalPinValue value)
                 {
                     std::ofstream file(fmt::format("/sys/class/gpio/gpio{}/value", pin));
                     if (file.fail() || !file.is_open())
@@ -67,7 +67,7 @@ namespace rip
                     file.close();
                 }
 
-                DigitalPinValue digitalRead(uint8_t pin)
+                DigitalPinValue Gpio::digitalRead(uint8_t pin)
                 {
                     std::ifstream file(fmt::format("/sys/class/gpio/gpio{}/value", pin));
                     if (file.fail() || !file.is_open())

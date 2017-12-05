@@ -35,7 +35,7 @@ namespace rip
                 {
                     if (m_fd)
                     {
-                        close(fd);
+                        ::close(m_fd);
                         m_fd = 0;
                     }
                 }
@@ -53,7 +53,7 @@ namespace rip
                         throw SlaveAddressNotSet();
                     }
 
-                    if ((m_fd = open(m_device.c_str(), O_RDWR)) < 0)
+                    if ((m_fd = ::open(m_device.c_str(), O_RDWR)) < 0)
                     {
                         throw OpenningError(fmt::format("Error opening {}\n", m_device));
                     }

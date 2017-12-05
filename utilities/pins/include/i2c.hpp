@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include <stdint.h>
+#include <unistd.h>
 
 namespace rip
 {
@@ -88,7 +89,7 @@ namespace rip
                      * [open description]
                      * @return [description]
                      */
-                    int open();
+                    void open();
 
                     /**
                      * [close description]
