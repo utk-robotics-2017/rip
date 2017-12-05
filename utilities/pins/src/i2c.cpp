@@ -1,9 +1,13 @@
 #include <stdint.h>
 #include <iostream>
 #include <fstream>
+#include <unistd.h>
+#include <fcntl.h>
+#include <sys/ioctl.h>
 
 #include "exceptions.hpp"
 #include "i2c.hpp"
+#include "fmt/format.h"
 
 #include <linux/i2c-dev.h>
 
@@ -40,7 +44,7 @@ namespace rip
                 {
                     if (m_fd)
                     {
-                        close(m_fd);
+                        ::close(m_fd);
                         m_fd = 0;
                     }
                 }
@@ -58,14 +62,14 @@ namespace rip
                         throw SlaveAddressNotSet();
                     }
 
-                    if ((m_fd = open(m_device.c_str(), I2C_RDWR)) < 0)
+                    if ((m_fd = ::open(m_device.c_str(), I2C_RDWR)) < 0)
                     {
                         throw FileAccessError(fmt::format("Error opening {}\n", m_device));
                     }
 
-                    if (ioctl(fd, kI2CSlave, m_slave_address) < 0)
+                    if (::ioctl(m_fd, I2C_SLAVE, m_slave_address) < 0)
                     {
-                        throw BadAddressError(fmt::format("Error with address {}\n", m_slave_address))
+                        throw BadAddressError(fmt::format("Error with address {}\n", m_slave_address));
                     }
                 }
 
@@ -95,11 +99,11 @@ namespace rip
 
                     if (!m_fd)
                     {
-                        open()
+                        open();
                     }
 
                     uint8_t* buffer = new uint8_t[length];
-                    if (read(m_fd, buffer, length) != length)
+                    if (::read(m_fd, buffer, length) != length)
                     {
                         throw I2CReadError(fmt::format("I2C read error. Address: {} Device: {}\n", m_slave_address, m_device));
                     }
@@ -116,16 +120,16 @@ namespace rip
 
                     if (!m_fd)
                     {
-                        open()
+                        open();
                     }
 
-                    if (write(m_fd, &register_address, 1) != 1)
+                    if (::write(m_fd, &register_address, 1) != 1)
                     {
                         throw I2CWriteError("I2C write error\n");
                     }
 
                     uint8_t* buffer = new uint8_t[length];
-                    if (read(m_fd, buffer, length) != length)
+                    if (::read(m_fd, buffer, length) != length)
                     {
                         throw I2CReadError(fmt::format("I2C read error. Address: {} Device: {}\n", m_slave_address, m_device));
                     }
@@ -147,11 +151,12 @@ namespace rip
                         open();
                     }
 
-                    message.insert(0, register_address);
+                    message.insert(message.begin(), 0, register_address);
+                    //message.insert(0, register_address);
 
                     // The spec guarantees that vectors store their elements contiguously
                     // http://www.open-std.org/jtc1/sc22/wg21/docs/lwg-defects.html#69
-                    if (write(m_fd, &message[0], length) != length)
+                    if (::write(m_fd, &message[0], length) != length)
                     {
                         throw I2CWriteError("Write returned non-zero on call");
                     }
@@ -173,7 +178,7 @@ namespace rip
 
                     // The spec guarantees that vectors store their elements contiguously
                     // http://www.open-std.org/jtc1/sc22/wg21/docs/lwg-defects.html#69
-                    if (write(m_fd, &message[0], length) != length)
+                    if (::write(m_fd, &message[0], length) != length)
                     {
                         throw I2CWriteError("Write returned non-zero exit code");
                     }
