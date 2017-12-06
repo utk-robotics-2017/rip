@@ -1,5 +1,13 @@
 #include "serial.hpp"
 #include <fmt/format.h>
+#include <sys/ioctl.h>
+
+
+// TODO: !!!!!!!!!!!!!!!
+// fix the throws
+// for the love of everything
+// FIX. THE. THROWS.
+
 
 namespace rip
 {
@@ -25,27 +33,27 @@ namespace rip
                     open();
                 }
 
-                Serial::open()
+                void Serial::open()
                 {
                     if (m_fd)
                     {
-                        ::close();
+                        close();
                         m_fd = 0;
                     }
 
-                    if ((m_fd = open(m_device.c_str(), O_RDWR | O_NOCTTY | O_NDELAY)) < 0)
+                    if ((m_fd = ::open(m_device.c_str(), O_RDWR | O_NOCTTY | O_NDELAY)) < 0)
                     {
-                        throw OpenError(fmt::format("Error opening {}\n", m_device));
+                        //throw OpenError(fmt::format("Error opening {}\n", m_device));
                     }
 
                     if (!isatty(m_fd))
                     {
-                        throw OpenError("Error isatty(fd)\n");
+                        //throw OpenError("Error isatty(fd)\n");
                     }
 
                     if (tcgetattr(m_fd, &m_config) < 0)
                     {
-                        throw OpenError("Error tcgetattr");
+                        //throw OpenError("Error tcgetattr");
                     }
 
                     // Input flags - Turn off input processing, convert break to null byte,
@@ -128,44 +136,14 @@ namespace rip
                                 throw BaudRateError("Error setting I/O Speed to 38400");
                             }
                             break;
-                        case 76800:
-                            if (::cfsetispeed(&m_config, B76800) < 0 || ::cfsetospeed(&m_config, B76800) < 0)
-                            {
-                                throw BaudRateError("Error setting I/O Speed to 76800");
-                            }
-                            break;
                         case 115200:
                             if (::cfsetispeed(&m_config, B115200) < 0 || ::cfsetospeed(&m_config, B115200) < 0)
                             {
                                 throw BaudRateError("Error setting I/O Speed to 115200");
                             }
                             break;
-                        case 153600:
-                            if (::cfsetispeed(&m_config, B153600) < 0 || ::cfsetospeed(&m_config, B153600) < 0)
-                            {
-                                throw BaudRateError("Error setting I/O Speed to 153600");
-                            }
-                            break;
-                        case 307200:
-                            if (::cfsetispeed(&m_config, B307200) < 0 || ::cfsetospeed(&m_config, B307200) < 0)
-                            {
-                                throw BaudRateError("Error setting I/O Speed to 307200");
-                            }
-                            break;
-                        case 614400:
-                            if (::cfsetispeed(&m_config, B614400) < 0 || ::cfsetospeed(&m_config, B614400) < 0)
-                            {
-                                throw BaudRateError("Error setting I/O Speed to 614400");
-                            }
-                            break;
-                        case 1228800:
-                            if (::cfsetispeed(&m_config, B1228800) < 0 || ::cfsetospeed(&m_config, B1228800) < 0)
-                            {
-                                throw BaudRateError("Error setting I/O Speed to 1228800");
-                            }
-                            break;
-                        default:
-                            throw BaudRateError(fmt::format("Error: unknown baud rate {}", m_baudrate);
+                        default: break;
+                            //throw BaudRateError(fmt::format("Error: unknown baud rate {}", m_baudrate);
                     }
 
                     // Finally apply the configuration
@@ -175,7 +153,7 @@ namespace rip
                     }
                 }
 
-                Serial::close()
+                void Serial::close()
                 {
                     if (m_fd)
                     {
@@ -188,18 +166,19 @@ namespace rip
                 {
                     if (length < 1)
                     {
-                        throw SerialReadError("Length must be 1 or greater");
+                        //throw SerialReadError("Length must be 1 or greater");
                     }
 
                     if (!m_fd)
                     {
-                        ::open()
+                        open();
                     }
 
                     uint8_t* buffer = new uint8_t[length];
                     if (::read(m_fd, buffer, length) != length)
                     {
-                        throw SerialReadError(fmt::format("Serial read error. Address: {} Device: {}\n", m_slave_address, m_device));
+                        // TODO: FIGURE OUT WHERE THE m_slave_address and m_device variables came from
+                        //throw SerialReadError(fmt::format("Serial read error. Address: {} Device: {}\n", m_slave_address, m_device));
                     }
 
                     return std::vector<uint8_t>(buffer, buffer + length);
@@ -211,19 +190,19 @@ namespace rip
                     size_t length = message.size();
                     if (length < 1)
                     {
-                      throw IReadError("Length must be 1 or greater");
+                      //throw IReadError("Length must be 1 or greater");
                     }
 
                     if (!m_fd)
                     {
-                        ::open();
+                        open();
                     }
 
                     // The spec guarantees that vectors store their elements contiguously
                     // http://www.open-std.org/jtc1/sc22/wg21/docs/lwg-defects.html#69
-                    if (write(fd, &message[0], length) != length)
+                    if (::write(m_fd, &message[0], length) != length)
                     {
-                        throw SerialWriteError("Serial write error");
+                        //throw SerialWriteError("Serial write error");
                     }
                 }
             } // serial

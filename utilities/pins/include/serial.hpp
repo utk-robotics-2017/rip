@@ -8,6 +8,8 @@
 #include <fcntl.h>
 #include <termios.h>
 
+#include "exceptions.hpp"
+
 namespace rip
 {
     namespace utilities
@@ -58,7 +60,7 @@ namespace rip
                 private:
                     void open();
                     void close();
-                    struct terminos m_config;
+                    struct termios m_config;
                     std::string m_device;
                     long m_baudrate;
                     int m_fd;
