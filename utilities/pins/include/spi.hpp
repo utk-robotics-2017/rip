@@ -5,6 +5,14 @@
 #include <string>
 #include <stdint.h>
 
+#include <fcntl.h>
+#include <unistd.h>
+
+#include <sys/ioctl.h>
+#include <linux/ioctl.h>
+#include <linux/spi/spidev.h>
+#include "exceptions.hpp"
+
 namespace rip
 {
     namespace utilities
@@ -20,6 +28,11 @@ namespace rip
                 public:
                     Spi();
 
+                    Spi(const std::string& device);
+                    ~Spi();
+
+                    //add description
+                    void setCS(int cs);
                     /**
                      * [setMode description]
                      * @param mode [description]
@@ -84,8 +97,8 @@ namespace rip
                 private:
                     void open();
                     void close();
-
                     std::string m_device;
+                    const std::string kDefaultDevice = "/dev/ttyS0";//assuming use of mini UART
                     int m_fd;
                 };
             } // spi

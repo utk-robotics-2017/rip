@@ -18,14 +18,7 @@ namespace rip
              * @brief Used when we don't get a proper read from a digital input (ex. not 0|1)
              */
             NEW_EX(DigitalReadError);
-            /* @class BaudRateError
-             * @brief Used when an invalid baud rate is used.
-             */
-            NEW_EX(BaudRateError);
-            /* @class OpenError
-             * @brief Open failure
-             */
-            NEW_EX(OpenError);
+
             namespace i2c
             {
                 /* @class I2CWriteError
@@ -49,6 +42,44 @@ namespace rip
                 NEW_EX(BadAddressError);
 
             }
+
+            namespace serial
+            {
+              /* @class BaudRateError
+                 * @brief Used when an invalid baud rate is used.
+                 */
+                NEW_EX(BaudRateError);
+                /* @class SerialOpenError
+                 * @brief Open failure
+                 */
+                NEW_EX(SerialOpenError);
+                /* @class SerialReadError
+                 * @brief Issue reading serial info.
+                 */
+                NEW_EX(SerialReadError);
+                 /* @class SerialWriteError
+                  * @brief Issue writing serial info.
+                  */
+                NEW_EX(SerialWriteError);
+            }
+
+            namespace spi
+            {
+                /* @class SPIOpenError
+                 * @brief An issue opening SPI
+                 */
+                NEW_EX(SPIOpenError);
+                /* @class SPIReadError
+                 * @brief An issue reading (SPI)
+                 */
+                NEW_EX(SPIReadError);
+                /* @class SPIReadError
+                 * @brief An issue writing (SPI)
+                 */
+                NEW_EX(SPIWriteError);
+
+            }
+
         } // pins
     } // utilities
 } // rip

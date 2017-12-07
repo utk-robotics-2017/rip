@@ -2,6 +2,7 @@
 
 #include <sys/ioctl.h>
 #include <linux/spi/spidev.h>
+#include <fmt/format.h>
 
 namespace rip
 {
@@ -26,16 +27,15 @@ namespace rip
                     if (m_fd)
                     {
                         close();
-                        m_fd = 0;
                     }
 
-                    if ((m_fd = open(m_device.c_str(), O_RDWR)) < 0)
+                    if ((m_fd = ::open(m_device.c_str(), O_RDWR)) < 0)
                     {
-                        system("modprobe spi-bcm2835");
-                        sleep(1);
-                        if ((m_fd = open(m_device.c_str(), O_RDWR)) < 0)
+                        ::system("modprobe spi-bcm2835");
+                        ::sleep(1);
+                        if ((m_fd = ::open(m_device.c_str(), O_RDWR)) < 0)
                         {
-                            throw OpenningError(fmt::format("Error opening {}\n", m_device));
+                            throw SPIOpenError(fmt::format("Error opening {}\n", m_device));
                         }
                     }
                 }
@@ -49,92 +49,95 @@ namespace rip
                 {
                     if (m_fd)
                     {
-                        close(m_fd);
+                        ::close(m_fd);
+                        m_fd = 0;
                     }
                 }
 
                 void Spi::setCS(int cs)
                 {
                     m_device = fmt::format("/dev/spidev0.{}", cs);
-                    if ((m_fd = open(m_device.c_str(), O_RDWR)) < 0)
+                    std::string temp;
+                    if ((m_fd = ::open(m_device.c_str(), O_RDWR)) < 0)
                     {
-                        system(fmt::format("modprobe spi-bcm2835 cs_pin={}", cs));
-                        sleep(1);
-                        if ((m_fd = open(m_device.c_str(), O_RDWR)) < 0)
+                        temp = fmt::format("modprobe spi-bcm2835 cs_pin={}", cs);
+                        ::system(temp.c_str());
+                        ::sleep(1);
+                        if ((m_fd = ::open(m_device.c_str(), O_RDWR)) < 0)
                         {
-                            throw
+                            throw SPIWriteError("Error with setting cs");
                         }
                     }
                 }
 
                 void Spi::setMode(uint8_t mode)
                 {
-                    if (ioctl(m_fd, SPI_IOC_WR_MODE, &mode) < 0)
+                    if (::ioctl(m_fd, SPI_IOC_WR_MODE, &mode) < 0)
                     {
-                        throw SpiError(fmt::format("Error with setting mode {}", mode));
+                        throw SPIWriteError(fmt::format("Error with setting mode {}", mode));
                     }
                 }
 
                 uint8_t Spi::getMode()
                 {
                     __u8 mode;
-                    if (iotcl(m_fd, SPI_IOC_RD_MODE, &mode) < 0)
+                    if (::ioctl(m_fd, SPI_IOC_RD_MODE, &mode) < 0)
                     {
-                        throw SpiError(fmt::format("Error with reading mode"));
+                        throw SPIReadError(fmt::format("Error with reading mode"));
                     }
                     return mode;
                 }
 
                 void Spi::setLSB(uint8_t lsb)
                 {
-                    if (ioctl(m_fd, SPI_IOC_WR_LSB_FIRST, &lsb) < 0)
+                    if (::ioctl(m_fd, SPI_IOC_WR_LSB_FIRST, &lsb) < 0)
                     {
-                        throw SpiError(fmt::format("Error with setting lsb {}", lsb));
+                        throw SPIWriteError(fmt::format("Error with setting lsb {}", lsb));
                     }
                 }
 
                 uint8_t Spi::getLSB()
                 {
                     __u8 lsb;
-                    if (iotcl(m_fd, SPI_IOC_RD_LSB_FIRST, &lsb) < 0)
+                    if (::ioctl(m_fd, SPI_IOC_RD_LSB_FIRST, &lsb) < 0)
                     {
-                        throw SpiError(fmt::format("Error with reading lsb"));
+                        throw SPIReadError(fmt::format("Error with reading lsb"));
                     }
                     return lsb;
                 }
 
                 void Spi::setLength(uint8_t bits)
                 {
-                    if (ioctl(m_fd, SPI_IOC_WR_BITS_PER_WORD, &bits) < 0)
+                    if (::ioctl(m_fd, SPI_IOC_WR_BITS_PER_WORD, &bits) < 0)
                     {
-                        throw SpiError(fmt::format("Error with setting length {}", bits));
+                        throw SPIWriteError(fmt::format("Error with setting length {}", bits));
                     }
                 }
 
                 uint8_t Spi::getLength()
                 {
                     __u8 bits;
-                    if (iotcl(m_fd, SPI_IOC_RD_BITS_PER_WORD, &bits) < 0)
+                    if (::ioctl(m_fd, SPI_IOC_RD_BITS_PER_WORD, &bits) < 0)
                     {
-                        throw SpiError(fmt::format("Error with reading length"));
+                        throw SPIReadError(fmt::format("Error with reading length"));
                     }
                     return bits;
                 }
 
                 void Spi::setSpeed(uint8_t speed)
                 {
-                    if (ioctl(m_fd, SPI_IOC_WR_MAX_SPEED_HZ, &speed) < 0)
+                    if (::ioctl(m_fd, SPI_IOC_WR_MAX_SPEED_HZ, &speed) < 0)
                     {
-                        throw SpiError(fmt::format("Error with setting speed {}", speed));
+                        throw SPIWriteError(fmt::format("Error with setting speed {}", speed));
                     }
                 }
 
-                uint8_t Spi::getLength()
+                uint8_t Spi::getSpeed()
                 {
                     __u8 speed;
-                    if (iotcl(m_fd, SPI_IOC_RD_MAX_SPEED_HZ, &speed) < 0)
+                    if (::ioctl(m_fd, SPI_IOC_RD_MAX_SPEED_HZ, &speed) < 0)
                     {
-                        throw SpiError(fmt::format("Error with reading speed"));
+                        throw SPIReadError(fmt::format("Error with reading speed"));
                     }
                     return speed;
                 }
@@ -143,18 +146,18 @@ namespace rip
                 {
                     if (length < 1)
                     {
-                        throw ReadError("Length must be 1 or greater");
+                        throw SPIReadError("Length must be 1 or greater");
                     }
 
                     if (!m_fd)
                     {
-                        open()
+                        open();
                     }
 
                     uint8_t* buffer = new uint8_t[length];
-                    if (read(m_fd, buffer, length) != length)
+                    if (::read(m_fd, buffer, length) != length)
                     {
-                        throw ReadError(fmt::format("SPI read error. Device: {}\n", m_device));
+                        throw SPIReadError(fmt::format("SPI read error. Device: {}\n", m_device));
                     }
 
                     return std::vector<uint8_t>(buffer, buffer + length);
@@ -169,15 +172,15 @@ namespace rip
                     }
 
                     spi_ioc_transfer xfer;
-                    xfer.tx_buf = &message[0];
+                    xfer.tx_buf = (__u64)message[0];
                     xfer.len = length;
-                    xfer.rx_bug = 0;
+                    xfer.rx_buf = 0;
                     xfer.delay_usecs = 0;
                     xfer.speed_hz = 0;
                     xfer.bits_per_word = 0;
-                    if (ioctl(m_fd, SPI_IOC_MESSAGE(1), &xfer) < 0)
+                    if (::ioctl(m_fd, SPI_IOC_MESSAGE(1), &xfer) < 0)
                     {
-                        throw WriteError();
+                        throw SPIWriteError();
                     }
                 }
             }
