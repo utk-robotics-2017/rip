@@ -22,6 +22,7 @@ namespace rip
                     , m_baudrate(baudrate)
                     , m_fd(0)
                 {
+                    m_device = device;
                     open();
                 }
 

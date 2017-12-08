@@ -1,7 +1,7 @@
 #include <roboclaw.hpp>
 #include <iostream>
-#include <serial/serial.h>
 #include <inttypes.h>
+#include <serial.hpp>
 using namespace rip::utilities::roboclaw;
 /*
 Interactive diagnostic tests, specifically for the Roboclaw's on the demo bot (for now)
@@ -21,7 +21,7 @@ int main(int argc, char **argv)
     int64_t d;
     //Roboclaw testClawLeft(config2);
     Roboclaw testClawRight(config1);
-
+    std::cout<< "got here";
     testClawRight.setBaudRate(115200);
     testClawRight.setPort("/dev/ttyS0");
 
