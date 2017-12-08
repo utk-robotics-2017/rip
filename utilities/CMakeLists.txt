@@ -14,13 +14,15 @@ add_subdirectory(serial)
 
 # custom
 message("Building custom utilities")
+add_subdirectory(exceptions_base)
 add_subdirectory(pathman)
 add_subdirectory(units)
 add_subdirectory(googletest_rip_macros)
-
+add_subdirectory(pins)
 if(RIP OR RIPCOM)
     add_subdirectory(cmd_messenger)
     add_subdirectory(roboclaw)
+
 else()
     if(CMD_MESSENGER)
         add_subdirectory(cmd_messenger)
@@ -29,4 +31,8 @@ else()
     if(ROBOCLAW)
         add_subdirectory(roboclaw)
     endif()
+
+    #if(PINS)
+    	#add_subdirectory(pins)
+    #endif()
 endif()

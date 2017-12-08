@@ -9,7 +9,7 @@
 
 namespace rip
 {
-    namespace utilties
+    namespace utilities
     {
         namespace units
         {
