@@ -30,6 +30,8 @@ elif [[ $BRANCH == "communication/"* ]]; then
 	lcov --remove coverage.info '/utilities/*' --output-file coverage.info # filter out utils
 elif [[ $BRANCH == "appendages/"* ]]; then
 	lcov --remove coverage.info '/utilities/*' --output-file coverage.info # filter out utils
+elif [[ $BRANCH == "pins/"* ]]; then
+	echo "TODO: lcov for pins"
 fi
 
 lcov --list coverage.info #debug info

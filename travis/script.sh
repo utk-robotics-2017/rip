@@ -45,6 +45,10 @@ elif [[ $BRANCH == "appendages/"* ]]; then
 	cd appendages
 	./appendages_test
 	cd ../../appendages
+elif [[ $BRANCH == "pins/"* ]]; then
+	cd utilities/pins
+	./pins_test
+	cd ../../utilities/pins
 fi
 
 cppcheck src/*.cpp include/*.hpp

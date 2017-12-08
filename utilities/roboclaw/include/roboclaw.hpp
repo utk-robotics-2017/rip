@@ -26,14 +26,14 @@
 #include <tuple>
 
 #include <json.hpp>
-#include <serial/serial.h>
+//#include <serial/serial.h>
+#include <pins>
 #include <units.hpp>
 
 #include "exceptions.hpp"
 #include "motor_dynamics.hpp"
 #include "pid_parameters.hpp"
 #include "config.hpp"
-
 
 namespace rip
 {

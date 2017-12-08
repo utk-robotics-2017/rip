@@ -1,14 +1,17 @@
 cmake_minimum_required(VERSION 3.1)
-project(roboclaw)
+message("Building pins")
+project(pins)
 
 file(GLOB_RECURSE ${PROJECT_NAME}_SOURCES src/*.cpp)
+
 add_library(${PROJECT_NAME} ${${PROJECT_NAME}_SOURCES})
+
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
 if(ENABLE_TESTING)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage")
 endif()
 target_include_directories(${PROJECT_NAME} PUBLIC include)
-target_link_libraries(${PROJECT_NAME} json serial units fmt exceptions_base pins)
+target_link_libraries(${PROJECT_NAME} fmt spdlog exceptions_base)
 
 if(ENABLE_TESTING)
 	# Get test source files and test data files
@@ -38,12 +41,6 @@ if(ENABLE_TESTING)
 	if(CMAKE_COMPILER_IS_GNUCXX)
 		include(CodeCoverage)
 		setup_target_for_coverage(${PROJECT_NAME}_coverage ${PROJECT_NAME}_test coverage)
-
-	endif()
-	if(ENABLE_HARDWARE)
-		add_executable(test_hardware ${${PROJECT_NAME}_TEST_SOURCES} ${copiedTestData})
-		set_property(TARGET test_hardware PROPERTY CXX_STANDARD 11)
-		target_link_libraries(test_hardware ${PROJECT_NAME})
 
 	endif()
 endif()
