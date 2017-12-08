@@ -16,6 +16,7 @@ namespace rip
                 Read will supply data to the Object given by Mock 1 unsigned char at a time.
                 Write will receive the data sent by the Roboclaw object.
                 */
+                /*wjwoodman serial
                 size_t MockRoboclaw::write(const std::string& message)
                 {
                     m_last_sent = message;
@@ -26,6 +27,22 @@ namespace rip
                 {
                   m_last_cmd = data;
                   return data.size();
+                }
+
+                std::string MockRoboclaw::read(size_t n)
+                {
+                    return m_response;
+                }
+                */
+                //pins serial
+                void MockRoboclaw::write(std::vector<uint8_t> message)
+                {
+                  m_last_cmd = message;
+                }
+
+                std::vector<uint8_t> MockRoboclaw::read(size_t length)
+                {
+                    return m_cresponse;
                 }
 
                 std::string MockRoboclaw::getLastSent()
@@ -43,10 +60,7 @@ namespace rip
                     return m_cresponse;
                 }
 
-                std::string MockRoboclaw::read(size_t n)
-                {
-                    return m_response;
-                }
+
                 /*
                 size_t
                 MockRoboclaw::read(uint8_t *buffer, size_t size)

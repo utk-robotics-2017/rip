@@ -1133,6 +1133,9 @@ namespace rip
                     testClaw->getConfig();
                     testClaw->setConfig();
                     testClaw->setPinModes();
+                    testClaw->readBufferLen()
+                    testClaw->readBufferLens()
+
                     */
                 }
 

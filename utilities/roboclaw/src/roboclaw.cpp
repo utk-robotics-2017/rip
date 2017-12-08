@@ -686,11 +686,35 @@ namespace rip
                 return m_crc;
             }
 
+            std::vector<uint8_t> Roboclaw::readBufferLens()
+            {
+                /*
+                Max number is 64. 128 if the buffer is empty.
+                0 if the last command is being executed.
+                */
+                std::vector<uint8_t> response = readN(2, Command::kGetBuffers);
+                return response;
+            }
+            uint8_t Roboclaw::readBufferLen(Motor motor)
+            {
+                /*
+                Max number is 64. 128 if the buffer is empty.
+                0 if the last command is being executed.
+                */
+                std::vector<uint8_t> response = readN(2, Command::kGetBuffers);
+                switch (motor)
+                {
+                    case Motor::kM1:
+                        return response[0];
+                    case Motor::kM2:
+                        return response[1];
+                }
+            }
+
             bool Roboclaw::readStatus(Roboclaw::Status s)
             {
-                std::vector<uint8_t> response = readN(2, Command::kGetTemp);
+                std::vector<uint8_t> response = readN(2, Command::kGetError);
                 uint16_t value = static_cast<uint16_t>((response[0] << 8) + response[1]);
-                \
                 uint16_t status = static_cast<uint16_t>(s);
 
                 //ASSUMPTION MADE: If there is any error, status:normal is false.

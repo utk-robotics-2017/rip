@@ -49,14 +49,25 @@ namespace rip
                      * @param length Number of bytes to read
                      * @returns The specified number of bytes received from the other device
                      */
-                    std::vector<uint8_t> read(size_t length = 1);
-
+                    virtual std::vector<uint8_t> read(size_t length = 1);
 
                     /**
                      * Sends a message to the other device
                      * @param message The message to send
                      */
-                    void write(std::vector<uint8_t> message);
+                    virtual void write(std::vector<uint8_t> message);
+
+                    /*
+                     * Sets the baud rate
+                     * @param The baud rate
+                     */
+                     void setBaudRate(int baud);
+                     /*
+                      * Sets the port/device
+                      * @param device The port/device name.
+                      */
+                     void setPort(std::string device);
+
                 private:
                     void open();
                     void close();

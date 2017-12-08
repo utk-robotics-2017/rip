@@ -135,6 +135,7 @@ namespace rip
                             }
                             break;
                         default:
+                            //Perhaps we should set to default here instead of throwing?
                             throw BaudRateError(fmt::format("Error: unknown baud rate {}", m_baudrate));
                     }
 
@@ -152,6 +153,18 @@ namespace rip
                         ::close(m_fd);
                         m_fd = 0;
                     }
+                }
+
+                void Serial::setBaudRate(int baud)
+                {
+                    m_baudrate = baud;
+                    open();
+                }
+
+                void Serial::setPort(std::string device)
+                {
+                    m_device = device;
+                    open();
                 }
 
                 std::vector<uint8_t> Serial::read(size_t length)

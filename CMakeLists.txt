@@ -24,6 +24,9 @@ option(PINS "Build Pins" OFF)
 
 # Testing
 option(ENABLE_TESTING "Enable testing of the modules" OFF)
+# Diagnostics (hardware tests)
+
+option(ENABLE_DIAG "Enables hardware testing" OFF)
 
 LIST(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMakeModules)
 

@@ -27,7 +27,7 @@
 
 #include <json.hpp>
 //#include <serial/serial.h>
-#include <pins>
+#include <serial.hpp>
 #include <units.hpp>
 
 #include "exceptions.hpp"
@@ -48,7 +48,7 @@ namespace rip
              * @link http://www.ionmc.com/
              * @link https://www.pololu.com/category/124/roboclaw-motor-controllers
              */
-            class Roboclaw : public serial::Serial
+            class Roboclaw : public pins::serial::Serial
             {
             public:
                 enum class Motor
@@ -518,7 +518,16 @@ namespace rip
 
                 @returns Buffer length for motors 1 and 2
                 */
-                std::array<uint8_t, 2> readBufferLen();
+                std::vector<uint8_t> readBufferLens();
+                /*
+                @brief: reads the number of commands in the buffer for
+                both motors, returns the buffer for just the specified motor.
+                Send: [Address, 47]
+                Receive: [BufferM1, BufferM2, CRC(2 bytes)]
+
+                @returns Buffer length for motors 1 or 2
+                */
+                uint8_t readBufferLen(Motor motor);
 
                 enum class S3Modes
                 {
