@@ -15,6 +15,7 @@ namespace rip
             {
                 nlohmann::json j;
                 using Roboclaw = mocks::MockRoboclaw;
+                std::shared_ptr<Roboclaw> testClaw(new Roboclaw);
                 TEST(RoboclawCore, loadJson)
                 {
                     //test some types of variables that are not json obj
@@ -83,6 +84,7 @@ namespace rip
                     ASSERT_EQ(testClaw->getLastCmd().size(), 6);
                     testClaw->drive(Roboclaw::Motor::kM1, Roboclaw::kFullSpeedForward);
                     ASSERT_NO_THROW(testClaw->drive(Roboclaw::Motor::kM1, Roboclaw::kFullSpeedForward));
+
                 }
 
                 TEST(RoboclawCore, DriveM1Backward)
@@ -103,6 +105,7 @@ namespace rip
                     ASSERT_EQ(testClaw->getLastCmd().size(), 6);
                     //final test: given proper conditions, does not throw an exception
                     ASSERT_NO_THROW(testClaw->drive(Roboclaw::Motor::kM1, Roboclaw::kFullSpeedBackward));
+                    testClaw.reset();
                 }
 
                 TEST(RoboclawCore, DriveM2Forward)

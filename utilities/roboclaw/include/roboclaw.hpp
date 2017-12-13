@@ -26,8 +26,7 @@
 #include <tuple>
 
 #include <json.hpp>
-//#include <serial/serial.h>
-#include <serial.hpp>
+#include <serial.h>
 #include <units.hpp>
 
 #include "exceptions.hpp"
