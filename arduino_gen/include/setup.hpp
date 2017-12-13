@@ -42,8 +42,6 @@ namespace rip
             std::string toString(std::vector< std::shared_ptr<Appendage> > appendages) const;
 
         private:
-            //std::vector<SetupParameter> m_parameters;
-            //std::unique_ptr<Code> m_code;
         };
     } // arduinogen
 }

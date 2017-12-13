@@ -1,6 +1,8 @@
 #ifndef LOOP_HPP
 #define LOOP_HPP
 
+#include "code.hpp"
+
 #include <string>
 #include <vector>
 #include <memory>
@@ -20,7 +22,7 @@ namespace rip
          * @class Loop
          * @brief
          */
-        class Loop
+        class Loop : private Code
         {
         public:
             /**
@@ -36,7 +38,6 @@ namespace rip
             std::string toString(std::vector< std::shared_ptr<Appendage> > appendages);
 
         private:
-            std::string m_code;
         };
     } // namespace arduinogen
 }

@@ -1,6 +1,0 @@
-<loop>
-    <parameter name="GoodJob" parameter="YouKnowToIncludeCode" />
-    <code>
-        //Code Goes Here
-    </code>
-</loop>

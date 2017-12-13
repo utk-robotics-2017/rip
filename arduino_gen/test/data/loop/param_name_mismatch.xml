@@ -1,7 +1,0 @@
-<loop>
-    <parameter name="CorrectName" replacer="DoesNotMatter" />
-    <code>
-        $WrongName$
-        //The rest of the code doesn't matter
-    </code>
-</loop>

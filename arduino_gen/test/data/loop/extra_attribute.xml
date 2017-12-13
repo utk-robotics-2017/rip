@@ -1,6 +1,2 @@
-<loop attr="Extra">
-    <parameter name="AttrShouldNot" replacer="exist" />
-    <code>
-        //Code goes here
-    </code>
+<loop extra="attribute">
 </loop>

@@ -23,10 +23,10 @@ namespace rip
     {
         namespace test
         {
-            TEST(Setup_constructor, no_attributes_no_elements)
+            TEST(Setup_constructor, no_attributes)
             {
                 tinyxml2::XMLDocument doc;
-                ASSERT_EQ(loadXmlFile(doc, "test/data/setup/no_attributes_no_elements.xml", {"code", "setup"}), tinyxml2::XML_SUCCESS);
+                ASSERT_EQ(loadXmlFile(doc, "test/data/setup/no_attributes.xml", {"code", "setup"}), tinyxml2::XML_SUCCESS);
 
                 tinyxml2::XMLElement* setupElement = doc.FirstChildElement("setup");
                 ASSERT_NE(setupElement, nullptr);

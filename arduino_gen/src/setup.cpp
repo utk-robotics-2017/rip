@@ -17,40 +17,6 @@ namespace rip
         Setup::Setup(tinyxml2::XMLElement* xml)
             : Code(xml)
         {
-            /*
-            // Gets all of the parameter child elements, construct Parameters and store in the vector
-            for (const tinyxml2::XMLElement* ele : getElements("parameter"))
-            {
-                m_parameters.emplace_back(ele);
-            }
-
-            // Ensure there is only one code element, then process the code text
-            std::vector<const tinyxml2::XMLElement*> code_elements = getElements("code");
-            if (code_elements.size() == 1)
-            {
-                m_code = std::unique_ptr<Code>(new Code(code_elements[0]));
-            }
-            else
-            {
-                throw ElementException("Setup requires 1 code element");
-            }
-
-            // If there are any extra attributes, throw an exception
-            if (!isAttributesEmpty())
-            {
-                throw AttributeException(fmt::format("Extra attribute for Setup on line number {}",
-                                                     xml->GetLineNum()));
-            }
-            */
-
-            /*
-            // If there are any extra elements, throw an exception
-            if (!isElementsEmpty())
-            {
-                throw ElementException(fmt::format("Extra element for Setup on line number {}",
-                                                   xml->GetLineNum()));
-            }
-            */
         }
 
         std::string Setup::toString(std::vector< std::shared_ptr<Appendage> > appendages) const
@@ -80,7 +46,8 @@ namespace rip
 
                     if (!appendage->has(match))
                     {
-                        throw PatternNotFoundException(fmt::format("Appendage \"{}\" does not have the variable \"{}\"", appendage->getType(), match));
+                        throw PatternNotFoundException(fmt::format("Appendage \"{}\" does not have the variable \"{}\"",
+                            appendage->getType(), match));
                     }
 
                     while(str_iter != std::string::npos)

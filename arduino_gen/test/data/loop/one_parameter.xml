@@ -1,6 +1,0 @@
-<loop>
-    <parameter name="ThisNameIs" replacer="valid" />
-    <code>
-        //Code goes here
-    </code>
-</loop>
