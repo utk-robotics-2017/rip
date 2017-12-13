@@ -16,3 +16,6 @@
 [submodule "utilities/googletest"]
 	path = utilities/googletest
 	url = git@github.com:utk-robotics-2017/googletest.git
+[submodule "utilities/periphery"]
+	path = utilities/periphery
+	url = git@github.com:utk-robotics-2017/periphery.git
