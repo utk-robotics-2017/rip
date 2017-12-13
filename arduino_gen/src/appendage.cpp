@@ -41,6 +41,11 @@ namespace rip
             return get<std::string>("type");
         }
 
+        bool Appendage::has(std::string data_name) const
+        {
+            return m_data.find(data_name) != m_data.end();
+        }
+
         std::string Appendage::getString(std::string data_name) const
         {
 
@@ -62,7 +67,8 @@ namespace rip
             }
             else if(m_data[data_name].is_string())
             {
-                return fmt::format("\"{}\"", get<std::string>(data_name));
+                //return fmt::format("\"{}\"", get<std::string>(data_name));
+                return get<std::string>(data_name);
             }
             else
             {

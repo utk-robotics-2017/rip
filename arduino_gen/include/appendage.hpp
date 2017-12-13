@@ -38,6 +38,8 @@ namespace rip
              */
             std::string getType() const;
 
+            bool has(std::string data_name) const;
+
             /**
              * @brief Templated function that gets a values from the json
              *

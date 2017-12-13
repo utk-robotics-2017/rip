@@ -45,6 +45,10 @@ namespace rip
              */
             std::string toString(std::shared_ptr<Appendage> appendage) const;
 
+            const std::string& getName() const;
+
+            const std::string& getType() const;
+
         private:
             std::string m_name;
             std::string m_type;

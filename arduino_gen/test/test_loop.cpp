@@ -17,6 +17,7 @@ namespace rip
     {
         namespace test
         {
+            #if 0
             TEST(Loop_constructor, extra_attribute)
             {
                 /*nlohmann::json j;
@@ -59,6 +60,7 @@ namespace rip
                 ASSERT_NE(loopElement, nullptr);
                 ASSERT_THROW(loop=std::unique_ptr<Loop>(new Loop(loopElement)), ElementException);
             }
+            #endif
         }
     }
 }

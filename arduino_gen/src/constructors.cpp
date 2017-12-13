@@ -4,6 +4,7 @@
 #include <tinyxml2.h>
 
 #include "argument.hpp"
+#include "appendage.hpp"
 #include "exceptions.hpp"
 
 namespace rip
@@ -60,7 +61,16 @@ namespace rip
 
                 for(const Argument& argument : m_arguments)
                 {
-                    rv += argument.toString(appendage);
+                    if (appendage->isType(argument.getName(), "string"))
+                    {
+                        rv += fmt::format("\"{}\"", argument.toString(appendage));
+                    }
+                    else
+                    {
+                        rv += argument.toString(appendage);
+                    }
+
+                    rv += ", ";
                 }
 
                 // Remove last comma and add the end of the single constructor

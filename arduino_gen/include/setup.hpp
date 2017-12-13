@@ -24,7 +24,7 @@ namespace rip
          * @class Setup
          * @brief The container for the setup part of
          */
-        class Setup : private XmlElement
+        class Setup : private Code
         {
         public:
             /**
@@ -42,8 +42,8 @@ namespace rip
             std::string toString(std::vector< std::shared_ptr<Appendage> > appendages) const;
 
         private:
-            std::vector<SetupParameter> m_parameters;
-            std::unique_ptr<Code> m_code;
+            //std::vector<SetupParameter> m_parameters;
+            //std::unique_ptr<Code> m_code;
         };
     } // arduinogen
 }

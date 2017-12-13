@@ -1,6 +1,0 @@
-<setup>
-    <parameter name="alpha" />
-    <code>
-        {{gamma}}
-    </code>
-</setup>

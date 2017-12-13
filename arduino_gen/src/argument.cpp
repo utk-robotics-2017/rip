@@ -45,7 +45,17 @@ namespace rip
             {
                 // TODO(Andrew): throw exception
             }
-            return fmt::format("{}, ", appendage->getString(m_name));
+            return appendage->getString(m_name);
+        }
+
+        const std::string& Argument::getName() const
+        {
+            return m_name;
+        }
+
+        const std::string& Argument::getType() const
+        {
+            return m_name;
         }
     } // arduinogen
 }

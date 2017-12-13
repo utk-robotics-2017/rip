@@ -10,6 +10,7 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <iostream>
 
 //using Setup = rip::arduinogen::Setup;
 using AttributeException = rip::arduinogen::AttributeException;
@@ -25,67 +26,31 @@ namespace rip
             TEST(Setup_constructor, no_attributes_no_elements)
             {
                 tinyxml2::XMLDocument doc;
-                ASSERT_EQ(loadXmlFile(doc, "test/data/setup/no_attributes_no_elements.xml", {"code"}), tinyxml2::XML_SUCCESS);
+                ASSERT_EQ(loadXmlFile(doc, "test/data/setup/no_attributes_no_elements.xml", {"code", "setup"}), tinyxml2::XML_SUCCESS);
 
                 tinyxml2::XMLElement* setupElement = doc.FirstChildElement("setup");
                 ASSERT_NE(setupElement, nullptr);
 
                 std::unique_ptr<arduinogen::Setup> setup;
-                ASSERT_THROW(setup = std::unique_ptr<arduinogen::Setup>(new arduinogen::Setup(setupElement)), ElementException);
+                RIP_ASSERT_NO_THROW(setup = std::unique_ptr<arduinogen::Setup>(new arduinogen::Setup(setupElement)));
             }
 
             TEST(Setup_constructor, extra_attribute)
             {
                 tinyxml2::XMLDocument doc;
-                ASSERT_EQ(loadXmlFile(doc, "test/data/setup/extra_attribute.xml", {"code"}), tinyxml2::XML_SUCCESS);
+                ASSERT_EQ(loadXmlFile(doc, "test/data/setup/extra_attribute.xml", {"code", "setup"}), tinyxml2::XML_SUCCESS);
 
                 tinyxml2::XMLElement* setupElement = doc.FirstChildElement("setup");
                 ASSERT_NE(setupElement, nullptr);
 
                 std::unique_ptr<arduinogen::Setup> setup;
-                ASSERT_THROW(setup = std::unique_ptr<arduinogen::Setup>(new arduinogen::Setup(setupElement)), ElementException);
+                ASSERT_THROW(setup = std::unique_ptr<arduinogen::Setup>(new arduinogen::Setup(setupElement)), AttributeException);
             }
 
-            TEST(Setup_constructor, extra_element)
+            TEST(Setup_toString, analog_input_name_mismatch)
             {
                 tinyxml2::XMLDocument doc;
-                ASSERT_EQ(loadXmlFile(doc, "test/data/setup/extra_element.xml", {"code"}), tinyxml2::XML_SUCCESS);
-
-                tinyxml2::XMLElement* setupElement = doc.FirstChildElement("setup");
-                ASSERT_NE(setupElement, nullptr);
-
-                std::unique_ptr<arduinogen::Setup> setup;
-                ASSERT_THROW(setup = std::unique_ptr<arduinogen::Setup>(new arduinogen::Setup(setupElement)), ElementException);
-            }
-
-            TEST(Setup_constructor, one_code_no_parameters)
-            {
-                tinyxml2::XMLDocument doc;
-                ASSERT_EQ(loadXmlFile(doc, "test/data/setup/one_code_no_parameters.xml", {"code"}), tinyxml2::XML_SUCCESS);
-
-                tinyxml2::XMLElement* setupElement = doc.FirstChildElement("setup");
-                ASSERT_NE(setupElement, nullptr);
-
-                std::unique_ptr<arduinogen::Setup> setup;
-                RIP_ASSERT_NO_THROW(setup = std::unique_ptr<arduinogen::Setup>(new arduinogen::Setup(setupElement)));
-            }
-
-            TEST(Setup_constructor, two_codes_no_parameters)
-            {
-                tinyxml2::XMLDocument doc;
-                ASSERT_EQ(loadXmlFile(doc, "test/data/setup/two_codes_no_parameters.xml", {"code"}), tinyxml2::XML_SUCCESS);
-
-                tinyxml2::XMLElement* setupElement = doc.FirstChildElement("setup");
-                ASSERT_NE(setupElement, nullptr);
-
-                std::unique_ptr<arduinogen::Setup> setup;
-                ASSERT_THROW(setup = std::unique_ptr<arduinogen::Setup>(new arduinogen::Setup(setupElement)), ElementException);
-            }
-
-            TEST(Setup_constructor, one_code_one_parameter_name_mismatch)
-            {
-                tinyxml2::XMLDocument doc;
-                ASSERT_EQ(loadXmlFile(doc, "test/data/setup/one_code_one_parameter_name_mismatch.xml", {"code"}), tinyxml2::XML_SUCCESS);
+                ASSERT_EQ(loadXmlFile(doc, "test/data/setup/analog_input_name_mismatch.xml", {"code", "setup"}), tinyxml2::XML_SUCCESS);
 
                 tinyxml2::XMLElement* setupElement = doc.FirstChildElement("setup");
                 ASSERT_NE(setupElement, nullptr);
@@ -94,15 +59,23 @@ namespace rip
                 RIP_ASSERT_NO_THROW(setup = std::unique_ptr<arduinogen::Setup>(new arduinogen::Setup(setupElement)));
 
                 std::vector<std::shared_ptr<Appendage>> appendages;
+                std::multimap<std::string, std::shared_ptr<Appendage>> not_used;
+
+                nlohmann::json j;
+                j["type"] = "Analog Input";
+                j["label"] = "Whatever";
+                j["pin"] = 1;
+
+                appendages.emplace_back(std::make_shared<Appendage>(j, not_used, true));
 
                 std::string setupStr;
                 ASSERT_THROW(setupStr = setup->toString(appendages), PatternNotFoundException);
             }
 
-            TEST(Setup_constructor, one_code_one_parameter_name_match)
+            TEST(Setup_toString, analog_input)
             {
                 tinyxml2::XMLDocument doc;
-                ASSERT_EQ(loadXmlFile(doc, "test/data/setup/one_code_one_parameter_name_match.xml", {"code"}), tinyxml2::XML_SUCCESS);
+                ASSERT_EQ(loadXmlFile(doc, "test/data/setup/analog_input.xml", {"code", "setup"}), tinyxml2::XML_SUCCESS);
 
                 tinyxml2::XMLElement* setupElement = doc.FirstChildElement("setup");
                 ASSERT_NE(setupElement, nullptr);
@@ -111,17 +84,25 @@ namespace rip
                 RIP_ASSERT_NO_THROW(setup = std::unique_ptr<arduinogen::Setup>(new arduinogen::Setup(setupElement)));
 
                 std::vector<std::shared_ptr<Appendage>> appendages;
+                std::multimap<std::string, std::shared_ptr<Appendage>> not_used;
+
+                nlohmann::json j;
+                j["type"] = "Analog Input";
+                j["label"] = "Whatever";
+                j["pin"] = 1;
+
+                appendages.emplace_back(std::make_shared<Appendage>(j, not_used, true));
 
                 std::string setupStr;
                 RIP_ASSERT_NO_THROW(setupStr = setup->toString(appendages));
 
-                ASSERT_EQ(setupStr, "\tbravo\n");
+                ASSERT_EQ(setupStr, "\t// 1\n");
             }
 
-            TEST(Setup_constructor, one_code_two_parameter_name_match)
+            TEST(Setup_toString, digital_input)
             {
                 tinyxml2::XMLDocument doc;
-                ASSERT_EQ(loadXmlFile(doc, "test/data/setup/one_code_two_parameter_name_match.xml", {"code"}), tinyxml2::XML_SUCCESS);
+                ASSERT_EQ(loadXmlFile(doc, "test/data/setup/digital_input.xml", {"code", "setup"}), tinyxml2::XML_SUCCESS);
 
                 tinyxml2::XMLElement* setupElement = doc.FirstChildElement("setup");
                 ASSERT_NE(setupElement, nullptr);
@@ -130,12 +111,20 @@ namespace rip
                 RIP_ASSERT_NO_THROW(setup = std::unique_ptr<arduinogen::Setup>(new arduinogen::Setup(setupElement)));
 
                 std::vector<std::shared_ptr<Appendage>> appendages;
+                std::multimap<std::string, std::shared_ptr<Appendage>> not_used;
+
+                nlohmann::json j;
+                j["type"] = "Digital Input";
+                j["label"] = "Whatever";
+                j["pin"] = 1;
+                j["pullup"] = "_PULLUP";
+
+                appendages.emplace_back(std::make_shared<Appendage>(j, not_used, true));
 
                 std::string setupStr;
                 RIP_ASSERT_NO_THROW(setupStr = setup->toString(appendages));
 
-                ASSERT_EQ(setupStr, "\tbravo\n"
-                                    "\tdelta\n");
+                ASSERT_EQ(setupStr, "\tpinMode(1, INPUT_PULLUP);\n");
             }
         }
     }

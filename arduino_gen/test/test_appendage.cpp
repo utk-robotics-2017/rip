@@ -76,7 +76,7 @@ namespace rip
                 j["label"] = "something";
                 j["type"] = "Digital Input";
                 j["pin"] = 1;
-                j["pullup"] = false;
+                j["pullup"] = "";
 
                 std::multimap< std::string, std::shared_ptr<Appendage> > appendage_map;
                 std::shared_ptr<Appendage> appendage;
@@ -93,7 +93,7 @@ namespace rip
                 j["label"] = "something";
                 j["type"] = "Digital Input";
                 j["pin"] = 1;
-                j["pullup"] = false;
+                j["pullup"] = "";
 
                 std::multimap< std::string, std::shared_ptr<Appendage> > appendage_map;
                 std::shared_ptr<Appendage> appendage;
@@ -181,7 +181,7 @@ namespace rip
                 j["label"] = "something";
                 j["type"] = "Digital Input";
                 j["pin"] = 1;
-                j["pullup"] = false;
+                j["pullup"] = "";
 
                 std::multimap< std::string, std::shared_ptr<Appendage> > appendage_map;
 
