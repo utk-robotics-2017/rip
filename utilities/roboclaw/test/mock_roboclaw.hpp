@@ -17,23 +17,15 @@ namespace rip
 
                     //MockRoboclaw();
                     MockRoboclaw(nlohmann::json config={{"address", 0x80},{"timeout", 100 * units::ms},
-                    {"ticks_per_rev", 360.0},{"wheel_radius", 4 * units::cm}}, bool test=1);
-                    /*
-                    wjwoodman serial methods
-                    size_t write(const std::vector<uint8_t> &data) override;
-                    std::string read(size_t n) override;
-                    size_t write(const std::string &message) override;
-                    */
-                    //pins serial methods
-                    void write(std::vector<uint8_t> message) override;
-                    std::vector<uint8_t> read(size_t length = 1) override;
+                    {"ticks_per_rev", 360.0},{"wheel_radius", 4 * units::cm},{"device", "/dev/ttyS0"},
+                    {"baudrate", 115200}, {"faking"}}, bool test=1);
 
                     void setcResponse(const std::vector<uint8_t> response);
                     void setResponse(const std::string& response);
                     uint8_t returnFF() override;
                     std::vector<uint8_t> readN(uint8_t n, Command cmd) override;
                     //size_t read(uint8_t *buffer, size_t size) override;
-
+                    void write(serial_t *m_serial, std::vector<uint8_t> command, size_t len) override;
                     std::vector<uint8_t> getLastCmd();
                     std::string getLastSent();
                     void printResponse();
