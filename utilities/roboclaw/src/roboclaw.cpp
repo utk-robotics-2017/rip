@@ -29,22 +29,56 @@ namespace rip
         {
             Roboclaw::Roboclaw(nlohmann::json config, bool test)
             {
-                // todo(Andrew): check config for all values
-                  Roboclaw::test = test;
-                  if(Roboclaw::test) {
-                    validateConfig(config);
+                  /*
+                  Initialization of roboclaw members variables
+                  which are extracted from the json
+                  */
+                  if(test)
+                  {
+                      validateConfig(config);
                   }
-                  else {
-                  m_address = config["address"].get<uint8_t>();
-                  m_timeout = config["timeout"];
-                  m_ticks_per_rev = config["ticks_per_rev"];
-                  m_wheel_radius = config["wheel_radius"];
-                }
+                  else
+                  {
+                      //required parameters
+                      m_address = config["address"].get<uint8_t>();
+                      m_timeout = config["timeout"];
+                      m_ticks_per_rev = config["ticks_per_rev"];
+                      m_wheel_radius = config["wheel_radius"];
+                      //serial
+                      std::string temp = config["device"];
+                      m_device = temp.c_str();
+                      m_baudrate = config["baudrate"];
+                      if(config.find("advanced serial options") != config.end())
+                      {
+                          m_databits = config["databits"];
+                          m_stopbits = config["stopbits"];
+                          m_xonxoff = config["xonxoff"];
+                          m_rtscts = config["rtscts"];
+                          m_parity = config["parity"];
+                      }
+                  }
+                  if(config.find("faking") == config.end())
+                  {
+                      if(config.find("advanced serial options") != config.end())
+                      {
+                          open(&m_serial, m_device, m_baudrate, m_databits, m_parity,
+                            m_stopbits, m_xonxoff, m_rtscts);
+                      }
+                      else
+                      {
+                          open(&m_serial, m_device, m_baudrate);
+                      }
+                  }
+            }
+            Roboclaw::~Roboclaw()
+            {
+                serial_close(&m_serial);
             }
 
-            //////////////////////////////////////////////////////////////////////////////////////////////
-            //////////////////////////////////////////// PWM /////////////////////////////////////////////
-            //////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////// PWM /////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////
+
             void Roboclaw::drive(Motor motor, int16_t speed)
             {
                 Command cmd;
@@ -67,9 +101,9 @@ namespace rip
                 writeN(Command::kMixedDuty, speed, speed);
             }
 
-            //////////////////////////////////////////////////////////////////////////////////////////////
-            ////////////////////////////////////// Main Battery //////////////////////////////////////////
-            //////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////// Main Battery //////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////
 
             void Roboclaw::setMainVoltages(units::Voltage min, units::Voltage max)
             {
@@ -113,9 +147,9 @@ namespace rip
                 return rv;
             }
 
-            //////////////////////////////////////////////////////////////////////////////////////////////
-            ///////////////////////////////////// Logic Battery //////////////////////////////////////////
-            //////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////// Logic Battery //////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////
 
             void Roboclaw::setLogicVoltages(units::Voltage min, units::Voltage max)
             {
@@ -158,9 +192,10 @@ namespace rip
                 return rv;
             }
 
-            //////////////////////////////////////////////////////////////////////////////////////////////
-            //////////////////////////////////////// Encoders ////////////////////////////////////////////
-            //////////////////////////////////////////////////////////////////////////////////////////////
+      //////////////////////////////////////////////////////////////////////////////////////////////
+      //////////////////////////////////////// Encoders ////////////////////////////////////////////
+      //////////////////////////////////////////////////////////////////////////////////////////////
+
             int64_t Roboclaw::readEncoderRaw(Motor motor)
             {
                 Command cmd;
@@ -295,9 +330,9 @@ namespace rip
                 writeN(Command::kResetEnc);
             }
 
-            //////////////////////////////////////////////////////////////////////////////////////////////
-            //////////////////////////////////////// Version /////////////////////////////////////////////
-            //////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////// Version /////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////
 
             std::string Roboclaw::readVersion()
             {
@@ -316,23 +351,24 @@ namespace rip
                     {
                         crcUpdate(command[i]);
                     }
-                    write(command);
+                    write(&m_serial, command, command.size());
 
                     for (uint8_t i = 0; i < 48; i++)
                     {
                         if (data != -1)
                         {
-                            data = read()[0];
+                            data = read(&m_serial, m_timeout);
                             version += data;
                             crcUpdate(version[i]);
                             if (version[i] == 0)
                             {
                                 uint16_t ccrc;
-                                data = read()[0];
+                                data = read(&m_serial, m_timeout);
                                 if (data != -1)
                                 {
                                     ccrc = static_cast<uint16_t>(data) << 8;
-                                    data = read()[0];
+                                    data = read(&m_serial, m_timeout);
+
                                     if (data != -1)
                                     {
                                         ccrc |= data;
@@ -581,11 +617,105 @@ namespace rip
                 //todo(Andrew)
                 return;
             }
+//////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////// Communication //////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////
+            std::vector<uint8_t> Roboclaw::readN(uint8_t n, Command cmd)
+            {
+                uint8_t crc;
 
-            //////////////////////////////////////////////////////////////////////////////////////////////
-            ////////////////////////////////////////// Misc //////////////////////////////////////////////
-            //////////////////////////////////////////////////////////////////////////////////////////////
+                uint8_t value = 0;
+                uint8_t trys = kMaxRetries;
+                int16_t data;
 
+                std::vector<uint8_t> command = {m_address, static_cast<uint8_t>(cmd)};
+                for (uint8_t try_ = 0; try_ < kMaxRetries; try_++)
+                {
+                    crcClear();
+                    for (uint8_t i = 0; i < command.size(); i++)
+                    {
+                        crcUpdate(command[i]);
+                    }
+
+                    write(&m_serial, command, command.size());
+
+                    std::vector<uint8_t> response;
+                    uint8_t data;
+                    for (uint8_t i = 0; i < n; i++)
+                    {
+                        data = read(&m_serial, m_timeout);
+                        crcUpdate(data);
+                        response.push_back(data);
+                        if (data == -1)
+                        {
+                            continue;
+                        }
+                    }
+
+                    if (data != -1)
+                    {
+                        uint16_t ccrc;
+                        data = read(&m_serial, m_timeout);
+                        if (data != -1)
+                        {
+                            ccrc = static_cast<uint16_t>(data) << 8;
+                            data = read(&m_serial, m_timeout);
+                            if (data != -1)
+                            {
+                                ccrc |= data;
+                                if (crcGet() == ccrc)
+                                {
+                                    return response;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                throw ReadFailure();
+            }
+
+            void Roboclaw::write(serial_t *serial, std::vector<uint8_t> command, size_t len)
+            {
+                if(serial_write(serial, &command[0], len) < 0)
+                {
+                    throw CommandFailure(serial_errmsg(serial));
+                }
+            }
+
+            uint8_t Roboclaw::read(serial_t *serial, units::Time timeout)
+            {
+                uint8_t data;
+                if(serial_read(serial, &data, 1, static_cast<int>(timeout())) < 0)
+                {
+                    throw ReadFailure(serial_errmsg(serial));
+                }
+                return data;
+            }
+
+            void Roboclaw::open(serial_t *serial, std::string device,
+            uint32_t baudrate, unsigned int databits,
+            serial_parity_t parity, unsigned int stopbits,
+            bool xonxoff, bool rtscts)
+            {
+                if(serial_open_advanced(serial, device.c_str(), baudrate, databits, parity,
+                stopbits, xonxoff, rtscts) < 0)
+                {
+                    throw SerialOpenFail(serial_errmsg(serial));
+                }
+            }
+
+            void Roboclaw::open(serial_t *serial, std::string device, uint32_t baudrate)
+            {
+                if(serial_open(serial, device.c_str(), baudrate) < 0)
+                {
+                    throw SerialOpenFail(serial_errmsg(serial));
+                }
+            }
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////// Current ///////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////
             std::array<units::Current, 2> Roboclaw::readCurrents()
             {
                 std::array<units::Current, 2> rv;
@@ -647,70 +777,9 @@ namespace rip
                 return static_cast<double>(static_cast<uint32_t>((response[0] << 8*3) + (response[1] << 8*2) + (response[2] << 8) + response[3])) / 100.0 * units::A;
 
             }
-
-            units::Temperature Roboclaw::readTemperature()
-            {
-                std::vector<uint8_t> response = readN(2, Command::kGetTemp);
-                uint16_t value = static_cast<uint16_t>((response[0] << 8) + response[1]);
-                return static_cast<double>(value) / 10.0 * units::degC; //todo(Andrew): Figure out the units
-            }
-
-            void Roboclaw::crcClear()
-            {
-                m_crc = 0;
-            }
-
-            uint8_t Roboclaw::returnFF()
-            {
-              return 0xFF;
-            }
-
-            void Roboclaw::crcUpdate(uint8_t data)
-            {
-                m_crc ^= (static_cast<uint16_t>(data) << 8);
-                for (uint8_t i = 0; i < 8; i++)
-                {
-                    if (m_crc & 0x8000)
-                    {
-                        m_crc = (m_crc << 1) ^ 0x1021;
-                    }
-                    else
-                    {
-                        m_crc <<= 1;
-                    }
-                }
-            }
-
-            uint16_t Roboclaw::crcGet()
-            {
-                return m_crc;
-            }
-
-            std::vector<uint8_t> Roboclaw::readBufferLens()
-            {
-                /*
-                Max number is 64. 128 if the buffer is empty.
-                0 if the last command is being executed.
-                */
-                std::vector<uint8_t> response = readN(2, Command::kGetBuffers);
-                return response;
-            }
-            uint8_t Roboclaw::readBufferLen(Motor motor)
-            {
-                /*
-                Max number is 64. 128 if the buffer is empty.
-                0 if the last command is being executed.
-                */
-                std::vector<uint8_t> response = readN(2, Command::kGetBuffers);
-                switch (motor)
-                {
-                    case Motor::kM1:
-                        return response[0];
-                    case Motor::kM2:
-                        return response[1];
-                }
-            }
-
+//////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////// Status ////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////
             bool Roboclaw::readStatus(Roboclaw::Status s)
             {
                 std::vector<uint8_t> response = readN(2, Command::kGetError);
@@ -777,98 +846,129 @@ namespace rip
                 }
             }
 
-            std::vector<uint8_t> Roboclaw::readN(uint8_t n, Command cmd)
+            units::Temperature Roboclaw::readTemperature()
             {
-                uint8_t crc;
+                std::vector<uint8_t> response = readN(2, Command::kGetTemp);
+                uint16_t value = static_cast<uint16_t>((response[0] << 8) + response[1]);
+                return static_cast<double>(value) / 10.0 * units::degC; //todo(Andrew): Figure out the units
+            }
 
-                uint8_t value = 0;
-                uint8_t trys = kMaxRetries;
-                int16_t data;
+//////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////// Misc //////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////
 
-                std::vector<uint8_t> command = {m_address, static_cast<uint8_t>(cmd)};
-                for (uint8_t try_ = 0; try_ < kMaxRetries; try_++)
+            void Roboclaw::crcClear()
+            {
+                m_crc = 0;
+            }
+
+            uint8_t Roboclaw::returnFF()
+            {
+              return 0xFF;
+            }
+
+            void Roboclaw::crcUpdate(uint8_t data)
+            {
+                m_crc ^= (static_cast<uint16_t>(data) << 8);
+                for (uint8_t i = 0; i < 8; i++)
                 {
-                    crcClear();
-                    for (uint8_t i = 0; i < command.size(); i++)
+                    if (m_crc & 0x8000)
                     {
-                        crcUpdate(command[i]);
+                        m_crc = (m_crc << 1) ^ 0x1021;
                     }
-
-                    write(command);
-
-                    std::vector<uint8_t> response;
-                    uint8_t data;
-                    for (uint8_t i = 0; i < n; i++)
+                    else
                     {
-                        data = read()[0];
-                        crcUpdate(data);
-                        response.push_back(data);
-                        if (data == -1)
-                        {
-                            continue;
-                        }
-                    }
-
-                    if (data != -1)
-                    {
-                        uint16_t ccrc;
-                        data = read()[0];
-                        if (data != -1)
-                        {
-                            ccrc = static_cast<uint16_t>(data) << 8;
-                            data = read()[0];
-                            if (data != -1)
-                            {
-                                ccrc |= data;
-                                if (crcGet() == ccrc)
-                                {
-                                    return response;
-                                }
-                            }
-                        }
+                        m_crc <<= 1;
                     }
                 }
-
-                throw ReadFailure();
             }
+
+            uint16_t Roboclaw::crcGet()
+            {
+                return m_crc;
+            }
+
+            std::vector<uint8_t> Roboclaw::readBufferLens()
+            {
+                /*
+                Max number is 64. 128 if the buffer is empty.
+                0 if the last command is being executed.
+                */
+                std::vector<uint8_t> response = readN(2, Command::kGetBuffers);
+                return response;
+            }
+            uint8_t Roboclaw::readBufferLen(Motor motor)
+            {
+                /*
+                Max number is 64. 128 if the buffer is empty.
+                0 if the last command is being executed.
+                */
+                std::vector<uint8_t> response = readN(2, Command::kGetBuffers);
+                switch (motor)
+                {
+                    case Motor::kM1:
+                        return response[0];
+                    case Motor::kM2:
+                        return response[1];
+                }
+            }
+
             void Roboclaw::validateConfig(nlohmann::json testcfg)
             {
-              std::string vars[] = {"address", "timeout", "ticks_per_rev", "wheel_radius"};
-              if(testcfg.empty()) {
-                throw BadJson("JSON file was empty");
-              }
-              for(int i=0; i<4; i++) {
-                if (testcfg.find(vars[i]) == testcfg.end()) {
-                  throw BadJson(vars[i] + " was not found within json cfg.");
-              }}
-              if(testcfg.size()!= 4) {
-                throw BadJson("Incorrect size json, size: " + std::to_string(testcfg.size()));
-              }
-
-              if((testcfg["address"] > 255) || (testcfg["address"] < 0))
-              {
-                throw OutOfRange("Address should be between 0 and 255");
-              }
-              for(int i=0; i<4; i++)
-              {
-                if(testcfg[vars[i]] < 0.0)
+                std::string vars[] = {"address", "timeout", "ticks_per_rev", "wheel_radius", "baudrate", "device"};
+                if(testcfg.empty())
                 {
-                  throw OutOfRange(vars[i] + " should be a positive value");
+                    throw BadJson("JSON file was empty");
                 }
-              }
-              if(testcfg["wheel_radius"] == 0)
-              {
-                throw OutOfRange("wheel radius cannot = 0");
-              }
-              try {
-                m_address = testcfg["address"].get<uint8_t>();
-                m_timeout = testcfg["timeout"];
-                m_ticks_per_rev = testcfg["ticks_per_rev"];
-                m_wheel_radius = testcfg["wheel_radius"];
-              }
-              catch(...) {
-                throw BadJson("Failed to set 1 or more values");
-              }
+                for(int i=0; i<6; i++)
+                {
+                    if (testcfg.find(vars[i]) == testcfg.end())
+                    {
+                        throw BadJson(vars[i] + " was not found within json cfg.");
+                    }
+                }
+                if(testcfg.size() < 6)
+                {
+                    throw BadJson("Not enough config values, min size: " + std::to_string(6));
+                }
+
+                for(int i=0; i<4; i++)
+                {
+                    if(testcfg[vars[i]] < 0.0)
+                    {
+                        throw OutOfRange(vars[i] + " should be a positive value");
+                    }
+                }
+                if(testcfg["baudrate"] < 0)
+                {
+                    throw OutOfRange("baudrate should be positive.");
+                }
+                if(testcfg["wheel_radius"] == 0)
+                {
+                    throw OutOfRange("wheel radius cannot = 0");
+                }
+                try
+                {
+                    m_address = testcfg["address"].get<uint8_t>();
+                    m_timeout = testcfg["timeout"];
+                    m_ticks_per_rev = testcfg["ticks_per_rev"];
+                    m_wheel_radius = testcfg["wheel_radius"];
+                    std::string temp = testcfg["device"];
+                    m_device = temp.c_str();
+                    m_baudrate = testcfg["baudrate"];
+                    if(testcfg.find("advanced serial options") != testcfg.end())
+                    {
+                        m_databits = testcfg["databits"];
+                        m_stopbits = testcfg["stopbits"];
+                        m_xonxoff = testcfg["xonxoff"];
+                        m_rtscts = testcfg["rtscts"];
+                        m_parity = testcfg["parity"];
+                    }
+                }
+                catch(...)
+                {
+                    throw BadJson("Failed to set 1 or more values");
+                }
             }
         }
     }

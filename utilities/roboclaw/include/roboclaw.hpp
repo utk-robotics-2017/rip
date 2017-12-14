@@ -26,13 +26,17 @@
 #include <tuple>
 
 #include <json.hpp>
-#include <serial.h>
+
 #include <units.hpp>
 
 #include "exceptions.hpp"
 #include "motor_dynamics.hpp"
 #include "pid_parameters.hpp"
 #include "config.hpp"
+extern "C"
+{
+  #include "serial.h"
+}
 
 namespace rip
 {
@@ -47,7 +51,7 @@ namespace rip
              * @link http://www.ionmc.com/
              * @link https://www.pololu.com/category/124/roboclaw-motor-controllers
              */
-            class Roboclaw : public pins::serial::Serial
+            class Roboclaw
             {
             public:
                 enum class Motor
@@ -157,7 +161,18 @@ namespace rip
                  * @brief Constructor
                  * @param json config
                  */
+
                 Roboclaw(nlohmann::json config, bool test=1);
+                /**
+                 * @brief Destructor
+                 *
+                 */
+
+                ~Roboclaw();
+                /**
+                * @brief validates json config passed to roboclaw
+                *
+                */
                 void validateConfig(nlohmann::json testcfg);
 //////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////// PWM /////////////////////////////////////////////
@@ -454,6 +469,7 @@ namespace rip
                  */
                 void setDynamics(const MotorDynamics& dynamics, bool respectBuffer = true);
 
+
 //////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////// Misc //////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////
@@ -622,6 +638,7 @@ namespace rip
                 */
                 virtual uint8_t returnFF();
 
+
                 /**
                  * @brief Set the config for the roboclaw
                  *
@@ -656,8 +673,28 @@ namespace rip
                  * @param data Data to update the checksum with
                  */
                 void crcUpdate (uint8_t data);
-
+                /*
+                Updates CRC
+                */
                 uint16_t crcGet();
+//////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////// Serial /////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////
+                /* Wrappers for some of periphery's C serial methods.
+                These are probably going to be phased out when we find a better
+                home for them, but they can stay here for now <3 */
+                virtual void write(serial_t *serial, std::vector<uint8_t> command, size_t len);
+
+                virtual uint8_t read(serial_t *serial, units::Time timeout_ms);
+
+                void open(serial_t *serial, std::string device, uint32_t baudrate);
+
+                void open(serial_t *serial, std::string device,
+                uint32_t baudrate, unsigned int databits,
+                serial_parity_t parity, unsigned int stopbits,
+                bool xonxoff, bool rtscts);
+
+                void close(serial_t *serial);
 
                 /**
                  * @brief Sends N bytes to the roboclaw
@@ -684,8 +721,8 @@ namespace rip
                         uint16_t crc = crcGet();
                         command.push_back(static_cast<uint8_t>(crc >> 8));
                         command.push_back(static_cast<uint8_t>(crc));
-                        write(command);
-                        if (static_cast<uint8_t>(read()[0]) == returnFF())
+                        write(&m_serial, command, command.size());
+                        if(read(&m_serial, m_timeout) == returnFF())
                         {
                             return;
                         }
@@ -742,7 +779,16 @@ namespace rip
                 uint8_t m_address;
                 double m_ticks_per_rev;
                 units::Distance m_wheel_radius;
-                bool test;
+                //serial members
+                const char* m_device;
+                uint32_t m_baudrate;
+                serial_t m_serial;
+                //advanced
+                unsigned int m_databits, m_stopbits;
+                bool m_xonxoff, m_rtscts;
+                serial_parity_t m_parity;
+                //TODO: support advanced serial opening
+
             }; // class Roboclaw
 
             inline uint8_t operator >>(const Roboclaw::Command& cmd, size_t shift)

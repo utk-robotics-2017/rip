@@ -59,6 +59,11 @@ namespace rip
             */
             NEW_EX(UninitializedStruct);
 
+            /**
+             * @class SerialOpenFail
+             * @brief Exception thrown if serial device fails to open
+             */
+            NEW_EX(SerialOpenFail);
         }
     }
 }
