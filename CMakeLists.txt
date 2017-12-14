@@ -20,7 +20,6 @@ option(ARDUINO_GEN "Build ArduinoGen" OFF)
 option(ROBOCLAW "Build Roboclaw" OFF)
 option(PATHMAN "Build Pathman" OFF)
 option(CMD_MESENGER "Build CmdMessenger" OFF)
-option(PINS "Build Pins" OFF)
 
 # Testing
 option(ENABLE_TESTING "Enable testing of the modules" OFF)
