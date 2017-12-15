@@ -32,23 +32,20 @@ namespace rip
              * @struct PIDParameters
              * @brief The parameters for PID
              */
-            struct PIDParameters
-            {
-                float kp; //< Proportional Gain
-                float ki; //< Integral Gain
-                float kd; //< Derivative Gain
-            }; // struct PIDParameters
 
-
-            struct VelocityPIDParameters : public PIDParameters
+            struct VelocityPIDParameters
             {
-                bool initialized=false;//throws UninitializedStruct unless set to true.
-                uint32_t qpps; //< Quadrature Pulses Per Second - Maximum number of ticks per second
+                float kp = static_cast<float>(0x10000) / 65536; //< Proportional Gain
+                float ki = static_cast<float>(0x8000) / 65536; //< Integral Gain
+                float kd = static_cast<float>(0x4000) / 65536; //< Derivative Gain
+                uint32_t qpps=44000; //< Quadrature Pulses Per Second - Maximum number of ticks per second
             }; // struct VelcityPIDParameters
 
-            struct PositionPIDParameters : public PIDParameters
+            struct PositionPIDParameters
             {
-                bool initialized=false;
+                float kp;
+                float ki;
+                float kd;
                 uint32_t kiMax; //< Maximum Integral Windup
                 uint32_t deadzone; //< Deadzone in encoder counts
                 uint32_t min; //< Minimum Position

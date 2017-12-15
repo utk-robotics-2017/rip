@@ -54,10 +54,6 @@ namespace rip
              * Json passed to Roboclaw constructor is null or has bad data.
              */
             NEW_EX(BadJson);
-            /*
-            Attempt to read PID values that have not been initialized.
-            */
-            NEW_EX(UninitializedStruct);
 
             /**
              * @class SerialOpenFail
