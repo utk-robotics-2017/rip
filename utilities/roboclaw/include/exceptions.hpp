@@ -60,6 +60,11 @@ namespace rip
              * @brief Exception thrown if serial device fails to open
              */
             NEW_EX(SerialOpenFail);
+            /**
+             * @class InvalidCommMode
+             * @brief Exception thrown if invalid comm mode is in use
+             */
+            NEW_EX(InvalidCommMode);
         }
     }
 }
