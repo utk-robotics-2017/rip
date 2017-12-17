@@ -43,13 +43,13 @@ namespace rip
 
             struct PositionPIDParameters
             {
-                float kp;
-                float ki;
-                float kd;
-                uint32_t kiMax; //< Maximum Integral Windup
-                uint32_t deadzone; //< Deadzone in encoder counts
-                uint32_t min; //< Minimum Position
-                uint32_t max; //< Maximum Position
+                float kp=0;
+                float ki=0;
+                float kd=0;
+                uint32_t kiMax=0; //< Maximum Integral Windup
+                uint32_t deadzone=0; //< Deadzone in encoder counts
+                uint32_t min=0; //< Minimum Position
+                uint32_t max=0; //< Maximum Position
             }; // struct PositionPIDParameters
         } // namespace roboclaw
     }

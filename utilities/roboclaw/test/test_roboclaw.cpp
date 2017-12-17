@@ -15,31 +15,32 @@ namespace rip
             {
                 nlohmann::json j;
                 using Roboclaw = mocks::MockRoboclaw;
-                std::shared_ptr<Roboclaw> testClaw(new Roboclaw);
+
                 TEST(RoboclawCore, loadJson)
                 {
+                    j["faking"] = "yep";
                     //test some types of variables that are not json obj
-
                     ASSERT_THROW(std::make_shared<Roboclaw>("strayTaco"), BadJson);
                     ASSERT_THROW(std::make_shared<Roboclaw>(42), BadJson);
 
                     //test if json null
                     ASSERT_THROW(std::make_shared<Roboclaw>(j), BadJson);
-                    units::Time t = 3.0;
+                    units::Time t = 3000.0;
                     units::Distance d = .1;
                     j["address"] = 0x80; //uint8_t
                     j["timeout"] = t.to(units::ms);
                     j["ticks_per_rev"] = 100.0;//double
+                    j["device"] = "/dev/ttyS0";
+                    j["baudrate"] = 115200;
+
                     //test for missing entries
                     ASSERT_THROW(std::make_shared<Roboclaw>(j), BadJson);
                     j["wheel_radius"] = "lol";
                     //tests for invalid values of entries
                     ASSERT_THROW(std::make_shared<Roboclaw>(j), BadJson);
                     j["wheel_radius"] = d.to(units::cm);
-                    j["address"] = 267;//255 is largest possible value
-                    ASSERT_THROW(std::make_shared<Roboclaw>(j), OutOfRange);
-                    j["address"] = 0x80;
                     j["timeout"] = -3.0;
+
                     ASSERT_THROW(std::make_shared<Roboclaw>(j), OutOfRange);
                     j["timeout"] = 10.0;
                     j["ticks_per_rev"] = j;
@@ -58,10 +59,10 @@ namespace rip
                     j["ticks_per_rev"] = 100.0;
                     j["wheel_radius"] = d.to(units::cm);
                     //given valid parameters, does not throw an exception
+                    std::make_shared<Roboclaw>(j);
                     ASSERT_NO_THROW(std::make_shared<Roboclaw>(j));
                     //TODO: Reasonableness checks/nonfatal exceptions
                 }
-
 
                 TEST(RoboclawCore, DriveM1Forward)
                 {
@@ -104,8 +105,9 @@ namespace rip
                     //correct size of byte array
                     ASSERT_EQ(testClaw->getLastCmd().size(), 6);
                     //final test: given proper conditions, does not throw an exception
+                    testClaw->drive(Roboclaw::Motor::kM1, Roboclaw::kFullSpeedBackward);
                     ASSERT_NO_THROW(testClaw->drive(Roboclaw::Motor::kM1, Roboclaw::kFullSpeedBackward));
-                    testClaw.reset();
+
                 }
 
                 TEST(RoboclawCore, DriveM2Forward)
@@ -127,6 +129,7 @@ namespace rip
                     ASSERT_EQ(testClaw->getLastCmd().size(), 6);
                     //final test: given proper conditions, does not throw an exception
                     ASSERT_NO_THROW(testClaw->drive(Roboclaw::Motor::kM2, Roboclaw::kFullSpeedForward));
+
                 }
 
                 TEST(RoboclawCore, DriveM2Backward)
@@ -148,6 +151,7 @@ namespace rip
                     ASSERT_EQ(testClaw->getLastCmd().size(), 6);
                     //final test: given proper conditions, does not throw an exception
                     ASSERT_NO_THROW(testClaw->drive(Roboclaw::Motor::kM2, Roboclaw::kFullSpeedBackward));
+
                 }
                 TEST(RoboclawCore, DriveForward)
                 {
@@ -170,6 +174,7 @@ namespace rip
                     ASSERT_EQ(testClaw->getLastCmd().size(), 8);
                     //final test: given proper conditions, does not throw an exception
                     ASSERT_NO_THROW(testClaw->drive(Roboclaw::kFullSpeedForward));
+
                 }
                 TEST(RoboclawCore, DriveBackward)
                 {
@@ -192,6 +197,7 @@ namespace rip
                     ASSERT_EQ(testClaw->getLastCmd().size(), 8);
                     //final test: given proper conditions, does not throw an exception
                     ASSERT_NO_THROW(testClaw->drive(Roboclaw::kFullSpeedBackward));
+
                 }
                 TEST(RoboclawCore, Battery)
                 {
@@ -257,6 +263,7 @@ namespace rip
                     ASSERT_EQ(testClaw->readCurrent(Roboclaw::Motor::kM1),5*units::A);
                     ASSERT_EQ(testClaw->readCurrents()[0],5*units::A);
 
+
                 }
                 TEST(RoboclawCore, Status)
                 {
@@ -288,6 +295,7 @@ namespace rip
                     EXPECT_FALSE(testClaw->readStatus(Roboclaw::Status::kNormal));
                     EXPECT_TRUE(testClaw->readStatus(Roboclaw::Status::kM1OverCurrentWarning));
                     EXPECT_TRUE(testClaw->readStatus(Roboclaw::Status::kM2OverCurrentWarning));
+
                 }
 
                 TEST(RoboclawEncoder, ReadEncoderM1)
@@ -332,7 +340,6 @@ namespace rip
                     d=testClaw->readEncoder(Roboclaw::Motor::kM1);
                     EXPECT_DOUBLE_EQ(d(), static_cast<double>(-3735928559) / ticks_per_rev * wheel_radius * (units::pi * 2));
 
-
                 }
 
                 TEST(RoboclawEncoder, ReadEncoderM2)
@@ -375,7 +382,6 @@ namespace rip
                     d=testClaw->readEncoder(Roboclaw::Motor::kM2);
                     EXPECT_DOUBLE_EQ(d(), static_cast<double>(-3735928559) / ticks_per_rev * wheel_radius * (units::pi * 2));
 
-
                 }
 
                 TEST(RoboclawEncoder, ReadEncoderVelocityM1)
@@ -412,7 +418,6 @@ namespace rip
                     v=testClaw->readEncoderVelocity(Roboclaw::Motor::kM1);
                     EXPECT_DOUBLE_EQ(testClaw->readEncoderVelocityRaw(Roboclaw::Motor::kM1), -65280);
                     EXPECT_DOUBLE_EQ(v(),static_cast<double>(-65280) / ticks_per_rev * wheel_radius * (units::pi * 2));
-
 
 
                 }
@@ -505,7 +510,6 @@ namespace rip
                     EXPECT_DOUBLE_EQ(v(), 0.0);
                     v=testClaw->readEncodersVelocity()[1];
                     EXPECT_DOUBLE_EQ(v(), 0.0);
-
 
                 }
 
@@ -685,6 +689,7 @@ namespace rip
                     ASSERT_THROW(dynamics->setDistance(d), OutOfRange);
                     ASSERT_THROW(dynamics->setAcceleration(a), OutOfRange);
                     ASSERT_THROW(dynamics->setDeceleration(a), OutOfRange);
+
                 }
                 TEST(RoboclawDynamics, setDynamicsM1)
                 {
@@ -761,6 +766,9 @@ namespace rip
                     ASSERT_EQ(message[1], static_cast<uint8_t>(Roboclaw::Command::kM1SpeedAccelDeccelPos));
                     EXPECT_DOUBLE_EQ(static_cast<int32_t>((a / wheel_radius / (units::pi * 2))() * ticks_per_rev),
                     (message[10] << 8*3) + (message[11] << 8*2) + (message[12] << 8) + message[13]);
+
+
+
                 }
 
                 TEST(RoboclawDynamics, setDynamicsM2)
@@ -771,7 +779,6 @@ namespace rip
                     std::vector<uint8_t> message;
                     testClaw->setBytes(0);
                     std::shared_ptr<MotorDynamics> dynamics(new MotorDynamics);
-
 
                     units::Distance d = 1.0;
                     units::Velocity v = 99.5;//default unit m/s?
@@ -838,6 +845,9 @@ namespace rip
                     ASSERT_EQ(message[1], static_cast<uint8_t>(Roboclaw::Command::kM2SpeedAccelDeccelPos));
                     EXPECT_DOUBLE_EQ(static_cast<int32_t>((a / wheel_radius / (units::pi * 2))() * ticks_per_rev),
                     (message[10] << 8*3) + (message[11] << 8*2) + (message[12] << 8) + message[13]);
+
+
+
                 }
 
                 TEST(RoboclawPID, VelocityM1)
@@ -845,16 +855,14 @@ namespace rip
                     std::shared_ptr<Roboclaw> testClaw(new Roboclaw);
                     std::vector<uint8_t> response, message;
                     testClaw->setBytes(0);
-                    std::shared_ptr<VelocityPIDParameters> vparams(new VelocityPIDParameters);
 
-                    //params not set when setting
-                    ASSERT_THROW(testClaw->setVelocityPID(Roboclaw::Motor::kM1, *vparams), UninitializedStruct);
+                    std::shared_ptr<VelocityPIDParameters> vparams(new VelocityPIDParameters);
 
                     //given response, received properly
                     //p,i,d,qpps, 4 bytes each
-                    response = {0xDE, 0xAD, 0xBE, 0xEF,//p
-                       0x12, 0x34, 0x56, 0x78, //i
-                       0xAB, 0xCD, 0xEF, 0x00, //d
+                    response = {0x0E, 0xAD, 0xBE, 0xEF,//d
+                       0x12, 0x34, 0x56, 0x78, //p
+                       0xAB, 0xCD, 0xEF, 0x00, //i
                        0x0, 0x01, 0x00, 0x00}; //qpps
                     testClaw->setcResponse(response);
                     *vparams = testClaw->readVelocityPID(Roboclaw::Motor::kM1);
@@ -863,10 +871,9 @@ namespace rip
                     EXPECT_GE(vparams->ki,0);
                     EXPECT_GE(vparams->kd,0);
 
-                    EXPECT_TRUE(vparams->initialized);
-                    EXPECT_DOUBLE_EQ(vparams->kp, static_cast<float>(0xDEADBEEF) / 65536);
-                    EXPECT_DOUBLE_EQ(vparams->ki, static_cast<float>(0x12345678) / 65536);
-                    EXPECT_DOUBLE_EQ(vparams->kd, static_cast<float>(0xABCDEF00) / 65536);
+                    EXPECT_FLOAT_EQ(vparams->kp, static_cast<float>(0x0EADBEEF) / 65536);
+                    EXPECT_FLOAT_EQ(vparams->ki, static_cast<float>(0x12345678) / 65536);
+                    EXPECT_FLOAT_EQ(vparams->kd, static_cast<float>(0xABCDEF00) / 65536);
                     EXPECT_EQ(vparams->qpps, 0x00010000);
 
                     //validate transmissions
@@ -874,18 +881,21 @@ namespace rip
                     message = testClaw->getLastCmd();
                     ASSERT_EQ(message[0], 0x80);
                     ASSERT_EQ(message[1], static_cast<uint8_t>(Roboclaw::Command::kSetM1PID));
-                    //p
-                    ASSERT_EQ((message[2] << 8*3) + (message[3] << 8*2) +
-                    (message[4] << 8) + message[5], 0xDEADBEEF);
-                    //i
-                    ASSERT_EQ((message[6] << 8*3) + (message[7] << 8*2) +
-                    (message[8] << 8) + message[9], 0x12345678);
                     //d
-                    ASSERT_EQ((message[10] << 8*3) + (message[11] << 8*2) +
-                    (message[12] << 8) + message[13], 0xABCDEF00);
+                    ASSERT_NEAR(static_cast<uint32_t>((message[2] << 8*3) + (message[3] << 8*2) +
+                    (message[4] << 8) + message[5]), 0xABCDEF00, 20);
+                    //p (B/c of float, the int is close but not = the original value)
+                    ASSERT_NEAR(static_cast<uint32_t>((message[6] << 8*3) + (message[7] << 8*2) +
+                    (message[8] << 8) + message[9]), 0x0EADBEEF, 20);
+                    //i
+                    ASSERT_NEAR((message[10] << 8*3) + (message[11] << 8*2) +
+                    (message[12] << 8) + message[13], 0x12345678, 20);
                     //qpps
                     ASSERT_EQ((message[14] << 8*3) + (message[15] << 8*2) +
                     (message[16] << 8) + message[17], 0x10000);
+
+
+
 
                 }
 
@@ -895,9 +905,6 @@ namespace rip
                     std::vector<uint8_t> response, message;
                     testClaw->setBytes(0);
                     std::shared_ptr<VelocityPIDParameters> vparams(new VelocityPIDParameters);
-
-                    //params not set when setting
-                    ASSERT_THROW(testClaw->setVelocityPID(Roboclaw::Motor::kM2, *vparams), UninitializedStruct);
 
                     //given response, received properly
                     //p,i,d,qpps, 4 bytes each
@@ -911,11 +918,9 @@ namespace rip
                     EXPECT_GE(vparams->kp,0);
                     EXPECT_GE(vparams->ki,0);
                     EXPECT_GE(vparams->kd,0);
-
-                    EXPECT_TRUE(vparams->initialized);
-                    EXPECT_DOUBLE_EQ(vparams->kp, static_cast<float>(0xDEADBEEF) / 65536);
-                    EXPECT_DOUBLE_EQ(vparams->ki, static_cast<float>(0x12345678) / 65536);
-                    EXPECT_DOUBLE_EQ(vparams->kd, static_cast<float>(0xABCDEF00) / 65536);
+                    EXPECT_FLOAT_EQ(vparams->kp, static_cast<float>(0xDEADBEEF) / 65536);
+                    EXPECT_FLOAT_EQ(vparams->ki, static_cast<float>(0x12345678) / 65536);
+                    EXPECT_FLOAT_EQ(vparams->kd, static_cast<float>(0xABCDEF00) / 65536);
                     EXPECT_EQ(vparams->qpps, 0x00010000);
 
                     //validate transmissions
@@ -923,18 +928,20 @@ namespace rip
                     message = testClaw->getLastCmd();
                     ASSERT_EQ(message[0], 0x80);
                     ASSERT_EQ(message[1], static_cast<uint8_t>(Roboclaw::Command::kSetM2PID));
-                    //p
-                    ASSERT_EQ((message[2] << 8*3) + (message[3] << 8*2) +
-                    (message[4] << 8) + message[5], 0xDEADBEEF);
-                    //i
-                    ASSERT_EQ((message[6] << 8*3) + (message[7] << 8*2) +
-                    (message[8] << 8) + message[9], 0x12345678);
                     //d
-                    ASSERT_EQ((message[10] << 8*3) + (message[11] << 8*2) +
-                    (message[12] << 8) + message[13], 0xABCDEF00);
+                    ASSERT_NEAR(static_cast<uint32_t>((message[2] << 8*3) + (message[3] << 8*2) +
+                    (message[4] << 8) + message[5]), 0xABCDEF00, 20);
+                    //p
+                    ASSERT_NEAR(static_cast<uint32_t>((message[6] << 8*3) + (message[7] << 8*2) +
+                    (message[8] << 8) + message[9]), 0xDEADBEEF, 20);
+                    //i
+                    ASSERT_NEAR(static_cast<uint32_t>((message[10] << 8*3) + (message[11] << 8*2) +
+                    (message[12] << 8) + message[13]), 0x12345678, 20);
                     //qpps
                     ASSERT_EQ((message[14] << 8*3) + (message[15] << 8*2) +
                     (message[16] << 8) + message[17], 0x10000);
+
+
 
                 }
 
@@ -949,17 +956,23 @@ namespace rip
                     std::vector<uint8_t> response, message;
                     testClaw->setBytes(0);
 
-                    ASSERT_THROW(testClaw->setPositionPID(Roboclaw::Motor::kM2, *pparams), UninitializedStruct);
+                    //values should be initialized to 0
+                    EXPECT_FLOAT_EQ(pparams->kp,0);
+                    EXPECT_FLOAT_EQ(pparams->ki,0);
+                    EXPECT_FLOAT_EQ(pparams->kd,0);
+                    EXPECT_EQ(pparams->kiMax,0);
+                    EXPECT_EQ(pparams->deadzone,0);
+                    EXPECT_EQ(pparams->min,0);
+                    EXPECT_EQ(pparams->max,0);
 
                     response = {0xDE, 0xAD, 0xBE, 0xEF,//p
                        0x12, 0x34, 0x56, 0x78, //i
                        0xAB, 0xCD, 0xEF, 0x00, //d
-                       0x0, 0x01, 0x00, 0x00, //maxI
+                       0x0, 0x11, 0x00, 0x00, //maxI
                        0x01, 0x35, 0x79, 0xBD, //deadzone
                        0x00, 0x00, 0x11, 0x00, //minpos
                        0x0F, 0xFF, 0xFF, 0xFF}; //maxpos
                     testClaw->setcResponse(response);
-
 
                     *pparams = testClaw->readPositionPID(Roboclaw::Motor::kM2);
                     //value should be greater than 0
@@ -971,11 +984,11 @@ namespace rip
                     EXPECT_GE(pparams->min,0);
                     EXPECT_GE(pparams->max,0);
 
-                    EXPECT_TRUE(pparams->initialized);
-                    EXPECT_DOUBLE_EQ(pparams->kp, static_cast<float>(0xDEADBEEF) / 65536);
-                    EXPECT_DOUBLE_EQ(pparams->ki, static_cast<float>(0x12345678) / 65536);
-                    EXPECT_DOUBLE_EQ(pparams->kd, static_cast<float>(0xABCDEF00) / 65536);
-                    EXPECT_EQ(pparams->kiMax, 0x00010000);
+                    //floats are trash
+                    ASSERT_NEAR(pparams->kp, static_cast<float>(0xDEADBEEF) / 1024, 20);
+                    EXPECT_NEAR(pparams->ki, static_cast<float>(0x12345678) / 1024, 20);
+                    ASSERT_NEAR(pparams->kd, static_cast<float>(0xABCDEF00) / 1024, 20);
+                    EXPECT_EQ(pparams->kiMax, 0x00110000);
                     EXPECT_EQ(pparams->deadzone, 0x013579BD);
                     EXPECT_EQ(pparams->min, 0x00001100);
                     EXPECT_EQ(pparams->max, 0x0FFFFFFF);
@@ -985,21 +998,21 @@ namespace rip
                     message = testClaw->getLastCmd();
                     ASSERT_EQ(message[0], 0x80);
                     ASSERT_EQ(message[1], static_cast<uint8_t>(Roboclaw::Command::kSetM1PosPID));
-                    //p
-                    ASSERT_EQ((message[2] << 8*3) + (message[3] << 8*2) +
-                    (message[4] << 8) + message[5], 0xDEADBEEF);
-                    //i
-                    ASSERT_EQ((message[6] << 8*3) + (message[7] << 8*2) +
-                    (message[8] << 8) + message[9], 0x12345678);
                     //d
-                    ASSERT_EQ((message[10] << 8*3) + (message[11] << 8*2) +
-                    (message[12] << 8) + message[13], 0xABCDEF00);
+                    EXPECT_NEAR(static_cast<uint32_t>((message[2] << 8*3) + (message[3] << 8*2) +
+                    (message[4] << 8) + message[5]), 0xABCDEF00, 20);
+                    //p
+                    ASSERT_NEAR(static_cast<uint32_t>((message[6] << 8*3) + (message[7] << 8*2) +
+                    (message[8] << 8) + message[9]), 0xDEADBEEF, 20);
+                    //i
+                    ASSERT_NEAR((message[10] << 8*3) + (message[11] << 8*2) +
+                    (message[12] << 8) + message[13], 0x12345678, 20);
                     //kiMax
                     ASSERT_EQ((message[14] << 8*3) + (message[15] << 8*2) +
-                    (message[16] << 8) + message[17], 0x10000);
+                    (message[16] << 8) + message[17], 0x110000);
                     //deadzone
-                    ASSERT_EQ((message[18] << 8*3) + (message[19] << 8*2) +
-                    (message[20] << 8) + message[21], 0x13579BD);
+                    ASSERT_EQ(static_cast<uint32_t>((message[18] << 8*3) + (message[19] << 8*2) +
+                    (message[20] << 8) + message[21]), 0x13579BD);
                     //min
                     ASSERT_EQ((message[22] << 8*3) + (message[23] << 8*2) +
                     (message[24] << 8) + message[25], 0x1100);
@@ -1021,8 +1034,6 @@ namespace rip
                     MinPos(4 byte), MaxPos(4 byte), CRC(2 bytes)]
                     */
 
-                    ASSERT_THROW(testClaw->setPositionPID(Roboclaw::Motor::kM2, *pparams), UninitializedStruct);
-
                     response = {0xDE, 0xAD, 0xBE, 0xEF,//p
                        0x12, 0x34, 0x56, 0x78, //i
                        0xAB, 0xCD, 0xEF, 0x00, //d
@@ -1043,10 +1054,9 @@ namespace rip
                     EXPECT_GE(pparams->min,0);
                     EXPECT_GE(pparams->max,0);
 
-                    EXPECT_TRUE(pparams->initialized);
-                    EXPECT_DOUBLE_EQ(pparams->kp, static_cast<float>(0xDEADBEEF) / 65536);
-                    EXPECT_DOUBLE_EQ(pparams->ki, static_cast<float>(0x12345678) / 65536);
-                    EXPECT_DOUBLE_EQ(pparams->kd, static_cast<float>(0xABCDEF00) / 65536);
+                    ASSERT_NEAR(pparams->kp, static_cast<float>(0xDEADBEEF) / 1024, 20);
+                    EXPECT_NEAR(pparams->ki, static_cast<float>(0x12345678) / 1024, 20);
+                    ASSERT_NEAR(pparams->kd, static_cast<float>(0xABCDEF00) / 1024, 20);
                     EXPECT_EQ(pparams->kiMax, 0x00010000);
                     EXPECT_EQ(pparams->deadzone, 0x013579BD);
                     EXPECT_EQ(pparams->min, 0x00001100);
@@ -1057,15 +1067,15 @@ namespace rip
                     message = testClaw->getLastCmd();
                     ASSERT_EQ(message[0], 0x80);
                     ASSERT_EQ(message[1], static_cast<uint8_t>(Roboclaw::Command::kSetM1PosPID));
-                    //p
-                    ASSERT_EQ((message[2] << 8*3) + (message[3] << 8*2) +
-                    (message[4] << 8) + message[5], 0xDEADBEEF);
-                    //i
-                    ASSERT_EQ((message[6] << 8*3) + (message[7] << 8*2) +
-                    (message[8] << 8) + message[9], 0x12345678);
                     //d
-                    ASSERT_EQ((message[10] << 8*3) + (message[11] << 8*2) +
-                    (message[12] << 8) + message[13], 0xABCDEF00);
+                    ASSERT_NEAR(static_cast<uint32_t>((message[2] << 8*3) + (message[3] << 8*2) +
+                    (message[4] << 8) + message[5]), 0xABCDEF00, 20);
+                    //p
+                    ASSERT_NEAR(static_cast<uint32_t>((message[6] << 8*3) + (message[7] << 8*2) +
+                    (message[8] << 8) + message[9]), 0xDEADBEEF, 20);
+                    //i
+                    ASSERT_NEAR(static_cast<uint32_t>((message[10] << 8*3) + (message[11] << 8*2) +
+                    (message[12] << 8) + message[13]), 0x12345678, 20);
                     //kiMax
                     ASSERT_EQ((message[14] << 8*3) + (message[15] << 8*2) +
                     (message[16] << 8) + message[17], 0x10000);
@@ -1080,41 +1090,87 @@ namespace rip
                     (message[28] << 8) + message[29], 0x0FFFFFFF);
 
 
+
                 }
 
                 TEST(RoboclawConfig, ClassSetters)
                 {
-                    FAIL() << "TODO: Implement Test & Config methods";
                     std::shared_ptr<Config> config(new Config);
-                    std::shared_ptr<Roboclaw> testClaw(new Roboclaw);
-                    std::vector<uint8_t> response;
-                    testClaw->setBytes(0);
-                    /*
-                    testClaw->Config::setCommMode()
+                    //comm mode setters work properly
+                    uint16_t mask;
+                    for(mask=0; mask < 3; mask++)
+                    {
+                        config->setCommMode(static_cast<Config::CommMode>(mask));
+                        ASSERT_EQ((config->get() & mask), mask);
+                    }
+                    //battery setters work properly
+                    for(mask=0; mask < 4*8; mask+=4)
+                    {
+                        config->setBatteryMode(static_cast<Config::BatteryMode>(mask));
+                        EXPECT_EQ((config->get() & mask), mask);
+                    }
 
-                    testClaw->Config::setBatteryMode()
+                    config->setCommMode(Config::CommMode::kAnalog);
+                    ASSERT_THROW(config->getBaudRate(), InvalidCommMode);
+                    config->setCommMode(Config::CommMode::kPacketSerial);
+                    //Baudrate setters work properly
+                    for(mask=0; mask < 8*32; mask +=32)
+                    {
+                        config->setBaudRate(static_cast<Config::BaudRate>(mask));
+                        EXPECT_EQ((config->get() & mask), mask);
+                    }
+                    //packet addr setters work properly
+                    for(mask=0; mask < 8*256; mask +=256)
+                    {
+                        config->setPacketAddress(static_cast<Config::PacketAddress>(mask));
+                        EXPECT_EQ((config->get() & mask), mask);
+                    }
 
-                    testClaw->Config::setBaudRate()
-                    testClaw->Config::setPacketAddress()
+                    config->setSwapButtons(1);
+                    mask = 0x4000;
+                    EXPECT_EQ(config->get() & mask, mask);
 
-                    testClaw->Config::setSwapButtons()
-                    testClaw->Config::setSwapEncoders()
-                    testClaw->Config::set()
-                    */
-
+                    config->setSwapEncoders(1);
+                    mask = 0x2000;
+                    EXPECT_EQ(config->get() & mask, mask);
                 }
                 TEST(RoboclawConfig, ClassGetters)
                 {
-                  FAIL() << "TODO: Implement Test & Config methods";
-                  std::shared_ptr<Config> config(new Config);
-                  std::shared_ptr<Roboclaw> testClaw(new Roboclaw);
-                  std::vector<uint8_t> response;
-                  testClaw->setBytes(0);
-                  /*
-                  testClaw->Config::getPacketAddress()
-                  testClaw->Config::getBatteryMode()
-                  testClaw->Config::getCommMode()
-                  */
+                    std::shared_ptr<Config> config(new Config);
+
+                    //packet serial
+                    uint16_t cfg=0x80A7;
+                    config->set(cfg);
+                    ASSERT_EQ(static_cast<uint16_t>(config->getCommMode()),
+                    static_cast<uint16_t>(Config::CommMode::kPacketSerial));
+                    EXPECT_EQ(static_cast<uint16_t>(config->getPacketAddress()),
+                    static_cast<uint16_t>(Config::PacketAddress::k80));
+                    EXPECT_EQ(static_cast<uint16_t>(config->getBatteryMode()),
+                    static_cast<uint16_t>(Config::BatteryMode::kAuto));
+                    EXPECT_EQ(static_cast<uint16_t>(config->getBaudRate()),
+                    static_cast<uint16_t>(Config::BaudRate::k115200));
+
+                    //RC + battery off
+                    cfg = 0;
+                    config->set(cfg);
+                    ASSERT_EQ(static_cast<uint16_t>(config->getCommMode()),
+                    static_cast<uint32_t>(Config::CommMode::kRC));
+                    ASSERT_THROW(config->getPacketAddress(), InvalidCommMode);
+                    ASSERT_THROW(config->getBaudRate(), InvalidCommMode);
+                    EXPECT_EQ(static_cast<uint16_t>(config->getBatteryMode()),
+                    static_cast<uint32_t>(Config::BatteryMode::kOff));
+                }
+                TEST(RoboclawConfig, Other)
+                {
+                    std::shared_ptr<Config> config(new Config);
+                    std::shared_ptr<Roboclaw> testClaw(new Roboclaw);
+                    std::vector<uint8_t> response, message;
+                    testClaw->setBytes(0);
+
+                    /*
+                    testClaw->setConfig()
+                    testClaw->getConfig()
+                    */
                 }
 
                 TEST(RoboclawCore, Misc)
@@ -1140,6 +1196,7 @@ namespace rip
                     testClaw->readBufferLens()
 
                     */
+
                 }
 
             }

@@ -395,34 +395,26 @@ namespace rip
                 throw CommandFailure();
             }
 
-            //////////////////////////////////////////////////////////////////////////////////////////////
-            ////////////////////////////////////////// PID ///////////////////////////////////////////////
-            //////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////// PID ///////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////
 
             void Roboclaw::setVelocityPID(Motor motor, const VelocityPIDParameters& parameters)
             {
                 uint32_t kp = parameters.kp * 65536;
                 uint32_t ki = parameters.ki * 65536;
                 uint32_t kd = parameters.kd * 65536;
-                if(parameters.initialized)
+                Command cmd;
+                switch (motor)
                 {
-                    Command cmd;
-                    switch (motor)
-                    {
-                        case Motor::kM1:
-                            cmd = Command::kSetM1PID;
-                            break;
-                        case Motor::kM2:
-                            cmd = Command::kSetM2PID;
-                            break;
-                    }
-
-                    writeN(cmd, kd, kp, ki, parameters.qpps);
+                    case Motor::kM1:
+                        cmd = Command::kSetM1PID;
+                        break;
+                    case Motor::kM2:
+                        cmd = Command::kSetM2PID;
+                        break;
                 }
-                else
-                {
-                    throw UninitializedStruct();
-                }
+                writeN(cmd, kd, kp, ki, parameters.qpps);
             }
 
             VelocityPIDParameters Roboclaw::readVelocityPID(Motor motor)
@@ -442,6 +434,7 @@ namespace rip
 
                 VelocityPIDParameters v;
                 uint32_t p=0, i=0, d=0;
+                v.qpps =0;
                 for (uint8_t index = 0; index < 4; index++)
                 {
                     p |= response[index] << (8 * (3 - index));
@@ -452,7 +445,7 @@ namespace rip
                 v.kp = static_cast<float>(p) / 65536;
                 v.ki = static_cast<float>(i) / 65536;
                 v.kd = static_cast<float>(d) / 65536;
-                v.initialized = true;
+
                 return v;
             }
 
@@ -461,25 +454,19 @@ namespace rip
                 uint32_t kp = parameters.kp * 1024;
                 uint32_t ki = parameters.ki * 1024;
                 uint32_t kd = parameters.kd * 1024;
-                if(parameters.initialized)
+                Command cmd;
+                switch (motor)
                 {
-                    Command cmd;
-                    switch (motor)
-                    {
-                        case Motor::kM1:
-                            cmd = Command::kSetM1PosPID;
-                            break;
-                        case Motor::kM2:
-                            cmd = Command::kSetM2PosPID;
-                            break;
-                    }
+                    case Motor::kM1:
+                        cmd = Command::kSetM1PosPID;
+                        break;
+                    case Motor::kM2:
+                        cmd = Command::kSetM2PosPID;
+                        break;
+                }
 
-                    writeN(cmd, kd, kp, ki, parameters.kiMax, parameters.deadzone, parameters.min, parameters.max);
-                }
-                else
-                {
-                    throw UninitializedStruct();
-                }
+                writeN(cmd, kd, kp, ki, parameters.kiMax, parameters.deadzone,
+                  parameters.min, parameters.max);
             }
 
             PositionPIDParameters Roboclaw::readPositionPID(Motor motor)
@@ -497,7 +484,7 @@ namespace rip
 
                 std::vector<uint8_t> response = readN(28, cmd);
                 PositionPIDParameters pid;
-                uint32_t p, i, d;
+                uint32_t p=0, i=0, d=0;
                 for (uint8_t index = 0; index < 4; index++)
                 {
                     p |= response[index] << (8 * (3 - index));
@@ -507,12 +494,10 @@ namespace rip
                     pid.deadzone |= response[16 + index] << (8 * (3 - index));
                     pid.min |= response[20 + index] << (8 * (3 - index));
                     pid.max |= response[24 + index] << (8 * (3 - index));
-
                 }
                 pid.kp = static_cast<float>(p) / 1024;
                 pid.ki = static_cast<float>(i) / 1024;
                 pid.kd = static_cast<float>(d) / 1024;
-                pid.initialized = true;
                 return pid;
             }
 
@@ -865,6 +850,19 @@ namespace rip
             uint8_t Roboclaw::returnFF()
             {
               return 0xFF;
+            }
+
+            void Roboclaw::setConfig(Config config)
+            {
+                writeN(Command::kSetConfig, config.get());
+            }
+
+            Config Roboclaw::getConfig()
+            {
+                Config config;
+                std::vector<uint8_t> response = readN(2,Command::kGetConfig);
+                config.set(static_cast<uint16_t>((response[0] << 8) + response[1]));
+                return config;
             }
 
             void Roboclaw::crcUpdate(uint8_t data)

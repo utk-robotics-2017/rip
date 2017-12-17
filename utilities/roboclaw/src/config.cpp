@@ -51,14 +51,13 @@ namespace rip
             Config::BatteryMode Config::getBatteryMode() const
             {
 
-                return static_cast<BatteryMode>(m_config && 0x1C);
+                return static_cast<BatteryMode>(m_config & 0x1C);
             }
 
             void Config::setBaudRate(BaudRate baud_rate)
             {
                 if(static_cast<uint32_t>(this->getCommMode()) <= 1)
                 {
-                    std::cout << std::hex << m_config << std::endl << static_cast<uint32_t>(this->getCommMode()) << std::endl;
                     throw InvalidCommMode("Baudrate cannot be set when commMode is RC/Analog");
                 }
                 // Clear baud rate using bit mask
@@ -78,7 +77,7 @@ namespace rip
                     case 2:
                         throw InvalidCommMode("Simple serial is write only");
                 }
-                return static_cast<BaudRate>(m_config && 0xE0);
+                return static_cast<BaudRate>(m_config & 0xE0);
             }
 
             void Config::setPacketAddress(PacketAddress packet_address)

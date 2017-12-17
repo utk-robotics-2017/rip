@@ -1,7 +1,7 @@
 #include <roboclaw.hpp>
 #include <iostream>
 #include <inttypes.h>
-#include <serial.hpp>
+#include <serial.h>
 using namespace rip::utilities::roboclaw;
 /*
 Interactive diagnostic tests, specifically for the Roboclaw's on the demo bot (for now)
@@ -13,17 +13,18 @@ Killing this program will not save you from the malice of motors.
 
 int main(int argc, char **argv)
 {
-
+    //make serial obj
     nlohmann::json config1={{"address", 0x80},{"timeout", 1000},
-    {"ticks_per_rev", 360.0},{"wheel_radius", 40}};
+    {"ticks_per_rev", 360.0},{"wheel_radius", 40}, {"device", "/dev/serial0"},
+    {"baudrate", 115200}};
     nlohmann::json config2 = config1;
     config2["address"]=0x81;
     int64_t d;
     //Roboclaw testClawLeft(config2);
     Roboclaw testClawRight(config1);
     std::cout<< "got here";
-    testClawRight.setBaudRate(115200);
-    testClawRight.setPort("/dev/ttyS0");
+    //setBaudRate(115200);
+    //testClawRight.setPort("/dev/ttyS0");
 
 
     //d=testClawRight.readEncoderRaw(Roboclaw::Motor::kM1);

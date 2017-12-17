@@ -30,6 +30,10 @@ namespace rip
                 {
                     m_last_cmd = command;
                 }
+                uint8_t MockRoboclaw::read(serial_t *serial, units::Time timeout_ms)
+                {
+                    return 0;
+                }
 
                 void MockRoboclaw::setBytes(size_t bytes)
                 {
