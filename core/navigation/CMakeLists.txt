@@ -1,0 +1,12 @@
+cmake_minimum_required(VERSION 3.1)
+message("Building navigation")
+project(navigation)
+
+if(GIT_BRANCH MATCHES "path_planner")
+add_subdirectory(path_planner)
+elseif(GIT_BRANCH MATCHES "navx")
+	add_subdirectory(navx)
+else()
+	add_subdirectory(navx)
+	add_subdirectory(path_planner)
+endif()
