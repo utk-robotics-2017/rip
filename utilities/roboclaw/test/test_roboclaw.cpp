@@ -850,6 +850,86 @@ namespace rip
 
                 }
 
+
+                TEST(RoboclawDynamics, setDynamicsPlural)
+                {
+                    double ticks_per_rev = 360.0, wheel_radius=.04;//base unit meter
+                    std::shared_ptr<Roboclaw> testClaw(new Roboclaw);
+                    std::vector<uint8_t> response;
+                    std::vector<uint8_t> message;
+                    testClaw->setBytes(0);
+                    std::shared_ptr<MotorDynamics> dynamics(new MotorDynamics);
+
+                    units::Distance d = 1.0;
+                    units::Velocity v = 99.5;//default unit m/s?
+                    units::Acceleration a = 45.0;
+                    //dynamics empty
+                    /*
+                    Notes on setDynamics: speed is only signed parameter, dist, acc, dec,
+                    are unsigned as defined by Roboclaw manual.
+                    */
+                    EXPECT_NO_THROW(testClaw->setDynamics(*dynamics));
+                    //ensure proper transmission
+                    //motors 1&2
+                      //speed (+)
+                    dynamics->setSpeed(v);
+                    testClaw->setDynamics(*dynamics);
+                    message = testClaw->getLastCmd();
+                    ASSERT_EQ(message[0], 0x80);
+                    ASSERT_EQ(message[1], static_cast<uint8_t>(Roboclaw::Command::kMixedSpeed));
+                    //speed = static_cast<int32_t>((*dynamics.getSpeed() / m_wheel_radius)() * m_ticks_per_rev);
+                    EXPECT_DOUBLE_EQ(static_cast<int32_t>((v / wheel_radius / (units::pi * 2))() * ticks_per_rev),
+                    (message[2] << 8*3) + (message[3] << 8*2) + (message[4] << 8) + message[5]);
+                      //speed (-)
+                    v=-1;
+                    dynamics->setSpeed(v);
+                    testClaw->setDynamics(*dynamics);
+                    message = testClaw->getLastCmd();
+                    ASSERT_EQ(message[0], 0x80);
+                    ASSERT_EQ(message[1], static_cast<uint8_t>(Roboclaw::Command::kMixedSpeed));
+                    EXPECT_DOUBLE_EQ(static_cast<int32_t>((v / wheel_radius / (units::pi * 2))() * ticks_per_rev),
+                    (message[2] << 8*3) + (message[3] << 8*2) + (message[4] << 8) + message[5]);
+                      //speed 0
+                    v=0;
+                    dynamics->setSpeed(v);
+                    testClaw->setDynamics(*dynamics);
+                    message = testClaw->getLastCmd();
+                    ASSERT_EQ(message[0], 0x80);
+                    ASSERT_EQ(message[1], static_cast<uint8_t>(Roboclaw::Command::kMixedSpeed));
+                    //speed = static_cast<int32_t>((*dynamics.getSpeed() / m_wheel_radius)() * m_ticks_per_rev);
+                    EXPECT_DOUBLE_EQ(0.0, (message[2] << 8*3) + (message[3] << 8*2) + (message[4] << 8) + message[5]);
+                      //speed & acceleration(+)
+                    v=1;
+                    dynamics->setSpeed(v);
+                    dynamics->setAcceleration(a);
+                    testClaw->setDynamics(*dynamics);
+                    message = testClaw->getLastCmd();
+                    ASSERT_EQ(message[0], 0x80);
+                    ASSERT_EQ(message[1], static_cast<uint8_t>(Roboclaw::Command::kMixedSpeedAccel));
+                    EXPECT_DOUBLE_EQ(static_cast<int32_t>((a / wheel_radius / (units::pi * 2))() * ticks_per_rev),
+                    (message[2] << 8*3) + (message[3] << 8*2) + (message[4] << 8) + message[5]);
+                      //speed & distance(+)
+                    dynamics->setDistance(d);
+                    testClaw->setDynamics(*dynamics);
+                    message = testClaw->getLastCmd();
+                    ASSERT_EQ(message[0], 0x80);
+                    ASSERT_EQ(message[1], static_cast<uint8_t>(Roboclaw::Command::kMixedSpeedAccelDist));
+                    EXPECT_DOUBLE_EQ(static_cast<int32_t>((d / wheel_radius / (units::pi * 2))() * ticks_per_rev),
+                    (message[6] << 8*3) + (message[7] << 8*2) + (message[8] << 8) + message[9]);
+
+                      //speed & acceleration & distance & deceleration(+)
+                    dynamics->setDeceleration(a);
+                    testClaw->setDynamics(*dynamics);
+                    message = testClaw->getLastCmd();
+                    ASSERT_EQ(message[0], 0x80);
+                    ASSERT_EQ(message[1], static_cast<uint8_t>(Roboclaw::Command::kMixedSpeedAccelDeccelPos));
+                    EXPECT_DOUBLE_EQ(static_cast<int32_t>((a / wheel_radius / (units::pi * 2))() * ticks_per_rev),
+                    (message[10] << 8*3) + (message[11] << 8*2) + (message[12] << 8) + message[13]);
+
+
+
+                }
+
                 TEST(RoboclawPID, VelocityM1)
                 {
                     std::shared_ptr<Roboclaw> testClaw(new Roboclaw);

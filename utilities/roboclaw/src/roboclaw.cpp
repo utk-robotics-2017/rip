@@ -599,8 +599,58 @@ namespace rip
 
             void Roboclaw::setDynamics(const MotorDynamics& dynamics, bool respectBuffer)
             {
-                //todo(Andrew)
-                return;
+                Command cmd;
+                int32_t speed;
+                uint32_t accel, dist, decel;
+
+                switch (dynamics.getDType())
+                {
+                    case MotorDynamics::DType::kNone:
+                        return;
+                    case MotorDynamics::DType::kSpeed:
+                        // Send: [Address, 37, Speed(4 Bytes), CRC(2 bytes)]
+                        // Receive: [0xFF]
+                        cmd = Command::kMixedSpeed;
+                        speed = static_cast<int32_t>((*dynamics.getSpeed() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
+                        writeN(cmd, speed);
+                        return;
+                    case MotorDynamics::DType::kSpeedAccel:
+                        // Send: [Address, 40, Accel(4 Bytes), Speed(4 Bytes), CRC(2 bytes)]
+                        // Receive: [0xFF]
+                        cmd = Command::kMixedSpeedAccel;
+                        speed = static_cast<int32_t>((*dynamics.getSpeed() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
+                        accel = static_cast<uint32_t>((*dynamics.getAcceleration() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
+                        writeN(cmd, accel, speed);
+                        break;
+                    case MotorDynamics::DType::kSpeedDist:
+                        // Send: [Address, 43, Speed(4 Bytes), Distance(4 Bytes), Buffer, CRC(2 bytes)]
+                        // Receive: [0xFF]
+                        cmd = Command::kMixedSpeedDist;
+                        speed = static_cast<int32_t>((*dynamics.getSpeed() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
+                        dist = static_cast<uint32_t>((*dynamics.getDistance() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
+                        writeN(cmd, speed, dist, static_cast<uint8_t>(respectBuffer));
+                        break;
+                    case MotorDynamics::DType::kSpeedAccelDist:
+                        // Send: [Address, 46, Accel(4 bytes), Speed(4 Bytes), Distance(4 Bytes), Buffer, CRC(2 bytes)]
+                        // Receive: [0xFF]
+                        cmd = Command::kMixedSpeedAccelDist;
+                        speed = static_cast<int32_t>((*dynamics.getSpeed() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
+                        dist = static_cast<uint32_t>((*dynamics.getDistance() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
+                        accel = static_cast<uint32_t>((*dynamics.getAcceleration() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
+
+                        writeN(cmd, accel, speed, dist, static_cast<uint8_t>(respectBuffer));
+                        break;
+                    case MotorDynamics::DType::kSpeedAccelDecelDist:
+                        // Send: [Address, 67, Accel(4 bytes), Speed(4 Bytes), Deccel(4 bytes), Position(4 Bytes), Buffer, CRC(2 bytes)]
+                        // Receive: [0xFF]
+                        cmd = Command::kMixedSpeedAccelDeccelPos;
+                        speed = static_cast<int32_t>((*dynamics.getSpeed() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
+                        dist = static_cast<uint32_t>((*dynamics.getDistance() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
+                        accel = static_cast<uint32_t>((*dynamics.getAcceleration() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
+                        decel = static_cast<uint32_t>((*dynamics.getDeceleration() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
+                        writeN(cmd, accel, speed, decel, dist, static_cast<uint8_t>(respectBuffer));
+                        break;
+                }
             }
 //////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////// Communication //////////////////////////////////////
