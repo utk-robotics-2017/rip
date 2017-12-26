@@ -15,7 +15,7 @@ if(ENABLE_DIAG)
 	add_executable(${PROJECT_NAME}_diag ${${PROJECT_NAME}_DIAG_SOURCES})
 	set_property(TARGET ${PROJECT_NAME}_diag PROPERTY CXX_STANDARD 11)
 	target_link_libraries(${PROJECT_NAME}_diag ${PROJECT_NAME})
-	target_link_libraries(${PROJECT_NAME}_diag periphery)
+	target_link_libraries(${PROJECT_NAME}_diag periphery units)
 endif()
 
 if(ENABLE_TESTING)

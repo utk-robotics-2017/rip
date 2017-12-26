@@ -612,7 +612,7 @@ namespace rip
                         // Receive: [0xFF]
                         cmd = Command::kMixedSpeed;
                         speed = static_cast<int32_t>((*dynamics.getSpeed() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
-                        writeN(cmd, speed);
+                        writeN(cmd, speed, speed);
                         return;
                     case MotorDynamics::DType::kSpeedAccel:
                         // Send: [Address, 40, Accel(4 Bytes), Speed(4 Bytes), CRC(2 bytes)]
@@ -620,7 +620,7 @@ namespace rip
                         cmd = Command::kMixedSpeedAccel;
                         speed = static_cast<int32_t>((*dynamics.getSpeed() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
                         accel = static_cast<uint32_t>((*dynamics.getAcceleration() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
-                        writeN(cmd, accel, speed);
+                        writeN(cmd, accel, speed, speed);
                         break;
                     case MotorDynamics::DType::kSpeedDist:
                         // Send: [Address, 43, Speed(4 Bytes), Distance(4 Bytes), Buffer, CRC(2 bytes)]
@@ -628,7 +628,7 @@ namespace rip
                         cmd = Command::kMixedSpeedDist;
                         speed = static_cast<int32_t>((*dynamics.getSpeed() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
                         dist = static_cast<uint32_t>((*dynamics.getDistance() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
-                        writeN(cmd, speed, dist, static_cast<uint8_t>(respectBuffer));
+                        writeN(cmd, speed, dist, speed, dist, static_cast<uint8_t>(respectBuffer));
                         break;
                     case MotorDynamics::DType::kSpeedAccelDist:
                         // Send: [Address, 46, Accel(4 bytes), Speed(4 Bytes), Distance(4 Bytes), Buffer, CRC(2 bytes)]
@@ -638,7 +638,7 @@ namespace rip
                         dist = static_cast<uint32_t>((*dynamics.getDistance() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
                         accel = static_cast<uint32_t>((*dynamics.getAcceleration() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
 
-                        writeN(cmd, accel, speed, dist, static_cast<uint8_t>(respectBuffer));
+                        writeN(cmd, accel, speed, dist, speed, dist, static_cast<uint8_t>(respectBuffer));
                         break;
                     case MotorDynamics::DType::kSpeedAccelDecelDist:
                         // Send: [Address, 67, Accel(4 bytes), Speed(4 Bytes), Deccel(4 bytes), Position(4 Bytes), Buffer, CRC(2 bytes)]
@@ -648,7 +648,7 @@ namespace rip
                         dist = static_cast<uint32_t>((*dynamics.getDistance() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
                         accel = static_cast<uint32_t>((*dynamics.getAcceleration() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
                         decel = static_cast<uint32_t>((*dynamics.getDeceleration() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
-                        writeN(cmd, accel, speed, decel, dist, static_cast<uint8_t>(respectBuffer));
+                        writeN(cmd, accel, speed, decel, dist, accel, speed, decel, dist, static_cast<uint8_t>(respectBuffer));
                         break;
                 }
             }
@@ -896,6 +896,18 @@ namespace rip
             {
                 m_crc = 0;
             }
+            void Roboclaw::printdaResponse(std::vector<uint8_t> m_last_cmd)
+                {
+                  if(m_last_cmd.size() == 0)
+                  {
+                    std::cout << "vector empty" << std::endl;
+                    return;
+                  }
+                  for (std::vector<uint8_t>::const_iterator i = m_last_cmd.begin(); i != m_last_cmd.end(); i++)
+                  {
+                    std::cout << std::hex << static_cast<int>(*i) << ' ';
+                  }
+                }
 
             uint8_t Roboclaw::returnFF()
             {

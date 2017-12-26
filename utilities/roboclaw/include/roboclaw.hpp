@@ -198,6 +198,7 @@ namespace rip
                  * @exception CommandFailure Thrown if the command fails
                  * @exception OutOfRange Thrown if the voltage is out of range
                  */
+                void printdaResponse(std::vector<uint8_t> m_last_cmd);
                 void drive(Motor motor, int16_t speed);
 
                 /**
@@ -660,7 +661,7 @@ namespace rip
                 Config getConfig();
 
             private:
-                static const uint8_t kMaxRetries = 3;
+                static const uint8_t kMaxRetries = 10;
 
                 /**
                  * @brief Clear the checksum
@@ -710,7 +711,7 @@ namespace rip
                 {
                     std::vector<uint8_t> command = {m_address};
                     argsToVector<0, Args...>(command, std::make_tuple(args...));
-
+                    uint8_t data;
                     for (int try_ = 0; try_ < kMaxRetries; try_++)
                     {
                         crcClear();
@@ -721,8 +722,12 @@ namespace rip
                         uint16_t crc = crcGet();
                         command.push_back(static_cast<uint8_t>(crc >> 8));
                         command.push_back(static_cast<uint8_t>(crc));
+                        
                         write(&m_serial, command, command.size());
-                        if(read(&m_serial, m_timeout) == returnFF())
+                        data = read(&m_serial, m_timeout);
+                        std::cout << "writeN debugging: " << std::hex << (int)data << std::endl;
+                        printdaResponse(command);
+                        if(data == returnFF())
                         {
                             return;
                         }
