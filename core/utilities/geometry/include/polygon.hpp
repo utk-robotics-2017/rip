@@ -31,6 +31,8 @@ namespace rip
              */
             Polygon(const std::vector< Point >& points);
 
+            void add(const Point& rhs);
+
             /**
              * @returns Whether the point is inside the polygon (on the edge counts as inside)
              */
@@ -107,6 +109,11 @@ namespace rip
              * @returns The {@link PolygonList} that results from the union
              */
             PolygonList operator +(const PolygonList& rhs) const;
+
+            /**
+             * Adds a new point to this polygon at the end
+             */
+            PolygonList& operator +=(const Point& rhs);
 
             /**
              * Subtracts another polygon from this polygon

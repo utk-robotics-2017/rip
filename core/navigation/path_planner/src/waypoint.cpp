@@ -55,6 +55,19 @@ namespace rip
             {
                 return m_curvature;
             }
+
+            void to_json(nlohmann::json& j, const Waypoint& w)
+            {
+                j["position"] = w.m_position;
+                j["tangent"] = w.m_tangent;
+                j["curvature"] = w.m_curvature;
+            }
+
+            void from_json(const nlohmann::json& j, Waypoint& w)
+            {
+                w = Waypoint(j["position"].get<Point>(), j["tangent"].get<Point>(), j["curvature"].get<Point>());
+            }
+
         } // namespace pathplanner
     } // namespace navigation
 } // namespace rip

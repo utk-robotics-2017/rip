@@ -9,88 +9,134 @@ namespace rip
     {
         namespace pathplanner
         {
-            std::shared_ptr<SettingsManager> SettingsManager::m_singleton = nullptr;
+            std::shared_ptr<Settings> Settings::m_singleton = nullptr;
 
-            std::shared_ptr<SettingsManager> SettingsManager::getInstance()
+            std::shared_ptr<Settings> Settings::getInstance()
             {
                 if(!m_singleton)
                 {
-                    m_singleton = std::shared_ptr<SettingsManager>(new SettingsManager);
+                    m_singleton = std::shared_ptr<Settings>(new Settings);
                 }
                 return m_singleton;
             }
 
-            void SettingsManager::load()
+            void Settings::load()
             {
-                std::string save_location = QStandardPaths::writeableLocation(QStandardPaths::AppDataLocation).toStdString();
+                QString save_location = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
 
                 // Load all the robot configs
-                std::string robot_save_location = save_location + QDir::separator().toLatin1() + "robots";
-                FileHandle robot_dir = fs::open(robot_save_location);
-                if(robot_dir.isDirectory())
+                QString robot_save_location = save_location + QDir::separator() + "robots";
+                QDir robot_dir(robot_save_location);
+                if(robot_dir.exists())
                 {
-                    std::vector<std::string> files = robot_dir.listFiles();
-                    for(const std::string& filename : files)
+                    QStringList files = robot_dir.entryList(QDir::Files);
+                    for(const QString& filename : files)
                     {
-                        FileHandle fh = fs::open(filename);
-                        std::unique_ptr<std::istream> input = fh.createInputStream();
-                        nlohamann::json j;
-                        (*input) >> j;
-                        m_robots[j["name"]] = std::make_shared<SettingsBase>(j);
+                        QFile f(robot_save_location + QDir::separator() + filename);
+                        if(f.open(QIODevice::ReadOnly))
+                        {
+                            nlohmann::json j = nlohmann::json::parse(f.readAll());
+                            m_robots[j["name"]] = std::make_shared<SettingsBase>(j);
+                        }
                     }
                 }
                 else
                 {
-                    robot_dir.createDirectory();
+                    robot_dir.mkpath(".");
                 }
 
                 // Load all the course configs
-                std::string course_save_location = save_location + QDir::separator().toLatin1() + "course";
-                FileHandle course_dir = fs::open(course_save_location);
-                if(course_dir.isDirectory())
+                QString course_save_location = save_location + QDir::separator() + "courses";
+                QDir course_dir(course_save_location);
+                if(course_dir.exists())
                 {
-                    std::vector<std::string> files = course_dir.listFiles();
-                    for(const std::string& filename : files)
+                    QStringList files = course_dir.entryList(QDir::Files);
+                    for(const QString& filename : files)
                     {
-                        FileHandle fh = fs::open(filename);
-                        std::unique_ptr<std::istream> input = fh.createInputStream();
-                        nlohamann::json j;
-                        (*input) >> j;
-                        m_courses[j["name"]] = std::make_shared<SettingsBase>(j);
+                        QFile f(course_save_location + QDir::separator() + filename);
+                        if(f.open(QIODevice::ReadOnly))
+                        {
+                            nlohmann::json j = nlohmann::json::parse(f.readAll());
+                            m_courses[j["name"]] = std::make_shared<SettingsBase>(j);
+
+                        }
                     }
                 }
                 else
                 {
-                    course_dir.createDirectory();
+                    course_dir.mkpath(".");
+                }
+
+                // Load all the course configs
+                QString path_save_location = save_location + QDir::separator() + "paths";
+                QDir path_dir(path_save_location);
+                if(path_dir.exists())
+                {
+                    QStringList files = path_dir.entryList(QDir::Files);
+                    for(const QString& filename : files)
+                    {
+                        QFile f(path_save_location + QDir::separator() + filename);
+                        if(f.open(QIODevice::ReadOnly))
+                        {
+                            nlohmann::json j = nlohmann::json::parse(f.readAll());
+                            m_paths[j["name"]] = std::make_shared<SettingsBase>(j);
+
+                        }
+                    }
+                }
+                else
+                {
+                    path_dir.mkpath(".");
                 }
 
             }
 
-            void SettingsManager::save()
+            void Settings::save()
             {
-                std::string save_location = QStandardPaths::writeableLocation(QStandardPaths::AppDataLocation).toStdString();
+                QString save_location = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+                // Save robot settings
                 for(auto iter: m_robots)
                 {
-                    std::string filepath = save_location + QDir::separator().toLatin1() + "robots" + QDir::separator().toLatin1() + iter.first + ".json";
-                    FileHandle fh = fs::open(filename);
-                    std::unique_ptr<std::ostream> out = fh.createOutputStream();
-                    (*out) << *(iter.second);
+                    QString filepath = save_location + QDir::separator() + "robots" + QDir::separator() + QString::fromStdString(iter.first) + ".json";
+                    QFile f(filepath);
+                    if(f.open(QIODevice::WriteOnly))
+                    {
+                        nlohmann::json j = *(iter.second);
+                        f.write(j.dump().c_str());
+                    }
                 }
-                for(auto iter: m_robots)
+
+                // Save courses
+                for(auto iter: m_courses)
                 {
-                    std::string filepath = save_location + QDir::separator().toLatin1() + "robots" + QDir::separator().toLatin1() + iter.first + ".json";
-                    FileHandle fh = fs::open(filename);
-                    std::unique_ptr<std::ostream> out = fh.createOutputStream();
-                    (*out) << *(iter.second);
+                    QString filepath = save_location + QDir::separator() + "courses" + QDir::separator() + QString::fromStdString(iter.first) + ".json";
+                    QFile f(filepath);
+                    if(f.open(QIODevice::WriteOnly))
+                    {
+                        nlohmann::json j = *(iter.second);
+                        f.write(j.dump().c_str());
+                    }
+                }
+
+                // Save paths
+                for(auto iter: m_paths)
+                {
+                    QString filepath = save_location + QDir::separator() + "paths" + QDir::separator() + QString::fromStdString(iter.first) + ".json";
+                    QFile f(filepath);
+                    if(f.open(QIODevice::WriteOnly))
+                    {
+                        nlohmann::json j = *(iter.second);
+                        f.write(j.dump().c_str());
+                    }
                 }
             }
 
-            void SettingsManager::addRobot(const std::string& name)
+            void Settings::addRobot(const std::string& name)
             {
                 m_robots[name] = std::make_shared<SettingsBase>(name);
             }
 
-            std::shared_ptr<SettingsBase> SettingsManager::robot(const std::string& name) const
+            std::shared_ptr<SettingsBase> Settings::robot(const std::string& name)
             {
                 if(m_robots.find(name) == m_robots.end())
                 {
@@ -99,12 +145,12 @@ namespace rip
                 return m_robots[name];
             }
 
-            void SettingsManager::addCourse(const std::string& name)
+            void Settings::addCourse(const std::string& name)
             {
                 m_courses[name] = std::make_shared<SettingsBase>(name);
             }
 
-            std::shared_ptr<SettingsBase> SettingsManager::course(const std::string& name) const
+            std::shared_ptr<SettingsBase> Settings::course(const std::string& name)
             {
                 if(m_courses.find(name) == m_courses.end())
                 {
@@ -113,7 +159,21 @@ namespace rip
                 return m_courses[name];
             }
 
-            std::vector<std::string> SettingsManager::getRobotNames()
+            void Settings::addPath(const std::string &name)
+            {
+                m_paths[name] = std::make_shared<SettingsBase>(name);
+            }
+
+            std::shared_ptr<SettingsBase> Settings::path(const std::string& name)
+            {
+                if(m_paths.find(name) == m_paths.end())
+                {
+                    return nullptr;
+                }
+                return m_paths[name];
+            }
+
+            std::vector<std::string> Settings::getRobotNames()
             {
                 std::vector<std::string> names;
                 for(auto it : m_robots)
@@ -123,10 +183,20 @@ namespace rip
                 return names;
             }
 
-            std::vector<std::string> SettingsManager::getCourseNames()
+            std::vector<std::string> Settings::getCourseNames()
             {
                 std::vector<std::string> names;
                 for(auto it : m_courses)
+                {
+                    names.push_back(it.first);
+                }
+                return names;
+            }
+
+            std::vector<std::string> Settings::getPathNames()
+            {
+                std::vector<std::string> names;
+                for(auto it : m_paths)
                 {
                     names.push_back(it.first);
                 }

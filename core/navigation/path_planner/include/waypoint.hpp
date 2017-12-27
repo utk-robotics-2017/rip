@@ -16,6 +16,8 @@ namespace rip
             class Waypoint
             {
             public:
+                Waypoint() = default;
+
                 Waypoint(const Distance& x, const Distance& z, const Angle& heading);
 
                 Waypoint(const Point& p, const Angle& heading);
@@ -32,11 +34,18 @@ namespace rip
 
                 Point curvature() const;
 
+                friend void to_json(nlohmann::json& j, const Waypoint& w);
+                friend void from_json(const nlohmann::json& j, Waypoint& w);
+
             private:
                 Point m_position;
                 Point m_tangent;
                 Point m_curvature;
             }; // class Waypoint
+
+            void to_json(nlohmann::json& j, const Waypoint& w);
+            void from_json(const nlohmann::json& j, Waypoint& w);
+
         } // namespace pathplanner
     } // namespace navigation
 } // namespace rip

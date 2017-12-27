@@ -21,42 +21,47 @@ namespace rip
                 /**
                  * Returns the 2-dimensional position at \p x length down the spline
                  */
-                virtual Point position(const Distance& x) const override;
+                virtual Point position(const Distance& x) override;
 
                 /**
                  * Returns the 2-dimensional vector of the tangent (1st derivative)
                  * of the spline at \p x length down the spline
                  */
-                virtual Point tangent(const Distance& x) const override;
+                virtual Point tangent(const Distance& x) override;
 
                 /**
                  * Returns the 2-dimensional vector of the curvature (2nd derivative)
                  * of the spline at \p x length down the spline
                  */
-                virtual Point curvature(const Distance& x) const override;
+                virtual Point curvature(const Distance& x) override;
 
                 /**
                  * Returns the 2-dimensional vector of the wiggle (3rd derivative)
                  * of the spline at \p x length down the spline
                  */
-                virtual Point wiggle(const Distance& x) const override;
+                virtual Point wiggle(const Distance& x) override;
 
                 /**
                  * Returns the arc length of the (i+1)th segment
                  */
-                virtual Distance segmentArcLength(int i) const override;
+                virtual Distance segmentArcLength(int i) override;
 
                 /**
                  * Returns the number of segments in the spline
                  */
                 virtual size_t numSegments() const override;
 
+            protected:
+
                 /**
                  * Returns the index of the segment that \p x down the spline is on
                  */
-                virtual size_t segmentForX(const Distance& x) const override;
+                virtual size_t segmentForX(const Distance& x) override;
+
+                Distance lengthUntilSegment(int index);
             private:
-                std::vector<Distance> m_knots;
+                std::vector<double> m_knots;
+                std::vector<Distance> m_arc_lengths;
                 std::vector<Waypoint> m_waypoints;
             }; // class CubicHermiteSpline
         }

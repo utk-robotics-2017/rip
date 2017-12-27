@@ -23,17 +23,17 @@ QT5_WRAP_UI( ${PROJECT_NAME}_GUI_UI_HEADERS ${${PROJECT_NAME}_GUI_UI} )
 file(GLOB_RECURSE ${PROJECT_NAME}_GUI_RESOURCES "resources/*.qrc")
 QT5_ADD_RESOURCES( ${PROJECT_NAME}_GUI_UI_RESOURCES_RCC ${${PROJECT_NAME}_GUI_RESOURCES})
 
-add_library(${PROJECT_NAME}_library STATIC
+add_library(_${PROJECT_NAME} STATIC
     ${${PROJECT_NAME}_SOURCES}
     ${${PROJECT_NAME}_HEADERS}
     ${${PROJECT_NAME}_HEADER_MOCS}
     ${${PROJECT_NAME}_GUI_UI_HEADERS}
     ${${PROJECT_NAME}_GUI_UI_RESOURCES_RCC}
 )
-set_property(TARGET ${PROJECT_NAME}_library PROPERTY CXX_STANDARD 11)
+set_property(TARGET _${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
 
-target_include_directories(${PROJECT_NAME}_library PUBLIC "include" ${CMAKE_BINARY_DIR})
-target_link_libraries(${PROJECT_NAME}_library
+target_include_directories(_${PROJECT_NAME} PUBLIC "include" ${CMAKE_BINARY_DIR})
+target_link_libraries(_${PROJECT_NAME}
     fmt units spdlog stp geometry cppfs
     path_planner
     Qt5::Core Qt5::Gui Qt5::Widgets
@@ -42,4 +42,4 @@ target_link_libraries(${PROJECT_NAME}_library
 # Main ELF :linux:
 add_executable(${PROJECT_NAME} src/main.cpp)
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
-target_link_libraries(${PROJECT_NAME} ${PROJECT_NAME}_library Qt5::Core Qt5::Gui)
+target_link_libraries(${PROJECT_NAME} _${PROJECT_NAME} Qt5::Core Qt5::Gui)

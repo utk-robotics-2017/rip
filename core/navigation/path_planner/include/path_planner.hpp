@@ -43,56 +43,60 @@ namespace rip
                     m_motion_profile.planFastestProfile(m_spline.totalLength()(), 0, 0, 0);
                 }
 
-                Distance totalDistance() const
+                Distance totalDistance()
                 {
                     return m_spline.totalLength();
                 }
+                Time totalTime() const
+                {
+                    return m_motion_profile.getDuration();
+                }
 
-                Angle heading(const Time& t) const
+                Angle heading(const Time& t)
                 {
                     Distance x = m_motion_profile.pos(t());
                     return atan(m_spline.tangent(x));
                 }
 
-                Point leftPosition(const Time& t) const
+                Point leftPosition(const Time& t)
                 {
                     Point center = centerPosition(t);
                     Angle h = heading(t);
 
-                    return Point(center.x() - m_width * sin(h),
-                                 center.y() + m_width * cos(h));
+                    return Point(center.x() - m_width / 2.0 * sin(h),
+                                 center.y() + m_width / 2.0 * cos(h));
                 }
 
-                Point centerPosition(const Time& t) const
+                Point centerPosition(const Time& t)
                 {
                     return m_spline.position(m_motion_profile.pos(t()));
                 }
 
-                Point rightPosition(const Time& t) const
+                Point rightPosition(const Time& t)
                 {
                     Point center = centerPosition(t);
                     Angle h = heading(t);
 
-                    return Point(center.x() + m_width * sin(h),
-                                 center.y() - m_width * cos(h));
+                    return Point(center.x() + m_width / 2.0 * sin(h),
+                                 center.y() - m_width / 2.0 * cos(h));
                 }
 
-                Distance centerDistance(const Time& t) const
+                Distance centerDistance(const Time& t)
                 {
                     return m_motion_profile.pos(t());
                 }
 
-                Velocity centerVelocity(const Time& t) const
+                Velocity centerVelocity(const Time& t)
                 {
                     return m_motion_profile.vel(t());
                 }
 
-                Acceleration centerAcceleration(const Time& t) const
+                Acceleration centerAcceleration(const Time& t)
                 {
                     return m_motion_profile.acc(t());
                 }
 
-                Jerk centerJerk(const Time& t) const
+                Jerk centerJerk(const Time& t)
                 {
                     return m_motion_profile.jerk(t());
                 }
@@ -101,9 +105,7 @@ namespace rip
                 {
                     nlohmann::json path;
 
-                    Distance x = 0;
                     Time t = 0;
-
 
                     nlohmann::json prev_segment;
                     prev_segment["time"] = 0;
@@ -123,10 +125,9 @@ namespace rip
 
                     path.push_back(prev_segment);
 
-                    while (x <= m_spline.totalLength())
+                    while (t <= m_spline.totalTime())
                     {
                         t += dt;
-                        x = centerDistance(t);
 
                         nlohmann::json segment;
                         segment["time"] = t;

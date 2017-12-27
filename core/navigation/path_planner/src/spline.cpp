@@ -6,7 +6,7 @@ namespace rip
     {
         namespace pathplanner
         {
-            Distance Spline::totalLength() const
+            Distance Spline::totalLength()
             {
                 Distance result = 0;
                 for (size_t i = 0, end = numSegments(); i < end; i++)

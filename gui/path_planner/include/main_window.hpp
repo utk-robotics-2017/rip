@@ -26,11 +26,14 @@ namespace rip
                 explicit MainWindow(QWidget* parent = nullptr);
                 ~MainWindow();
 
+            public slots:
+                void courseUpdated();
+
             private:
                 Ui::MainWindow* m_ui;
 
-                std::shared_ptr<PreferencesManager> m_preferences_manager;
-                std::shared_ptr<SettingsManager> m_settings_manager;
+                std::shared_ptr<Preferences> m_preferences_manager;
+                std::shared_ptr<Settings> m_settings_manager;
             }; // class MainWindow
         } // namespace pathplanner
     } // namespace gui

@@ -1,7 +1,10 @@
 #include "preferences_manager.hpp"
 
+#include <fstream>
+
 #include <QStandardPaths>
 #include <QDir>
+#include <QTextStream>
 
 namespace rip
 {
@@ -9,55 +12,77 @@ namespace rip
     {
         namespace pathplanner
         {
-            std::shared_ptr<PreferencesManager> PreferencesManager::m_singleton = nullptr;
+            std::shared_ptr<Preferences> Preferences::m_singleton = nullptr;
 
-            std::shared_ptr<PreferencesManager> PreferencesManager::getInstance()
+            std::shared_ptr<Preferences> Preferences::getInstance()
             {
                 if(!m_singleton)
                 {
-                    m_singleton = std::shared_ptr<PreferencesManager>(new PreferencesManager);
+                    m_singleton = std::shared_ptr<Preferences>(new Preferences);
                 }
                 return m_singleton;
             }
 
-            void PreferencesManager::load()
+            void Preferences::load()
             {
-                std::string save_location = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation).toStdString() + QDir::separator().toLatin1() + "pref.json";
+                QString save_location = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + QDir::separator() + "pref.json";
 
-                FileHandle fh = fs::open(save_location);
-                std::unique_ptr<std::istream> input = fh.createInputStream();
+                QFile file(save_location);
+                if(file.exists())
+                {
+                    file.open(QIODevice::ReadOnly);
 
-                nlohmann::json j;
-                (*input) >> j;
-                setDistanceUnit(j["distance"].get<Distance>());
-                setTimeUnit(j["time"].get<Time>());
+                    nlohmann::json j;
+                    j = nlohmann::json::parse(file.readAll().toStdString());
+                    if(j.find("distance") != j.end())
+                    {
+                        setDistanceUnit(j["distance"].get<Distance>());
+                    }
+
+                    if(j.find("time") != j.end())
+                    {
+                        setTimeUnit(j["time"].get<Time>());
+                    }
+
+                    if(j.find("angle") != j.end())
+                    {
+                        setAngleUnit(j["angle"].get<Angle>());
+                    }
+                }
             }
 
-            void PreferencesManager::save()
+            void Preferences::save()
             {
-                std::string save_location = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation).toStdString() + QDir::separator().toLatin1() + "pref.json";
+                QString save_location = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + QDir::separator() + "pref.json";
 
-                FileHandle fh = fs::open(save_location);
-                std::unique_ptr<std::ostream> output = fh.createOutputStream();
+                QFile file(save_location);
+                file.open(QIODevice::WriteOnly);
 
                 nlohmann::json j;
                 j["distance"] = m_distance_unit;
                 j["time"] = m_time_unit;
+                j["angle"] = m_angle_unit;
 
-                (*output) << j;
+                file.write(j.dump().c_str());
+
             }
 
-            units::Distance PreferencesManager::getDistanceUnit() const
+            units::Distance Preferences::getDistanceUnit() const
             {
                 return m_distance_unit;
             }
 
-            units::Time PreferencesManager::getTimeUnit() const
+            units::Time Preferences::getTimeUnit() const
             {
                 return m_time_unit;
             }
 
-            std::string PreferencesManager::getDistanceUnitText() const
+            units::Angle Preferences::getAngleUnit() const
+            {
+                return m_angle_unit;
+            }
+
+            std::string Preferences::getDistanceUnitText() const
             {
                 if (m_distance_unit == units::in)
                 {
@@ -74,7 +99,7 @@ namespace rip
 
             }
 
-            std::string PreferencesManager::getTimeUnitText() const
+            std::string Preferences::getTimeUnitText() const
             {
                 if (m_time_unit == units::s)
                 {
@@ -86,7 +111,19 @@ namespace rip
                 }
             }
 
-            void PreferencesManager::setDistanceUnit(const QString& unit)
+            std::string Preferences::getAngleUnitText() const
+            {
+                if(m_angle_unit == units::degree)
+                {
+                    return "degree";
+                }
+                else if(m_angle_unit == units::radian)
+                {
+                    return "radian";
+                }
+            }
+
+            void Preferences::setDistanceUnit(const QString& unit)
             {
                 if (unit == "in")
                 {
@@ -102,14 +139,14 @@ namespace rip
                 }
             }
 
-            void PreferencesManager::setDistanceUnit(const Distance& unit)
+            void Preferences::setDistanceUnit(const Distance& unit)
             {
                 Distance temp = m_distance_unit;
                 m_distance_unit = unit;
                 emit distanceUnitChanged(m_distance_unit, temp);
             }
 
-            void PreferencesManager::setTimeUnit(const QString& unit)
+            void Preferences::setTimeUnit(const QString& unit)
             {
                 if (unit == "s")
                 {
@@ -121,11 +158,38 @@ namespace rip
                 }
             }
 
-            void PreferencesManager::setTimeUnit(const Time& unit)
+            void Preferences::setTimeUnit(const Time& unit)
             {
                 Time temp = m_time_unit;
                 m_time_unit = unit;
                 emit timeUnitChanged(m_time_unit, temp);
+            }
+
+            void Preferences::setAngleUnit(const QString &unit)
+            {
+                if(unit == "degree")
+                {
+                    setAngleUnit(units::degrees);
+                }
+                else if(unit == "radian")
+                {
+                    setAngleUnit(units::radian);
+                }
+            }
+
+            void Preferences::setAngleUnit(const Angle &unit)
+            {
+                Angle temp = m_angle_unit;
+                m_angle_unit = unit;
+                emit angleUnitChanged(m_angle_unit, temp);
+            }
+
+            Preferences::Preferences()
+                : m_distance_unit(units::in)
+                , m_time_unit(units::s)
+                , m_angle_unit(units::degree)
+            {
+
             }
 
         }

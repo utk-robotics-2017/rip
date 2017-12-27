@@ -13,8 +13,8 @@ namespace rip
             MainWindow::MainWindow(QWidget* parent)
                 : QMainWindow(parent)
                 , m_ui(new Ui::MainWindow)
-                , m_preferences_manager(PreferencesManager::getInstance())
-                , m_settings_manager(SettingsManager::getInstance())
+                , m_preferences_manager(Preferences::getInstance())
+                , m_settings_manager(Settings::getInstance())
             {
                 m_ui->setupUi(this);
 
@@ -22,23 +22,30 @@ namespace rip
                 if(!app_data.exists())
                 {
                     app_data.mkpath(".");
-                    app_data.mkpath("./robot");
-                    app_data.mkpath("./course");
+                    app_data.mkpath("./robots");
+                    app_data.mkpath("./courses");
                 }
+
+                connect(m_ui->course_tab, SIGNAL(polygonUpdated()), this, SLOT(courseUpdated()));
 
                 m_preferences_manager->load();
                 m_settings_manager->load();
+                m_ui->robot_tab->setRobotOptions(m_settings_manager->getRobotNames());
+                m_ui->course_tab->setCourseOptions(m_settings_manager->getCourseNames());
+                m_ui->path_tab->setOptions(m_settings_manager->getPathNames());
             }
 
             MainWindow::~MainWindow()
             {
                 m_preferences_manager->save();
                 m_settings_manager->save();
-                nlohmann::json project;
-                project["course"] = m_ui->course_tab->course();
-                project["robot"] = m_ui->robot_tab->robot();
 
                 delete m_ui;
+            }
+
+            void MainWindow::courseUpdated()
+            {
+                m_ui->path_tab->setWorld(m_ui->course_tab->polygon());
             }
         }
     }

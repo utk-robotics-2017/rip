@@ -29,7 +29,7 @@ namespace rip
                  * be negative, and the inner_padding'th value will be 0 so the spline
                  * will effectively begin at 'inner_padding + 1'
                  */
-                std::vector<Distance> computeXValuesWithInnerPadding(const std::vector<Waypoint>& points, double alpha, size_t inner_padding);
+                std::vector<double> computeXValuesWithInnerPadding(const std::vector<Waypoint>& points, double alpha, size_t inner_padding);
 
                 /**
                  * Given a list of knots and an 'x' value return the index of the knot that the x value falls within
@@ -37,7 +37,7 @@ namespace rip
                 size_t getIndexForX(const std::vector<Distance>& knots, const Distance& x);
 
                 template <typename Function>
-                double gaussLegendreQuadratureIntegral(Function f, double a, double b)
+                Distance gaussLegendreQuadratureIntegral(Function f)
                 {
                     const size_t NUM_POINTS = 13;
 
@@ -78,10 +78,10 @@ namespace rip
                         0.0404840047653159
                     };
 
-                    double halfDiff = (b - a) / 2;
-                    double halfSum = (a + b) / 2;
+                    double halfDiff = 1.0 / 2;
+                    double halfSum = 1.0 / 2;
 
-                    double sum;
+                    Distance sum;
                     for (size_t i = 0; i < NUM_POINTS; i++)
                     {
                         sum += quadratureWeights[i] * f(halfDiff * quadraturePoints[i] + halfSum);

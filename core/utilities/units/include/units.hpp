@@ -190,38 +190,38 @@ namespace rip
         template<int U1, int U2, int U3, int U4, int U5, int U6>
         bool operator<=(const Units<U1, U2, U3, U4, U5, U6>& lhs, const Units<U1, U2, U3, U4, U5, U6>& rhs)
         {
-            return lhs() <= rhs();
+            return lhs() <= rhs() || lhs == rhs;
         }
 
         template<int U1, int U2, int U3, int U4, int U5, int U6>
         bool operator<=(const Units<U1, U2, U3, U4, U5, U6>& lhs, const NT& rhs)
         {
-            return (lhs() <= rhs);
+            return (lhs() <= rhs) || lhs == rhs;
         }
 
         template<int U1, int U2, int U3, int U4, int U5, int U6>
         bool operator<=(const NT& lhs, const Units<U1, U2, U3, U4, U5, U6>& rhs)
         {
-            return (lhs <= rhs());
+            return (lhs <= rhs()) || lhs == rhs;
         }
 
 
         template<int U1, int U2, int U3, int U4, int U5, int U6>
         bool operator>=(const Units<U1, U2, U3, U4, U5, U6>& lhs, const Units<U1, U2, U3, U4, U5, U6>& rhs)
         {
-            return lhs() >= rhs();
+            return lhs() >= rhs() || lhs == rhs;
         }
 
         template<int U1, int U2, int U3, int U4, int U5, int U6>
         bool operator>=(const Units<U1, U2, U3, U4, U5, U6>& lhs, const NT& rhs)
         {
-            return (lhs() >= rhs);
+            return (lhs() >= rhs) || lhs == rhs;
         }
 
         template<int U1, int U2, int U3, int U4, int U5, int U6>
         bool operator>=(const NT& lhs, const Units<U1, U2, U3, U4, U5, U6>& rhs)
         {
-            return (lhs >= rhs());
+            return (lhs >= rhs()) || lhs == rhs;
         }
 
 

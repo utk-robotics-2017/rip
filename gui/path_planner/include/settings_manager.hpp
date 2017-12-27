@@ -16,10 +16,10 @@ namespace rip
     {
         namespace pathplanner
         {
-            class SettingsManager
+            class Settings
             {
             public:
-                static std::shared_ptr<SettingsManager> getInstance();
+                static std::shared_ptr<Settings> getInstance();
 
                 void load();
 
@@ -27,23 +27,30 @@ namespace rip
 
                 void addRobot(const std::string& name);
 
-                std::shared_ptr<SettingsBase> robot(const std::string& name) const;
+                std::shared_ptr<SettingsBase> robot(const std::string& name);
 
                 void addCourse(const std::string& name);
 
-                std::shared_ptr<SettingsBase> course(const std::string& name) const;
+                std::shared_ptr<SettingsBase> course(const std::string& name);
+
+                void addPath(const std::string& name);
+
+                std::shared_ptr<SettingsBase> path(const std::string& name);
 
                 std::vector<std::string> getRobotNames();
 
                 std::vector<std::string> getCourseNames();
 
-            private:
-                SettingsManager() = default;
+                std::vector<std::string> getPathNames();
 
-                static std::shared_ptr<SettingsManager> m_singleton;
+            private:
+                Settings() = default;
+
+                static std::shared_ptr<Settings> m_singleton;
 
                 std::map< std::string, std::shared_ptr<SettingsBase> > m_robots;
                 std::map< std::string, std::shared_ptr<SettingsBase> > m_courses;
+                std::map< std::string, std::shared_ptr<SettingsBase> > m_paths;
             };
         }
     }

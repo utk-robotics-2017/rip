@@ -18,9 +18,9 @@
     <item>
      <widget class="QTabWidget" name="tab_widget">
       <property name="currentIndex">
-       <number>2</number>
+       <number>0</number>
       </property>
-      <widget class="rip::gui::pathplanner::PathPlannerWidget" name="path">
+      <widget class="rip::gui::pathplanner::PathWidget" name="path_tab">
        <attribute name="title">
         <string>Path</string>
        </attribute>
@@ -94,9 +94,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>rip::gui::pathplanner::PathPlannerWidget</class>
+   <class>rip::gui::pathplanner::PathWidget</class>
    <extends>QWidget</extends>
-   <header>path_planner_widget.hpp</header>
+   <header>path_widget.hpp</header>
    <container>1</container>
   </customwidget>
   <customwidget>

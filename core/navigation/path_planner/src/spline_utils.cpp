@@ -34,13 +34,13 @@ namespace rip
                     }
                 }
 
-                std::vector<Distance> computeXValuesWithInnerPadding(const std::vector<Waypoint>& points, double alpha, size_t innerPadding)
+                std::vector<double> computeXValuesWithInnerPadding(const std::vector<Waypoint>& points, double alpha, size_t innerPadding)
                 {
                     size_t size = points.size();
                     size_t endPaddingIndex = size - 1 - innerPadding;
                     size_t desiredMaxT = size - 2 * innerPadding - 1;
 
-                    std::vector<Distance> tValues(size);
+                    std::vector<double> tValues(size);
 
                     //we know points[padding] will have a t value of 0
                     tValues[innerPadding] = 0;
@@ -50,17 +50,17 @@ namespace rip
                     {
                         //Points inside the padding will not be interpolated
                         //so give it a negative t value, so that the first actual point can have a t value of 0
-                        tValues[i - 1] = tValues[i] - computeXDiff(points[i - 1].position(), points[i].position(), alpha);
+                        tValues[i - 1] = tValues[i] - computeXDiff(points[i - 1].position(), points[i].position(), alpha)();
                     }
 
                     //compute the t values of the other points
                     for (size_t i = 1; i < size - innerPadding; i++)
                     {
-                        tValues[i + innerPadding] = tValues[i - 1 + innerPadding] + computeXDiff(points[i].position(), points[i - 1].position(), alpha);
+                        tValues[i + innerPadding] = tValues[i - 1 + innerPadding] + computeXDiff(points[i].position(), points[i - 1].position(), alpha)();
                     }
 
                     //we want to know the t value of the last segment so that we can normalize them all
-                    double maxTRaw = tValues[endPaddingIndex]();
+                    double maxTRaw = tValues[endPaddingIndex];
 
                     //now that we have all ouf our t values and indexes figured out, normalize the t values by dividing them by maxT
                     double multiplier = desiredMaxT / maxTRaw;

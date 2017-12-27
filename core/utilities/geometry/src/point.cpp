@@ -121,7 +121,7 @@ namespace rip
 
         Angle atan(const Point& p)
         {
-            return Angle(atan2(p.x()(), p.y()()) * units::rad);
+            return Angle(atan2(p.y()(), p.x()()) * units::rad);
         }
 
         Point operator*(double lhs, const Point& rhs)

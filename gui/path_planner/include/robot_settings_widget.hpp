@@ -9,6 +9,7 @@
 
 #include "preferences_manager.hpp"
 #include "settings_manager.hpp"
+#include "compute_thread.hpp"
 
 namespace Ui
 {
@@ -34,7 +35,11 @@ namespace rip
             public slots:
                 void updateRobot(QString name);
 
+                void addRobot();
+
                 void updateWidth(QString value);
+
+                void updateLength(QString value);
 
                 void updateMaxVelocity(QString value);
 
@@ -45,11 +50,12 @@ namespace rip
                 void updateUnit();
 
             private:
-                RobotSettingsWidget* m_ui;
+                Ui::RobotSettingsWidget* m_ui;
 
-                std::shared_ptr<SettingsBase> m_settings;
-                std::shared_ptr<PreferencesManager> m_preferences_manager;
-                std::shared_ptr<SettingsManager> m_settings_manager;
+                std::shared_ptr<SettingsBase> m_current;
+                std::shared_ptr<Preferences> m_preferences;
+                std::shared_ptr<Settings> m_settings;
+                std::shared_ptr<ComputeThread> m_compute_thread;
             };
         }
     }

@@ -24,36 +24,36 @@ namespace rip
                 /**
                  * Returns the 2-dimensional position at \p x length down the spline
                  */
-                virtual Point position(const Distance& x) const = 0;
+                virtual Point position(const Distance& x) = 0;
 
                 /**
                  * Returns the 2-dimensional vector of the tangent (1st derivative)
                  * of the spline at \p x length down the spline
                  */
-                virtual Point tangent(const Distance& x) const = 0;
+                virtual Point tangent(const Distance& x) = 0;
 
                 /**
                  * Returns the 2-dimensional vector of the curvature (2nd derivative)
                  * of the spline at \p x length down the spline
                  */
-                virtual Point curvature(const Distance& x) const = 0;
+                virtual Point curvature(const Distance& x) = 0;
 
                 /**
                  * Returns the 2-dimensional vector of the wiggle (3rd derivative)
                  * of the spline at \p x length down the spline
                  */
-                virtual Point wiggle(const Distance& x) const = 0;
+                virtual Point wiggle(const Distance& x) = 0;
 
                 /**
                  * Returns the total arc length of the entire spline
                  * @return [description]
                  */
-                Distance totalLength() const;
+                Distance totalLength();
 
                 /**
                  * Returns the arc length of a single segment in the spline
                  */
-                virtual Distance segmentArcLength(int i) const = 0;
+                virtual Distance segmentArcLength(int i) = 0;
 
                 /**
                  * Returns the number of segments in the spline
@@ -63,7 +63,7 @@ namespace rip
                 /**
                  * Returns the index of the segment that \p x down the spline is on
                  */
-                virtual size_t segmentForX(const Distance& x) const = 0;
+                virtual size_t segmentForX(const Distance& x) = 0;
             }; // class Spline
         } // namespace pathplanner
     } // namespace navigation

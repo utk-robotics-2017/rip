@@ -1,5 +1,5 @@
-#ifndef PREFERENCES_WINDOW_HPP
-#define PREFERENCES_WINDOW_HPP
+#ifndef PREFERENCES_WIDGET_HPP
+#define PREFERENCES_WIDGET_HPP
 
 #include <memory>
 
@@ -31,12 +31,12 @@ namespace rip
 
                 ~PreferencesWidget();
             private:
-                Ui::PreferencesWidget *ui;
+                Ui::PreferencesWidget* m_ui;
 
-                std::shared_ptr<PreferencesManager> m_preferences_manager;
+                std::shared_ptr<Preferences> m_preferences_manager;
             };
         }
     }
 }
 
-#endif // PREFERENCES_WINDOW_HPP
+#endif // PREFERENCES_WIDGET_HPP

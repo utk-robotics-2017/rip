@@ -19,6 +19,12 @@ namespace rip
                 {
                 }
 
+                SettingsBase(const nlohmann::json& j)
+                {
+                    m_name = j["name"];
+                    m_settings = j["settings"];
+                }
+
                 std::string name() const
                 {
                     return m_name;
@@ -30,10 +36,23 @@ namespace rip
                     m_settings[key] = value;
                 }
 
+                bool contains(const std::string& key) const
+                {
+                    if(m_settings.find(key) != m_settings.end())
+                    {
+                        return true;
+                    }
+                    return false;
+                }
+
                 template<typename Type>
                 Type get(const std::string& key) const
                 {
-                    return m_settings[key].get<Type>();
+                    if(contains(key))
+                    {
+                        return m_settings[key].get<Type>();
+                    }
+                    return Type();
                 }
 
             friend void to_json(nlohmann::json& j, const SettingsBase& s);
@@ -43,6 +62,10 @@ namespace rip
                 std::string m_name;
                 nlohmann::json m_settings;
             };
+
+            void to_json(nlohmann::json& j, const SettingsBase& s);
+
+            void from_json(const nlohmann::json& j, SettingsBase& s);
         }
     }
 }

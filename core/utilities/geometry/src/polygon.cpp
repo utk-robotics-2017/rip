@@ -9,6 +9,11 @@ namespace rip
         {
         }
 
+        void Polygon::add(const Point& rhs)
+        {
+            m_points.push_back(rhs);
+        }
+
         bool Polygon::inside(const Point& point) const
         {
             int result = ClipperLib::PointInPolygon(point, *this);
@@ -176,6 +181,11 @@ namespace rip
         PolygonList Polygon::operator +(const PolygonList& rhs) const
         {
             return _add(rhs);
+        }
+
+        PolygonList&Polygon::operator +=(const Point& rhs)
+        {
+            m_points.push_back(rhs);
         }
 
         PolygonList Polygon::operator -(const Polygon& rhs) const
