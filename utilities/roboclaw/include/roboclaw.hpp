@@ -722,7 +722,7 @@ namespace rip
                         uint16_t crc = crcGet();
                         command.push_back(static_cast<uint8_t>(crc >> 8));
                         command.push_back(static_cast<uint8_t>(crc));
-                        
+
                         write(&m_serial, command, command.size());
                         data = read(&m_serial, m_timeout);
                         std::cout << "writeN debugging: " << std::hex << (int)data << std::endl;
