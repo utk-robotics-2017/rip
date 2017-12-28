@@ -11,4 +11,5 @@ elseif(GIT_BRANCH MATCHES "navigation/.*" OR GIT_BRANCH MATCHES "navx/.*" OR GIT
 else()
 	add_subdirectory(communication)
 	add_subdirectory(navigation)
+
 endif()

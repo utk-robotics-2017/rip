@@ -32,4 +32,5 @@ else()
 	add_subdirectory(appedages)
 	add_subdirectory(core)
 	add_subdirectory(gui)
+
 endif()
