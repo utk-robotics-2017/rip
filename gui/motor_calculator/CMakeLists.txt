@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.1)
-project(path_planner_gui)
+project(motor_calculator)
 
 # Instruct CMake to run moc automatically when needed.
 set(AUTOMOC ON)
@@ -8,7 +8,7 @@ set(AUTOUIC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 # Find the Qt libraries
-find_package(Qt5 REQUIRED COMPONENTS Core Gui Widgets)
+find_package(Qt5 REQUIRED COMPONENTS Core Gui Widgets Charts)
 
 file(GLOB_RECURSE ${PROJECT_NAME}_SOURCES "src/*.cpp")
 list(REMOVE_ITEM ${PROJECT_NAME}_SOURCES "src/main.cpp")
@@ -34,12 +34,11 @@ set_property(TARGET _${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
 
 target_include_directories(_${PROJECT_NAME} PUBLIC "include" ${CMAKE_BINARY_DIR})
 target_link_libraries(_${PROJECT_NAME}
-    fmt units spdlog stp geometry cppfs misc
-    path_planner
+    fmt units spdlog misc
     Qt5::Core Qt5::Gui Qt5::Widgets
 )
 
 # Main ELF :linux:
 add_executable(${PROJECT_NAME} src/main.cpp)
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
-target_link_libraries(${PROJECT_NAME} _${PROJECT_NAME} Qt5::Core Qt5::Gui)
+target_link_libraries(${PROJECT_NAME} _${PROJECT_NAME} Qt5::Core Qt5::Gui Qt5::Charts)

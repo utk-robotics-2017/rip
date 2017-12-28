@@ -54,7 +54,7 @@ namespace rip
 
                 geometry::Polygon m_polygon;
 
-                std::shared_ptr<SettingsBase> m_setting;
+                std::shared_ptr<misc::SettingsBase> m_setting;
                 std::shared_ptr<Settings> m_settings_manager;
                 std::shared_ptr<Preferences> m_preferences_manager;
                 std::shared_ptr<ComputeThread> m_compute_thread;

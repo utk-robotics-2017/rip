@@ -52,7 +52,7 @@ namespace rip
             private:
                 Ui::RobotSettingsWidget* m_ui;
 
-                std::shared_ptr<SettingsBase> m_current;
+                std::shared_ptr<misc::SettingsBase> m_current;
                 std::shared_ptr<Preferences> m_preferences;
                 std::shared_ptr<Settings> m_settings;
                 std::shared_ptr<ComputeThread> m_compute_thread;

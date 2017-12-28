@@ -1,9 +1,12 @@
 #ifndef SPINE_HPP
 #define SPINE_HPP
 
+#include <vector>
+#include <memory>
+
 namespace rip
 {
-    namespace communication
+    namespace core
     {
         /**
          * @class Spine

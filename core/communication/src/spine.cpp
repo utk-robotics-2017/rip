@@ -2,7 +2,7 @@
 
 namespace rip
 {
-    namespace communication
+    namespace core
     {
         std::shared_ptr<Spine> Spine::m_singleton = std::shared_ptr<Spine>(nullptr);
 
@@ -22,8 +22,12 @@ namespace rip
             // device names have not been specified
             if (device_names.empty())
             {
-                pathman::Path arduino_gen_home(Constants::get<std::string>("arduino_gen_home"));
+                FileHandle fh = fs::open(m_settings->get<std::string>(misc::Constants::kArduinoGenHome));
+
+
                 std::vector<pathman::Path> possible_device_names = arduino_gen_home.getChildDirs();
+
+
                 for (const std::string& device_name : possible_device_names)
                 {
                     if (canLoadDevice(device_name))

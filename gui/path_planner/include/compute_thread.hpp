@@ -32,7 +32,7 @@ namespace rip
 
                 ~ComputeThread();
 
-                void updateRobot(std::shared_ptr<SettingsBase> settings);
+                void updateRobot(std::shared_ptr<misc::SettingsBase> settings);
 
                 void setWaypoints(const std::vector<Waypoint>& waypoints);
                 std::vector<Waypoint> waypoints();

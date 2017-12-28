@@ -23,7 +23,7 @@ namespace rip
                 m_wait_condition.wakeAll();
             }
 
-            void ComputeThread::updateRobot(std::shared_ptr<SettingsBase> settings)
+            void ComputeThread::updateRobot(std::shared_ptr<misc::SettingsBase> settings)
             {
                 QWriteLocker lock(&m_var_lock);
                 m_width = settings->get<Distance>("width");

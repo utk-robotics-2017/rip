@@ -36,7 +36,7 @@ namespace rip
                         if(f.open(QIODevice::ReadOnly))
                         {
                             nlohmann::json j = nlohmann::json::parse(f.readAll());
-                            m_robots[j["name"]] = std::make_shared<SettingsBase>(j);
+                            m_robots[j["name"]] = std::make_shared<misc::SettingsBase>(j);
                         }
                     }
                 }
@@ -57,7 +57,7 @@ namespace rip
                         if(f.open(QIODevice::ReadOnly))
                         {
                             nlohmann::json j = nlohmann::json::parse(f.readAll());
-                            m_courses[j["name"]] = std::make_shared<SettingsBase>(j);
+                            m_courses[j["name"]] = std::make_shared<misc::SettingsBase>(j);
 
                         }
                     }
@@ -79,8 +79,7 @@ namespace rip
                         if(f.open(QIODevice::ReadOnly))
                         {
                             nlohmann::json j = nlohmann::json::parse(f.readAll());
-                            m_paths[j["name"]] = std::make_shared<SettingsBase>(j);
-
+                            m_paths[j["name"]] = std::make_shared<misc::SettingsBase>(j);
                         }
                     }
                 }
@@ -133,10 +132,10 @@ namespace rip
 
             void Settings::addRobot(const std::string& name)
             {
-                m_robots[name] = std::make_shared<SettingsBase>(name);
+                m_robots[name] = std::make_shared<misc::SettingsBase>(name);
             }
 
-            std::shared_ptr<SettingsBase> Settings::robot(const std::string& name)
+            std::shared_ptr<misc::SettingsBase> Settings::robot(const std::string& name)
             {
                 if(m_robots.find(name) == m_robots.end())
                 {
@@ -147,10 +146,10 @@ namespace rip
 
             void Settings::addCourse(const std::string& name)
             {
-                m_courses[name] = std::make_shared<SettingsBase>(name);
+                m_courses[name] = std::make_shared<misc::SettingsBase>(name);
             }
 
-            std::shared_ptr<SettingsBase> Settings::course(const std::string& name)
+            std::shared_ptr<misc::SettingsBase> Settings::course(const std::string& name)
             {
                 if(m_courses.find(name) == m_courses.end())
                 {
@@ -161,10 +160,10 @@ namespace rip
 
             void Settings::addPath(const std::string &name)
             {
-                m_paths[name] = std::make_shared<SettingsBase>(name);
+                m_paths[name] = std::make_shared<misc::SettingsBase>(name);
             }
 
-            std::shared_ptr<SettingsBase> Settings::path(const std::string& name)
+            std::shared_ptr<misc::SettingsBase> Settings::path(const std::string& name)
             {
                 if(m_paths.find(name) == m_paths.end())
                 {
