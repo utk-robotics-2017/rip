@@ -28,7 +28,7 @@ namespace rip
                         std::cout << "2| readStatus" << std::endl;
                         std::cout << "3| voltage diagnostics" << std::endl;
                         std::cout << "4| current diagnostics" << std::endl;
-                        std::cout << "5| basic driving diagnostics" << std::endl;
+                        std::cout << "5| basic (duty) driving diagnostics" << std::endl;
                         std::cout << "6| advanced driving/dynamics diagnostics" << std::endl;
                         std::cout << "7| encoder diagnostics" << std::endl;
                         std::cout << "8| configuration diagnostics" << std::endl;
@@ -54,10 +54,10 @@ namespace rip
                                 currentMenu();
                                 break;
                             case 5:
-                                simpleDriveMenu();
+                                simpleDrive();
                                 break;
                             case 6:
-                                advDriveMenu();
+                                driveMenu();
                                 break;
                             case 7:
                                 encoderMenu();
@@ -136,8 +136,6 @@ namespace rip
                                         std::cout << "claw " << i << "| " << e.what() << std::endl;
                                     }
                                 }
-                                std::cout << std::endl << "Enter any number to coninue..." << std::endl;
-                                std::cin >> n;
                                 break;
                             }
                             case 2:
@@ -158,6 +156,8 @@ namespace rip
                             default:
                                 std::cout << "invalid choice, git good" << std::endl;
                         }
+                        std::cout << std::endl << "Enter any number to coninue..." << std::endl;
+                        std::cin >> n;
                     } while(choice != 0);
                 }
 
@@ -214,35 +214,37 @@ namespace rip
                     std::cin >> n;
                 }
 
-                void Diag::simpleDriveMenu()
+                void Diag::simpleDrive()
                 {
-                    int choice;
+                    int16_t duty;
+                    std::cout << "Enter a duty (-32767 - 32767, where 32767 is max duty)" <<std::endl;
+                    std::cout << "Enter 0 to stop the motor(s)" << std::endl;
+                    std::cin >> duty;
 
-                    do {
-                        std::cout << std::endl << std::endl << "Roboclaw {} Menu" << std::endl;
-                        std::cout << "0| exit" << std::endl;
-                        std::cout << "1| {}" << std::endl;
-
-                        std::cout << std::endl << std::endl << "Enter a choice" << std::endl;
-                        std::cin >> choice;
-                        switch(choice)
+                    for(int i=0; i<m_roboclaws.size(); i++)
+                    {
+                        try
                         {
-                            case 0:
-                                std::cout << "Exiting" << std::endl;
-                                break;
-                            case 1:
-                                break;
-
-                            default:
-                                std::cout << "invalid choice, git good" << std::endl;
+                            m_roboclaws[i]->drive(duty);
                         }
-                    } while(choice != 0);
+                        catch(const std::exception &e)
+                        {
+                            std::cout << "claw "<< i << "| " << e.what() << std::endl;
+                        }
+                    }
                 }
 
-                void Diag::advDriveMenu()
+                void Diag::driveMenu()
                 {
-                    int choice;
+                    int choice, n, mag=0;
+                    uint32_t mag2=0;
                     MotorDynamics dynamics;
+                    units::Velocity v;
+                    units::Distance dist;
+                    units::Acceleration accel;
+                    units::Time t;
+
+                    std::cout << std::endl << "Note that the drive functions will throw if the respective dynamics have not been set." << std::endl;
                     do {
                         std::cout << std::endl << std::endl << "Roboclaw Dynamics Menu" << std::endl;
                         std::cout << "0| exit" << std::endl;
@@ -258,32 +260,261 @@ namespace rip
                         std::cout << "10| set deceleration" << std::endl;
                         std::cout << std::endl << std::endl << "Enter a choice" << std::endl;
                         std::cin >> choice;
+
                         switch(choice)
                         {
                             case 0:
+                            {
                                 std::cout << "Exiting" << std::endl;
                                 break;
+                            }
                             case 1:
-                                try
+                            case 2:
+                            case 3:
+                            case 4:
+                            case 5:
+                            case 6:
+                            {
+                                for(int i=0; i<m_roboclaws.size(); i++)
                                 {
-
+                                    try
+                                    {
+                                        m_roboclaws[i]->setDynamics(dynamics);
+                                    }
+                                    catch(const std::exception &e)
+                                    {
+                                        std::cout << "claw "<< i << "| " << e.what() << std::endl;
+                                        std::cout << "Ensure that the dynamics are properly set." << std::endl;
+                                    }
                                 }
-                                catch(const std::exception &e)
+                            }
+                            case 7:
+                            {
+                                //velocity
+                                std::cout << "Velocity: distance / time: " << std::endl;
+                                std::cout << "Choose a distance unit" << std::endl;
+                                std::cout << "1: meter, 2: ft, 3: cm , 4: in, 5: mm" << std::endl;
+                                std::cin >> n;
+                                switch(n)
                                 {
-                                    std::cout << "claw1: " << e.what() << std::endl;
+                                    case 1:
+                                    {
+                                        dist = units::m;
+                                        break;
+                                    }
+                                    case 2:
+                                    {
+                                        dist = units::ft;
+                                        break;
+                                    }
+                                    case 3:
+                                    {
+                                        dist = units::cm;
+                                        break;
+                                    }
+                                    case 4:
+                                    {
+                                        dist = units::in;
+                                        break;
+                                    }
+                                    case 5:
+                                    {
+                                        dist = units::mm;
+                                        break;
+                                    }
+                                    default:
+                                    {
+                                        std::cout << "Enter a valid selection, defaulting to feet" << std::endl;
+                                        dist = units::ft;
+                                    }
                                 }
 
+                                std::cout << "Select a time unit" << std::endl;
+                                std::cout << "1: seconds, 2: ms, 3: minute, 4: hour" << std::endl;
+                                std::cin >> n;
+                                switch(n)
+                                {
+                                    case 1:
+                                    {
+                                        t = units::s;
+                                        break;
+                                    }
+                                    case 2:
+                                    {
+                                        t = units::ms;
+                                        break;
+                                    }
+                                    case 3:
+                                    {
+                                        t = units::minute;
+                                        break;
+                                    }
+                                    case 4:
+                                    {
+                                        t = units::hr;
+                                        break;
+                                    }
+                                    default:
+                                    {
+                                        std::cout << "Enter a valid selection, defaulting to seconds" << std::endl;
+                                        t = units::s;
+                                    }
+                                }
+
+                                std::cout << "Enter a signed magnitute" <<std::endl;
+                                std::cin >> mag;
+                                v = mag * dist / t;
+                                dynamics.setSpeed(v);
                                 break;
+                            }
+                            case 8:
+                            {
+                                //distance
+                                std::cout << "Choose a distance unit" << std::endl;
+                                std::cout << "1: meter, 2: ft, 3: cm , 4: in, 5: mm" << std::endl;
+                                std::cin >> n;
+                                switch(n)
+                                {
+                                    case 1:
+                                    {
+                                        dist = units::m;
+                                        break;
+                                    }
+                                    case 2:
+                                    {
+                                        dist = units::ft;
+                                        break;
+                                    }
+                                    case 3:
+                                    {
+                                        dist = units::cm;
+                                        break;
+                                    }
+                                    case 4:
+                                    {
+                                        dist = units::in;
+                                        break;
+                                    }
+                                    case 5:
+                                    {
+                                        dist = units::mm;
+                                        break;
+                                    }
+                                    default:
+                                    {
+                                        std::cout << "Enter a valid selection, defaulting to feet" << std::endl;
+                                        dist = units::ft;
+                                    }
+                                }
 
+                                std::cout << "Enter a positive magnitude for distance" << std::endl;
+                                std::cin >> mag2;
+                                dist *= mag2;
+                                dynamics.setDistance(dist);
+                                break;
+                            }
+                            case 9:
+                            case 10:
+                            {
+                                //acceleration
+                                std::cout << "acceleration = dist / time^2" << std::endl;
+
+                                std::cout << "Choose a distance unit" << std::endl;
+                                std::cout << "1: meter, 2: ft, 3: cm , 4: in, 5: mm" << std::endl;
+                                std::cin >> n;
+                                switch(n)
+                                {
+                                    case 1:
+                                    {
+                                        dist = units::m;
+                                        break;
+                                    }
+                                    case 2:
+                                    {
+                                        dist = units::ft;
+                                        break;
+                                    }
+                                    case 3:
+                                    {
+                                        dist = units::cm;
+                                        break;
+                                    }
+                                    case 4:
+                                    {
+                                        dist = units::in;
+                                        break;
+                                    }
+                                    case 5:
+                                    {
+                                        dist = units::mm;
+                                        break;
+                                    }
+                                    default:
+                                    {
+                                        std::cout << "Enter a valid selection, defaulting to feet" << std::endl;
+                                        dist = units::ft;
+                                    }
+                                }
+
+                                std::cout << "Select a time unit" << std::endl;
+                                std::cout << "1: seconds, 2: ms, 3: minute, 4: hour" << std::endl;
+                                std::cin >> n;
+                                switch(n)
+                                {
+                                    case 1:
+                                    {
+                                        t = units::s;
+                                        break;
+                                    }
+                                    case 2:
+                                    {
+                                        t = units::ms;
+                                        break;
+                                    }
+                                    case 3:
+                                    {
+                                        t = units::minute;
+                                        break;
+                                    }
+                                    case 4:
+                                    {
+                                        t = units::hr;
+                                        break;
+                                    }
+                                    default:
+                                    {
+                                        std::cout << "Enter a valid selection, defaulting to seconds" << std::endl;
+                                        t = units::s;
+                                    }
+                                }
+
+                                std::cout << "Enter a positive magnitude for acceleration" << std::endl;
+                                std::cin >> mag2;
+                                accel = dist / (t * t);
+                                accel *= mag2;
+                                if(n == 9)
+                                {
+                                    dynamics.setAcceleration(accel);
+                                }
+                                else
+                                {
+                                    dynamics.setDeceleration(accel);
+                                }
+                                break;
+                            }
                             default:
+                            {
                                 std::cout << "invalid choice, git good" << std::endl;
+                            }
                         }
+                        std::cout << std::endl << "Enter any number to continue..." << std::endl;
+                        std::cin >> n;
                     } while(choice != 0);
                 }
 
                 void Diag::encoderMenu()
                 {
-                    int choice;
+                    int choice, n;
 
                     do {
                         std::cout << std::endl << std::endl << "Roboclaw {} Menu" << std::endl;
@@ -303,12 +534,14 @@ namespace rip
                             default:
                                 std::cout << "invalid choice, git good" << std::endl;
                         }
+                        std::cout << std::endl << "Enter any number to coninue..." << std::endl;
+                        std::cin >> n;
                     } while(choice != 0);
                 }
 
                 void Diag::currentMenu()
                 {
-                    int choice;
+                    int choice, n;
 
                     do {
                         std::cout << std::endl << std::endl << "Roboclaw {} Menu" << std::endl;
@@ -328,12 +561,14 @@ namespace rip
                             default:
                                 std::cout << "invalid choice, git good" << std::endl;
                         }
+                        std::cout << std::endl << "Enter any number to coninue..." << std::endl;
+                        std::cin >> n;
                     } while(choice != 0);
                 }
 
                 void Diag::configMenu()
                 {
-                    int choice;
+                    int choice, n;
 
                     do {
                         std::cout << std::endl << std::endl << "Roboclaw {} Menu" << std::endl;
@@ -353,12 +588,14 @@ namespace rip
                             default:
                                 std::cout << "invalid choice, git good" << std::endl;
                         }
+                        std::cout << std::endl << "Enter any number to coninue..." << std::endl;
+                        std::cin >> n;
                     } while(choice != 0);
                 }
 
                 void Diag::pidMenu()
                 {
-                    int choice;
+                    int choice, n;
 
                     do {
                         std::cout << std::endl << std::endl << "Roboclaw {} Menu" << std::endl;
@@ -383,7 +620,7 @@ namespace rip
 
                 void Diag::miscMenu()
                 {
-                    int choice;
+                    int choice, n;
 
                     do {
                         std::cout << std::endl << std::endl << "Roboclaw {} Menu" << std::endl;
@@ -403,7 +640,21 @@ namespace rip
                             default:
                                 std::cout << "invalid choice, git good" << std::endl;
                         }
+                        std::cout << std::endl << "Enter any number to coninue..." << std::endl;
+                        std::cin >> n;
                     } while(choice != 0);
+                }
+
+                void Diag::removeClaw(int index)
+                {
+                    try
+                    {
+                        m_roboclaws.erase(m_roboclaws.begin() + index);
+                    }
+                    catch(...)
+                    {
+                        std::cout << "Enter a valid index." <<std::endl;
+                    }
                 }
 
                 void Diag::start()

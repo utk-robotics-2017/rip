@@ -45,15 +45,14 @@ namespace rip
                     */
                     void clawVersion();
                     /*
-                    Menu that gives access to a list of basic driving commands that can be run
-                    for diagnostic purposes.
+                    Attempts to send a basic drive command that allows the user to specify duty
                     */
-                    void simpleDriveMenu();
+                    void simpleDrive();
                     /*
-                    Menu that gives access to a list of advanced driving commands that can be run
+                    Menu that gives access to a list ofdriving commands that can be run
                     for diagnostic purposes.
                     */
-                    void advDriveMenu();
+                    void driveMenu();
                     /*
                     Menu that gives access to a list of encoder commands that can be run
                     for diagnostic purposes.

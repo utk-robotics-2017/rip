@@ -16,7 +16,7 @@ int main(int argc, char **argv)
 {
     //make serial stuff
     nlohmann::json config1={{"address", 0x80},{"timeout", 1000},
-    {"ticks_per_rev", 465.0},{"wheel_radius", 3.625}, {"device", "/dev/ttyAMA0"},
+    {"ticks_per_rev", 465.0},{"wheel_radius", 3.625 * rip::utilities::units::cm}, {"device", "/dev/ttyAMA0"},
     {"baudrate", 115200}};
     nlohmann::json config2 = config1;
     config2["address"]=0x81;
