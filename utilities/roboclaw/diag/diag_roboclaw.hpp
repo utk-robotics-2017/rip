@@ -87,8 +87,22 @@ namespace rip
                     of the roboclaw to remove.
                     */
                     void removeClaw(int index);
+                    /*
+                    Used if some claws have been removed and the user wants the list to be restored
+                    to its original state.
+                    */
+                    void recoverClaws();
+                    /*
+                    Prompts user to provide desired value to set in distance units, ie cm, ft, m, etc
+                    */
+                    units::Distance distancePrompt();
+                    /*
+                    prompts user to provide velocity in desired units, and magnitude. ie m/s, ft/ms.
+                    */
+                    units::Velocity velocityPrompt();
                 private:
                     std::vector<Roboclaw*> m_roboclaws;
+                    std::vector<Roboclaw*> m_roboclaws_original;
                 };
             }
         }

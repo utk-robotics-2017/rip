@@ -270,7 +270,7 @@ namespace rip
 
             void Roboclaw::setEncoder(Motor motor, units::Distance d)
             {
-                setEncoderRaw(motor, d() * m_ticks_per_rev / m_wheel_radius() / (units::pi * 2));
+                setEncoderRaw(motor, d.to(units::mm) * m_ticks_per_rev / m_wheel_radius.to(units::mm) / (units::pi * 2));
             }
 
             long Roboclaw::readEncoderVelocityRaw(Motor motor)
@@ -287,6 +287,7 @@ namespace rip
                         cmd = Command::kGetM2Speed;
                         break;
                 }
+
 
                 response = readN(5, cmd);
 
