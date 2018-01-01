@@ -19,7 +19,7 @@ namespace rip
 
                 void Diag::mainMenu()
                 {
-                    int choice;
+                    int choice, n;
 
                     do {
                         std::cout << std::endl << std::endl << "Roboclaw Diag Main Menu" << std::endl;
@@ -34,6 +34,7 @@ namespace rip
                         std::cout << "8| configuration diagnostics" << std::endl;
                         std::cout << "9| PID diagnostics" << std::endl;
                         std::cout << "10| miscellaneous" << std::endl;
+                        std::cout << "11| remove a roboclaw from the list" << std::endl;
                         std::cout << std::endl << std::endl << "Enter a choice" << std::endl;
                         std::cin >> choice;
                         switch(choice)
@@ -71,6 +72,13 @@ namespace rip
                             case 10:
                                 miscMenu();
                                 break;
+                            case 11:
+                            {
+                                std::cout << "Enter the index of the claw to remove" << std::endl;
+                                std::cin >> n;
+                                removeClaw(n);
+                                break;
+                            }
                             default:
                                 std::cout << "invalid choice, git good" << std::endl;
                         }
@@ -80,9 +88,10 @@ namespace rip
                 void Diag::voltageMenu()
                 {
                     int choice, n;
+                    uint32_t c;
                     std::vector<std::array<units::Voltage, 2>> defaultMain;
                     std::vector<std::array<units::Voltage, 2>> defaultLogic;
-
+                    std::array<units::Voltage, 2> minmax;
                     units::Voltage v;
 
                     std::cout << std::endl << "NOTE: Damage can result from improper use. So don't do that" << std::endl;
@@ -144,11 +153,108 @@ namespace rip
                                 {
                                     try
                                     {
-
+                                        v=m_roboclaws[i]->readLogicBatteryVoltage();
+                                        std::cout << "Claw " << i << " Logic battery voltage: " << v() << std::endl;
                                     }
                                     catch(const std::exception &e)
                                     {
-                                        std::cout << "claw1: " << e.what() << std::endl;
+                                        std::cout << "claw " << i << "| " << e.what() << std::endl;
+                                    }
+                                }
+                                break;
+                            }
+                            case 3:
+                            {
+                                //min max main
+                                for(int i=0;i<m_roboclaws.size(); i++)
+                                {
+                                    try
+                                    {
+                                        minmax = m_roboclaws[i]->readMinMaxMainVoltages();
+                                        std::cout << "Claw " << i << " Main battery min voltage: " << minmax[0].to(units::V) << std::endl;
+                                        std::cout << "Claw " << i << " Main battery max voltage: " << minmax[1].to(units::V) << std::endl;
+                                    }
+                                    catch(const std::exception &e)
+                                    {
+                                        std::cout << "claw " << i << "| " << e.what() << std::endl;
+                                    }
+                                }
+                                break;
+                            }
+                            case 4:
+                            {
+                                for(int i=0;i<m_roboclaws.size(); i++)
+                                {
+                                    try
+                                    {
+                                        minmax = m_roboclaws[i]->readMinMaxLogicVoltages();
+                                        std::cout << "Claw " << i << " logic battery min voltage: " << minmax[0].to(units::V) << std::endl;
+                                        std::cout << "Claw " << i << " logic battery max voltage: " << minmax[1].to(units::V) << std::endl;
+                                    }
+                                    catch(const std::exception &e)
+                                    {
+                                        std::cout << "claw " << i << "| " << e.what() << std::endl;
+                                    }
+                                }
+                                break;
+                            }
+                            case 5:
+                            {
+                                //set min max main
+                                std::cout << "Enter a value in volts for the minimum main battery voltage (min 6, max 34)" << std::endl;
+                                std::cin >> c;
+                                minmax[0] = c * units::V;
+                                std::cout << "Enter a value in volts for the maximum main battery voltage (min 6, max 34)" << std::endl;
+                                std::cin >> c;
+                                minmax[1] = c * units::V;
+                                for(int i=0;i<m_roboclaws.size(); i++)
+                                {
+                                    try
+                                    {
+                                        m_roboclaws[i]->setMainVoltages(minmax[0], minmax[1]);
+                                    }
+                                    catch(const std::exception &e)
+                                    {
+                                        std::cout << "claw " << i << "| " << e.what() << std::endl;
+                                    }
+                                }
+                                break;
+                            }
+                            case 6:
+                            {
+                                std::cout << "Enter a value in volts for the minimum logic battery voltage (min 6, max 34)" << std::endl;
+                                std::cin >> c;
+                                minmax[0] = c * units::V;
+                                std::cout << "Enter a value in volts for the maximum logic battery voltage (min 6, max 34)" << std::endl;
+                                std::cin >> c;
+                                minmax[1] = c * units::V;
+
+                                for(int i=0;i<m_roboclaws.size(); i++)
+                                {
+                                    try
+                                    {
+                                        m_roboclaws[i]->setLogicVoltages(minmax[0], minmax[1]);
+                                    }
+                                    catch(const std::exception &e)
+                                    {
+                                        std::cout << "claw " << i << "| " << e.what() << std::endl;
+                                    }
+                                }
+                                break;
+                            }
+                            case 7:
+                            {
+                                std::cout << "setting roboclaw's back to their prior values (upon entering voltage menu)" << std::endl;
+                                for(int i=0;i<m_roboclaws.size(); i++)
+                                {
+                                    try
+                                    {
+                                        m_roboclaws[i]->setMainVoltages(defaultMain[i][0], defaultMain[i][1]);
+                                        m_roboclaws[i]->setLogicVoltages(defaultLogic[i][0], defaultLogic[i][1]);
+                                    }
+                                    catch(const std::exception &e)
+                                    {
+                                        std::cout << "claw " << i << "| " << e.what() << std::endl;
                                     }
                                 }
                                 break;
