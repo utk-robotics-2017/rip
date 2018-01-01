@@ -94,6 +94,7 @@ namespace rip
                     std::vector<std::array<units::Voltage, 2>> defaultLogic;
                     std::array<units::Voltage, 2> minmax;
                     units::Voltage v;
+                    bool defaultsSet = 1;
 
                     std::cout << std::endl << "NOTE: Damage can result from improper use. So don't do that" << std::endl;
                     std::cout << "Reading the current voltage values" << std::endl;
@@ -108,6 +109,8 @@ namespace rip
                         catch(const std::exception &e)
                         {
                             std::cout << "Issue reading claw " << i << " min/max voltages, " << e.what() << std::endl;
+                            std::cout << "Disabling revert option (option 7) " << std::endl;
+                            defaultsSet = 0;
                         }
                     }
                     do {
@@ -245,18 +248,25 @@ namespace rip
                             }
                             case 7:
                             {
-                                std::cout << "setting roboclaw's back to their prior values (upon entering voltage menu)" << std::endl;
-                                for(int i=0;i<m_roboclaws.size(); i++)
+                                if(defaultsSet)
                                 {
-                                    try
+                                    std::cout << "setting roboclaw's back to their prior values (upon entering voltage menu)" << std::endl;
+                                    for(int i=0;i<m_roboclaws.size(); i++)
                                     {
-                                        m_roboclaws[i]->setMainVoltages(defaultMain[i][0], defaultMain[i][1]);
-                                        m_roboclaws[i]->setLogicVoltages(defaultLogic[i][0], defaultLogic[i][1]);
+                                        try
+                                        {
+                                            m_roboclaws[i]->setMainVoltages(defaultMain[i][0], defaultMain[i][1]);
+                                            m_roboclaws[i]->setLogicVoltages(defaultLogic[i][0], defaultLogic[i][1]);
+                                        }
+                                        catch(const std::exception &e)
+                                        {
+                                            std::cout << "claw " << i << "| " << e.what() << std::endl;
+                                        }
                                     }
-                                    catch(const std::exception &e)
-                                    {
-                                        std::cout << "claw " << i << "| " << e.what() << std::endl;
-                                    }
+                                }
+                                else
+                                {
+                                    std::cout << "Defaults not available" << std::endl;
                                 }
                                 break;
                             }
@@ -536,7 +546,7 @@ namespace rip
                         std::cout << "5| read encoder velocity (raw)" << std::endl;
                         std::cout << "6| read encoder velocity" << std::endl;
                         std::cout << "7| reset encoders to 0" << std::endl;
-                        std::cout << "8| Motor selection (1,2, or both. defaults is both)" << std::endl;
+                        std::cout << "8| Motor selection (1,2, or both. default is both)" << std::endl;
 
 
                         std::cout << std::endl << std::endl << "Enter a choice" << std::endl;
@@ -816,27 +826,204 @@ namespace rip
 
                 void Diag::currentMenu()
                 {
-                    int choice, n;
+                    int choice, n, motors=2, i=0;
+                    bool defaultsSet = 1;
+                    uint32_t temp;
+                    std::vector<units::Current> defaultMaxM1;
+                    std::vector<units::Current> defaultMaxM2;
+                    units::Current current;
+
+                    for(i=0; i<m_roboclaws.size(); i++)
+                    {
+                        try
+                        {
+                            defaultMaxM1.push_back(m_roboclaws[i]->readMaxCurrent(Roboclaw::Motor::kM1));
+                            defaultMaxM2.push_back(m_roboclaws[i]->readMaxCurrent(Roboclaw::Motor::kM2));
+                        }
+                        catch(const std::exception &e)
+                        {
+                            std::cout << "Issue reading claw " << i << " max current, " << e.what() << std::endl;
+                            std::cout << "Disabling revert option (option 7) " << std::endl;
+                            defaultsSet = 0;
+                        }
+                    }
 
                     do {
-                        std::cout << std::endl << std::endl << "Roboclaw {} Menu" << std::endl;
+                        std::cout << std::endl << std::endl << "Roboclaw Current Menu" << std::endl;
                         std::cout << "0| exit" << std::endl;
-                        std::cout << "1| {}" << std::endl;
-
+                        std::cout << "1| read current" << std::endl;
+                        std::cout << "2| set max current" << std::endl;
+                        std::cout << "3| read max current" << std::endl;
+                        std::cout << "4| revert to original max current (upon entering current menu)" << std::endl;
+                        std::cout << "5| Motor selection (1,2, or both. default is both)" << std::endl;
                         std::cout << std::endl << std::endl << "Enter a choice" << std::endl;
                         std::cin >> choice;
+
                         switch(choice)
                         {
                             case 0:
                                 std::cout << "Exiting" << std::endl;
                                 break;
                             case 1:
-                                break;
+                            {
+                                //read current
+                                for(i=0; i<m_roboclaws.size(); i++)
+                                {
+                                    try
+                                    {
+                                        switch(motors)
+                                        {
 
+                                            case 0:
+                                            {
+                                                std::cout <<"Claw " << i << " , motor M1, current value: ";
+                                                std::cout << m_roboclaws[i]->readCurrent(Roboclaw::Motor::kM1) << std::endl;
+                                                break;
+                                            }
+                                            case 1:
+                                            {
+                                                std::cout <<"Claw " << i << " , motor M2, current value: ";
+                                                std::cout << m_roboclaws[i]->readCurrent(Roboclaw::Motor::kM2) << std::endl;
+                                                break;
+                                            }
+                                            case 2:
+                                            {
+                                                std::cout <<"Claw " << i << " , motor M1&M2, current value(1): ";
+                                                std::cout << m_roboclaws[i]->readCurrents()[0] << std::endl;
+                                                std::cout << "Current value(2) " << m_roboclaws[i]->readCurrents()[1] << std::endl;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    catch(const std::exception &e)
+                                    {
+                                        std::cout << "claw "<< i << "| " << e.what() << std::endl;
+                                    }
+                                }
+                                    std::cout << "Successfully read " << i+1 << " roboclaw's current values" << std::endl;
+                                    break;
+                            }
+                            case 2:
+                            {
+                                //setMaxCurrent
+                                std::cout << "Enter maximum current (amps)" << std::endl;
+                                std::cin >> temp;
+                                current = units::A * temp;
+                                for(i=0; i<m_roboclaws.size(); i++)
+                                {
+                                    try
+                                    {
+                                        switch(motors)
+                                        {
+
+                                            case 0:
+                                            {
+                                                m_roboclaws[i]->setMaxCurrent(Roboclaw::Motor::kM1, current);
+                                                break;
+                                            }
+                                            case 2:
+                                            {
+                                                m_roboclaws[i]->setMaxCurrent(Roboclaw::Motor::kM1, current);
+                                            }
+                                            case 1:
+                                            {
+                                                m_roboclaws[i]->setMaxCurrent(Roboclaw::Motor::kM2, current);
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    catch(const std::exception &e)
+                                    {
+                                        std::cout << "claw "<< i << "| " << e.what() << std::endl;
+                                    }
+                                }
+                                std::cout << "Successfully set " << i+1 << " roboclaw's max current values" << std::endl;
+                                break;
+                            }
+                            case 3:
+                            {
+                                //readMaxCurrent
+                                for(i=0; i<m_roboclaws.size(); i++)
+                                {
+                                    try
+                                    {
+                                        switch(motors)
+                                        {
+
+                                            case 0:
+                                            {
+                                                std::cout <<"Claw " << i << " , motor M1, max current value: ";
+                                                std::cout << m_roboclaws[i]->readMaxCurrent(Roboclaw::Motor::kM1) << std::endl;
+                                                break;
+                                            }
+                                            case 1:
+                                            {
+                                                std::cout <<"Claw " << i << " , motor M2, max current value: ";
+                                                std::cout << m_roboclaws[i]->readMaxCurrent(Roboclaw::Motor::kM2) << std::endl;
+                                                break;
+                                            }
+                                            case 2:
+                                            {
+                                                std::cout <<"Claw " << i << " , motor M1&M2, max current value(1): ";
+                                                std::cout << m_roboclaws[i]->readMaxCurrent(Roboclaw::Motor::kM2) << std::endl;
+                                                std::cout << "max current value(2) " << m_roboclaws[i]->readMaxCurrent(Roboclaw::Motor::kM2) << std::endl;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    catch(const std::exception &e)
+                                    {
+                                        std::cout << "claw "<< i << "| " << e.what() << std::endl;
+                                    }
+                                }
+                                std::cout << "Successfully read " << i+1 << " roboclaw's max current values" << std::endl;
+                                break;
+                            }
+                            case 4:
+                            {
+                                //revert current changes
+                                if(defaultsSet)
+                                {
+                                    for(i=0; i<m_roboclaws.size(); i++)
+                                    {
+                                        try
+                                        {
+                                            m_roboclaws[i]->setMaxCurrent(Roboclaw::Motor::kM1, defaultMaxM1[i]);
+                                            m_roboclaws[i]->setMaxCurrent(Roboclaw::Motor::kM2, defaultMaxM2[i]);
+                                        }
+                                        catch(const std::exception &e)
+                                        {
+                                            std::cout << "claw "<< i << "| " << e.what() << std::endl;
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    std::cout << "Defaults are not available." << std::endl;
+                                }
+                                break;
+                            }
+                            case 5:
+                            {
+
+                                std::cout << "Enter a number between 0 and 2" << std::endl;
+                                std::cout << "0 -> M1" << std::endl;
+                                std::cout << "1 -> M2" << std::endl;
+                                std::cout << "2 -> M1&M2 (default)" << std::endl;
+                                std::cin >> motors;
+                                if((motors < 0 )||(motors > 2))
+                                {
+                                    std::cout << "Invalid entry, resetting to default" << std::endl;
+                                    motors = 2;
+                                }
+                                break;
+                            }
                             default:
+                            {
                                 std::cout << "invalid choice, git good" << std::endl;
+                            }
                         }
-                        std::cout << std::endl << "Enter any number to coninue..." << std::endl;
+                        std::cout << std::endl << "Enter any number to continue..." << std::endl;
                         std::cin >> n;
                     } while(choice != 0);
                 }
