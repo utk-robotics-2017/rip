@@ -32,56 +32,80 @@ namespace rip
                         std::cout << "5| basic (duty) driving diagnostics" << std::endl;
                         std::cout << "6| advanced driving/dynamics diagnostics" << std::endl;
                         std::cout << "7| encoder diagnostics" << std::endl;
-                        std::cout << "8| configuration diagnostics" << std::endl;
-                        std::cout << "9| PID diagnostics" << std::endl;
-                        std::cout << "10| miscellaneous" << std::endl;
-                        std::cout << "11| remove a roboclaw from the list" << std::endl;
+                        std::cout << "8| PID diagnostics" << std::endl;
+                        std::cout << "9| miscellaneous" << std::endl;
+                        std::cout << "10| remove a roboclaw from the list" << std::endl;
+                        std::cout << "11| reset list back to original (as provided in Constructor)" << std::endl;
                         std::cout << std::endl << std::endl << "Enter a choice" << std::endl;
                         std::cin >> choice;
                         switch(choice)
                         {
                             case 0:
+                            {
                                 std::cout << "Exiting" << std::endl;
                                 break;
+                            }
                             case 1:
+                            {
                                 clawVersion();
                                 break;
+                            }
                             case 2:
+                            {
                                 clawStatus();
                                 break;
+                            }
                             case 3:
+                            {
                                 voltageMenu();
                                 break;
+                            }
                             case 4:
+                            {
                                 currentMenu();
                                 break;
+                            }
                             case 5:
+                            {
                                 simpleDrive();
                                 break;
+                            }
                             case 6:
+                            {
                                 driveMenu();
                                 break;
+                            }
                             case 7:
+                            {
                                 encoderMenu();
                                 break;
+                            }
                             case 8:
-                                configMenu();
-                                break;
-                            case 9:
+                            {
                                 pidMenu();
                                 break;
-                            case 10:
+                            }
+                            case 9:
+                            {
                                 miscMenu();
                                 break;
-                            case 11:
+                            }
+                            case 10:
                             {
                                 std::cout << "Enter the index of the claw to remove" << std::endl;
                                 std::cin >> n;
                                 removeClaw(n);
                                 break;
                             }
+                            case 11:
+                            {
+                                std::cout << "Resetting roboclaw list back to default" << std::endl;
+                                recoverClaws();
+                            }
                             default:
-                                std::cout << "invalid choice, git good" << std::endl;
+                            {
+                                std::cout << "invalid choice" << std::endl;
+                            }
                         }
                     } while(choice != 0);
                 }
@@ -271,9 +295,9 @@ namespace rip
                                 break;
                             }
                             default:
-                                std::cout << "invalid choice, git good" << std::endl;
+                                std::cout << "invalid choice" << std::endl;
                         }
-                        std::cout << std::endl << "Enter any number to coninue..." << std::endl;
+                        std::cout << std::endl << "Enter any number to continue..." << std::endl;
                         std::cin >> n;
                     } while(choice != 0);
                 }
@@ -307,7 +331,7 @@ namespace rip
                             std::cout << "claw "<< i << "| " << e.what() << std::endl;
                         }
                     }
-                    std::cout << std::endl << "Enter any number to coninue..." << std::endl;
+                    std::cout << std::endl << "Enter any number to continue..." << std::endl;
                     std::cin >> n;
                 }
 
@@ -327,7 +351,7 @@ namespace rip
                             std::cout << "claw: " << i <<"| " << e.what() << std::endl;
                         }
                     }
-                    std::cout << std::endl << "Enter any number to coninue..." << std::endl;
+                    std::cout << std::endl << "Enter any number to continue..." << std::endl;
                     std::cin >> n;
                 }
 
@@ -516,7 +540,7 @@ namespace rip
                             }
                             default:
                             {
-                                std::cout << "invalid choice, git good" << std::endl;
+                                std::cout << "invalid choice" << std::endl;
                             }
                         }
                         std::cout << std::endl << "Enter any number to continue..." << std::endl;
@@ -817,7 +841,7 @@ namespace rip
                                 break;
                             }
                             default:
-                                std::cout << "invalid choice, git good" << std::endl;
+                                std::cout << "invalid choice" << std::endl;
                         }
                         std::cout << std::endl << "Enter any number to continue..." << std::endl;
                         std::cin >> n;
@@ -1020,7 +1044,7 @@ namespace rip
                             }
                             default:
                             {
-                                std::cout << "invalid choice, git good" << std::endl;
+                                std::cout << "invalid choice" << std::endl;
                             }
                         }
                         std::cout << std::endl << "Enter any number to continue..." << std::endl;
@@ -1028,41 +1052,16 @@ namespace rip
                     } while(choice != 0);
                 }
 
-                void Diag::configMenu()
-                {
-                    int choice, n;
-
-                    do {
-                        std::cout << std::endl << std::endl << "Roboclaw {} Menu" << std::endl;
-                        std::cout << "0| exit" << std::endl;
-                        std::cout << "1| {}" << std::endl;
-
-                        std::cout << std::endl << std::endl << "Enter a choice" << std::endl;
-                        std::cin >> choice;
-                        switch(choice)
-                        {
-                            case 0:
-                                std::cout << "Exiting" << std::endl;
-                                break;
-                            case 1:
-                                break;
-
-                            default:
-                                std::cout << "invalid choice, git good" << std::endl;
-                        }
-                        std::cout << std::endl << "Enter any number to coninue..." << std::endl;
-                        std::cin >> n;
-                    } while(choice != 0);
-                }
-
                 void Diag::pidMenu()
                 {
-                    int choice, n;
+                    int choice, n, i=0;
 
                     do {
                         std::cout << std::endl << std::endl << "Roboclaw {} Menu" << std::endl;
                         std::cout << "0| exit" << std::endl;
-                        std::cout << "1| {}" << std::endl;
+                        std::cout << "1| read velocity PID" << std::endl;
+                        std::cout << "1| " << std::endl;
+                        std::cout << "1| " << std::endl;
 
                         std::cout << std::endl << std::endl << "Enter a choice" << std::endl;
                         std::cin >> choice;
@@ -1075,34 +1074,188 @@ namespace rip
                                 break;
 
                             default:
-                                std::cout << "invalid choice, git good" << std::endl;
+                                std::cout << "invalid choice" << std::endl;
                         }
                     } while(choice != 0);
                 }
 
                 void Diag::miscMenu()
                 {
-                    int choice, n;
-
+                    int choice, n, i=0, motors=2;
+                    Config cfg;
+                    uint16_t encodedCfg;
+                    bool cfgSet=0;
+                    std::vector<Config> defaultCfg;
                     do {
-                        std::cout << std::endl << std::endl << "Roboclaw {} Menu" << std::endl;
+                        std::cout << std::endl << std::endl << "Roboclaw Miscellaneous Menu" << std::endl;
                         std::cout << "0| exit" << std::endl;
-                        std::cout << "1| {}" << std::endl;
+                        std::cout << "1| read temperature" << std::endl;
+                        std::cout << "2| read buffer length" << std::endl;
+                        std::cout << "3| read config" << std::endl;
+                        std::cout << "Warning: setting config can break things" << std::endl;
+                        std::cout << "4| set config via encoded hex" << std::endl;
+                        std::cout << "Motor selection applies to read buffer length" << std::endl;
+                        std::cout << "5| Motor selection (1,2, or both. default is both) " << std::endl;
+                        std::cout << "6| set config back to state after first read" << std::endl;
 
                         std::cout << std::endl << std::endl << "Enter a choice" << std::endl;
                         std::cin >> choice;
                         switch(choice)
                         {
                             case 0:
+                            {
                                 std::cout << "Exiting" << std::endl;
                                 break;
+                            }
                             case 1:
-                                break;
+                            {
+                                for(i=0; i<m_roboclaws.size(); i++)
+                                {
+                                    try
+                                    {
+                                        std::cout << "Temperature of claw " << i << ": "<< m_roboclaws[i]->readTemperature() << std::endl;
+                                    }
+                                    catch(const std::exception &e)
+                                    {
+                                        std::cout << "claw "<< i << "| " << e.what() << std::endl;
+                                    }
 
+                                }
+                                std::cout << "Successfully read the temperature of " << i+1 << " roboclaws" << std::endl;
+                                break;
+                            }
+                            case 2:
+                            {
+                                //read buffer Length
+                                for(i=0; i<m_roboclaws.size(); i++)
+                                {
+                                    try
+                                    {
+                                        switch(motors)
+                                        {
+
+                                            case 0:
+                                            {
+                                                std::cout <<"Claw " << i << " , motor M1, buffer length: ";
+                                                std::cout << m_roboclaws[i]->readBufferLen(Roboclaw::Motor::kM1) << std::endl;
+                                                break;
+                                            }
+                                            case 1:
+                                            {
+                                                std::cout <<"Claw " << i << " , motor M2, buffer length: ";
+                                                std::cout << m_roboclaws[i]->readBufferLen(Roboclaw::Motor::kM2) << std::endl;
+                                                break;
+                                            }
+                                            case 2:
+                                            {
+                                                std::cout <<"Claw " << i << " , motor M1&M2, buffer length(M1): ";
+                                                std::cout << m_roboclaws[i]->readBufferLens()[0] << std::endl;
+                                                std::cout << "buffer length m2: " << m_roboclaws[i]->readBufferLens()[1] << std::endl;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    catch(const std::exception &e)
+                                    {
+                                        std::cout << "claw "<< i << "| " << e.what() << std::endl;
+                                    }
+                                }
+                                std::cout << "Successfully read " << i+1 << " roboclaw's buffer lengths" << std::endl;
+                                break;
+                            }
+                            case 3:
+                            {
+                                //read config1
+                                std::cout << "See Roboclaw manual if you want to decode the output." << std::endl;
+                                for(i=0; i<m_roboclaws.size(); i++)
+                                {
+                                    try
+                                    {
+                                        cfg = m_roboclaws[i]->getConfig();
+                                        if(!cfgSet)
+                                        {
+                                            defaultCfg.push_back(cfg);
+                                        }
+                                        std::cout << "claw " << i <<": " <<  std::hex << cfg.get() << std::endl;
+                                    }
+                                    catch(const std::exception &e)
+                                    {
+                                        std::cout << "claw "<< i << "| " << e.what() << std::endl;
+                                    }
+                                }
+                                if(defaultCfg.size() >= m_roboclaws.size())
+                                {
+                                    cfgSet = true;
+                                }
+                                std::cout << "Successfully read config of " << i+1 << "roboclaws" << std::endl;
+                                break;
+                            }
+                            case 4:
+                            {
+                                //set config
+                                std::cout << "Enter hex of encoded config settings to set" << std::endl;
+                                std::cout << "Changes to config can break communications, or mess with voltages" << std::endl;
+                                std::cin >> std::hex >> encodedCfg;
+                                cfg.set(encodedCfg);
+                                for(i=0; i<m_roboclaws.size(); i++)
+                                {
+                                    try
+                                    {
+                                        m_roboclaws[i]->setConfig(cfg);
+                                    }
+                                    catch(const std::exception &e)
+                                    {
+                                        std::cout << "claw "<< i << "| " << e.what() << std::endl;
+                                    }
+                                }
+                                std::cout << "Successfully set config of " << i+1 << "roboclaws" << std::endl;
+                                break;
+                            }
+                            case 5:
+                            {
+                                std::cout << "Enter a number between 0 and 2" << std::endl;
+                                std::cout << "0 -> M1" << std::endl;
+                                std::cout << "1 -> M2" << std::endl;
+                                std::cout << "2 -> M1&M2 (default)" << std::endl;
+                                std::cin >> motors;
+                                if((motors < 0 )||(motors > 2))
+                                {
+                                    std::cout << "Invalid entry, resetting to default" << std::endl;
+                                    motors = 2;
+                                }
+                                break;
+                            }
+                            case 6:
+                            {
+                                if(cfgSet)
+                                {
+                                    std::cout << "Reverting changes to settings" << std::endl;
+                                    for(i=0; i<m_roboclaws.size(); i++)
+                                    {
+                                        try
+                                        {
+                                            m_roboclaws[i]->setConfig(defaultCfg[i]);
+                                        }
+                                        catch(const std::exception &e)
+                                        {
+                                            std::cout << "claw "<< i << "| " << e.what() << std::endl;
+                                        }
+                                    }
+                                    std::cout << "Successfully set config of " << i+1 << "roboclaws" << std::endl;
+                                }
+                                else
+                                {
+                                    std::cout << "Default configs are not available" << std::endl;
+                                }
+                                break;
+                            }
                             default:
-                                std::cout << "invalid choice, git good" << std::endl;
+                            {
+                                std::cout << "invalid choice" << std::endl;
+                                break;
+                            }
                         }
-                        std::cout << std::endl << "Enter any number to coninue..." << std::endl;
+                        std::cout << std::endl << "Enter any number to continue..." << std::endl;
                         std::cin >> n;
                     } while(choice != 0);
                 }
