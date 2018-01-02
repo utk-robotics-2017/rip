@@ -9,7 +9,7 @@ add_subdirectory(googletest)
 add_subdirectory(json)
 add_subdirectory(spdlog)
 add_subdirectory(tinyxml2)
-add_subdirectory(serial)
+add_subdirectory(periphery)
 add_subdirectory(cppfs)
 
 add_subdirectory(clipper)
