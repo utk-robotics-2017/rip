@@ -1246,16 +1246,21 @@ namespace rip
                     std::shared_ptr<Roboclaw> testClaw(new Roboclaw);
                     std::vector<uint8_t> response, message;
                     testClaw->setBytes(0);
-
-                    /*
-                    testClaw->setConfig()
-                    testClaw->getConfig()
-                    */
+                    response = {0x80, 0xA7};
+                    testClaw->setcResponse(response);
+                    *config = testClaw->getConfig();
+                    EXPECT_EQ(config->get(), 0x80A7);
+                    //validate transmission
+                    config->set(0x80A7);
+                    testClaw->setConfig(*config);
+                    message = testClaw->getLastCmd();
+                    EXPECT_EQ(message[0], 0x80);
+                    EXPECT_EQ(message[1], 98);
+                    EXPECT_EQ((message[2] << 8) + message[3], 0x80A7);
                 }
 
-                TEST(RoboclawCore, Misc)
+                TEST(RoboclawMisc, Temperature)
                 {
-                    FAIL() << "TODO: Implement Test";
                     std::shared_ptr<Roboclaw> testClaw(new Roboclaw);
                     std::vector<uint8_t> response;
                     testClaw->setBytes(0);
@@ -1263,22 +1268,24 @@ namespace rip
                     /*
                     readtemperature, temp is in celsius.
                     default unit is kelvin, but 1K = 1C
-
+                    */
                     response = {0x1, 0xF4};
                     testClaw->setcResponse(response);
                     t = testClaw->readTemperature();
-
-                    testClaw->readVersion();
-                    testClaw->getConfig();
-                    testClaw->setConfig();
-                    testClaw->setPinModes();
-                    testClaw->readBufferLen()
-                    testClaw->readBufferLens()
-
-                    */
+                    EXPECT_DOUBLE_EQ(t(), 50.0);
 
                 }
+                TEST(RoboclawMisc, readBuffers)
+                {
+                    std::shared_ptr<Roboclaw> testClaw(new Roboclaw);
+                    std::vector<uint8_t> response;
+                    testClaw->setBytes(0);
 
+                    response = {0x80, 0x3F};
+                    testClaw->setcResponse(response);
+                    EXPECT_EQ(testClaw->readBufferLens()[0], 0x80);
+                    EXPECT_EQ(testClaw->readBufferLens()[1], 0x3F);
+                }
             }
         }
     }

@@ -1193,12 +1193,13 @@ namespace rip
                             case 4:
                             {
                                 //set config
-                                std::cout << "Enter hex of encoded config settings to set" << std::endl;
                                 std::cout << "Changes to config can break communications, or mess with voltages" << std::endl;
-                                std::cin >> std::hex >> encodedCfg;
-                                cfg.set(encodedCfg);
+
                                 for(i=0; i<m_roboclaws.size(); i++)
                                 {
+                                    std::cout << "Enter hex of encoded config settings to set for claw " << i << std::endl;
+                                    std::cin >> std::hex >> encodedCfg;
+                                    cfg.set(encodedCfg);
                                     try
                                     {
                                         m_roboclaws[i]->setConfig(cfg);

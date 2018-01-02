@@ -24,7 +24,6 @@
 #include <array>
 #include <vector>
 #include <tuple>
-
 #include <json.hpp>
 
 #include <units.hpp>
@@ -198,7 +197,7 @@ namespace rip
                  * @exception CommandFailure Thrown if the command fails
                  * @exception OutOfRange Thrown if the voltage is out of range
                  */
-                void printdaResponse(std::vector<uint8_t> m_last_cmd);
+
                 void drive(Motor motor, int16_t speed);
 
                 /**
@@ -725,8 +724,6 @@ namespace rip
 
                         write(&m_serial, command, command.size());
                         data = read(&m_serial, m_timeout);
-                        std::cout << "writeN debugging: " << std::hex << (int)data << std::endl;
-                        printdaResponse(command);
                         if(data == returnFF())
                         {
                             return;
