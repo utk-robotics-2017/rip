@@ -32,25 +32,24 @@ namespace rip
              * @struct PIDParameters
              * @brief The parameters for PID
              */
-            struct PIDParameters
-            {
-                float kp; //< Proportional Gain
-                float ki; //< Integral Gain
-                float kd; //< Derivative Gain
-            }; // struct PIDParameters
 
-
-            struct VelocityPIDParameters : public PIDParameters
+            struct VelocityPIDParameters
             {
-                uint32_t qpps; //< Quadrature Pulses Per Second - Maximum number of ticks per second
+                float kp = static_cast<float>(0x10000) / 65536; //< Proportional Gain
+                float ki = static_cast<float>(0x8000) / 65536; //< Integral Gain
+                float kd = static_cast<float>(0x4000) / 65536; //< Derivative Gain
+                uint32_t qpps=44000; //< Quadrature Pulses Per Second - Maximum number of ticks per second
             }; // struct VelcityPIDParameters
 
-            struct PositionPIDParameters : public PIDParameters
+            struct PositionPIDParameters
             {
-                uint32_t kiMax; //< Maximum Integral Windup
-                uint32_t deadzone; //< Deadzone in encoder counts
-                uint32_t min; //< Minimum Position
-                uint32_t max; //< Maximum Position
+                float kp=0;
+                float ki=0;
+                float kd=0;
+                uint32_t kiMax=0; //< Maximum Integral Windup
+                uint32_t deadzone=0; //< Deadzone in encoder counts
+                uint32_t min=0; //< Minimum Position
+                uint32_t max=0; //< Maximum Position
             }; // struct PositionPIDParameters
         } // namespace roboclaw
     }
