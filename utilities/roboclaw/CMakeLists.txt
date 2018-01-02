@@ -49,8 +49,4 @@ if(ENABLE_TESTING)
 
 	endif()
 
-	# if(CMAKE_COMPILER_IS_GNUCXX)
-	# 	include(CodeCoverage)
-	# 	setup_target_for_coverage(${PROJECT_NAME}_coverage ${PROJECT_NAME}_test coverage)
-	# endif()
 endif()
