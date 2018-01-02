@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QHBoxLayout" name="horizontalLayout">
+    <item>
+     <widget class="QTabWidget" name="tab_widget">
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
+      <widget class="rip::gui::pathplanner::PathWidget" name="path_tab">
+       <attribute name="title">
+        <string>Path</string>
+       </attribute>
+      </widget>
+      <widget class="rip::gui::pathplanner::RobotSettingsWidget" name="robot_tab">
+       <attribute name="title">
+        <string>Robot</string>
+       </attribute>
+      </widget>
+      <widget class="rip::gui::pathplanner::CourseSettingsWidget" name="course_tab">
+       <attribute name="title">
+        <string>Course</string>
+       </attribute>
+      </widget>
+      <widget class="rip::gui::pathplanner::PreferencesWidget" name="preferences_tab">
+       <attribute name="title">
+        <string>Preferences</string>
+       </attribute>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>800</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="load_waypoints"/>
+    <addaction name="load_world"/>
+    <addaction name="save_trajectory"/>
+    <addaction name="separator"/>
+   </widget>
+   <addaction name="menuFile"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="load_waypoints">
+   <property name="text">
+    <string>Load Waypoints</string>
+   </property>
+  </action>
+  <action name="save_trajectory">
+   <property name="text">
+    <string>Save Trajectory</string>
+   </property>
+  </action>
+  <action name="preferences">
+   <property name="text">
+    <string>Preferences</string>
+   </property>
+  </action>
+  <action name="load_world">
+   <property name="text">
+    <string>Load World</string>
+   </property>
+  </action>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>rip::gui::pathplanner::PreferencesWidget</class>
+   <extends>QWidget</extends>
+   <header>preferences_widget.hpp</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>rip::gui::pathplanner::PathWidget</class>
+   <extends>QWidget</extends>
+   <header>path_widget.hpp</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>rip::gui::pathplanner::RobotSettingsWidget</class>
+   <extends>QWidget</extends>
+   <header>robot_settings_widget.hpp</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>rip::gui::pathplanner::CourseSettingsWidget</class>
+   <extends>QWidget</extends>
+   <header>course_settings_widget.hpp</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>
