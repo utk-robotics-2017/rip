@@ -31,6 +31,10 @@ namespace rip
         class XmlElement
         {
         public:
+
+            XmlElement();
+            ~XmlElement();
+
             /**
              * @brief Takes the tinyxml2 element and extracts pointers to the attributes and elements
              *
@@ -89,6 +93,8 @@ namespace rip
              * @note Mostly used for debugging
              */
             std::vector<std::pair<XMLNodeType, const tinyxml2::XMLNode*>> getChildren() const;
+
+            int getLineNum() const;
 
         private:
             const tinyxml2::XMLElement* tinyElement;

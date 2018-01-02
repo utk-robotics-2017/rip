@@ -9,6 +9,9 @@ namespace rip
 {
     namespace arduinogen
     {
+        XmlElement::XmlElement() = default;
+        XmlElement::~XmlElement() = default;
+
         XmlElement::XmlElement(const tinyxml2::XMLElement* xml) : tinyElement(xml)
         {
             // Loop through the attributes in the element and add them to the map
@@ -169,6 +172,11 @@ namespace rip
         std::vector<std::pair<XMLNodeType, const tinyxml2::XMLNode*>> XmlElement::getChildren() const
         {
             return m_children;
+        }
+
+        int XmlElement::getLineNum() const
+        {
+            return tinyElement->GetLineNum();
         }
     }
 }

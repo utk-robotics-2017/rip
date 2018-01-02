@@ -6,7 +6,6 @@
 #include <memory>
 
 #include "xml_element.hpp"
-#include "setup_parameter.hpp"
 #include "code.hpp"
 
 namespace tinyxml2
@@ -30,7 +29,7 @@ namespace rip
             /**
              * @brief Constructor
              */
-            Setup(tinyxml2::XMLElement* xml);
+            Setup(const tinyxml2::XMLElement* xml);
 
             /**
              * Create the code for the part of the setup function for this appendage type

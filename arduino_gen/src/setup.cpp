@@ -14,7 +14,7 @@ namespace rip
 {
     namespace arduinogen
     {
-        Setup::Setup(tinyxml2::XMLElement* xml)
+        Setup::Setup(const tinyxml2::XMLElement* xml)
             : Code(xml)
         {
         }

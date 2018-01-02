@@ -10,7 +10,10 @@ namespace rip
 {
     namespace arduinogen
     {
-        Argument::Argument(tinyxml2::XMLElement* xml) : XmlElement(xml)
+        Argument::Argument() = default;
+        Argument::~Argument() = default;
+
+        Argument::Argument(const tinyxml2::XMLElement* xml) : XmlElement(xml)
         {
             m_name = getAttribute("name")->Value();
             m_type = getAttribute("type")->Value();

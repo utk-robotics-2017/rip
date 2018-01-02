@@ -29,7 +29,7 @@ namespace rip
              * @brief Constructor
              * @param xml
              */
-            Loop(tinyxml2::XMLElement* xml);
+            Loop(const tinyxml2::XMLElement* xml);
 
             /**
              * Creates the part of the loop code for this appendage

@@ -29,14 +29,15 @@ namespace rip
             /**
              * @brief Default Constructor
              */
-            Argument() = default;
+            Argument();
+            ~Argument();
 
             /**
              * @brief Constructor
              *
              * @param xml The xml element to parse for this argument
              */
-            Argument(tinyxml2::XMLElement* xml);
+            Argument(const tinyxml2::XMLElement* xml);
 
             /**
              * @brief Creates the code for a single argument in a constructor

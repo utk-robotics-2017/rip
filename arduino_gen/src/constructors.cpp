@@ -11,7 +11,10 @@ namespace rip
 {
     namespace arduinogen
     {
-        Constructors::Constructors(tinyxml2::XMLElement* xml)
+        Constructors::Constructors() = default;
+        Constructors::~Constructors() = default;
+
+        Constructors::Constructors(const tinyxml2::XMLElement* xml)
             : m_exists(true)
         {
             if(!xml)
@@ -37,7 +40,7 @@ namespace rip
             m_variable = variable;
 
             // Loop through the parameters for the constructor
-            for(tinyxml2::XMLElement* argument = xml->FirstChildElement("argument");
+            for(const tinyxml2::XMLElement* argument = xml->FirstChildElement("argument");
                     argument != nullptr; argument = argument->NextSiblingElement("argument"))
             {
                 m_arguments.emplace_back(argument);

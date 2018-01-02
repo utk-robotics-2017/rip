@@ -13,7 +13,7 @@ namespace rip
 {
     namespace arduinogen
     {
-        Loop::Loop(tinyxml2::XMLElement* xml)
+        Loop::Loop(const tinyxml2::XMLElement* xml)
         : Code(xml)
         {
         }
