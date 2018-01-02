@@ -34,8 +34,8 @@ namespace rip
                 double angle() const;
                 void setAngle(double angle);
 
-                void setWaypoint(const navigation::pathplanner::Waypoint& waypoint);
-                navigation::pathplanner::Waypoint waypoint() const;
+                void setWaypoint(const navigation::Waypoint& waypoint);
+                navigation::Waypoint waypoint() const;
 
                 bool valid() const;
 

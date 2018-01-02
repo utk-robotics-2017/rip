@@ -73,7 +73,7 @@ namespace rip
                     for(auto waypoint : waypoints)
                     {
                         WaypointListWidgetItem* wlwi = new WaypointListWidgetItem(m_ui->waypoint_widget);
-                        navigation::pathplanner::Waypoint w = waypoint;
+                        navigation::Waypoint w = waypoint;
                         wlwi->setWaypoint(w);
                         wlwi->resize(m_ui->waypoint_widget->size());
                         wlwi->show();
@@ -102,7 +102,7 @@ namespace rip
 
             void PathWidget::updateWaypoints()
             {
-                std::vector<navigation::pathplanner::Waypoint> waypoints;
+                std::vector<navigation::Waypoint> waypoints;
                 units::Distance d_unit = m_preferences->getDistanceUnit();
                 units::Angle a_unit = m_preferences->getAngleUnit();
                 for(int i = 0, end = m_ui->waypoint_widget->count(); i < end; i++)
@@ -112,11 +112,11 @@ namespace rip
 
                     if(wlwi->valid())
                     {
-                        navigation::pathplanner::Waypoint waypoint(wlwi->x() * d_unit, wlwi->y() * d_unit, wlwi->angle() * a_unit);
+                        navigation::Waypoint waypoint(wlwi->x() * d_unit, wlwi->y() * d_unit, wlwi->angle() * a_unit);
                         waypoints.push_back(waypoint);
                     }
                 }
-                m_current->set< std::vector< navigation::pathplanner::Waypoint > >("waypoints", waypoints);
+                m_current->set< std::vector< navigation::Waypoint > >("waypoints", waypoints);
                 m_compute_thread->setWaypoints(waypoints);
             }
 
@@ -210,7 +210,6 @@ namespace rip
                 m_ui->distance_unit->setText(QString::fromStdString(m_preferences->getDistanceUnitText()));
                 m_ui->time_units->setText(QString::fromStdString(m_preferences->getTimeUnitText()));
             }
-
 
         }
     }

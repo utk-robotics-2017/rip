@@ -7,46 +7,44 @@ namespace rip
 {
     namespace navigation
     {
-        namespace pathplanner
+
+        using Point = geometry::Point;
+        using Distance = units::Distance;
+        using Angle = units::Angle;
+
+        class Waypoint
         {
-            using Point = geometry::Point;
-            using Distance = units::Distance;
-            using Angle = units::Angle;
+        public:
+            Waypoint() = default;
 
-            class Waypoint
-            {
-            public:
-                Waypoint() = default;
+            Waypoint(const Distance& x, const Distance& z, const Angle& heading);
 
-                Waypoint(const Distance& x, const Distance& z, const Angle& heading);
+            Waypoint(const Point& p, const Angle& heading);
 
-                Waypoint(const Point& p, const Angle& heading);
+            Waypoint(const Point& position, const Point& tangent);
 
-                Waypoint(const Point& position, const Point& tangent);
+            Waypoint(const Point& position, const Point& tangent, const Point& curvature);
 
-                Waypoint(const Point& position, const Point& tangent, const Point& curvature);
+            Point position() const;
 
-                Point position() const;
+            Point tangent() const;
 
-                Point tangent() const;
+            Angle heading() const;
 
-                Angle heading() const;
+            Point curvature() const;
 
-                Point curvature() const;
+            friend void to_json(nlohmann::json& j, const Waypoint& w);
+            friend void from_json(const nlohmann::json& j, Waypoint& w);
 
-                friend void to_json(nlohmann::json& j, const Waypoint& w);
-                friend void from_json(const nlohmann::json& j, Waypoint& w);
+        private:
+            Point m_position;
+            Point m_tangent;
+            Point m_curvature;
+        }; // class Waypoint
 
-            private:
-                Point m_position;
-                Point m_tangent;
-                Point m_curvature;
-            }; // class Waypoint
+        void to_json(nlohmann::json& j, const Waypoint& w);
+        void from_json(const nlohmann::json& j, Waypoint& w);
 
-            void to_json(nlohmann::json& j, const Waypoint& w);
-            void from_json(const nlohmann::json& j, Waypoint& w);
-
-        } // namespace pathplanner
     } // namespace navigation
 } // namespace rip
 

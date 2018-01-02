@@ -74,7 +74,7 @@ namespace rip
                 m_ui->angle->setText(QString::number(angle));
             }
 
-            void WaypointListWidgetItem::setWaypoint(const navigation::pathplanner::Waypoint& waypoint)
+            void WaypointListWidgetItem::setWaypoint(const navigation::Waypoint& waypoint)
             {
                 std::shared_ptr<Preferences> preferences = Preferences::getInstance();
                 units::Distance unit = preferences->getDistanceUnit();
@@ -84,9 +84,9 @@ namespace rip
                 setAngle(atan(waypoint.tangent()).to(angle_unit));
             }
 
-            navigation::pathplanner::Waypoint WaypointListWidgetItem::waypoint() const
+            navigation::Waypoint WaypointListWidgetItem::waypoint() const
             {
-                return navigation::pathplanner::Waypoint(x(), y(), angle());
+                return navigation::Waypoint(x(), y(), angle());
             }
 
             bool WaypointListWidgetItem::valid() const

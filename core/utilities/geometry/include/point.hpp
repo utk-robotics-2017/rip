@@ -72,6 +72,7 @@ namespace rip
              */
             operator ClipperLib::IntPoint() const;
 
+            Point operator -() const;
             Point operator +(const Point& rhs) const;
             Point& operator +=(const Point& rhs);
             Point operator -(const Point& rhs) const;

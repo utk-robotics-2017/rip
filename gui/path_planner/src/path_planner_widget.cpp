@@ -161,11 +161,11 @@ namespace rip
 
             void PathPlannerWidget::drawWaypoints(QPainter& painter, double scale)
             {
-                std::vector<navigation::pathplanner::Waypoint> waypoints = m_compute_thread->waypoints();
+                std::vector<navigation::Waypoint> waypoints = m_compute_thread->waypoints();
 
                 if(waypoints.size())
                 {
-                    for(const navigation::pathplanner::Waypoint& waypoint: waypoints)
+                    for(const navigation::Waypoint& waypoint: waypoints)
                     {
                         Point position = waypoint.position();
                         double x1 = position.x()();

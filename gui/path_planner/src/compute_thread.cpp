@@ -46,7 +46,7 @@ namespace rip
                 }
             }
 
-            std::vector<navigation::pathplanner::Waypoint> ComputeThread::waypoints()
+            std::vector<navigation::Waypoint> ComputeThread::waypoints()
             {
                 QReadLocker lock(&m_var_lock);
                 return m_waypoints;
@@ -168,6 +168,7 @@ namespace rip
                 QReadLocker lock(&m_planner_lock);
                 if(m_planner)
                 {
+
                     return std::tuple<Distance, Time>(m_planner->totalDistance(), m_planner->totalTime());
                 }
                 return std::tuple<Distance, Time>(0, 0);

@@ -51,6 +51,11 @@ namespace rip
             return Point(m_x / mag(), m_y / mag());
         }
 
+        Point Point::operator -() const
+        {
+            return Point(-m_x, -m_y);
+        }
+
         Point::operator ClipperLib::IntPoint() const
         {
             return ClipperLib::IntPoint(m_x(), m_y());

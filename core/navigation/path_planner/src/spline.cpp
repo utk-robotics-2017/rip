@@ -4,17 +4,15 @@ namespace rip
 {
     namespace navigation
     {
-        namespace pathplanner
+
+        Distance Spline::totalLength()
         {
-            Distance Spline::totalLength()
+            Distance result = 0;
+            for (size_t i = 0, end = numSegments(); i < end; i++)
             {
-                Distance result = 0;
-                for (size_t i = 0, end = numSegments(); i < end; i++)
-                {
-                    result += segmentArcLength(i);
-                }
-                return result;
+                result += segmentArcLength(i);
             }
+            return result;
         }
     }
 }

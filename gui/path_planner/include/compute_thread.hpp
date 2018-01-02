@@ -24,8 +24,8 @@ namespace rip
         {
             class ComputeThread : public QThread
             {
-                using Waypoint = navigation::pathplanner::Waypoint;
-                using PathPlanner = navigation::pathplanner::PathPlanner<navigation::pathplanner::CubicHermiteSpline>;
+                using Waypoint = navigation::Waypoint;
+                using PathPlanner = navigation::PathPlanner<navigation::CubicHermiteSpline>;
                 Q_OBJECT
             public:
                 static std::shared_ptr<ComputeThread> getInstance();
