@@ -1,18 +1,18 @@
 [submodule "utilities/json"]
-	path = utilities/json
+	path = external/json
 	url = git@github.com:utk-robotics-2017/json.git
 [submodule "utilities/spdlog"]
-	path = utilities/spdlog
+	path = external/spdlog
 	url = git@github.com:utk-robotics-2017/spdlog.git
 [submodule "utilities/tinyxml2"]
-	path = utilities/tinyxml2
+	path = external/tinyxml2
 	url = git@github.com:utk-robotics-2017/tinyxml2.git
 [submodule "utilities/fmt"]
-	path = utilities/fmt
+	path = external/fmt
 	url = git@github.com:utk-robotics-2017/fmt.git
 [submodule "utilities/googletest"]
-	path = utilities/googletest
+	path = external/googletest
 	url = git@github.com:utk-robotics-2017/googletest.git
 [submodule "utilities/periphery"]
-	path = utilities/periphery
+	path = external/periphery
 	url = git@github.com:utk-robotics-2017/periphery.git
