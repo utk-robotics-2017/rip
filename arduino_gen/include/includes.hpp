@@ -10,8 +10,11 @@ namespace rip
         class Includes : private XmlElement
         {
         public:
-            Includes();
-            ~Includes();
+            //Includes();
+            //~Includes();
+
+            //Includes(const Includes& other) = delete;
+            //Includes& operator=(const Includes& other) = delete;
 
             Includes(const tinyxml2::XMLElement* xml);
 

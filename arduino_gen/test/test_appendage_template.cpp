@@ -1,0 +1,151 @@
+#include "appendage_template.hpp"
+#include "exceptions.hpp"
+#include "xml_utils.hpp"
+
+#include <tinyxml2.h>
+#include <gtest/gtest.h>
+#include <googletest_rip_macros.hpp>
+
+#include <string>
+#include <vector>
+#include <memory>
+
+using AppendageTemplate = rip::arduinogen::AppendageTemplate;
+using AttributeException = rip::arduinogen::AttributeException;
+using ElementException = rip::arduinogen::ElementException;
+using rip::arduinogen::loadXmlFile;
+
+namespace rip
+{
+    namespace arduinogen
+    {
+        namespace test
+        {
+            TEST(AppendageTemplate_constructor, no_attributes_no_elements)
+            {
+                tinyxml2::XMLDocument doc;
+                ASSERT_EQ(loadXmlFile(doc, "test/data/appendage_template/no_attributes_no_elements.xml", { "code", "setup", "loop" }), tinyxml2::XML_SUCCESS);
+
+                tinyxml2::XMLElement* appendageTemplateElement = doc.FirstChildElement("appendage-template");
+                ASSERT_NE(appendageTemplateElement, nullptr);
+
+                std::unique_ptr<AppendageTemplate> appendageTemplate;
+                RIP_ASSERT_NO_THROW(appendageTemplate = std::unique_ptr<AppendageTemplate>(new AppendageTemplate(appendageTemplateElement)));
+
+                EXPECT_EQ(appendageTemplate->GetIncludes(), nullptr);
+                EXPECT_EQ(appendageTemplate->GetConstructors(), nullptr);
+                EXPECT_EQ(appendageTemplate->GetSetup(), nullptr);
+                EXPECT_EQ(appendageTemplate->GetLoop(), nullptr);
+                EXPECT_EQ(appendageTemplate->GetCommands().size(), 0);
+            }
+
+            TEST(AppendageTemplate_constructor, includes)
+            {
+                tinyxml2::XMLDocument doc;
+                ASSERT_EQ(loadXmlFile(doc, "test/data/appendage_template/includes.xml", { "code", "setup", "loop" }), tinyxml2::XML_SUCCESS);
+
+                tinyxml2::XMLElement* appendageTemplateElement = doc.FirstChildElement("appendage-template");
+                ASSERT_NE(appendageTemplateElement, nullptr);
+
+                std::unique_ptr<AppendageTemplate> appendageTemplate;
+                RIP_ASSERT_NO_THROW(appendageTemplate = std::unique_ptr<AppendageTemplate>(new AppendageTemplate(appendageTemplateElement)));
+
+                EXPECT_NE(appendageTemplate->GetIncludes(), nullptr);
+                EXPECT_EQ(appendageTemplate->GetConstructors(), nullptr);
+                EXPECT_EQ(appendageTemplate->GetSetup(), nullptr);
+                EXPECT_EQ(appendageTemplate->GetLoop(), nullptr);
+                EXPECT_EQ(appendageTemplate->GetCommands().size(), 0);
+            }
+
+            TEST(AppendageTemplate_constructor, constructors)
+            {
+                tinyxml2::XMLDocument doc;
+                ASSERT_EQ(loadXmlFile(doc, "test/data/appendage_template/constructors.xml", { "code", "setup", "loop" }), tinyxml2::XML_SUCCESS);
+
+                tinyxml2::XMLElement* appendageTemplateElement = doc.FirstChildElement("appendage-template");
+                ASSERT_NE(appendageTemplateElement, nullptr);
+
+                std::unique_ptr<AppendageTemplate> appendageTemplate;
+                RIP_ASSERT_NO_THROW(appendageTemplate = std::unique_ptr<AppendageTemplate>(new AppendageTemplate(appendageTemplateElement)));
+
+                EXPECT_EQ(appendageTemplate->GetIncludes(), nullptr);
+                EXPECT_NE(appendageTemplate->GetConstructors(), nullptr);
+                EXPECT_EQ(appendageTemplate->GetSetup(), nullptr);
+                EXPECT_EQ(appendageTemplate->GetLoop(), nullptr);
+                EXPECT_EQ(appendageTemplate->GetCommands().size(), 0);
+            }
+
+            TEST(AppendageTemplate_constructor, setup)
+            {
+                tinyxml2::XMLDocument doc;
+                ASSERT_EQ(loadXmlFile(doc, "test/data/appendage_template/setup.xml", { "code", "setup", "loop" }), tinyxml2::XML_SUCCESS);
+
+                tinyxml2::XMLElement* appendageTemplateElement = doc.FirstChildElement("appendage-template");
+                ASSERT_NE(appendageTemplateElement, nullptr);
+
+                std::unique_ptr<AppendageTemplate> appendageTemplate;
+                RIP_ASSERT_NO_THROW(appendageTemplate = std::unique_ptr<AppendageTemplate>(new AppendageTemplate(appendageTemplateElement)));
+
+                EXPECT_EQ(appendageTemplate->GetIncludes(), nullptr);
+                EXPECT_EQ(appendageTemplate->GetConstructors(), nullptr);
+                EXPECT_NE(appendageTemplate->GetSetup(), nullptr);
+                EXPECT_EQ(appendageTemplate->GetLoop(), nullptr);
+                EXPECT_EQ(appendageTemplate->GetCommands().size(), 0);
+            }
+
+            TEST(AppendageTemplate_constructor, loop)
+            {
+                tinyxml2::XMLDocument doc;
+                ASSERT_EQ(loadXmlFile(doc, "test/data/appendage_template/loop.xml", { "code", "setup", "loop" }), tinyxml2::XML_SUCCESS);
+
+                tinyxml2::XMLElement* appendageTemplateElement = doc.FirstChildElement("appendage-template");
+                ASSERT_NE(appendageTemplateElement, nullptr);
+
+                std::unique_ptr<AppendageTemplate> appendageTemplate;
+                RIP_ASSERT_NO_THROW(appendageTemplate = std::unique_ptr<AppendageTemplate>(new AppendageTemplate(appendageTemplateElement)));
+
+                EXPECT_EQ(appendageTemplate->GetIncludes(), nullptr);
+                EXPECT_EQ(appendageTemplate->GetConstructors(), nullptr);
+                EXPECT_EQ(appendageTemplate->GetSetup(), nullptr);
+                EXPECT_NE(appendageTemplate->GetLoop(), nullptr);
+                EXPECT_EQ(appendageTemplate->GetCommands().size(), 0);
+            }
+
+            TEST(AppendageTemplate_constructor, commands)
+            {
+                tinyxml2::XMLDocument doc;
+                ASSERT_EQ(loadXmlFile(doc, "test/data/appendage_template/commands.xml", { "code", "setup", "loop" }), tinyxml2::XML_SUCCESS);
+
+                tinyxml2::XMLElement* appendageTemplateElement = doc.FirstChildElement("appendage-template");
+                ASSERT_NE(appendageTemplateElement, nullptr);
+
+                std::unique_ptr<AppendageTemplate> appendageTemplate;
+                RIP_ASSERT_NO_THROW(appendageTemplate = std::unique_ptr<AppendageTemplate>(new AppendageTemplate(appendageTemplateElement)));
+
+                EXPECT_EQ(appendageTemplate->GetIncludes(), nullptr);
+                EXPECT_EQ(appendageTemplate->GetConstructors(), nullptr);
+                EXPECT_EQ(appendageTemplate->GetSetup(), nullptr);
+                EXPECT_EQ(appendageTemplate->GetLoop(), nullptr);
+                EXPECT_EQ(appendageTemplate->GetCommands().size(), 2);
+            }
+
+            TEST(AppendageTemplate_constructor, everything)
+            {
+                tinyxml2::XMLDocument doc;
+                ASSERT_EQ(loadXmlFile(doc, "test/data/appendage_template/everything.xml", { "code", "setup", "loop" }), tinyxml2::XML_SUCCESS);
+
+                tinyxml2::XMLElement* appendageTemplateElement = doc.FirstChildElement("appendage-template");
+                ASSERT_NE(appendageTemplateElement, nullptr);
+
+                std::unique_ptr<AppendageTemplate> appendageTemplate;
+                RIP_ASSERT_NO_THROW(appendageTemplate = std::unique_ptr<AppendageTemplate>(new AppendageTemplate(appendageTemplateElement)));
+
+                EXPECT_NE(appendageTemplate->GetIncludes(), nullptr);
+                EXPECT_NE(appendageTemplate->GetConstructors(), nullptr);
+                EXPECT_NE(appendageTemplate->GetSetup(), nullptr);
+                EXPECT_NE(appendageTemplate->GetLoop(), nullptr);
+                EXPECT_EQ(appendageTemplate->GetCommands().size(), 3);
+            }
+        }
+    }
+}

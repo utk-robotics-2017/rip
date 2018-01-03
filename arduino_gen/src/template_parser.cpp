@@ -107,7 +107,7 @@ namespace rip
                 for(tinyxml2::XMLElement* command = commands->FirstChildElement("command"); command != nullptr;
                         command = command->NextSiblingElement("command"))
                 {
-                    rv.emplace_back(command);
+                    //rv.emplace_back(command);
                 }
 
                 return rv;

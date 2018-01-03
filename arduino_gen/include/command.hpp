@@ -32,12 +32,19 @@ namespace rip
              *
              * @note Only for the constructor
              */
-            Command() = default;
+            //Command() = default;
 
             /**
              * @brief Constructor
              */
             Command(const tinyxml2::XMLElement* command);
+
+            /*
+            Command(const Command& other) = delete;
+            Command(Command&&) = default;
+            Command& operator=(const Command& other) = delete;
+            Command& operator=(Command&&) & = default;
+            */
 
             /**
              * @brief Gets the enum id for the CmdMessenger

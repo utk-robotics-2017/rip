@@ -31,6 +31,9 @@ namespace rip
              */
             Loop(const tinyxml2::XMLElement* xml);
 
+            Loop(const Loop& other) = delete;
+            Loop& operator=(const Loop& other) = delete;
+
             /**
              * Creates the part of the loop code for this appendage
              * @return [description]

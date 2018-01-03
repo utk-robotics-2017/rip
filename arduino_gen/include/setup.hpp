@@ -31,6 +31,9 @@ namespace rip
              */
             Setup(const tinyxml2::XMLElement* xml);
 
+            Setup(const Setup& other) = delete;
+            Setup& operator=(const Setup& other) = delete;
+
             /**
              * Create the code for the part of the setup function for this appendage type
              *
