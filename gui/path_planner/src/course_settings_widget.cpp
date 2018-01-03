@@ -14,19 +14,22 @@ namespace rip
             CourseSettingsWidget::CourseSettingsWidget(QWidget* parent)
                 : QWidget(parent)
                 , m_ui(new Ui::CourseSettingsWidget)
-                , m_settings_manager(Settings::getInstance())
-                , m_preferences_manager(Preferences::getInstance())
+                , m_settings(Settings::getInstance())
+                , m_preferences(Preferences::getInstance())
                 , m_compute_thread(ComputeThread::getInstance())
             {
                 m_ui->setupUi(this);
                 connect(m_ui->options, SIGNAL(currentIndexChanged(QString)), this, SLOT(updateCourse(QString)));
 
+                /*
                 m_ui->point_widget->setSelectionMode(QAbstractItemView::SingleSelection);
                 m_ui->point_widget->setDragEnabled(true);
                 m_ui->point_widget->setAcceptDrops(true);
                 m_ui->point_widget->setDropIndicatorShown(true);
+                */
 
                 connect(m_ui->add, SIGNAL(clicked(bool)), this, SLOT(addCourse()));
+                connect(m_ui->remove, SIGNAL(clicked(bool)), this, SLOT(removeCourse()));
                 connect(m_ui->num_points, SIGNAL(textChanged(QString)), this, SLOT(updateNumPoints()));
 
                 m_ui->num_points->setEnabled(false);
@@ -48,9 +51,9 @@ namespace rip
 
             std::string CourseSettingsWidget::course() const
             {
-                if(m_setting)
+                if(m_current)
                 {
-                    return m_setting->name();
+                    return m_current->name();
                 }
                 return "";
             }
@@ -62,13 +65,13 @@ namespace rip
 
             void CourseSettingsWidget::updateCourse(QString name)
             {
-                m_setting = m_settings_manager->course(name.toStdString());
-                if(m_setting)
+                m_current = m_settings->course(name.toStdString());
+                if(m_current)
                 {
-                    units::Distance d_unit = m_preferences_manager->getDistanceUnit();
+                    units::Distance d_unit = m_preferences->getDistanceUnit();
                     int np = 0;
                     m_ui->point_widget->clear();
-                    for(const geometry::Point& p: m_setting->get<geometry::Polygon>("points"))
+                    for(const geometry::Point& p: m_current->get<geometry::Polygon>("points"))
                     {
                         PointListWidgetItem* plwi = new PointListWidgetItem(m_ui->point_widget);
                         plwi->show();
@@ -93,9 +96,19 @@ namespace rip
                 QString name = QInputDialog::getText(this, tr("Add Course"), tr("Name:"), QLineEdit::Normal, "Default", &ok);
                 if(ok && !name.isEmpty())
                 {
-                    m_settings_manager->addCourse(name.toStdString());
+                    m_settings->addCourse(name.toStdString());
                     m_ui->options->addItem(name);
                     updateCourse(name);
+                }
+            }
+
+            void CourseSettingsWidget::removeCourse()
+            {
+                int index = m_ui->options->currentIndex();
+                if(index >= 0)
+                {
+                    m_settings->removeCourse(m_current->name());
+                    m_ui->options->removeItem(index);
                 }
             }
 
@@ -137,7 +150,7 @@ namespace rip
             void CourseSettingsWidget::updatePolygon()
             {
                 geometry::Polygon polygon;
-                units::Distance d_unit = m_preferences_manager->getDistanceUnit();
+                units::Distance d_unit = m_preferences->getDistanceUnit();
                 for(int i = 0, end = m_ui->point_widget->count(); i < end; i++)
                 {
                     QListWidgetItem* lwi = m_ui->point_widget->item(i);
@@ -146,7 +159,7 @@ namespace rip
                     geometry::Point p(plwi->x() * d_unit, plwi->y() * d_unit);
                     polygon += p;
                 }
-                m_setting->set<geometry::Polygon>("points", polygon);
+                m_current->set<geometry::Polygon>("points", polygon);
                 m_ui->polygon_widget->updatePolygon(polygon);
                 m_polygon = polygon;
                 emit polygonUpdated();

@@ -37,6 +37,7 @@ namespace rip
                 connect(m_ui->display, SIGNAL(currentIndexChanged(QString)), this, SLOT(updateDisplay(QString)));
                 connect(m_ui->options, SIGNAL(currentIndexChanged(QString)), this, SLOT(updatePath(QString)));
                 connect(m_ui->add, SIGNAL(clicked(bool)), this, SLOT(addPath()));
+                connect(m_ui->remove, SIGNAL(clicked(bool)), this, SLOT(removePath()));
             }
 
             PathWidget::~PathWidget()
@@ -97,6 +98,16 @@ namespace rip
                     m_settings->addPath(name.toStdString());
                     m_ui->options->addItem(name);
                     m_ui->options->setCurrentText(name);
+                }
+            }
+
+            void PathWidget::removePath()
+            {
+                int index = m_ui->options->currentIndex();
+                if(index >= 0)
+                {
+                    m_settings->removePath(m_current->name());
+                    m_ui->options->removeItem(index);
                 }
             }
 

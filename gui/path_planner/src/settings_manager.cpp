@@ -135,6 +135,14 @@ namespace rip
                 m_robots[name] = std::make_shared<misc::SettingsBase>(name);
             }
 
+            void Settings::removeRobot(const std::string& name)
+            {
+                if(m_robots.find(name) != m_robots.end())
+                {
+                    m_robots.erase(name);
+                }
+            }
+
             std::shared_ptr<misc::SettingsBase> Settings::robot(const std::string& name)
             {
                 if(m_robots.find(name) == m_robots.end())
@@ -149,6 +157,14 @@ namespace rip
                 m_courses[name] = std::make_shared<misc::SettingsBase>(name);
             }
 
+            void Settings::removeCourse(const std::string& name)
+            {
+                if(m_courses.find(name) != m_courses.end())
+                {
+                    m_courses.erase(name);
+                }
+            }
+
             std::shared_ptr<misc::SettingsBase> Settings::course(const std::string& name)
             {
                 if(m_courses.find(name) == m_courses.end())
@@ -161,6 +177,14 @@ namespace rip
             void Settings::addPath(const std::string &name)
             {
                 m_paths[name] = std::make_shared<misc::SettingsBase>(name);
+            }
+
+            void Settings::removePath(const std::string& name)
+            {
+                if(m_paths.find(name) != m_paths.end())
+                {
+                    m_paths.erase(name);
+                }
             }
 
             std::shared_ptr<misc::SettingsBase> Settings::path(const std::string& name)

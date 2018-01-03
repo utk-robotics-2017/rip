@@ -27,13 +27,19 @@ namespace rip
 
                 void addRobot(const std::string& name);
 
+                void removeRobot(const std::string& name);
+
                 std::shared_ptr<misc::SettingsBase> robot(const std::string& name);
 
                 void addCourse(const std::string& name);
 
+                void removeCourse(const std::string& name);
+
                 std::shared_ptr<misc::SettingsBase> course(const std::string& name);
 
                 void addPath(const std::string& name);
+
+                void removePath(const std::string& name);
 
                 std::shared_ptr<misc::SettingsBase> path(const std::string& name);
 

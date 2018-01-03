@@ -28,6 +28,7 @@ namespace rip
                 connect(m_ui->options, SIGNAL(currentIndexChanged(QString)), this, SLOT(updateRobot(QString)));
 
                 connect(m_ui->add, SIGNAL(clicked(bool)), this, SLOT(addRobot()));
+                connect(m_ui->remove, SIGNAL(clicked(bool)), this, SLOT(removeRobot()));
 
                 connect(m_preferences.get(), SIGNAL(distanceUnitChanged(const Distance&, const Distance&)), this, SLOT(updateUnit()));
                 connect(m_preferences.get(), SIGNAL(timeUnitChanged(const Time&, const Time&)), this, SLOT(updateUnit()));
@@ -110,6 +111,16 @@ namespace rip
                 {
                     m_settings->addRobot(name.toStdString());
                     m_ui->options->addItem(name);
+                }
+            }
+
+            void RobotSettingsWidget::removeRobot()
+            {
+                int index = m_ui->options->currentIndex();
+                if(index >= 0)
+                {
+                    m_settings->removeRobot(m_current->name());
+                    m_ui->options->removeItem(index);
                 }
             }
 

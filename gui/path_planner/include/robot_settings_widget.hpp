@@ -37,6 +37,8 @@ namespace rip
 
                 void addRobot();
 
+                void removeRobot();
+
                 void updateWidth(QString value);
 
                 void updateLength(QString value);

@@ -34,6 +34,7 @@ namespace rip
             private slots:
                 void updatePath(const QString& name);
                 void addPath();
+                void removePath();
                 void updateWaypoints();
                 void updateNumWaypoints();
                 void updateAnimate(bool animate);
