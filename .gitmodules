@@ -1,9 +1,6 @@
 [submodule "utilities/json"]
 	path = utilities/json
 	url = git@github.com:utk-robotics-2017/json.git
-[submodule "utilities/serial"]
-	path = utilities/serial
-	url = git@github.com:utk-robotics-2017/serial.git
 [submodule "utilities/spdlog"]
 	path = utilities/spdlog
 	url = git@github.com:utk-robotics-2017/spdlog.git
@@ -16,3 +13,6 @@
 [submodule "utilities/googletest"]
 	path = utilities/googletest
 	url = git@github.com:utk-robotics-2017/googletest.git
+[submodule "utilities/periphery"]
+	path = utilities/periphery
+	url = git@github.com:utk-robotics-2017/periphery.git
