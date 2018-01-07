@@ -1,6 +1,21 @@
-[submodule "external/serial"]
-	path = external/serial
-	url = git@github.com:utk-robotics-2017/serial.git
+[submodule "external/fmt"]
+	path = external/fmt
+	url = git@github.com:utk-robotics-2017/fmt.git
+[submodule "external/googletest"]
+	path = external/googletest
+	url = git@github.com:utk-robotics-2017/googletest.git
+[submodule "external/json"]
+	path = external/json
+	url = git@github.com:utk-robotics-2017/json.git
+[submodule "external/periphery"]
+	path = external/periphery
+	url = git@github.com:utk-robotics-2017/periphery.git
+[submodule "external/spdlog"]
+	path = external/spdlog
+	url = git@github.com:utk-robotics-2017/spdlog.git
+[submodule "external/tinyxml2"]
+	path = external/tinyxml2
+	url = git@github.com:utk-robotics-2017/tinyxml2.git
 [submodule "external/cppfs"]
 	path = external/cppfs
-	url = git@github.com:utk-robotics-2017/cppfs
+	url = git@github.com:utk-robotics-2017/cppfs.git
