@@ -9,6 +9,11 @@ execute_process(
   OUTPUT_STRIP_TRAILING_WHITESPACE
 )
 
+# Can remove this if found to be not needed - was required on some machines
+# to correctly compile the codebase despite this line being in the 
+# downstream CMake files.
+set (CMAKE_CXX_STANDARD 11)
+
 message("Git branch: ${GIT_BRANCH}")
 
 add_subdirectory(external)
