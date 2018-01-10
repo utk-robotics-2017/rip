@@ -14,7 +14,7 @@ endif()
 target_include_directories(${PROJECT_NAME} PUBLIC include)
 target_link_libraries(${PROJECT_NAME}
     serial spdlog fmt
-    misc units)
+    misc units serial)
 
 if(GIT_BRANCH MATCHES "cmd_messenger/unittests")
 	# Get test source files and test data files

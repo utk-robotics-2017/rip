@@ -13,6 +13,7 @@ add_subdirectory(periphery)
 add_subdirectory(cppfs)
 add_subdirectory(clipper)
 add_subdirectory(stp)
+add_subdirectory(serial)
 
 # custom
 message("Building custom utilities")
