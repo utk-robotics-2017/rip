@@ -1,8 +1,12 @@
 #include "appendage_factory.hpp"
 
+#include <fmt/format.h>
+
 // Appendages
 #include "digital_input.hpp"
 #include "analog_input.hpp"
+
+#include "appendages_exceptions.hpp"
 
 namespace rip
 {
@@ -14,7 +18,7 @@ namespace rip
         {
             if (!m_singleton)
             {
-                m_singleton = std::make_shared<AppendageFactory>();
+                m_singleton = std::shared_ptr<AppendageFactory>(new AppendageFactory);
             }
             return m_singleton;
         }
@@ -23,15 +27,16 @@ namespace rip
         {
             if (config.find("type") == config.end())
             {
-                throw AppendageWithoutType(fmt::format("{} appendage {} missing type", device->getName(), config.dump()));
+                throw AppendageWithoutType(fmt::format("appendage missing type"));
             }
 
-            return m_constructors["type"](std::forward<nlohmann::json>(config), std::forward< std::map<std::string, int> >(command_map), std::shared_ptr<cmdmessenger::Device>(device));
+            return m_constructors["type"](config, command_map, device);
         }
 
-        void registerAppendage(std::string type, std::shared_ptr<Appendage> (*constructor)[](const nlohmann::json&,
-                               const std::map<std::string, int>&,
-                               std::shared_ptr<cmdmessenger::Device>))
+        void AppendageFactory::registerAppendage(const std::string& type, std::function<std::shared_ptr<Appendage>(const nlohmann::json&,
+                                                                                          const std::map<std::string, int>&,
+                                                                                          std::shared_ptr<cmdmessenger::Device>)
+                                                 > constructor)
         {
             m_constructors[type] = constructor;
         }

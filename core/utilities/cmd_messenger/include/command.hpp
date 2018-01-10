@@ -25,50 +25,47 @@
 
 namespace rip
 {
-    namespace utilities
+    namespace cmdmessenger
     {
-        namespace cmdmessenger
-        {
-            /**
+        /**
              * @class Command
              * @brief Class containing the metadata for an individual command
              */
-            class Command
-            {
-            public:
-                /**
+        class Command
+        {
+        public:
+            /**
                  * @brief Constructor
                  *
                  * @param id The name of the command
                  * @param enum_ The enum number for this commane
                  */
-                Command(std::string id, int enum_, std::string argument_types);
+            Command(const std::string& id, int enum_, const std::string& argument_types);
 
-                /**
+            /**
                  * @brief Returns the name of the command
                  *
                  * @return The name of the command
                  */
-                std::string getId();
+            std::string getId() const;
 
-                /**
+            /**
                  * @brief Returns the enum number for this command
                  * @return The enum number for this command
                  */
-                int getEnum();
+            int getEnum() const;
 
-                /**
+            /**
                  * @brief Gets the argument types for this command
                  * @return The argument types for this command
                  */
-                std::string getArgumentTypes();
+            std::string getArgumentTypes() const;
 
-            private:
-                std::string m_id;
-                int m_enum;
-                std::string m_argument_types;
-            };
-        }
+        private:
+            std::string m_id;
+            int m_enum;
+            std::string m_argument_types;
+        };
     }
 }
 #endif // COMMAND_HPP

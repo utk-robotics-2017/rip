@@ -22,20 +22,17 @@
 
 namespace rip
 {
-    namespace utilities
+    namespace cmdmessenger
     {
-        namespace cmdmessenger
-        {
-            Device::Device(std::string port, unsigned long baud_rate, units::Time timeout)
-                : serial::Serial (port, baud_rate, serial::Timeout::simpleTimeout(timeout.to(units::ms)))
-            {}
+        Device::Device(std::string port, unsigned long baud_rate, units::Time timeout)
+            : serial::Serial (port, baud_rate, serial::Timeout::simpleTimeout(timeout.to(units::ms)))
+        {}
 
-            void Device::setTimeout(units::Time timeout)
-            {
-                // @note: setTimeout requires an lvalue so this must be done in 2 lines
-                serial::Timeout t = serial::Timeout::simpleTimeout(timeout.to(units::ms));
-                serial::Serial::setTimeout(t);
-            }
+        void Device::setTimeout(units::Time timeout)
+        {
+            // @note: setTimeout requires an lvalue so this must be done in 2 lines
+            serial::Timeout t = serial::Timeout::simpleTimeout(timeout.to(units::ms));
+            serial::Serial::setTimeout(t);
         }
     }
 }
