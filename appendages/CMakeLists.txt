@@ -6,7 +6,7 @@ if(ALL OR RIP OR RIPCOM)
 
 	add_library(${PROJECT_NAME} ${${PROJECT_NAME}_SOURCES})
 	set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
-	target_link_libraries(${PROJECT_NAME} fmt json spdlog pathman)
+	target_link_libraries(${PROJECT_NAME} fmt json spdlog cppfs)
 	target_link_libraries(${PROJECT_NAME} cmd_messenger)
 	target_include_directories(${PROJECT_NAME} PUBLIC include)
 endif()

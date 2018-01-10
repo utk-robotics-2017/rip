@@ -11,7 +11,7 @@ set_property(TARGET _${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
 if(ENABLE_TESTING)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage")
 endif()
-target_link_libraries(_${PROJECT_NAME} fmt json spdlog tinyxml2 pathman)
+target_link_libraries(_${PROJECT_NAME} fmt json spdlog tinyxml2 cppfs exceptions_base)
 target_include_directories(_${PROJECT_NAME} PUBLIC include)
 
 # Create arduino_gen executable, set to c++11, and link arduino_gen library
