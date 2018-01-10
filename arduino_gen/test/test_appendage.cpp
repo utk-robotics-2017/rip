@@ -4,8 +4,8 @@
 #include <gtest/gtest.h>
 #include <googletest_rip_macros.hpp>
 
-using arduinogen::Appendage;
-using arduinogen::AppendageDataException;
+using rip::arduinogen::Appendage;
+using rip::arduinogen::AppendageDataException;
 
 namespace rip
 {
@@ -76,7 +76,7 @@ namespace rip
                 j["label"] = "something";
                 j["type"] = "Digital Input";
                 j["pin"] = 1;
-                j["pullup"] = false;
+                j["pullup"] = "";
 
                 std::multimap< std::string, std::shared_ptr<Appendage> > appendage_map;
                 std::shared_ptr<Appendage> appendage;
@@ -93,7 +93,7 @@ namespace rip
                 j["label"] = "something";
                 j["type"] = "Digital Input";
                 j["pin"] = 1;
-                j["pullup"] = false;
+                j["pullup"] = "";
 
                 std::multimap< std::string, std::shared_ptr<Appendage> > appendage_map;
                 std::shared_ptr<Appendage> appendage;
@@ -181,7 +181,7 @@ namespace rip
                 j["label"] = "something";
                 j["type"] = "Digital Input";
                 j["pin"] = 1;
-                j["pullup"] = false;
+                j["pullup"] = "";
 
                 std::multimap< std::string, std::shared_ptr<Appendage> > appendage_map;
 

@@ -12,19 +12,12 @@ if(ALL OR RIP OR RIPCOM)
 endif()
 
 if(ALL OR ARDUINO_GEN)
-	file(GLOB_RECURSE ${PROJECT_NAME}_TEMPLATES "xml/*.xml")
-
-	set(copiedAppendageTemplates "")
-	foreach(AppendageTemplate ${${PROJECT_NAME}_TEMPLATES})
-		file(RELATIVE_PATH name ${CMAKE_CURRENT_SOURCE_DIR}
-			${AppendageTemplate})
-		add_custom_command(
-			OUTPUT ${CMAKE_CURRENT_SOURCE_DIR} ${AppendageTemplate}
-			COMMAND ${CMAKE_COMMAND} -E copy_if_different ${AppendageTemplate}
-			${CMAKE_CURRENT_BINARY_DIR}/${name}
-			DEPENDS ${AppendageTemplate}
-			COMMENT "Copying ${name}"
-			VERBATIM)
-		list(APPEND copiedAppendageTemplates ${CMAKE_CURRENT_BINARY_DIR/${name})
+	file(GLOB_RECURSE AppendageTemplateFiles "xml/*.xml" "json/*.json")
+	add_custom_target(AppendageTemplates SOURCES ${AppendageTemplateFiles})
+	foreach(AppendageTemplate ${AppendageTemplateFiles})
+		file(RELATIVE_PATH name ${CMAKE_CURRENT_SOURCE_DIR} ${AppendageTemplate})
+		add_custom_command(TARGET AppendageTemplates
+			COMMAND ${CMAKE_COMMAND} -E copy_if_different ${AppendageTemplate} $<TARGET_FILE_DIR:_arduino_gen>/appendages/${name}
+			DEPENDS ${AppendageTemplate} COMMENT "Copying appendages/${name}" VERBATIM POST_BUILD)
 	endforeach()
 endif()

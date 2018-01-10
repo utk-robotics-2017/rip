@@ -18,6 +18,7 @@ target_include_directories(_${PROJECT_NAME} PUBLIC include)
 add_executable(${PROJECT_NAME} "src/main.cpp")
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
 target_link_libraries(${PROJECT_NAME} _${PROJECT_NAME})
+add_dependencies(${PROJECT_NAME} AppendageTemplates)
 
 if(ENABLE_TESTING)
     # Get test source files and test data files
@@ -33,8 +34,7 @@ if(ENABLE_TESTING)
             COMMAND ${CMAKE_COMMAND} -E copy_if_different ${TestDataFile} ${CMAKE_CURRENT_BINARY_DIR}/${name}
             DEPENDS ${TestDataFile}
             COMMENT "Copying ${name}"
-            VERBATIM
-            )
+            VERBATIM)
         list(APPEND copiedTestData ${CMAKE_CURRENT_BINARY_DIR}/${name})
     endforeach()
 
@@ -43,10 +43,6 @@ if(ENABLE_TESTING)
     set_property(TARGET ${PROJECT_NAME}_test PROPERTY CXX_STANDARD 11)
     target_link_libraries(${PROJECT_NAME}_test _${PROJECT_NAME})
     target_link_libraries(${PROJECT_NAME}_test gmock gtest googletest_rip_macros)
-
-
-    # In CMakeModules I include code coverage for c++
-    set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMakeModules)
 
     if(CMAKE_COMPILER_IS_GNUCXX)
         include(CodeCoverage)

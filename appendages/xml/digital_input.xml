@@ -1,16 +1,16 @@
-<constructors type="char" variable_name="digital_inputs">
+<constructors type="char" variable_name="digital_input_pins">
 	<parameter name="pin" type="int"/>
 </constructors>
 
 <setup>
-	<!-- TODO -->
+	pinMode(digital_input_pins[i], INPUT$pullup$);
 </setup>
 
 <commands>
-	<command id="kReadDigitalInput" name="readDigitalInput">
+	<command id="kReadDigitalInput" name="readDigitalInput" index-num="true">
 		<return_value name="rv" type="char"/>
 		<code>
-			rv = digitalRead(digital_inputs[index_num]);
+			rv = digitalRead(digital_input_pins[index_num]);
 		</code>
 	</command>
 </commands>

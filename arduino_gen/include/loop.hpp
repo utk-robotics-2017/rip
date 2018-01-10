@@ -1,6 +1,8 @@
 #ifndef LOOP_HPP
 #define LOOP_HPP
 
+#include "code.hpp"
+
 #include <string>
 #include <vector>
 #include <memory>
@@ -20,14 +22,17 @@ namespace rip
          * @class Loop
          * @brief
          */
-        class Loop
+        class Loop : private Code
         {
         public:
             /**
              * @brief Constructor
              * @param xml
              */
-            Loop(tinyxml2::XMLElement* xml);
+            Loop(const tinyxml2::XMLElement* xml);
+
+            Loop(const Loop& other) = delete;
+            Loop& operator=(const Loop& other) = delete;
 
             /**
              * Creates the part of the loop code for this appendage
@@ -36,8 +41,8 @@ namespace rip
             std::string toString(std::vector< std::shared_ptr<Appendage> > appendages);
 
         private:
-            std::string m_code;
         };
     } // namespace arduinogen
 }
+
 #endif // LOOP_HPP

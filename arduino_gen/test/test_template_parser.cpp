@@ -13,9 +13,9 @@
 #include <vector>
 #include <memory>
 
-using AttributeException = arduinogen::AttributeException;
-using Appendage = arduinogen::Appendage;
-using Constructors = arduinogen::Constructors;
+using AttributeException = rip::arduinogen::AttributeException;
+using Appendage = rip::arduinogen::Appendage;
+using Constructors = rip::arduinogen::Constructors;
 
 namespace rip
 {
@@ -182,7 +182,7 @@ namespace rip
             {
                 tinyxml2::XMLDocument doc;
                 ASSERT_NE(doc.LoadFile("test/data/template_parser/parse_constructors/bool_argument_constructors.xml"), tinyxml2::XML_ERROR_FILE_NOT_FOUND);
-                tinyxml2::XMLElement* xml = doc.FirstChildElement("constructors");
+               tinyxml2::XMLElement* xml = doc.FirstChildElement("constructors");
 
                 ASSERT_NE(xml, nullptr);
 
@@ -333,7 +333,7 @@ namespace rip
                 ASSERT_EQ(constructors.toString(appendages), "Type type = {\n\tType(1, true, 16.000000, \"four\"),\n\tType(2, false, 1290.000000, \"three\"),\n\tType(3, true, 2.500000, \"two\"),\n\tType(4, false, 1.125000, \"one\")\n};\n");
             }
 
-#ifdef not_defined
+        #ifdef not_defined
 
             TEST(TemplateParserTest, SetupParsing)
             {
@@ -389,7 +389,7 @@ namespace rip
             {
                 "core_config_test.xml"
             }
-#endif
+        #endif
         }
     }
 }

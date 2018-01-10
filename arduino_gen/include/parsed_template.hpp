@@ -37,4 +37,5 @@ namespace rip
         };
     }
 }
+
 #endif // PARSEDTEMPLATE_H

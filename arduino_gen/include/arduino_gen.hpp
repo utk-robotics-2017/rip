@@ -136,4 +136,5 @@ namespace rip
         };
     }
 }
+
 #endif // ARDUINOCODEGENERATOR_H

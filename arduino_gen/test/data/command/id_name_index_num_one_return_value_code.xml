@@ -1,0 +1,6 @@
+<command id="Euphoria" name="Cloud9" index-num="true">
+    <return-value type="int" name="cloud" />
+    <code>
+        cloud = 9;
+    </code>
+</command>

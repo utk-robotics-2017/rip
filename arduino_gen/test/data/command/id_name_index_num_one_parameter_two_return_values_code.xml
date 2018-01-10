@@ -1,0 +1,8 @@
+<command id="kOneToTwo" name="OneToTwo" index-num="true">
+    <parameter type="int" name="a" />
+    <return-value type="int" name="rv1" />
+    <return-value type="int" name="rv2" />
+    <code>
+        // Make two outputs from one input
+    </code>
+</command>

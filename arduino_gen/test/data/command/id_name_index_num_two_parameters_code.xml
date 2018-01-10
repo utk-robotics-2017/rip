@@ -1,0 +1,7 @@
+<command id="ACleverId" name="ACleverName" index-num="true">
+    <parameter type="int" name="a" />
+    <parameter type="int" name="b" />
+    <code>
+        // I should probably do something with "a" and "b"
+    </code>
+</command>

@@ -6,6 +6,7 @@
 #include <memory>
 
 #include <json.hpp>
+
 namespace rip
 {
     namespace arduinogen
@@ -36,6 +37,8 @@ namespace rip
              * @brief Returns the type for this appendage
              */
             std::string getType() const;
+
+            bool has(std::string data_name) const;
 
             /**
              * @brief Templated function that gets a values from the json

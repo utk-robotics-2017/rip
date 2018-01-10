@@ -3,7 +3,10 @@
 
 #include <string>
 #include <vector>
+#include <memory>
 
+#include "xml_element.hpp"
+#include "code.hpp"
 #include "parameter.hpp"
 #include "return_value.hpp"
 
@@ -20,7 +23,7 @@ namespace rip
          * @class Command
          * @brief Contains the parsed information for a single command
          */
-        class Command
+        class Command : private XmlElement
         {
         public:
 
@@ -29,12 +32,19 @@ namespace rip
              *
              * @note Only for the constructor
              */
-            Command() = default;
+            //Command() = default;
 
             /**
              * @brief Constructor
              */
-            Command(tinyxml2::XMLElement* command);
+            Command(const tinyxml2::XMLElement* command);
+
+            /*
+            Command(const Command& other) = delete;
+            Command(Command&&) = default;
+            Command& operator=(const Command& other) = delete;
+            Command& operator=(Command&&) & = default;
+            */
 
             /**
              * @brief Gets the enum id for the CmdMessenger
@@ -77,8 +87,9 @@ namespace rip
             bool m_index_num;
             std::vector<Parameter> m_parameters;
             std::vector<ReturnValue> m_return_values;
-            std::string m_code;
+            std::unique_ptr<Code> m_code;
         };
     }
 }
+
 #endif // COMMAND_HPP

@@ -28,13 +28,13 @@ namespace rip
                 ParsedTemplate pt;
 
                 tinyxml2::XMLElement* includes = doc.FirstChildElement("includes");
-                if (includes)
+                if(includes)
                 {
                     pt.includes = parseIncludes(includes);
                 }
 
                 tinyxml2::XMLElement* constructors = doc.FirstChildElement("constructors");
-                if (constructors)
+                if(constructors)
                 {
                     pt.constructors.reset(new Constructors(constructors));
                 }
@@ -44,7 +44,7 @@ namespace rip
                 }
 
                 tinyxml2::XMLElement* setup = doc.FirstChildElement("setup");
-                if (setup)
+                if(setup)
                 {
                     pt.setup.reset(new Setup(setup));
                 }
@@ -54,7 +54,7 @@ namespace rip
                 }
 
                 tinyxml2::XMLElement* loop = doc.FirstChildElement("loop");
-                if (loop)
+                if(loop)
                 {
                     pt.loop.reset(new Loop(loop));
                 }
@@ -64,13 +64,13 @@ namespace rip
                 }
 
                 tinyxml2::XMLElement* commands = doc.FirstChildElement("commands");
-                if (commands)
+                if(commands)
                 {
                     pt.commands = parseCommands(commands);
                 }
 
                 tinyxml2::XMLElement* extras = doc.FirstChildElement("extras");
-                if (extras)
+                if(extras)
                 {
                     pt.extra = parseExtras(extras);
                 }
@@ -87,7 +87,7 @@ namespace rip
                 std::vector< std::string > rv;
 
                 // Loop through individual include's
-                for (tinyxml2::XMLElement* include = includes->FirstChildElement("include"); include != nullptr;
+                for(tinyxml2::XMLElement* include = includes->FirstChildElement("include"); include != nullptr;
                         include = include->NextSiblingElement("include"))
                 {
                     rv.push_back(include->GetText());
@@ -99,15 +99,15 @@ namespace rip
             {
                 std::vector<Command> rv;
 
-                if (!commands)
+                if(!commands)
                 {
                     return rv;
                 }
 
-                for (tinyxml2::XMLElement* command = commands->FirstChildElement("command"); command != nullptr;
+                for(tinyxml2::XMLElement* command = commands->FirstChildElement("command"); command != nullptr;
                         command = command->NextSiblingElement("command"))
                 {
-                    rv.emplace_back(command);
+                    //rv.emplace_back(command);
                 }
 
                 return rv;

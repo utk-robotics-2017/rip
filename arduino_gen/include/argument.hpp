@@ -5,6 +5,8 @@
 #include <vector>
 #include <memory>
 
+#include "xml_element.hpp"
+
 namespace tinyxml2
 {
     class XMLElement;
@@ -20,21 +22,22 @@ namespace rip
          * @class Argument
          * @brief
          */
-        class Argument
+        class Argument : private XmlElement
         {
         public:
 
             /**
              * @brief Default Constructor
              */
-            Argument() = default;
+            Argument();
+            ~Argument();
 
             /**
              * @brief Constructor
              *
              * @param xml The xml element to parse for this argument
              */
-            Argument(tinyxml2::XMLElement* xml);
+            Argument(const tinyxml2::XMLElement* xml);
 
             /**
              * @brief Creates the code for a single argument in a constructor
@@ -43,10 +46,15 @@ namespace rip
              */
             std::string toString(std::shared_ptr<Appendage> appendage) const;
 
+            const std::string& getName() const;
+
+            const std::string& getType() const;
+
         private:
             std::string m_name;
             std::string m_type;
         };
     } // arduinogen
 }
+
 #endif // ARGUMENT_HPP
