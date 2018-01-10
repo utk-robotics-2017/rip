@@ -55,5 +55,6 @@ namespace rip
             };
         }
     }
+}
 
 #endif // DEVICE_HPP

@@ -44,7 +44,7 @@ namespace rip
             device_folder.createDirectory();
             // TODO: chmod
 
-            cppfs::FileHandle source_folder = cppfs::fs::open(fmt::format("{}/{}/{}", m_parent_folder, m_arduino, "src"); 
+            cppfs::FileHandle source_folder = cppfs::fs::open(fmt::format("{}/{}/{}", m_parent_folder, m_arduino, "src"));
             source_folder.createDirectory();
             // TODO: chmod
         }

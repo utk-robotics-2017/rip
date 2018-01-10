@@ -142,10 +142,10 @@ namespace rip
                     throw AppendageDataException(fmt::format("Type template file not found for {}", type));
                 }
 
-                std::unique_ptr<std::ifstream> i = type_template.createInputStream();
+                //std::unique_ptr<std::ifstream> i = type_template.createInputStream();
 
                 nlohmann::json j;
-                (*i) >> j;
+                (*type_template.createInputStream()) >> j;
                 std::map< std::string, std::string > temp;
                 for (nlohmann::json::iterator it = j.begin(); it != j.end(); ++it) {
                     temp[it.key()] = it.value();

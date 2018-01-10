@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.1)
 project(appendages)
 
-if(ALL OR RIP OR RIPCOM)
+#if(ALL OR RIP OR RIPCOM)
 	file(GLOB_RECURSE ${PROJECT_NAME}_SOURCES "src/*.cpp")
 
 	add_library(${PROJECT_NAME} ${${PROJECT_NAME}_SOURCES})
@@ -9,7 +9,7 @@ if(ALL OR RIP OR RIPCOM)
 	target_link_libraries(${PROJECT_NAME} fmt json spdlog cppfs)
 	target_link_libraries(${PROJECT_NAME} cmd_messenger)
 	target_include_directories(${PROJECT_NAME} PUBLIC include)
-endif()
+#endif()
 
 if(ALL OR ARDUINO_GEN)
 	file(GLOB_RECURSE AppendageTemplateFiles "xml/*.xml" "json/*.json")

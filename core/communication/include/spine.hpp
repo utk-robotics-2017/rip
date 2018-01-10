@@ -9,6 +9,7 @@
 #include <cppfs/FileHandle.h>
 
 #include "cmd_messenger.hpp"
+#include "appendage.hpp"
 
 namespace rip
 {
@@ -83,8 +84,8 @@ namespace rip
 
             static std::shared_ptr<Spine> m_singleton;
 
-            std::map< std::string, std::shared_ptr<cmdmessenger::Device> > m_devices;
-            std::map< std::string, std::shared_ptr<Appendage> > m_appendages;
+            std::map< std::string, std::shared_ptr<utilities::cmdmessenger::Device> > m_devices;
+            std::map< std::string, std::shared_ptr<appendages::Appendage> > m_appendages;
 
         }; // class Spine
     }

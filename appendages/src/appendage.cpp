@@ -14,7 +14,7 @@ namespace rip
             return m_type;
         }
 
-        cmdmessenger::Command Appendage::createCommand(const std::string& command_key, const std::map<std::string, int>& command_map, const std::string& parameter_string)
+        utilities::cmdmessenger::Command Appendage::createCommand(const std::string& command_key, const std::map<std::string, int>& command_map, const std::string& parameter_string)
         {
             if (command_map.find(command_key) == command_map.end())
             {

@@ -18,7 +18,7 @@ target_include_directories(_${PROJECT_NAME} PUBLIC include)
 add_executable(${PROJECT_NAME} "src/main.cpp")
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
 target_link_libraries(${PROJECT_NAME} _${PROJECT_NAME})
-add_dependencies(${PROJECT_NAME} AppendageTemplates)
+#add_dependencies(${PROJECT_NAME} AppendageTemplates)
 
 if(ENABLE_TESTING)
     # Get test source files and test data files

@@ -7,6 +7,7 @@
 
 #include <json.hpp>
 #include <device.hpp>
+#include <command.hpp>
 
 namespace rip
 {
@@ -44,7 +45,7 @@ namespace rip
              *
              * @see {@link AppendageFactory}
              */
-            virtual std::shared_ptr<Appendage> create(const nlohmann::json& config, const std::map<std::string, int>& command_map, std::shared_ptr<cmdmessenger::Device> device) = 0;
+            virtual std::shared_ptr<Appendage> create(const nlohmann::json& config, const std::map<std::string, int>& command_map, std::shared_ptr<utilities::cmdmessenger::Device> device) = 0;
 
         protected:
             /**
@@ -56,7 +57,7 @@ namespace rip
              *
              * @note Is protected so that it cannot be used directly. The AppendageFactory must be used
              */
-            Appendage(const nlohmann::json& config, const std::map<std::string, int>& command_map, std: shared_ptr<cmdmessenger::Device> device);
+            Appendage(const nlohmann::json& config, const std::map<std::string, int>& command_map, std::shared_ptr<utilities::cmdmessenger::Device> device);
 
             /**
              * Creates a command to be used by CmdMessenger
@@ -70,10 +71,10 @@ namespace rip
              * @see {@link CmdMessenger}
              * @see {@link Command}
              */
-            cmdmessenger::Command createCommand(const std::string& command_key, const std::map<std::string, int>& command_map, const std::string& parameter_string);
+            utilities::cmdmessenger::Command createCommand(const std::string& command_key, const std::map<std::string, int>& command_map, const std::string& parameter_string);
 
         private:
-            std::shared_ptr<cmdmessenger::Device> m_device;
+            std::shared_ptr<utilities::cmdmessenger::Device> m_device;
             std::string m_label;
             std::string m_type;
         };
