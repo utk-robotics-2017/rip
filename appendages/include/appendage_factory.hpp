@@ -1,6 +1,15 @@
 #ifndef APPENDAGE_FACTORY_HPP
 #define APPENDAGE_FACTORY_HPP
 
+#include <memory>
+#include <map>
+#include <string>
+#include <functional>
+
+#include <json.hpp>
+
+#include "appendage.hpp"
+
 namespace rip
 {
     namespace appendages
@@ -41,14 +50,17 @@ namespace rip
              * @param type The type of the appendage
              * @param constructor A function pointer to a wrapper for the constructor of an Appendage derivative
              */
-            void registerAppendage(std::string type,
-                                   std::shared_ptr<Appendage> (*constructor)[](const nlohmann::json&,
-                                           const std::map<std::string, int>&,
-                                           std::shared_ptr<cmdmessenger::Device>));
+            void registerAppendage(const std::string& type,
+                                   std::function<std::shared_ptr<Appendage>(const nlohmann::json&,
+                                                                            const std::map<std::string, int>&,
+                                                                            std::shared_ptr<cmdmessenger::Device>)
+                                   > constructor
+                                   );
 
-            std::map<std::string, std::shared_ptr<Appendage> [](const nlohmann::json&,
-                    const std::map<std::string, int>&,
-                    std::shared_ptr<cmdmessenger::Device>)> m_constructors;
+            std::map<std::string, std::function<std::shared_ptr<Appendage>(const nlohmann::json&,
+                                                                           const std::map<std::string, int>&,
+                                                                           std::shared_ptr<cmdmessenger::Device>)
+                                  >> m_constructors;
         };
     }
 }

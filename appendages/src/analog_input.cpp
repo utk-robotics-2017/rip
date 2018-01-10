@@ -1,20 +1,42 @@
 #include "analog_input.hpp"
 
+#include <utility>
+#include <tuple>
+#include <memory>
+
+#include <cmd_messenger.hpp>
+
 namespace rip
 {
     namespace appendages
     {
-        AnalogInput::AnalogInput(const nlohmann::json& config, const std::map<std::string, int>& command_map, std::shared_ptr<utilities::cmdmessenger::Device> device)
-            : Appendage(std::forward<nlohmann::json>(config), device)
+        AnalogInput::AnalogInput(const nlohmann::json& config, const std::map<std::string, int>& command_map, std::shared_ptr<cmdmessenger::Device> device)
+            : Appendage(config, device)
+            , m_read(createCommand("kAnalogInputRead", command_map, cmdmessenger::ArduinoCmdMessenger::makeArgumentString<cmdmessenger::ArduinoCmdMessenger::IntegerType>()))
+            , m_read_result(createCommand("kAnalogInputReadResult", command_map, cmdmessenger::ArduinoCmdMessenger::makeArgumentString<cmdmessenger::ArduinoCmdMessenger::IntegerType>()))
         {
-            m_read = createCommand("kAnalogInputRead", command_map, "");
-            m_read_result = createCommand("kAnalogInputReadResult", command_map, utilities::cmdmessenger::CmdMessenger::<int>());
         }
 
-        bool DigitalInput::read()
+        int AnalogInput::read()
         {
-            utilities::cmdmessenger::CmdMessenger::send(m_device, m_read);
-            return utilities::cmdmessenger::CmdMessenger::receive(m_device, m_read_result);
+            cmdmessenger::ArduinoCmdMessenger messenger;
+            messenger.send<cmdmessenger::ArduinoCmdMessenger::IntegerType>(m_device, m_read, m_id);
+            return std::get<0>(messenger.receive<cmdmessenger::ArduinoCmdMessenger::IntegerType>(m_read_result));
+        }
+
+        void AnalogInput::stop()
+        {
+
+        }
+
+        bool AnalogInput::diagnostic()
+        {
+            return true;
+        }
+
+        std::shared_ptr<Appendage> AnalogInput::create(const nlohmann::json& config, const std::map<std::string, int>& command_map, std::shared_ptr<cmdmessenger::Device> device)
+        {
+            return std::dynamic_pointer_cast<Appendage>(std::shared_ptr<AnalogInput>(new AnalogInput(config, command_map, device)));
         }
     }
 }

@@ -1,9 +1,8 @@
 cmake_minimum_required(VERSION 3.1)
-project(core)
+project(communication)
 
 # utils built by top level cmake
 # appendages built by top level cmake
-
 
 # Get all .cpp files except for main.cpp
 file(GLOB_RECURSE ${PROJECT_NAME}_SOURCES "src/*.cpp")
@@ -18,8 +17,6 @@ if(ENABLE_TESTING)
 endif()
 target_link_libraries(${PROJECT_NAME} fmt json spdlog cppfs appendages cmd_messenger)
 target_include_directories(${PROJECT_NAME} PUBLIC include)
-
-
 
 if(ENABLE_TESTING)
 	# Get test source files and test data files
