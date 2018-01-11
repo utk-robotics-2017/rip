@@ -77,11 +77,15 @@ namespace rip
                 }
 
                 // Remove last comma and add the end of the single constructor
-                rv = rv.substr(0, rv.size() - 2) + fmt::format("),\n");
+                rv = rv.substr(0, rv.size() - 2) + "),\n";
             }
 
             // Remove the last comma and new line and add the end of the constructor list
-            rv = rv.substr(0, rv.size() - 2) + "\n};\n";
+            if (appendages.size() > 0)
+            {
+                rv = rv.substr(0, rv.size() - 2) + "\n";
+            }
+            rv += "};\n";
 
             return rv;
         }
