@@ -1,0 +1,10 @@
+<appendage-template>
+    <includes>
+        <include>1</include>
+        <include>2</include>
+    </includes>
+    <includes>
+        <include>1</include>
+        <include>2</include>
+    </includes>
+</appendage-template>
