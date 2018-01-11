@@ -146,6 +146,66 @@ namespace rip
                 EXPECT_NE(appendageTemplate->GetLoop(), nullptr);
                 EXPECT_EQ(appendageTemplate->GetCommands().size(), 3);
             }
+
+            TEST(AppendageTemplate_constructor, two_includes)
+            {
+                tinyxml2::XMLDocument doc;
+                ASSERT_EQ(loadXmlFile(doc, "test/data/appendage_template/two_includes.xml", { "code", "setup", "loop" }), tinyxml2::XML_SUCCESS);
+
+                tinyxml2::XMLElement* appendageTemplateElement = doc.FirstChildElement("appendage-template");
+                ASSERT_NE(appendageTemplateElement, nullptr);
+
+                std::unique_ptr<AppendageTemplate> appendageTemplate;
+                ASSERT_THROW(appendageTemplate = std::unique_ptr<AppendageTemplate>(new AppendageTemplate(appendageTemplateElement)), ElementException);
+            }
+
+            TEST(AppendageTemplate_constructor, two_constructors)
+            {
+                tinyxml2::XMLDocument doc;
+                ASSERT_EQ(loadXmlFile(doc, "test/data/appendage_template/two_constructors.xml", { "code", "setup", "loop" }), tinyxml2::XML_SUCCESS);
+
+                tinyxml2::XMLElement* appendageTemplateElement = doc.FirstChildElement("appendage-template");
+                ASSERT_NE(appendageTemplateElement, nullptr);
+
+                std::unique_ptr<AppendageTemplate> appendageTemplate;
+                ASSERT_THROW(appendageTemplate = std::unique_ptr<AppendageTemplate>(new AppendageTemplate(appendageTemplateElement)), ElementException);
+            }
+
+            TEST(AppendageTemplate_constructor, two_setup)
+            {
+                tinyxml2::XMLDocument doc;
+                ASSERT_EQ(loadXmlFile(doc, "test/data/appendage_template/two_setup.xml", { "code", "setup", "loop" }), tinyxml2::XML_SUCCESS);
+
+                tinyxml2::XMLElement* appendageTemplateElement = doc.FirstChildElement("appendage-template");
+                ASSERT_NE(appendageTemplateElement, nullptr);
+
+                std::unique_ptr<AppendageTemplate> appendageTemplate;
+                ASSERT_THROW(appendageTemplate = std::unique_ptr<AppendageTemplate>(new AppendageTemplate(appendageTemplateElement)), ElementException);
+            }
+
+            TEST(AppendageTemplate_constructor, two_loop)
+            {
+                tinyxml2::XMLDocument doc;
+                ASSERT_EQ(loadXmlFile(doc, "test/data/appendage_template/two_loop.xml", { "code", "setup", "loop" }), tinyxml2::XML_SUCCESS);
+
+                tinyxml2::XMLElement* appendageTemplateElement = doc.FirstChildElement("appendage-template");
+                ASSERT_NE(appendageTemplateElement, nullptr);
+
+                std::unique_ptr<AppendageTemplate> appendageTemplate;
+                ASSERT_THROW(appendageTemplate = std::unique_ptr<AppendageTemplate>(new AppendageTemplate(appendageTemplateElement)), ElementException);
+            }
+
+            TEST(AppendageTemplate_constructor, two_commands)
+            {
+                tinyxml2::XMLDocument doc;
+                ASSERT_EQ(loadXmlFile(doc, "test/data/appendage_template/two_commands.xml", { "code", "setup", "loop" }), tinyxml2::XML_SUCCESS);
+
+                tinyxml2::XMLElement* appendageTemplateElement = doc.FirstChildElement("appendage-template");
+                ASSERT_NE(appendageTemplateElement, nullptr);
+
+                std::unique_ptr<AppendageTemplate> appendageTemplate;
+                ASSERT_THROW(appendageTemplate = std::unique_ptr<AppendageTemplate>(new AppendageTemplate(appendageTemplateElement)), ElementException);
+            }
         }
     }
 }
