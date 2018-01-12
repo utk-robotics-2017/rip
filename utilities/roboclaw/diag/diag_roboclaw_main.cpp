@@ -16,7 +16,7 @@ int main(int argc, char **argv)
 {
     //make serial stuff
     nlohmann::json config1={{"address", 0x80},{"timeout", 1000},
-    {"ticks_per_rev", 3591.84},{"wheel_radius", 3.625 * rip::utilities::units::cm}, {"device", "/dev/ttyAMA0"},
+    {"ticks_per_rev", 3591.84},{"wheel_radius", (2.86/2) * rip::utilities::units::in}, {"device", "/dev/ttyAMA0"},
     {"baudrate", 115200}};
     nlohmann::json config2 = config1;
     config2["address"]=0x81;
@@ -24,8 +24,37 @@ int main(int argc, char **argv)
     Roboclaw testClawLeft(config2);
     Roboclaw testClawRight(config1);
     std::vector<Roboclaw*> claws = {&testClawLeft, &testClawRight};
-    
+
     diag::Diag diagTool(claws);
     diagTool.start();
+/*
+    MotorDynamics dynamics;
+    int64_t ticks;
+    rip::utilities::units::Velocity speed;
+    rip::utilities::units::Distance d2;
+    testClawRight.resetEncoders();
+    testClawLeft.resetEncoders();
+
+    d2 = 2.875 * rip::utilities::units::pi * rip::utilities::units::in;
+    speed = 10 * rip::utilities::units::foot / rip::utilities::units::s;
+    dynamics.setDistance(d2);
+    dynamics.setSpeed(speed);
+
+    testClawRight.setDynamics(dynamics);
+    testClawLeft.setDynamics(dynamics);
+    std::cout << "ticks m1 left " << testClawLeft.readEncoderRaw(Roboclaw::Motor::kM1) << std::endl;
+
+    testClawRight.resetEncoders();
+    testClawLeft.resetEncoders();
+
+    d2 = .073025 * rip::utilities::units::pi * rip::utilities::units::m;
+    speed = 10 * rip::utilities::units::foot / rip::utilities::units::s;
+    dynamics.setDistance(d2);
+    dynamics.setSpeed(speed);
+
+    testClawRight.setDynamics(dynamics);
+    testClawLeft.setDynamics(dynamics);
+    std::cout << "ticks m1 left " << testClawLeft.readEncoderRaw(Roboclaw::Motor::kM1) << std::endl;
+       */
     return 0;
 }

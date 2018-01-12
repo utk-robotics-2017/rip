@@ -37,6 +37,7 @@ namespace rip
                         std::cout << "10| remove a roboclaw from the list" << std::endl;
                         std::cout << "11| reset list back to original (as provided in Constructor)" << std::endl;
                         std::cout << std::endl << std::endl << "Enter a choice" << std::endl;
+                        std::cin.clear();
                         std::cin >> choice;
                         switch(choice)
                         {
@@ -93,6 +94,7 @@ namespace rip
                             case 10:
                             {
                                 std::cout << "Enter the index of the claw to remove" << std::endl;
+                                std::cin.clear();
                                 std::cin >> n;
                                 removeClaw(n);
                                 break;
@@ -143,14 +145,15 @@ namespace rip
                         std::cout << "Getters (caution)" << std::endl;
                         std::cout << "1| read main battery voltage" << std::endl;
                         std::cout << "2| read logic battery voltage" << std::endl;
-                        std::cout << "3| read min/max logic voltage" << std::endl;
-                        std::cout << "4| read min/max main voltage" << std::endl;
+                        std::cout << "3| read min/max main voltage" << std::endl;
+                        std::cout << "4| read min/max logic voltage" << std::endl;
                         std::cout << "Setters (caution)" << std::endl;
                         std::cout << "5| set main battery voltage min/max's" << std::endl;
                         std::cout << "6| set logic battery voltage min/max's" << std::endl;
                         std::cout << "7| set voltages back to initial values" << std::endl;
 
                         std::cout << std::endl << std::endl << "Enter a choice" << std::endl;
+                        std::cin.clear();
                         std::cin >> choice;
                         switch(choice)
                         {
@@ -230,9 +233,11 @@ namespace rip
                             {
                                 //set min max main
                                 std::cout << "Enter a value in volts for the minimum main battery voltage (min 6, max 34)" << std::endl;
+                                std::cin.clear();
                                 std::cin >> c;
                                 minmax[0] = c * units::V;
                                 std::cout << "Enter a value in volts for the maximum main battery voltage (min 6, max 34)" << std::endl;
+                                std::cin.clear();
                                 std::cin >> c;
                                 minmax[1] = c * units::V;
                                 for(int i=0;i<m_roboclaws.size(); i++)
@@ -251,9 +256,11 @@ namespace rip
                             case 6:
                             {
                                 std::cout << "Enter a value in volts for the minimum logic battery voltage (min 6, max 34)" << std::endl;
+                                std::cin.clear();
                                 std::cin >> c;
                                 minmax[0] = c * units::V;
                                 std::cout << "Enter a value in volts for the maximum logic battery voltage (min 6, max 34)" << std::endl;
+                                std::cin.clear();
                                 std::cin >> c;
                                 minmax[1] = c * units::V;
 
@@ -298,6 +305,7 @@ namespace rip
                                 std::cout << "invalid choice" << std::endl;
                         }
                         std::cout << std::endl << "Enter any number to continue..." << std::endl;
+                        std::cin.clear();
                         std::cin >> n;
                     } while(choice != 0);
                 }
@@ -332,6 +340,7 @@ namespace rip
                         }
                     }
                     std::cout << std::endl << "Enter any number to continue..." << std::endl;
+                    std::cin.clear();
                     std::cin >> n;
                 }
 
@@ -352,6 +361,7 @@ namespace rip
                         }
                     }
                     std::cout << std::endl << "Enter any number to continue..." << std::endl;
+                    std::cin.clear();
                     std::cin >> n;
                 }
 
@@ -360,6 +370,7 @@ namespace rip
                     int16_t duty;
                     std::cout << "Enter a duty (-32767 - 32767, where 32767 is max duty)" <<std::endl;
                     std::cout << "Enter 0 to stop the motor(s)" << std::endl;
+                    std::cin.clear();
                     std::cin >> duty;
 
                     for(int i=0; i<m_roboclaws.size(); i++)
@@ -400,6 +411,7 @@ namespace rip
                         std::cout << "9| set acceleration" << std::endl;
                         std::cout << "10| set deceleration" << std::endl;
                         std::cout << std::endl << std::endl << "Enter a choice" << std::endl;
+                        std::cin.clear();
                         std::cin >> choice;
 
                         switch(choice)
@@ -428,25 +440,26 @@ namespace rip
                                         std::cout << "Ensure that the dynamics are properly set." << std::endl;
                                     }
                                 }
+                                break;
                             }
                             case 7:
                             {
                                 //velocity
-                                v = velocityPrompt();
-                                dynamics.setSpeed(v);
+                                m_velocity = velocityPrompt();
+                                dynamics.setSpeed(m_velocity);
                                 break;
                             }
                             case 8:
                             {
                                 //dist
                                 std::cout << "Distance must be positive" << std::endl;
-                                dist = distancePrompt();
+                                m_dist = distancePrompt();
                                 if (dist() < 0)
                                 {
                                     std::cout << "Distance must be positive, changing sign of distance" << std::endl;
-                                    dist *=-1;
+                                    m_dist *=-1;
                                 }
-                                dynamics.setDistance(dist);
+                                dynamics.setDistance(m_dist);
                                 break;
                             }
                             case 9:
@@ -457,6 +470,7 @@ namespace rip
 
                                 std::cout << "Choose a distance unit" << std::endl;
                                 std::cout << "1: meter, 2: ft, 3: cm , 4: in, 5: mm" << std::endl;
+                                std::cin.clear();
                                 std::cin >> n;
                                 switch(n)
                                 {
@@ -494,6 +508,7 @@ namespace rip
 
                                 std::cout << "Select a time unit" << std::endl;
                                 std::cout << "1: seconds, 2: ms, 3: minute, 4: hour" << std::endl;
+                                std::cin.clear();
                                 std::cin >> n;
                                 switch(n)
                                 {
@@ -525,16 +540,19 @@ namespace rip
                                 }
 
                                 std::cout << "Enter a positive magnitude for acceleration" << std::endl;
+                                std::cin.clear();
                                 std::cin >> mag2;
                                 accel = dist / (t * t);
                                 accel *= mag2;
                                 if(n == 9)
                                 {
-                                    dynamics.setAcceleration(accel);
+                                    m_accel = accel;
+                                    dynamics.setAcceleration(m_accel);
                                 }
                                 else
                                 {
-                                    dynamics.setDeceleration(accel);
+                                    m_decel = accel;
+                                    dynamics.setDeceleration(m_decel);
                                 }
                                 break;
                             }
@@ -544,6 +562,7 @@ namespace rip
                             }
                         }
                         std::cout << std::endl << "Enter any number to continue..." << std::endl;
+                        std::cin.clear();
                         std::cin >> n;
                     } while(choice != 0);
                 }
@@ -574,6 +593,7 @@ namespace rip
 
 
                         std::cout << std::endl << std::endl << "Enter a choice" << std::endl;
+                        std::cin.clear();
                         std::cin >> choice;
                         switch(choice)
                         {
@@ -618,7 +638,7 @@ namespace rip
                                         std::cout << "claw "<< i << "| " << e.what() << std::endl;
                                     }
                                 }
-                                std::cout << "Successfully read " << i+1 << " roboclaw's encoder values" << std::endl;
+                                std::cout << "Successfully read " << i << " roboclaw's encoder values" << std::endl;
                                 break;
                             }
                             case 2:
@@ -657,13 +677,14 @@ namespace rip
                                         std::cout << "claw "<< i << "| " << e.what() << std::endl;
                                     }
                                 }
-                                std::cout << "Successfully read " << i+1 << " roboclaw's encoder values" << std::endl;
+                                std::cout << "Successfully read " << i << " roboclaw's encoder values" << std::endl;
                                 break;
                             }
                             case 3:
                             {
                                 //set encoder raw tick count
                                 std::cout << "Enter amount of encoder ticks to set to" <<std::endl;
+                                std::cin.clear();
                                 std::cin >> ticks;
                                 for(i=0; i<m_roboclaws.size(); i++)
                                 {
@@ -693,7 +714,7 @@ namespace rip
                                         std::cout << "claw "<< i << "| " << e.what() << std::endl;
                                     }
                                 }
-                                std::cout << "Successfully set " << i+1 << " roboclaw's encoder values" << std::endl;
+                                std::cout << "Successfully set " << i << " roboclaw's encoder values" << std::endl;
                                 break;
                             }
                             case 4:
@@ -728,7 +749,7 @@ namespace rip
                                         std::cout << "claw "<< i << "| " << e.what() << std::endl;
                                     }
                                 }
-                                std::cout << "Successfully set " << i+1 << " roboclaw's encoder values" << std::endl;
+                                std::cout << "Successfully set " << i << " roboclaw's encoder values" << std::endl;
                                 break;
                             }
                             case 5:
@@ -766,7 +787,7 @@ namespace rip
                                     {
                                         std::cout << "claw "<< i << "| " << e.what() << std::endl;
                                     }
-                                    std::cout << "Successfully read " << i+1 << " roboclaw's encoder values" << std::endl;
+                                    std::cout << "Successfully read " << i << " roboclaw's encoder values" << std::endl;
                                 }
                                 break;
                             }
@@ -805,7 +826,7 @@ namespace rip
                                     {
                                         std::cout << "claw "<< i << "| " << e.what() << std::endl;
                                     }
-                                    std::cout << "Successfully read " << i+1 << " roboclaw's encoder values" << std::endl;
+                                    std::cout << "Successfully read " << i << " roboclaw's encoder values" << std::endl;
                                 }
                                 break;
                             }
@@ -823,7 +844,7 @@ namespace rip
                                         std::cout << "claw "<< i << "| " << e.what() << std::endl;
                                     }
                                 }
-                                std::cout << "Successfully reset " << i+1 << " roboclaw's encoder values" << std::endl;
+                                std::cout << "Successfully reset " << i << " roboclaw's encoder values" << std::endl;
                                 break;
                             }
                             case 8:
@@ -832,6 +853,7 @@ namespace rip
                                 std::cout << "0 -> M1" << std::endl;
                                 std::cout << "1 -> M2" << std::endl;
                                 std::cout << "2 -> M1&M2 (default)" << std::endl;
+                                std::cin.clear();
                                 std::cin >> motors;
                                 if((motors < 0 )||(motors > 2))
                                 {
@@ -844,6 +866,7 @@ namespace rip
                                 std::cout << "invalid choice" << std::endl;
                         }
                         std::cout << std::endl << "Enter any number to continue..." << std::endl;
+                        std::cin.clear();
                         std::cin >> n;
                     } while(choice != 0);
                 }
@@ -881,6 +904,7 @@ namespace rip
                         std::cout << "4| revert to original max current (upon entering current menu)" << std::endl;
                         std::cout << "5| Motor selection (1,2, or both. default is both)" << std::endl;
                         std::cout << std::endl << std::endl << "Enter a choice" << std::endl;
+                        std::cin.clear();
                         std::cin >> choice;
 
                         switch(choice)
@@ -924,13 +948,14 @@ namespace rip
                                         std::cout << "claw "<< i << "| " << e.what() << std::endl;
                                     }
                                 }
-                                    std::cout << "Successfully read " << i+1 << " roboclaw's current values" << std::endl;
+                                    std::cout << "Successfully read " << i << " roboclaw's current values" << std::endl;
                                     break;
                             }
                             case 2:
                             {
                                 //setMaxCurrent
                                 std::cout << "Enter maximum current (amps)" << std::endl;
+                                std::cin.clear();
                                 std::cin >> temp;
                                 current = units::A * temp;
                                 for(i=0; i<m_roboclaws.size(); i++)
@@ -961,7 +986,7 @@ namespace rip
                                         std::cout << "claw "<< i << "| " << e.what() << std::endl;
                                     }
                                 }
-                                std::cout << "Successfully set " << i+1 << " roboclaw's max current values" << std::endl;
+                                std::cout << "Successfully set " << i << " roboclaw's max current values" << std::endl;
                                 break;
                             }
                             case 3:
@@ -1000,7 +1025,7 @@ namespace rip
                                         std::cout << "claw "<< i << "| " << e.what() << std::endl;
                                     }
                                 }
-                                std::cout << "Successfully read " << i+1 << " roboclaw's max current values" << std::endl;
+                                std::cout << "Successfully read " << i << " roboclaw's max current values" << std::endl;
                                 break;
                             }
                             case 4:
@@ -1034,6 +1059,7 @@ namespace rip
                                 std::cout << "0 -> M1" << std::endl;
                                 std::cout << "1 -> M2" << std::endl;
                                 std::cout << "2 -> M1&M2 (default)" << std::endl;
+                                std::cin.clear();
                                 std::cin >> motors;
                                 if((motors < 0 )||(motors > 2))
                                 {
@@ -1048,22 +1074,33 @@ namespace rip
                             }
                         }
                         std::cout << std::endl << "Enter any number to continue..." << std::endl;
+                        std::cin.clear();
                         std::cin >> n;
                     } while(choice != 0);
                 }
 
                 void Diag::pidMenu()
                 {
-                    int choice, n, i=0;
-
+                    int choice, n, i=0, motors=2, j=0;
+					float pid=0;
+					uint32_t qpps;
+					VelocityPIDParameters vparams;
+					PositionPIDParameters pparams;
+					
                     do {
                         std::cout << std::endl << std::endl << "Roboclaw {} Menu" << std::endl;
                         std::cout << "0| exit" << std::endl;
                         std::cout << "1| read velocity PID" << std::endl;
-                        std::cout << "1| " << std::endl;
-                        std::cout << "1| " << std::endl;
-
+                        std::cout << "2| read position PID" << std::endl;
+                        std::cout << "3| set velocity PID" << std::endl;
+						std::cout << "4| set position PID" << std::endl;
+						std::cout << "5| set velocity PID parameters" << std::endl;
+						std::cout << "6| set position PID parameters" << std::endl;
+						std::cout << "7| Motor selection (1,2, or both. default is both)" << std::endl;
+			
+		
                         std::cout << std::endl << std::endl << "Enter a choice" << std::endl;
+                        std::cin.clear();
                         std::cin >> choice;
                         switch(choice)
                         {
@@ -1071,10 +1108,223 @@ namespace rip
                                 std::cout << "Exiting" << std::endl;
                                 break;
                             case 1:
-                                break;
+                            {
+								//read velocity PID
+								for(i=0; i<m_roboclaws.size(); i++)
+                                {
+                                    try
+                                    {
+                                        switch(motors)
+                                        {
+											case 2:
+                                            case 0:
+                                            {
+												vparams = m_roboclaws[i]->readVelocityPID(Roboclaw::Motor::kM1);
+                                                std::cout <<"Claw " << i << " , motor M1, velocity, P: " << vparams.kp << "   I: ";
+												std::cout << vparams.ki << "   D: " << vparams.kd << "   QPPS: " << vparams.qpps;
+                                                if(motors != 2)
+												{
+													break;
+												}
+                                            }
+                                            case 1:
+                                            {
+												vparams = m_roboclaws[i]->readVelocityPID(Roboclaw::Motor::kM2);
+                                                std::cout <<"Claw " << i << " , motor M1, velocity, P: " << vparams.kp << "   I: ";
+												std::cout << vparams.ki << "   D: " << vparams.kd << "   QPPS: " << vparams.qpps << std::endl;
+                                                
+												break;
+                                            }
+                                        }
+                                    }
+                                    catch(const std::exception &e)
+                                    {
+                                        std::cout << "claw "<< i << "| " << e.what() << std::endl;
+                                    }
+                                }
+                                std::cout << "Successfully read " << i << " roboclaw's velocity PID values" << std::endl;
+								break;
+							}
+							case 2:
+							{
+								//read position PID
+								for(i=0; i<m_roboclaws.size(); i++)
+                                {
+                                    try
+                                    {
+                                        switch(motors)
+                                        {
+											case 2:
+                                            case 0:
+                                            {
+												pparams = m_roboclaws[i]->readPositionPID(Roboclaw::Motor::kM1);
+                                                std::cout <<"Claw " << i << " , motor M1, position, P: " << pparams.kp << "   I: ";
+												std::cout << pparams.ki << "   D: " << pparams.kd << std::endl;
+												std::cout << "kiMax: " << pparams.kiMax << "    deadzone: " << pparams.deadzone << "    min: ";
+												std::cout << pparams.min << "    max: " << pparams.max << std::endl;
+                                                if(motors != 2)
+												{
+													break;
+												}
+                                            }
+                                            case 1:
+                                            {
+												pparams = m_roboclaws[i]->readPositionPID(Roboclaw::Motor::kM2);
+                                                std::cout <<"Claw " << i << " , motor M2, position, P: " << pparams.kp << "   I: ";
+												std::cout << pparams.ki << "   D: " << pparams.kd << std::endl;
+												std::cout << "kiMax: " << pparams.kiMax << "    deadzone: " << pparams.deadzone << "    min: ";
+												std::cout << pparams.min << "    max: " << pparams.max << std::endl;
+												break;
+                                            }
+                                        }
+                                    }
+                                    catch(const std::exception &e)
+                                    {
+                                        std::cout << "claw "<< i << "| " << e.what() << std::endl;
+                                    }
+                                }
+                                std::cout << "Successfully read " << i << " roboclaw's position PID values" << std::endl;
+								break;
+							}
+							case 3:
+							{
+								//set velocity PID
+								for(i=0; i<m_roboclaws.size(); i++)
+                                {
+                                    try
+                                    {
+                                        switch(motors)
+                                        {
+											case 2:
+                                            case 0:
+                                            {
+												m_roboclaws[i]->setVelocityPID(Roboclaw::Motor::kM1, vparams);
+                                                if(motors != 2)
+												{
+													break;
+												}
+                                            }
+                                            case 1:
+                                            {
+												m_roboclaws[i]->setVelocityPID(Roboclaw::Motor::kM2, vparams);
+												break;
+                                            }
+                                        }
+                                    }
+                                    catch(const std::exception &e)
+                                    {
+                                        std::cout << "claw "<< i << "| " << e.what() << std::endl;
+                                    }
+                                }
+                                std::cout << "Successfully set " << i << " roboclaw's velocity PID values" << std::endl;
+								break;
+							}
+							case 4:
+							{
+								//set position PID
+								for(i=0; i<m_roboclaws.size(); i++)
+                                {
+                                    try
+                                    {
+                                        switch(motors)
+                                        {
+											case 2:
+                                            case 0:
+                                            {
+												m_roboclaws[i]->setPositionPID(Roboclaw::Motor::kM1, pparams);
+                                                if(motors != 2)
+												{
+													break;
+												}
+                                            }
+                                            case 1:
+                                            {
+												m_roboclaws[i]->setPositionPID(Roboclaw::Motor::kM2, pparams);
+												break;
+                                            }
+                                        }
+                                    }
+                                    catch(const std::exception &e)
+                                    {
+                                        std::cout << "claw "<< i << "| " << e.what() << std::endl;
+                                    }
+                                }
+                                std::cout << "Successfully set " << i << " roboclaw's velocity PID values" << std::endl;
+								break;
+							}
+							case 5:
+							{
+								std::cout << "Enter a number for proportional gain" << std::endl;
+								std::cin.clear();
+								std::cin >> pid;
+								vparams.kp = pid;
+								std::cout << "Enter a number for integral gain" << std::endl;
+								std::cin.clear();
+								std::cin >> pid;
+								vparams.ki = pid;
+								std::cout << "Enter a number for derivative gain" << std::endl;
+								std::cin.clear();
+								std::cin >> pid;
+								vparams.kd = pid;
+								std::cout << "Enter a number for quadrature pulses per second" << std::endl;
+								std::cin.clear();
+								std::cin >> qpps;
+								vparams.qpps = qpps;
+								
+								break;
+							}
+							case 6:
+							{
+								std::cout << "Enter a number for proportional gain" << std::endl;
+								std::cin.clear();
+								std::cin >> pid;
+								pparams.kp = pid;
+								std::cout << "Enter a number for integral gain" << std::endl;
+								std::cin.clear();
+								std::cin >> pid;
+								pparams.ki = pid;
+								std::cout << "Enter a number for derivative gain" << std::endl;
+								std::cin.clear();
+								std::cin >> pid;
+								pparams.kd = pid;
+								std::cout << "Enter a number for kiMax" << std::endl;
+								std::cin.clear();
+								std::cin >> qpps;
+								pparams.kiMax = qpps;
+								std::cout << "Enter a number for deadzone" << std::endl;
+								std::cin.clear();
+								std::cin >> qpps;
+								pparams.deadzone = qpps;
+								std::cout << "Enter a number for min" << std::endl;
+								std::cin.clear();
+								std::cin >> qpps;
+								pparams.min = qpps;
+								std::cout << "Enter a number for max" << std::endl;
+								std::cin.clear();
+								std::cin >> qpps;
+								pparams.max = qpps;
+								break;
+							}
+							case 7:
+							{
 
-                            default:
-                                std::cout << "invalid choice" << std::endl;
+								std::cout << "Enter a number between 0 and 2" << std::endl;
+								std::cout << "0 -> M1" << std::endl;
+								std::cout << "1 -> M2" << std::endl;
+								std::cout << "2 -> M1&M2 (default)" << std::endl;
+								std::cin.clear();
+								std::cin >> motors;
+								if((motors < 0 )||(motors > 2))
+								{
+									std::cout << "Invalid entry, resetting to default" << std::endl;
+									motors = 2;
+								}
+								break;
+							}
+							default:
+							{
+								std::cout << "invalid choice" << std::endl;
+							}
                         }
                     } while(choice != 0);
                 }
@@ -1099,6 +1349,7 @@ namespace rip
                         std::cout << "6| set config back to state after first read" << std::endl;
 
                         std::cout << std::endl << std::endl << "Enter a choice" << std::endl;
+                        std::cin.clear();
                         std::cin >> choice;
                         switch(choice)
                         {
@@ -1121,7 +1372,7 @@ namespace rip
                                     }
 
                                 }
-                                std::cout << "Successfully read the temperature of " << i+1 << " roboclaws" << std::endl;
+                                std::cout << "Successfully read the temperature of " << i << " roboclaws" << std::endl;
                                 break;
                             }
                             case 2:
@@ -1160,7 +1411,7 @@ namespace rip
                                         std::cout << "claw "<< i << "| " << e.what() << std::endl;
                                     }
                                 }
-                                std::cout << "Successfully read " << i+1 << " roboclaw's buffer lengths" << std::endl;
+                                std::cout << "Successfully read " << i << " roboclaw's buffer lengths" << std::endl;
                                 break;
                             }
                             case 3:
@@ -1187,7 +1438,7 @@ namespace rip
                                 {
                                     cfgSet = true;
                                 }
-                                std::cout << "Successfully read config of " << i+1 << "roboclaws" << std::endl;
+                                std::cout << "Successfully read config of " << i << "roboclaws" << std::endl;
                                 break;
                             }
                             case 4:
@@ -1198,6 +1449,7 @@ namespace rip
                                 for(i=0; i<m_roboclaws.size(); i++)
                                 {
                                     std::cout << "Enter hex of encoded config settings to set for claw " << i << std::endl;
+                                    std::cin.clear();
                                     std::cin >> std::hex >> encodedCfg;
                                     cfg.set(encodedCfg);
                                     try
@@ -1209,7 +1461,7 @@ namespace rip
                                         std::cout << "claw "<< i << "| " << e.what() << std::endl;
                                     }
                                 }
-                                std::cout << "Successfully set config of " << i+1 << "roboclaws" << std::endl;
+                                std::cout << "Successfully set config of " << i << "roboclaws" << std::endl;
                                 break;
                             }
                             case 5:
@@ -1218,6 +1470,7 @@ namespace rip
                                 std::cout << "0 -> M1" << std::endl;
                                 std::cout << "1 -> M2" << std::endl;
                                 std::cout << "2 -> M1&M2 (default)" << std::endl;
+                                std::cin.clear();
                                 std::cin >> motors;
                                 if((motors < 0 )||(motors > 2))
                                 {
@@ -1242,7 +1495,7 @@ namespace rip
                                             std::cout << "claw "<< i << "| " << e.what() << std::endl;
                                         }
                                     }
-                                    std::cout << "Successfully set config of " << i+1 << "roboclaws" << std::endl;
+                                    std::cout << "Successfully set config of " << i << "roboclaws" << std::endl;
                                 }
                                 else
                                 {
@@ -1257,6 +1510,7 @@ namespace rip
                             }
                         }
                         std::cout << std::endl << "Enter any number to continue..." << std::endl;
+                        std::cin.clear();
                         std::cin >> n;
                     } while(choice != 0);
                 }
@@ -1281,10 +1535,12 @@ namespace rip
                 units::Distance Diag::distancePrompt()
                 {
                     //distance
-                    int n, mag;
+                    int n;
+                    double mag;
                     units::Distance dist;
                     std::cout << "Choose a distance unit" << std::endl;
                     std::cout << "1: meter, 2: ft, 3: cm , 4: in, 5: mm" << std::endl;
+                    std::cin.clear();
                     std::cin >> n;
                     switch(n)
                     {
@@ -1321,6 +1577,7 @@ namespace rip
                     }
 
                     std::cout << "Enter a positive magnitude for distance" << std::endl;
+                    std::cin.clear();
                     std::cin >> mag;
                     dist *= mag;
                     return dist;
@@ -1332,12 +1589,14 @@ namespace rip
                     units::Distance dist;
                     units::Velocity v;
                     units::Time t;
-                    int n, mag;
+                    int n;
+                    double mag;
                     std::cout << "Velocity: distance / time: " << std::endl;
                     dist = distancePrompt();
 
                     std::cout << "Select a time unit" << std::endl;
                     std::cout << "1: seconds, 2: ms, 3: minute, 4: hour" << std::endl;
+                    std::cin.clear();
                     std::cin >> n;
                     switch(n)
                     {
@@ -1369,6 +1628,7 @@ namespace rip
                     }
 
                     std::cout << "Enter a signed magnitute" <<std::endl;
+                    std::cin.clear();
                     std::cin >> mag;
                     v = dist / t;
                     v*= mag;

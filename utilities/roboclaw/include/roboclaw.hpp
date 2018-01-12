@@ -319,7 +319,7 @@ namespace rip
                  * @note Uses 2 sequential reads in order to get direction (which isn't
                  *       provided by the command for requesting both)
                  */
-                std::array<long, 2> readEncodersRaw();
+                std::array<int32_t, 2> readEncodersRaw();
 
                 /**
                  * @brief Read the encoder value (as a distance) for a single encoder
@@ -363,7 +363,7 @@ namespace rip
                  *
                  * @returns The encoder velocity in ticks per second for a single encoder
                  */
-                long readEncoderVelocityRaw(Motor motor);
+                int32_t readEncoderVelocityRaw(Motor motor);
 
                 /**
                  * @brief Returns the encoder velocity (as a distance)
@@ -379,7 +379,7 @@ namespace rip
                  *
                  * @returns The encoder velocities in ticks per second for both encoders
                  */
-                std::array<long, 2> readEncodersVelocityRaw();
+                std::array<int32_t, 2> readEncodersVelocityRaw();
 
                 /**
                  * @brief Returns the encoder velocities (using actual units) for both encoders

@@ -103,6 +103,11 @@ namespace rip
                 private:
                     std::vector<Roboclaw*> m_roboclaws;
                     std::vector<Roboclaw*> m_roboclaws_original;
+
+                    units::Distance m_dist;
+                    units::Acceleration m_accel;
+                    units::Acceleration m_decel;
+                    units::Velocity m_velocity;
                 };
             }
         }

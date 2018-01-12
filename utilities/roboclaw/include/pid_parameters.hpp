@@ -39,7 +39,7 @@ namespace rip
                 float ki = static_cast<float>(0x8000) / 65536; //< Integral Gain
                 float kd = static_cast<float>(0x4000) / 65536; //< Derivative Gain
                 uint32_t qpps=44000; //< Quadrature Pulses Per Second - Maximum number of ticks per second
-            }; // struct VelcityPIDParameters
+            }; // struct VelocityPIDParameters
 
             struct PositionPIDParameters
             {
