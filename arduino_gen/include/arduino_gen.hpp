@@ -11,7 +11,7 @@ namespace rip
     namespace arduinogen
     {
         class Appendage;
-        class ParsedTemplate;
+        class AppendageTemplate;
 
         /**
          * @class ArduinoGen
@@ -132,7 +132,7 @@ namespace rip
 
             std::multimap< std::string, std::shared_ptr<Appendage> > m_appendages;
 
-            std::vector< ParsedTemplate > m_parsed_templates;
+            std::vector<AppendageTemplate> m_appendage_templates;
         };
     }
 }

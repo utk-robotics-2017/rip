@@ -4,19 +4,22 @@
 #include <sys/stat.h>
 #include <set>
 
+#include <tinyxml2.h>
 #include <fmt/format.h>
 #include <json.hpp>
 #include <cppfs/fs.h>
 #include <cppfs/FileHandle.h>
 
-#include "parsed_template.hpp"
-#include "template_parser.hpp"
+#include "appendage_template.hpp"
 #include "appendage.hpp"
+#include "includes.hpp"
 #include "setup.hpp"
 #include "constructors.hpp"
 #include "argument.hpp"
 #include "loop.hpp"
 #include "command.hpp"
+#include "utils.hpp"
+#include "xml_utils.hpp"
 
 namespace rip
 {
@@ -154,23 +157,17 @@ namespace rip
                     }
                 }
 
-                // TODO(Anthony): What does this do? It needs a comment
-                std::vector< std::shared_ptr<Appendage> > appendages;
-                std::transform(m_appendages.lower_bound(it->first),
-                               m_appendages.upper_bound(it->first),
-                               std::back_inserter(appendages),
-                               [](std::pair<std::string, std::shared_ptr<Appendage>> element)
-                {
-                    return element.second;
-                });
+                std::vector<std::shared_ptr<Appendage>> appendages = mmap_to_vector(m_appendages, it->first);
 
-                m_parsed_templates.push_back(parseTemplate(fmt::format("appendages/arduino_gen/{0}.template", type_file),
-                                                  appendages));
+                tinyxml2::XMLDocument doc;
+                loadXmlFile(doc, fmt::format("appendages/arduino_gen/{0}.template", type_file), { "code", "setup", "loop" });
+
+                m_appendage_templates.emplace_back(doc.FirstChildElement("appendage-template"), appendages);
             }
 
             // REVIEW: Do we need to sort this?
             /*
-            sort(begin(m_parsed_templates), end(m_parsed_templates), [](ParsedTemplate a, ParsedTemplate b) {
+            sort(begin(m_appendage_templates), end(m_appendage_templates), [](AppendageTemplate a, AppendageTemplate b) {
                 // TODO: Make a key to sort on
             });
             */
@@ -180,9 +177,9 @@ namespace rip
         {
             // Loop through all the includes and let the set handle duplicates
             std::set<std::string> includes;
-            for(ParsedTemplate& pt : m_parsed_templates)
+            for(const AppendageTemplate& at : m_appendage_templates)
             {
-                for(std::string& include : pt.includes)
+                for(std::string& include : at.GetIncludes()->GetIncludes())
                 {
                     includes.insert(include);
                 }
@@ -200,11 +197,11 @@ namespace rip
         std::string ArduinoGen::getConstructors()
         {
             std::string rv = "";
-            for(ParsedTemplate& pt : m_parsed_templates)
+            for(const AppendageTemplate& at : m_appendage_templates)
             {
-                if(pt.constructors)
+                if(at.GetConstructors())
                 {
-                    rv += pt.constructors->toString(pt.appendages) + "\n";
+                    rv += at.GetConstructors()->toString(at.GetAppendages()) + "\n";
                 }
             }
             return rv;
@@ -213,11 +210,11 @@ namespace rip
         std::string ArduinoGen::getSetup()
         {
             std::string rv = "";
-            for(ParsedTemplate& pt : m_parsed_templates)
+            for(const AppendageTemplate& at : m_appendage_templates)
             {
-                if(pt.setup)
+                if(at.GetSetup())
                 {
-                    rv += pt.setup->toString(pt.appendages) + "\n";
+                    rv += at.GetSetup()->toString(at.GetAppendages()) + "\n";
                 }
             }
             return rv;
@@ -226,11 +223,11 @@ namespace rip
         std::string ArduinoGen::getLoop()
         {
             std::string rv = "";
-            for(ParsedTemplate& pt : m_parsed_templates)
+            for(const AppendageTemplate& at : m_appendage_templates)
             {
-                if(pt.loop)
+                if(at.GetLoop())
                 {
-                    rv += pt.loop->toString(pt.appendages) + "\n";
+                    rv += at.GetLoop()->toString(at.GetAppendages()) + "\n";
                 }
             }
             return rv;
@@ -250,16 +247,16 @@ namespace rip
 
             std::string cmd_id;
             std::string result_id;
-            for(const ParsedTemplate& pt : m_parsed_templates)
+            for(const AppendageTemplate& at : m_appendage_templates)
             {
-                for(const Command& cmd : pt.commands)
+                for(const std::shared_ptr<Command>& cmd : at.GetCommands())
                 {
-                    cmd_id = cmd.getId();
+                    cmd_id = cmd->getId();
                     rv += fmt::format("\t{},\n", cmd_id);
                     m_commands[cmd_id] = cmd_idx;
                     cmd_idx ++;
 
-                    result_id = cmd.getResultId();
+                    result_id = cmd->getResultId();
                     if(result_id.size())
                     {
                         rv += fmt::format("\t{},\n", result_id);
@@ -276,11 +273,11 @@ namespace rip
         std::string ArduinoGen::getCommandAttaches()
         {
             std::string rv = "";
-            for(const ParsedTemplate& pt : m_parsed_templates)
+            for(const AppendageTemplate& at : m_appendage_templates)
             {
-                for(const Command& cmd : pt.commands)
+                for(const std::shared_ptr<Command>& cmd : at.GetCommands())
                 {
-                    rv += fmt::format("\tcmdMessenger.attach({}, {});\n", cmd.getId(), cmd.getName());
+                    rv += fmt::format("\tcmdMessenger.attach({}, {});\n", cmd->getId(), cmd->getName());
                 }
             }
             return rv;
@@ -289,11 +286,11 @@ namespace rip
         std::string ArduinoGen::getCommandCallbacks()
         {
             std::string rv = "";
-            for(const ParsedTemplate& pt : m_parsed_templates)
+            for(const AppendageTemplate& at : m_appendage_templates)
             {
-                for(const Command& command : pt.commands)
+                for(const std::shared_ptr<Command>& command : at.GetCommands())
                 {
-                    rv += command.callback(pt.appendages.size()) + "\n";
+                    rv += command->callback(at.GetAppendages().size()) + "\n";
                 }
             }
             return rv;
@@ -301,11 +298,14 @@ namespace rip
 
         std::string ArduinoGen::getExtras()
         {
+
             std::string rv = "";
-            for(const ParsedTemplate& pt : m_parsed_templates)
+            /*
+            for(const AppendageTemplate& at : m_appendage_templates)
             {
-                rv += pt.extra + "\n";
+                rv += at.extra + "\n";
             }
+            */
             return rv;
         }
 

@@ -14,16 +14,12 @@ namespace rip
 {
     namespace arduinogen
     {
-        //AppendageTemplate::AppendageTemplate() = default;
-        //AppendageTemplate::~AppendageTemplate() = default;
-
-        AppendageTemplate::AppendageTemplate(const tinyxml2::XMLElement* xml)
+        AppendageTemplate::AppendageTemplate(const tinyxml2::XMLElement* xml, std::vector<std::shared_ptr<Appendage>> appendages)
             : XmlElement(xml)
         {
             std::vector<const tinyxml2::XMLElement*> include_elements = getElements("includes");
             if (include_elements.size() == 1)
             {
-                //m_includes = std::unique_ptr<Includes>(new Includes(include_elements[0]));
                 m_includes = std::make_shared<Includes>(include_elements[0]);
             }
             else if (include_elements.size() > 1)
@@ -35,7 +31,6 @@ namespace rip
             std::vector<const tinyxml2::XMLElement*> constructor_elements = getElements("constructors");
             if (constructor_elements.size() == 1)
             {
-                //m_constructors = std::unique_ptr<Constructors>(new Constructors(constructor_elements[0]));
                 m_constructors = std::make_shared<Constructors>(constructor_elements[0]);
             }
             else if (constructor_elements.size() > 1)
@@ -47,7 +42,6 @@ namespace rip
             std::vector<const tinyxml2::XMLElement*> setup_elements = getElements("setup");
             if (setup_elements.size() == 1)
             {
-                //m_setup = std::unique_ptr<Setup>(new Setup(setup_elements[0]));
                 m_setup = std::make_shared<Setup>(setup_elements[0]);
             }
             else if (setup_elements.size() > 1)
@@ -59,7 +53,6 @@ namespace rip
             std::vector<const tinyxml2::XMLElement*> loop_elements = getElements("loop");
             if (loop_elements.size() == 1)
             {
-                //m_loop = std::unique_ptr<Loop>(new Loop(loop_elements[0]));
                 m_loop = std::make_shared<Loop>(loop_elements[0]);
             }
             else if (loop_elements.size() > 1)
@@ -75,7 +68,7 @@ namespace rip
 
                 for (const tinyxml2::XMLElement* ele : commands.getElements("command"))
                 {
-                    m_commands.emplace_back(ele);
+                    m_commands.emplace_back(std::make_shared<Command>(ele));
                 }
             }
             else if (commands_elements.size() > 1)
@@ -119,9 +112,14 @@ namespace rip
             return m_loop;
         }
 
-        const std::vector<Command>& AppendageTemplate::GetCommands() const
+        const std::vector<std::shared_ptr<Command>>& AppendageTemplate::GetCommands() const
         {
             return m_commands;
+        }
+
+        const std::vector<std::shared_ptr<Appendage>>& AppendageTemplate::GetAppendages() const
+        {
+            return m_appendages;
         }
     }
 }
