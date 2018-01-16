@@ -47,7 +47,7 @@ namespace rip
             }
         }
 
-        std::string Constructors::toString(std::vector< std::shared_ptr<Appendage> >& appendages) const
+        std::string Constructors::toString(const std::vector<std::shared_ptr<Appendage>>& appendages) const
         {
             if(!m_exists)
             {
