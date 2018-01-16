@@ -12,8 +12,8 @@ namespace rip
     {
         AnalogInput::AnalogInput(const nlohmann::json& config, const std::map<std::string, int>& command_map, std::shared_ptr<cmdmessenger::Device> device)
             : Appendage(config, device)
-            , m_read(createCommand("kAnalogInputRead", command_map, cmdmessenger::ArduinoCmdMessenger::makeArgumentString<cmdmessenger::ArduinoCmdMessenger::IntegerType>()))
-            , m_read_result(createCommand("kAnalogInputReadResult", command_map, cmdmessenger::ArduinoCmdMessenger::makeArgumentString<cmdmessenger::ArduinoCmdMessenger::IntegerType>()))
+            , m_read(createCommand("kAnalogInputRead", command_map, cmdmessenger::ArduinoCmdMessenger::makeArgumentString<typename cmdmessenger::ArduinoCmdMessenger::IntegerType>()))
+            , m_read_result(createCommand("kAnalogInputReadResult", command_map, cmdmessenger::ArduinoCmdMessenger::makeArgumentString<typename cmdmessenger::ArduinoCmdMessenger::IntegerType>()))
         {
         }
 

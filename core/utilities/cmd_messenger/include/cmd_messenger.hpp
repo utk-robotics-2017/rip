@@ -42,30 +42,42 @@ namespace rip
              *
              *  @brief Packs a series of arguments in to a command message that can be sent
              *
-             * @tparam StringType The type for representing a string (may not work with any other than the default type)
-             * @tparam IntegerType The type for representing an integer
-             * @tparam UnsignedIntegerType
-             * @tparam LongType
-             * @tparam UnsignedLongType
-             * @tparam FloatType
-             * @tparam DoubleType
-             * @tparam BooleanType
-             * @tparam CharType
+             * @tparam T_StringType The type for representing a string (may not work with any other than the default type)
+             * @tparam T_IntegerType The type for representing an integer
+             * @tparam T_UnsignedIntegerType
+             * @tparam T_LongType
+             * @tparam T_UnsignedLongType
+             * @tparam T_FloatType
+             * @tparam T_DoubleType
+             * @tparam T_BooleanType
+             * @tparam T_CharType
              */
             template <
-                typename StringType = std::string,
-                typename IntegerType = int,
-                typename UnsignedIntegerType = unsigned int,
-                typename LongType = long,
-                typename UnsignedLongType = unsigned long,
-                typename FloatType = float,
-                typename DoubleType = double,
-                typename BooleanType = bool,
-                typename CharType = char
+                typename T_StringType = std::string,
+                typename T_IntegerType = int,
+                typename T_UnsignedIntegerType = unsigned int,
+                typename T_LongType = long,
+                typename T_UnsignedLongType = unsigned long,
+                typename T_FloatType = float,
+                typename T_DoubleType = double,
+                typename T_BooleanType = bool,
+                typename T_CharType = char
                 >
             class CmdMessenger
             {
             public:
+
+                typedef T_StringType          StringType         ;
+                typedef T_IntegerType         IntegerType        ;
+                typedef T_UnsignedIntegerType UnsignedIntegerType;
+                typedef T_LongType            LongType           ;  
+                typedef T_UnsignedLongType    UnsignedLongType   ;  
+                typedef T_FloatType           FloatType          ;   
+                typedef T_DoubleType          DoubleType         ;  
+                typedef T_BooleanType         BooleanType        ;   
+                typedef T_CharType            CharType           ;
+
+
                 /**
                  * @brief Creates an empty string for when makeArgumentsString is called with no template arguments
                  *
@@ -75,14 +87,14 @@ namespace rip
                  * @ref http://en.cppreference.com/w/cpp/utility/tuple
                  */
                 template<typename... Args>
-                static typename std::enable_if<sizeof...(Args) == 0, std::string>::type makeArgumentString()
+                static typename std::enable_if<sizeof...(Args) == 0, const std::string>::type makeArgumentString()
                 {
                     return "";
                 }
 
                 /**
                  * @brief Creates a string with each character representing an argument type using the template arguments
-                 *
+                 *makeArgumentString
                  * @note Does this recursively
                  *
                  * @ref http://en.cppreference.com/w/cpp/language/parameter_pack
@@ -141,18 +153,18 @@ namespace rip
                     }
 
                     // Pack the command to send
-                    std::string message = toBytes<int, IntegerType>(command.getEnum()) + static_cast<CharType>(m_field_separator);
+                    std::string message = toBytes<int, T_IntegerType>(command.getEnum()) + static_cast<T_CharType>(m_field_separator);
 
                     std::tuple<Args...> args_tuple(args...);
 
                     if (sizeof...(args) > 0)
                     {
                         message += tupleToBytes<0, Args...>(argument_types, args_tuple);
-                        message.back() = static_cast<CharType>(m_command_separator);
+                        message.back() = static_cast<T_CharType>(m_command_separator);
                     }
                     else
                     {
-                        message += static_cast<CharType>(m_command_separator);
+                        message += static_cast<T_CharType>(m_command_separator);
                     }
 
                     // Send the message
@@ -179,7 +191,7 @@ namespace rip
                 void handleAck(std::string& acknowledgement, const Command& command)
                 {
                     // First part should be the acknowledgment id
-                    IntegerType acknowledgement_id = fromBytes<IntegerType>(acknowledgement);
+                    T_IntegerType acknowledgement_id = fromBytes<T_IntegerType>(acknowledgement);
                     if (acknowledgement_id != 0) //TODO(Andrew): Look up number
                     {
                         throw IncorrectAcknowledgementCommand("Acknowledge command incorrect");
@@ -193,7 +205,7 @@ namespace rip
                     acknowledgement.erase(0, 1);
 
                     // Then the command sent
-                    IntegerType acknowledge_command = fromBytes<IntegerType>(acknowledgement);
+                    T_IntegerType acknowledge_command = fromBytes<T_IntegerType>(acknowledgement);
                     if (acknowledge_command != command.getEnum())
                     {
                         throw IncorrectAcknowledgementCommand(fmt::format("Acknowledgement command {} is not the same as the current command {}", acknowledge_command, command.getEnum()));
@@ -241,7 +253,7 @@ namespace rip
                     std::string response = m_last_device->readline(m_max_response_length, std::to_string(m_command_separator));
 
                     // Check that response command is correct
-                    IntegerType response_command_enum = fromBytes<IntegerType>(response);
+                    T_IntegerType response_command_enum = fromBytes<T_IntegerType>(response);
 
                     if (response_command_enum != command.getEnum())
                     {
@@ -314,7 +326,7 @@ namespace rip
                 {
                     To t = static_cast<To>(f);
 
-                    if (std::is_same<To, StringType>::value)
+                    if (std::is_same<To, T_StringType>::value)
                     {
                         return toBytesString(t);
                     }
@@ -328,7 +340,7 @@ namespace rip
                                 *byte_pointer == m_command_separator ||
                                 *byte_pointer == m_escape_character)
                         {
-                            rv.push_back(static_cast<CharType>(m_escape_character));
+                            rv.push_back(static_cast<T_CharType>(m_escape_character));
                         }
                         rv.push_back(*byte_pointer);
                         byte_pointer ++;
@@ -399,38 +411,38 @@ namespace rip
                     switch (argument_types[I])
                     {
                         case m_integer_key:
-                            message = toBytes<decltype(arg), IntegerType>(arg);
+                            message = toBytes<decltype(arg), T_IntegerType>(arg);
                             break;
                         case m_unsigned_integer_key:
-                            message = toBytes<decltype(arg), UnsignedIntegerType>(arg);
+                            message = toBytes<decltype(arg), T_UnsignedIntegerType>(arg);
                             break;
                         case m_long_key:
-                            message = toBytes<decltype(arg), LongType>(arg);
+                            message = toBytes<decltype(arg), T_LongType>(arg);
                             break;
                         case m_unsigned_long_key:
-                            message = toBytes<decltype(arg), UnsignedLongType>(arg);
+                            message = toBytes<decltype(arg), T_UnsignedLongType>(arg);
                             break;
                         case m_float_key:
-                            message = toBytes<decltype(arg), FloatType>(arg);
+                            message = toBytes<decltype(arg), T_FloatType>(arg);
                             break;
                         case m_double_key:
-                            message = toBytes<decltype(arg), DoubleType>(arg);
+                            message = toBytes<decltype(arg), T_DoubleType>(arg);
                             break;
                         case m_char_key:
-                            message = toBytes<decltype(arg), CharType>(arg);
+                            message = toBytes<decltype(arg), T_CharType>(arg);
                             break;
                         case m_bool_key:
-                            message = toBytes<decltype(arg), BooleanType>(arg);
+                            message = toBytes<decltype(arg), T_BooleanType>(arg);
                             break;
                         case m_string_key:
-                            message = toBytes<decltype(arg), StringType>(arg);
+                            message = toBytes<decltype(arg), T_StringType>(arg);
                             break;
                         default:
                             throw UnknownArgument();
                     }
 
                     // Add the byte for field separator
-                    message += static_cast<CharType>(m_field_separator);
+                    message += static_cast<T_CharType>(m_field_separator);
 
                     // Recurse through future elements
                     message += tupleToBytes < I + 1, Args... > (argument_types, args_tuple);
@@ -543,28 +555,28 @@ namespace rip
                     switch (argument_types[I])
                     {
                         case m_integer_key:
-                            arg = fromBytes<IntegerType>(str);
+                            arg = fromBytes<T_IntegerType>(str);
                             break;
                         case m_unsigned_integer_key:
-                            arg = fromBytes<UnsignedIntegerType>(str);
+                            arg = fromBytes<T_UnsignedIntegerType>(str);
                             break;
                         case m_long_key:
-                            arg = fromBytes<LongType>(str);
+                            arg = fromBytes<T_LongType>(str);
                             break;
                         case m_unsigned_long_key:
-                            arg = fromBytes<UnsignedLongType>(str);
+                            arg = fromBytes<T_UnsignedLongType>(str);
                             break;
                         case m_float_key:
-                            arg = fromBytes<FloatType>(str);
+                            arg = fromBytes<T_FloatType>(str);
                             break;
                         case m_double_key:
-                            arg = fromBytes<DoubleType>(str);
+                            arg = fromBytes<T_DoubleType>(str);
                             break;
                         case m_char_key:
-                            arg = fromBytes<CharType>(str);
+                            arg = fromBytes<T_CharType>(str);
                             break;
                         case m_bool_key:
-                            arg = fromBytes<BooleanType>(str);
+                            arg = fromBytes<T_BooleanType>(str);
                             break;
                         case m_string_key:
                             arg = fromBytesString<typename std::remove_reference<decltype(arg)>::type>(str);
@@ -599,7 +611,7 @@ namespace rip
                  *  @note This function is only called if the template parameter is an `int`
                  */
                 template<typename T>
-                static typename std::enable_if< std::is_same<T, int>::value, char>::type makeArgumentChar()
+                static typename std::enable_if< std::is_same<T, T_IntegerType>::value, char>::type makeArgumentChar()
                 {
                     return m_integer_key;
                 }
@@ -610,7 +622,7 @@ namespace rip
                  *  @note This function is only called if the template parameter is an `unsigned int`
                  */
                 template<typename T>
-                static typename std::enable_if< std::is_same<T, unsigned int>::value, char>::type makeArgumentChar()
+                static typename std::enable_if< std::is_same<T, T_UnsignedIntegerType>::value, char>::type makeArgumentChar()
                 {
                     return m_unsigned_integer_key;
                 }
@@ -621,7 +633,7 @@ namespace rip
                  *  @note This function is only called if the template parameter is a `long`
                  */
                 template<typename T>
-                static typename std::enable_if< std::is_same<T, long>::value, char>::type makeArgumentChar()
+                static typename std::enable_if< std::is_same<T, T_LongType>::value, char>::type makeArgumentChar()
                 {
                     return m_long_key;
                 }
@@ -632,7 +644,7 @@ namespace rip
                  *  @note This function is only called if the template parameter is an `unsigned long`
                  */
                 template<typename T>
-                static typename std::enable_if< std::is_same<T, unsigned long>::value, char>::type makeArgumentChar()
+                static typename std::enable_if< std::is_same<T, T_UnsignedLongType>::value, char>::type makeArgumentChar()
                 {
                     return m_unsigned_long_key;
                 }
@@ -643,7 +655,7 @@ namespace rip
                  *  @note This function is only called if the template parameter is a `float`
                  */
                 template<typename T>
-                static typename std::enable_if< std::is_same<T, float>::value, char>::type makeArgumentChar()
+                static typename std::enable_if< std::is_same<T, T_FloatType>::value, char>::type makeArgumentChar()
                 {
                     return m_float_key;
                 }
@@ -654,7 +666,7 @@ namespace rip
                  *  @note This function is only called if the template parameter is a `double`
                  */
                 template<typename T>
-                static typename std::enable_if< std::is_same<T, double>::value, char>::type makeArgumentChar()
+                static typename std::enable_if< std::is_same<T, T_DoubleType>::value && !std::is_same<T_FloatType, T_DoubleType>::value, char>::type makeArgumentChar()
                 {
                     return m_double_key;
                 }
@@ -665,7 +677,7 @@ namespace rip
                  *  @note This function is only called if the template parameter is a `char`
                  */
                 template<typename T>
-                static typename std::enable_if< std::is_same<T, char>::value, char>::type makeArgumentChar()
+                static typename std::enable_if< std::is_same<T, T_CharType>::value, char>::type makeArgumentChar()
                 {
                     return m_char_key;
                 }
@@ -676,7 +688,7 @@ namespace rip
                  *  @note This function is only called if the template parameter is a `string`
                  */
                 template<typename T>
-                static typename std::enable_if< std::is_same<T, std::string>::value, char>::type makeArgumentChar()
+                static typename std::enable_if< std::is_same<T, T_StringType>::value, char>::type makeArgumentChar()
                 {
                     return m_string_key;
                 }
@@ -687,7 +699,7 @@ namespace rip
                  *  @note This function is only called if the template parameter is a `bool`
                  */
                 template<typename T>
-                static typename std::enable_if< std::is_same<T, bool>::value, char>::type makeArgumentChar()
+                static typename std::enable_if< std::is_same<T, T_BooleanType>::value, char>::type makeArgumentChar()
                 {
                     return m_bool_key;
                 }
@@ -720,15 +732,15 @@ namespace rip
              * @typedef ArduinoCmdMessenger CmdMessenger with all the types that an Arduino uses
              */
             using ArduinoCmdMessenger = CmdMessenger <
-                                        /* StringType                = */ std::string,
-                                        /* class IntegerType         = */ int16_t,
-                                        /* class UnsignedIntegerType = */ uint16_t,
-                                        /* class LongType            = */ int32_t,
-                                        /* class UnsignedLongType    = */ uint32_t,
-                                        /* class FloatType           = */ float,
-                                        /* class DoubleType          = */ float,
-                                        /* class BooleanType         = */ bool,
-                                        /* class CharType            = */ char
+                                        /* T_StringType                = */ std::string,
+                                        /* class T_IntegerType         = */ int16_t,
+                                        /* class T_UnsignedIntegerType = */ uint16_t,
+                                        /* class T_LongType            = */ int32_t,
+                                        /* class T_UnsignedLongType    = */ uint32_t,
+                                        /* class T_FloatType           = */ float,
+                                        /* class T_DoubleType          = */ float,
+                                        /* class T_BooleanType         = */ bool,
+                                        /* class T_CharType            = */ char
                                         >;
         }
 }
