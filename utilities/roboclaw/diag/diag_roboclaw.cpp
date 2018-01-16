@@ -390,6 +390,7 @@ namespace rip
                 {
                     int choice, n, mag=0;
                     uint32_t mag2=0;
+					double d;
                     MotorDynamics dynamics, stop;
                     units::Velocity v;
                     units::Distance dist;
@@ -554,9 +555,10 @@ namespace rip
 
                                 std::cout << "Enter a positive magnitude for acceleration" << std::endl;
                                 std::cin.clear();
-                                std::cin >> mag2;
+                                std::cin >> d;
+								std::cout << "got here" << std::endl;
                                 accel = dist / (t * t);
-                                accel *= mag2;
+                                accel *= d;
                                 if(n == 9)
                                 {
                                     m_accel = accel;
