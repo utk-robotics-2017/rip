@@ -390,12 +390,13 @@ namespace rip
                 {
                     int choice, n, mag=0;
                     uint32_t mag2=0;
-                    MotorDynamics dynamics;
+                    MotorDynamics dynamics, stop;
                     units::Velocity v;
                     units::Distance dist;
                     units::Acceleration accel;
                     units::Time t;
-
+					stop.setSpeed(0);
+					stop.setDistance(0);
                     std::cout << std::endl << "Note that the drive functions will throw if the respective dynamics have not been set." << std::endl;
                     do {
                         std::cout << std::endl << std::endl << "Roboclaw Dynamics Menu" << std::endl;
@@ -432,12 +433,24 @@ namespace rip
                                 {
                                     try
                                     {
-                                        m_roboclaws[i]->setDynamics(dynamics);
+                                        m_roboclaws[i]->setDynamics(dynamics, 0);
                                     }
                                     catch(const std::exception &e)
                                     {
                                         std::cout << "claw "<< i << "| " << e.what() << std::endl;
                                         std::cout << "Ensure that the dynamics are properly set." << std::endl;
+                                    }
+                                }
+								for(int i=0; i<m_roboclaws.size(); i++)
+                                {
+                                    try
+                                    {
+                                        m_roboclaws[i]->setDynamics(stop, 0);
+                                    }
+                                    catch(const std::exception &e)
+                                    {
+                                        std::cout << "claw "<< i << "| " << e.what() << std::endl;
+                                        std::cout << "stopping failed" << std::endl;
                                     }
                                 }
                                 break;
