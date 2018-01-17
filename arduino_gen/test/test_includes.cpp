@@ -47,7 +47,7 @@ namespace rip
                 std::vector<std::string> includes_vec = includes.GetIncludes();
 
                 EXPECT_EQ(includes_vec.size(), 1);
-                EXPECT_EQ(includes_vec[0], "Something.h");
+                EXPECT_EQ(includes_vec[0], "\"Something.h\"");
             }
 
             TEST(Includes, MultipleIncludes)
@@ -62,8 +62,8 @@ namespace rip
                 std::vector<std::string> includes_vec = includes.GetIncludes();
 
                 EXPECT_EQ(includes_vec.size(), 2);
-                EXPECT_EQ(includes_vec[0], "Something.h");
-                EXPECT_EQ(includes_vec[1], "Somethingelse.h");
+                EXPECT_EQ(includes_vec[0], "\"Something.h\"");
+                EXPECT_EQ(includes_vec[1], "\"Somethingelse.h\"");
             }
         }
     }

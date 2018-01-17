@@ -19,20 +19,25 @@
 #include "command.hpp"
 #include "utils.hpp"
 #include "xml_utils.hpp"
+#include "exceptions.hpp"
 
 namespace rip
 {
     namespace arduinogen
     {
 
-        ArduinoGen::ArduinoGen(std::string arduino, std::string parent_folder)
+        ArduinoGen::ArduinoGen(std::string arduino, std::string parent_folder, std::string appendage_data_folder, bool testing)
             : m_arduino(arduino)
             , m_parent_folder(parent_folder)
+            , m_appendage_data_folder(appendage_data_folder)
         {
             assert(m_arduino.size() > 0);
             assert(m_parent_folder.size() > 0);
 
-            setupFolder();
+            if (!testing)
+            {
+                setupFolder();
+            }
         }
 
         void ArduinoGen::setupFolder()
@@ -81,13 +86,11 @@ namespace rip
 
         void ArduinoGen::generateOutput()
         {
-            fillCodeTemplate();
-
             // Write the Arduino Code
             std::ofstream source;
             source.open(fmt::format("{0}/{1}/src/{1}.ino", m_parent_folder, m_arduino),
                         std::ios::out | std::ios::trunc);
-            source << m_code;
+            source << getArduinoCode();
             source.close();
             // TODO: chmod
 
@@ -106,34 +109,28 @@ namespace rip
             upload.close();
         }
 
-        void ArduinoGen::fillCodeTemplate()
+        std::string ArduinoGen::getArduinoCode()
         {
             loadTemplates();
 
-            std::ifstream code_template;
-            code_template.open("code_template.txt");
-            m_code = "";
-            std::string line = "";
-            while(getline(code_template, line))
-            {
-                m_code += line;
-            }
-            code_template.close();
-
-            replace(m_code, "<<<includes>>>", getIncludes());
-            replace(m_code, "<<<constructors>>>", getConstructors());
-            replace(m_code, "<<<setup>>>", getSetup());
-            replace(m_code, "<<<loop>>>", getLoop());
-            replace(m_code, "<<<commands>>>", getCommandEnums());
-            replace(m_code, "<<<command_attaches>>>", getCommandAttaches());
-            replace(m_code, "<<<command_callbacks>>>", getCommandCallbacks());
-            replace(m_code, "<<<extra>>>", getExtras());
-        }
-
-        void ArduinoGen::replace(std::string& base, const std::string& replacee,
-                                 const std::string& replacer)
-        {
-            base.replace(base.find(replacee), replacee.length(), replacer);
+            return fmt::format(
+                "{includes}\n"
+                "{constructors}\n"
+                "{setup}\n"
+                "{loop}\n"
+                "{commands}\n"
+                "{command_attaches}\n"
+                "{command_callbacks}\n"
+                "{extra}\n",
+                fmt::arg("includes", getIncludes()),
+                fmt::arg("constructors", getConstructors()),
+                fmt::arg("setup", getSetup()),
+                fmt::arg("loop", getLoop()),
+                fmt::arg("commands", getCommandEnums()),
+                fmt::arg("command_attaches", getCommandAttaches()),
+                fmt::arg("command_callbacks", getCommandCallbacks()),
+                fmt::arg("extra", getExtras())
+            );
         }
 
         void ArduinoGen::loadTemplates()
@@ -158,17 +155,22 @@ namespace rip
                 std::vector<std::shared_ptr<Appendage>> appendages = mmap_to_vector(m_appendages, it->first);
 
                 tinyxml2::XMLDocument doc;
-                loadXmlFile(doc, fmt::format("appendages/arduino_gen/{0}.template", type_file), { "code", "setup", "loop" });
+                loadXmlFile(doc, fmt::format("{0}/xml/{1}.xml", m_appendage_data_folder, type_file), { "code", "setup", "loop" });
 
-                m_appendage_templates.emplace_back(doc.FirstChildElement("appendage-template"), appendages);
+                const tinyxml2::XMLElement* element = doc.FirstChildElement("appendage-template");
+
+                if (element == nullptr)
+                {
+                    throw AppendageDataException("AppendageTemplate is malformed. "
+                        "AppendageTemplate xml files must have a root of appendage-template.");
+                }
+
+                m_appendage_templates.emplace_back(element, it->first, appendages);
             }
 
-            // REVIEW: Do we need to sort this?
-            /*
             sort(begin(m_appendage_templates), end(m_appendage_templates), [](AppendageTemplate a, AppendageTemplate b) {
-                // TODO: Make a key to sort on
+                return a.GetType() < b.GetType();
             });
-            */
         }
 
         std::string ArduinoGen::getIncludes()
@@ -177,9 +179,13 @@ namespace rip
             std::set<std::string> includes;
             for(const AppendageTemplate& at : m_appendage_templates)
             {
-                for(std::string& include : at.GetIncludes()->GetIncludes())
+                std::shared_ptr<Includes> appendageIncludes = at.GetIncludes();
+                if (appendageIncludes != nullptr)
                 {
-                    includes.insert(include);
+                    for(std::string& include : appendageIncludes->GetIncludes())
+                    {
+                        includes.insert(include);
+                    }
                 }
             }
 
@@ -197,9 +203,10 @@ namespace rip
             std::string rv = "";
             for(const AppendageTemplate& at : m_appendage_templates)
             {
-                if(at.GetConstructors())
+                std::shared_ptr<Constructors> constructors = at.GetConstructors();
+                if(constructors != nullptr)
                 {
-                    rv += at.GetConstructors()->toString(at.GetAppendages()) + "\n";
+                    rv += constructors->toString(at.GetAppendages()) + "\n";
                 }
             }
             return rv;
@@ -210,9 +217,10 @@ namespace rip
             std::string rv = "";
             for(const AppendageTemplate& at : m_appendage_templates)
             {
-                if(at.GetSetup())
+                std::shared_ptr<Setup> setup = at.GetSetup();
+                if(setup != nullptr)
                 {
-                    rv += at.GetSetup()->toString(at.GetAppendages()) + "\n";
+                    rv += setup->toString(at.GetAppendages()) + "\n";
                 }
             }
             return rv;
@@ -223,9 +231,10 @@ namespace rip
             std::string rv = "";
             for(const AppendageTemplate& at : m_appendage_templates)
             {
-                if(at.GetLoop())
+                std::shared_ptr<Loop> loop = at.GetLoop();
+                if(loop)
                 {
-                    rv += at.GetLoop()->toString(at.GetAppendages()) + "\n";
+                    rv += loop->toString(at.GetAppendages()) + "\n";
                 }
             }
             return rv;

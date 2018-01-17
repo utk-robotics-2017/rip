@@ -1,0 +1,4 @@
+{
+    "triggerPin": "int",
+    "echoPin": "int"
+}

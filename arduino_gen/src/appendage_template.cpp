@@ -14,8 +14,8 @@ namespace rip
 {
     namespace arduinogen
     {
-        AppendageTemplate::AppendageTemplate(const tinyxml2::XMLElement* xml, std::vector<std::shared_ptr<Appendage>> appendages)
-            : XmlElement(xml)
+        AppendageTemplate::AppendageTemplate(const tinyxml2::XMLElement* xml, std::string type, std::vector<std::shared_ptr<Appendage>> appendages)
+            : XmlElement(xml), m_type(type), m_appendages(appendages)
         {
             std::vector<const tinyxml2::XMLElement*> include_elements = getElements("includes");
             if (include_elements.size() == 1)
@@ -90,6 +90,11 @@ namespace rip
                 throw ElementException(fmt::format("Extra element for AppendageTemplate on line number {}",
                                                    xml->GetLineNum()));
             }
+        }
+
+        const std::string& AppendageTemplate::GetType() const
+        {
+            return m_type;
         }
 
         std::shared_ptr<Includes> AppendageTemplate::GetIncludes() const

@@ -21,7 +21,9 @@ namespace rip
         {
         public:
 
-            AppendageTemplate(const tinyxml2::XMLElement* xml, std::vector<std::shared_ptr<Appendage>> appendages);
+            AppendageTemplate(const tinyxml2::XMLElement* xml, std::string type, std::vector<std::shared_ptr<Appendage>> appendages);
+
+            const std::string& GetType() const;
 
             std::shared_ptr<Includes> GetIncludes() const;
 
@@ -36,6 +38,7 @@ namespace rip
             const std::vector<std::shared_ptr<Appendage>>& GetAppendages() const;
 
         private:
+            std::string m_type;
             std::shared_ptr<Includes> m_includes;
             std::shared_ptr<Constructors> m_constructors;
             std::shared_ptr<Setup> m_setup;

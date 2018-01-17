@@ -18,6 +18,15 @@ namespace rip
             m_name = getAttribute("name")->Value();
             m_type = getAttribute("type")->Value();
 
+            try
+            {
+                m_value = getAttribute("value")->Value();
+            }
+            catch (AttributeException)
+            {
+                m_value = "";
+            }
+
             if(m_type != "float" &&
                m_type != "int" &&
                m_type != "bool" &&
@@ -44,11 +53,25 @@ namespace rip
 
         std::string Argument::toString(std::shared_ptr<Appendage> appendage) const
         {
-            if(!appendage->isType(m_name, m_type))
+            if (appendage->has(m_name))
             {
-                // TODO(Andrew): throw exception
+                if(!appendage->isType(m_name, m_type))
+                {
+                    // TODO(Andrew): throw exception
+                }
+                return appendage->getString(m_name);
             }
-            return appendage->getString(m_name);
+            else
+            {
+                if (m_value.size() != 0)
+                {
+                    return m_value;
+                }
+                else
+                {
+                    // TODO(Anthony): throw exception
+                }
+            }
         }
 
         const std::string& Argument::getName() const
@@ -58,7 +81,12 @@ namespace rip
 
         const std::string& Argument::getType() const
         {
-            return m_name;
+            return m_type;
+        }
+
+        const std::string& Argument::getValue() const
+        {
+            return m_value;
         }
     } // arduinogen
 }
