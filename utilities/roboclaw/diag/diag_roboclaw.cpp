@@ -406,12 +406,11 @@ namespace rip
                         std::cout << "2| drive w/ velocity, acceleration" << std::endl;
                         std::cout << "3| drive w/ velocity, distance " << std::endl;
                         std::cout << "4| drive w/ velocity, distance, acceleration " << std::endl;
-                        std::cout << "5| drive w/ velocity, distance " << std::endl;
-                        std::cout << "6| drive w/ velocity, distance, acceleration, distance " << std::endl;
-                        std::cout << "7| set velocity" << std::endl;
-                        std::cout << "8| set distance" << std::endl;
-                        std::cout << "9| set acceleration" << std::endl;
-                        std::cout << "10| set deceleration" << std::endl;
+                        std::cout << "5| drive w/ velocity, distance, acceleration, deceleration " << std::endl;
+                        std::cout << "6| set velocity" << std::endl;
+                        std::cout << "7| set distance" << std::endl;
+                        std::cout << "8| set acceleration" << std::endl;
+                        std::cout << "9| set deceleration" << std::endl;
                         std::cout << std::endl << std::endl << "Enter a choice" << std::endl;
                         std::cin.clear();
                         std::cin >> choice;
@@ -423,14 +422,11 @@ namespace rip
                                 std::cout << "Exiting" << std::endl;
                                 break;
                             }
-                            case 1:
-                            case 2:
-                            case 3:
-                            case 4:
+							case 3:
+							case 4:
                             case 5:
-                            case 6:
-                            {
-                                for(int i=0; i<m_roboclaws.size(); i++)
+							{
+								for(int i=0; i<m_roboclaws.size(); i++)
                                 {
                                     try
                                     {
@@ -451,19 +447,37 @@ namespace rip
                                     catch(const std::exception &e)
                                     {
                                         std::cout << "claw "<< i << "| " << e.what() << std::endl;
-                                        std::cout << "stopping failed" << std::endl;
+                                        std::cout << "Ensure that the dynamics are properly set." << std::endl;
                                     }
                                 }
-                                break;
-                            }
-                            case 7:
+								break;
+							}
+                            case 1:
+                            case 2:
+                            {
+								for(int i=0; i<m_roboclaws.size(); i++)
+                                {
+                                    try
+                                    {
+                                        m_roboclaws[i]->setDynamics(dynamics, 0);
+                                    }
+                                    catch(const std::exception &e)
+                                    {
+                                        std::cout << "claw "<< i << "| " << e.what() << std::endl;
+                                        std::cout << "Ensure that the dynamics are properly set." << std::endl;
+                                    }
+                                }
+								break;
+							}
+                                                   
+                            case 6:
                             {
                                 //velocity
                                 m_velocity = velocityPrompt();
                                 dynamics.setSpeed(m_velocity);
                                 break;
                             }
-                            case 8:
+                            case 7:
                             {
                                 //dist
                                 std::cout << "Distance must be positive" << std::endl;
@@ -476,8 +490,97 @@ namespace rip
                                 dynamics.setDistance(m_dist);
                                 break;
                             }
+                            case 8:
+							{
+								
+                                //acceleration
+                                std::cout << "acceleration = dist / time^2" << std::endl;
+
+                                std::cout << "Choose a distance unit" << std::endl;
+                                std::cout << "1: meter, 2: ft, 3: cm , 4: in, 5: mm" << std::endl;
+                                std::cin.clear();
+                                std::cin >> n;
+                                switch(n)
+                                {
+                                    case 1:
+                                    {
+                                        dist = units::m;
+                                        break;
+                                    }
+                                    case 2:
+                                    {
+                                        dist = units::ft;
+                                        break;
+                                    }
+                                    case 3:
+                                    {
+                                        dist = units::cm;
+                                        break;
+                                    }
+                                    case 4:
+                                    {
+                                        dist = units::in;
+                                        break;
+                                    }
+                                    case 5:
+                                    {
+                                        dist = units::mm;
+                                        break;
+                                    }
+                                    default:
+                                    {
+                                        std::cout << "Enter a valid selection, defaulting to feet" << std::endl;
+                                        dist = units::ft;
+                                    }
+                                }
+
+                                std::cout << "Select a time unit" << std::endl;
+                                std::cout << "1: seconds, 2: ms, 3: minute, 4: hour" << std::endl;
+                                std::cin.clear();
+                                std::cin >> n;
+                                switch(n)
+                                {
+                                    case 1:
+                                    {
+                                        t = units::s;
+                                        break;
+                                    }
+                                    case 2:
+                                    {
+                                        t = units::ms;
+                                        break;
+                                    }
+                                    case 3:
+                                    {
+                                        t = units::minute;
+                                        break;
+                                    }
+                                    case 4:
+                                    {
+                                        t = units::hr;
+                                        break;
+                                    }
+                                    default:
+                                    {
+                                        std::cout << "Enter a valid selection, defaulting to seconds" << std::endl;
+                                        t = units::s;
+                                    }
+                                }
+
+                                std::cout << "Enter a positive magnitude for acceleration" << std::endl;
+                                std::cin.clear();
+                                std::cin >> d;
+								
+                                accel = dist / (t * t);
+                                accel *= d;
+                            
+								std::cout << "debugging 1" << std::endl;
+								m_accel = accel;
+								dynamics.setAcceleration(m_accel);
+                       
+                                break;
+							}
                             case 9:
-                            case 10:
                             {
                                 //acceleration
                                 std::cout << "acceleration = dist / time^2" << std::endl;
@@ -556,19 +659,13 @@ namespace rip
                                 std::cout << "Enter a positive magnitude for acceleration" << std::endl;
                                 std::cin.clear();
                                 std::cin >> d;
-								std::cout << "got here" << std::endl;
+								
                                 accel = dist / (t * t);
                                 accel *= d;
-                                if(n == 9)
-                                {
-                                    m_accel = accel;
-                                    dynamics.setAcceleration(m_accel);
-                                }
-                                else
-                                {
-                                    m_decel = accel;
-                                    dynamics.setDeceleration(m_decel);
-                                }
+                                                              
+								m_decel = accel;
+								dynamics.setDeceleration(m_decel);
+							
                                 break;
                             }
                             default:

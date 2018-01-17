@@ -600,7 +600,9 @@ namespace rip
                         // Send: [Address, 37, Speed(4 Bytes), CRC(2 bytes)]
                         // Receive: [0xFF]
                         cmd = Command::kMixedSpeed;
+						
                         speed = static_cast<int32_t>((*dynamics.getSpeed() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
+						std::cout << "debugging: " << speed << std::endl;
                         writeN(cmd, speed, speed);
                         return;
                     case MotorDynamics::DType::kSpeedAccel:

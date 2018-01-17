@@ -88,7 +88,9 @@ namespace rip
 
             MotorDynamics::DType MotorDynamics::getDType() const
             {
+			
                 DType d_type = static_cast<DType>(static_cast<uint8_t>(static_cast<bool>(m_speed)) << 3 | static_cast<uint8_t>(static_cast<bool>(m_acceleration)) << 2 | static_cast<uint8_t>(static_cast<bool>(m_deceleration)) << 1 | static_cast<uint8_t>(static_cast<bool>(m_distance)));
+				std::cout << "D type debugging: " << std::hex << (static_cast<uint8_t>(static_cast<bool>(m_speed)) << 3 | static_cast<uint8_t>(static_cast<bool>(m_acceleration)) << 2 | static_cast<uint8_t>(static_cast<bool>(m_deceleration)) << 1 | static_cast<uint8_t>(static_cast<bool>(m_distance))) << std::endl; 
                 switch (d_type)
                 {
                     case DType::kNone:
