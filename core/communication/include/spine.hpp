@@ -2,7 +2,14 @@
 #define SPINE_HPP
 
 #include <vector>
+#include <map>
 #include <memory>
+
+#include <cppfs/fs.h>
+#include <cppfs/FileHandle.h>
+
+#include "cmd_messenger.hpp"
+#include "appendage.hpp"
 
 namespace rip
 {
@@ -64,7 +71,7 @@ namespace rip
              * @exception FileNotFound Thrown if the config file cannot be found
              * @exception IncorrectConfig Thrown if the config has incorrect information in it
              */
-            void loadConfig(pathman::Path path);
+            void loadConfig(std::string path);
 
             /**
              * @brief Checks if possible to load a device
@@ -77,8 +84,8 @@ namespace rip
 
             static std::shared_ptr<Spine> m_singleton;
 
-            std::map< std::string, std::shared_ptr<cmdmessenger::Device> > m_devices;
-            std::map< std::string, std::shared_ptr<Appendage> > m_appendages;
+            std::map< std::string, std::shared_ptr<utilities::cmdmessenger::Device> > m_devices;
+            std::map< std::string, std::shared_ptr<appendages::Appendage> > m_appendages;
 
         }; // class Spine
     }

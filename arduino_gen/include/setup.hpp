@@ -5,6 +5,9 @@
 #include <vector>
 #include <memory>
 
+#include "xml_element.hpp"
+#include "code.hpp"
+
 namespace tinyxml2
 {
     class XMLElement;
@@ -20,13 +23,16 @@ namespace rip
          * @class Setup
          * @brief The container for the setup part of
          */
-        class Setup
+        class Setup : private Code
         {
         public:
             /**
              * @brief Constructor
              */
-            Setup(tinyxml2::XMLElement* xml);
+            Setup(const tinyxml2::XMLElement* xml);
+
+            Setup(const Setup& other) = delete;
+            Setup& operator=(const Setup& other) = delete;
 
             /**
              * Create the code for the part of the setup function for this appendage type
@@ -35,11 +41,11 @@ namespace rip
              *
              * @return The code for the part of the setup function for this appendage type
              */
-            std::string toString(std::vector< std::shared_ptr<Appendage> > appendages) const ;
+            std::string toString(std::vector< std::shared_ptr<Appendage> > appendages) const;
 
         private:
-            std::string m_code;
         };
     } // arduinogen
 }
+
 #endif

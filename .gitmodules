@@ -19,3 +19,6 @@
 [submodule "external/cppfs"]
 	path = external/cppfs
 	url = git@github.com:utk-robotics-2017/cppfs.git
+[submodule "external/serial"]
+	path = external/serial
+	url = git@github.com:utk-robotics-2017/serial.git

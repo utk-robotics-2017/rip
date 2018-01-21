@@ -1,0 +1,3 @@
+<setup>
+    pinMode($pin$, INPUT$pullup$);
+</setup>

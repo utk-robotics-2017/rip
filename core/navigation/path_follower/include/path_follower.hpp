@@ -33,8 +33,8 @@ namespace rip
 
                 units::Velocity left_v = left_p.distance(m_previous_left_position) / dt;
                 units::Acceleration left_a = (left_v - m_previous_left_velocity) / dt;
-                m_previous_left_position = left_p
-                                           m_previous_left_velocity = left_v;
+                m_previous_left_position = left_p;
+                m_previous_left_velocity = left_v;
                 m_previous_left_acceleration = left_a;
 
 

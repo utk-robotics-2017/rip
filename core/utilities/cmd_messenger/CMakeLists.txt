@@ -3,17 +3,18 @@ project(cmd_messenger)
 
 # Get all .cpp files except for main.cpp
 file(GLOB_RECURSE ${PROJECT_NAME}_SOURCES "src/*.cpp")
+file(GLOB_RECURSE ${PROJECT_NAME}_HEADERS "include/*.hpp")
 
 # Create the cmd_messenger library, set to c++11, link external libraries, and set include dir
-add_library(${PROJECT_NAME} ${${PROJECT_NAME}_SOURCES})
+add_library(${PROJECT_NAME} ${${PROJECT_NAME}_SOURCES} ${${PROJECT_NAME}_HEADERS})
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
-if(ENABLE_TEST)
+if(ENABLE_TESTING)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage")
 endif()
 target_include_directories(${PROJECT_NAME} PUBLIC include)
-target_link_libraries(${PROJECT_NAME} serial spdlog fmt)
+target_link_libraries(${PROJECT_NAME} units serial spdlog fmt exceptions_base)
 
-if(ENABLE_TEST)
+if(GIT_BRANCH MATCHES "cmd_messenger/unittests")
 	# Get test source files and test data files
 	file(GLOB_RECURSE ${PROJECT_NAME}_TEST_SOURCES "test/*.cpp")
 	file(GLOB_RECURSE ${PROJECT_NAME}_TEST_DATA "test/data/*")

@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 3.1)
+
 message("Building utilities")
 project(utils)
 
@@ -13,6 +14,7 @@ add_subdirectory(periphery)
 add_subdirectory(cppfs)
 add_subdirectory(clipper)
 add_subdirectory(stp)
+add_subdirectory(serial)
 
 # custom
 message("Building custom utilities")

@@ -24,12 +24,15 @@ namespace rip
         class Constructors
         {
         public:
+            Constructors();
+            ~Constructors();
+
             /**
              * @brief Constructor
              *
              * @param xml The xml element to parse
              */
-            Constructors(tinyxml2::XMLElement* xml);
+            Constructors(const tinyxml2::XMLElement* xml);
 
             /**
              * @brief Returns the arduino code for these constructors
@@ -45,7 +48,7 @@ namespace rip
             std::string m_type;
             std::string m_variable;
         };
-    }
-} // arduinogen
+    } // arduinogen
+}
 
 #endif // CONSTRUCTORS_HPP

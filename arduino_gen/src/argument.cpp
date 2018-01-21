@@ -10,41 +10,55 @@ namespace rip
 {
     namespace arduinogen
     {
-        Argument::Argument(tinyxml2::XMLElement* xml)
+        Argument::Argument() = default;
+        Argument::~Argument() = default;
+
+        Argument::Argument(const tinyxml2::XMLElement* xml) : XmlElement(xml)
         {
-            const char* name = xml->Attribute("name");
-            if (!name)
-            {
-                throw AttributeException(fmt::format("Constructor argument name missing on line number {}",
-                                                     xml->GetLineNum()));
-            }
-            m_name = name;
+            m_name = getAttribute("name")->Value();
+            m_type = getAttribute("type")->Value();
 
-            const char* type = xml->Attribute("type");
-            if (!type)
-            {
-                throw AttributeException(fmt::format("Constructor argument type missing on line number {}",
-                                                     xml->GetLineNum()));
-            }
-            m_type = type;
-
-            if (m_type != "float" &&
-                    m_type != "int" &&
-                    m_type != "bool" &&
-                    m_type != "string")
+            if(m_type != "float" &&
+               m_type != "int" &&
+               m_type != "bool" &&
+               m_type != "string")
             {
                 throw AttributeException(fmt::format("Constructor argument unknown type on line number {}",
                                                      xml->GetLineNum()));
+            }
+
+            // If there are any extra attributes, throw an exception
+            if (!isAttributesEmpty())
+            {
+                throw AttributeException(fmt::format("Extra attribute for Argument on line number {}",
+                                                     xml->GetLineNum()));
+            }
+
+            // If there are any extra elements, throw an exception
+            if (!isElementsEmpty())
+            {
+                throw ElementException(fmt::format("Extra element for Argument on line number {}",
+                                                   xml->GetLineNum()));
             }
         }
 
         std::string Argument::toString(std::shared_ptr<Appendage> appendage) const
         {
-            if (!appendage->isType(m_name, m_type))
+            if(!appendage->isType(m_name, m_type))
             {
                 // TODO(Andrew): throw exception
             }
-            return fmt::format("{}, ", appendage->getString(m_name));
+            return appendage->getString(m_name);
+        }
+
+        const std::string& Argument::getName() const
+        {
+            return m_name;
+        }
+
+        const std::string& Argument::getType() const
+        {
+            return m_name;
         }
     } // arduinogen
 }

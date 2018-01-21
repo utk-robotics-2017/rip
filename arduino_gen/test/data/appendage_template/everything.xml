@@ -1,0 +1,43 @@
+<appendage-template>
+    <includes>
+        <include>3</include>
+        <include>4</include>
+        <include>5</include>
+    </includes>
+    <constructors type="Type" variable="type">
+        <argument name="something_int" type="int"/>
+    	<argument name="something_bool" type="bool"/>
+    	<argument name="something_float" type="float"/>
+    	<argument name="something_string" type="string"/>
+    </constructors>
+    <setup>
+        //Setup 2, Electric Boogaloo
+    </setup>
+    <loop>
+        //Loop 3, Return of the monster
+    </loop>
+    <commands>
+        <command id="ThreeDog" name="Night" index-num="true">
+            <return-value type="int" name="TheLoneliestNumber" />
+            <return-value type="int" name="NotAsBadAsOne" />
+            <code>
+                TheLoneliestNumber = 1;
+                NotAsBadAsOne = 2;
+            </code>
+        </command>
+        <command id="ACleverId" name="ACleverName" index-num="true">
+            <parameter type="int" name="a" />
+            <parameter type="int" name="b" />
+            <code>
+                // I should probably do something with "a" and "b"
+            </code>
+        </command>
+        <command id="kEcho" name="Echo" index-num="true">
+            <parameter type="char" name="in" />
+            <return-value type="char" name="out" />
+            <code>
+                out = in;
+            </code>
+        </command>
+    </commands>
+</appendage-template>

@@ -84,4 +84,5 @@ namespace rip
         using templateparserdetail::parseTemplate;
     }
 }
+
 #endif // TEMPLATEPARSER_H
