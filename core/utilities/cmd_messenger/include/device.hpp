@@ -23,7 +23,7 @@
 
 #include <string>
 #include <serial/serial.h>
-#include <units.hpp>
+#include <units/units.hpp>
 
 namespace rip
 {

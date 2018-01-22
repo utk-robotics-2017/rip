@@ -1,4 +1,4 @@
-#include "polygon.hpp"
+#include "geometry/polygon.hpp"
 
 namespace rip
 {
@@ -36,6 +36,32 @@ namespace rip
         Area Polygon::area() const
         {
             return ClipperLib::Area(*this);
+        }
+
+        Point Polygon::centroid() const
+        {
+            double x = 0, y = 0;
+            Point p0 = m_points.back();
+            for(unsigned int n=0; n<m_points.size(); n++)
+            {
+                Point p1 = m_points[n];
+                double second_factor = ((p0.x() * p1.y()) - (p1.x() * p0.y()))();
+
+                x += (p0.x() + p1.x())() * second_factor;
+                y += (p0.y() + p1.y())() * second_factor;
+                p0 = p1;
+            }
+
+            double a = area()();
+            x = x / 6 / a;
+            y = y / 6 / a;
+
+            if (x < 0)
+            {
+                x = -x;
+                y = -y;
+            }
+            return Point(x, y);
         }
 
         Polygon::Orientation Polygon::orientation() const
@@ -113,22 +139,22 @@ namespace rip
             {
                 if (point.y() > top_left.y())
                 {
-                    top_left.y(point.y());
+                    top_left.setY(point.y());
                 }
 
                 if (point.x() < top_left.x())
                 {
-                    top_left.x(point.x());
+                    top_left.setX(point.x());
                 }
 
                 if (point.y() < bottom_right.y())
                 {
-                    bottom_right.y(point.y());
+                    bottom_right.setX(point.y());
                 }
 
                 if (point.x() > bottom_right.x())
                 {
-                    bottom_right.x(point.x());
+                    bottom_right.setX(point.x());
                 }
             }
             return Rectangle(top_left, bottom_right);

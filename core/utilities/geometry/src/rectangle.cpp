@@ -1,4 +1,4 @@
-#include "rectangle.hpp"
+#include "geometry/rectangle.hpp"
 
 namespace rip
 {

@@ -22,3 +22,12 @@
 [submodule "external/serial"]
 	path = external/serial
 	url = git@github.com:utk-robotics-2017/serial.git
+[submodule "external/eigen"]
+	path = external/eigen
+	url = git@github.com:utk-robotics-2017/eigen.git
+[submodule "external/g2o"]
+	path = external/g2o
+	url = git@github.com:utk-robotics-2017/g2o.git
+[submodule "external/suitesparse"]
+	path = external/suitesparse
+	url = git@github.com:utk-robotics-2017/suitesparse.git
