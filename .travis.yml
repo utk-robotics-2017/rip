@@ -22,6 +22,7 @@ addons:
             - cppcheck
             - cmake
             - lcov
+            - libssh2-1-dev
 
 
 before_script:

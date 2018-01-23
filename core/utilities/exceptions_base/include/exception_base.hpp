@@ -26,7 +26,7 @@ class name : public rip::utilities::ExceptionBase \
 { \
 public: \
     name(std::string message = "") : rip::utilities::ExceptionBase(#name ": " + message) {} \
-};
+}
 
 namespace rip
 {

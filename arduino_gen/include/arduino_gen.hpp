@@ -1,6 +1,8 @@
 #ifndef ARDUINO_GEN_H
 #define ARDUINO_GEN_H
 
+#include <gtest/gtest_prod.h>
+
 #include <string>
 #include <vector>
 #include <map>
@@ -11,7 +13,7 @@ namespace rip
     namespace arduinogen
     {
         class Appendage;
-        class ParsedTemplate;
+        class AppendageTemplate;
 
         /**
          * @class ArduinoGen
@@ -23,7 +25,7 @@ namespace rip
             /**
              * @brief Constructor
              */
-            ArduinoGen(std::string arduino, std::string parent_folder);
+            ArduinoGen(std::string arduino, std::string parent_folder, std::string appendage_data_folder = "appendages", bool testing = false);
 
             /**
              * @brief Reads the config file with the appendages
@@ -47,23 +49,12 @@ namespace rip
             /**
              * TODO: Properly comment
              */
-            void fillCodeTemplate();
+            std::string getArduinoCode();
 
             /**
              * TODO: Properly comment
              */
             void loadTemplates();
-
-            /**
-             * TODO: Properly comment
-             */
-            void replace(std::string& base, const std::string& replacee, const std::string& replacer);
-
-            /**
-             * @brief Returns the header for the Arduino Code
-             * @returns The header for the Arduino Code
-             */
-            std::string getHeader();
 
             /**
              * @brief Returns the includes for the Arduino Code
@@ -126,13 +117,30 @@ namespace rip
             std::string m_arduino;
             std::string m_parent_folder;
 
-            std::string m_code;
-
             std::map<std::string, int> m_commands;
+
+            std::string m_appendage_data_folder;
 
             std::multimap< std::string, std::shared_ptr<Appendage> > m_appendages;
 
-            std::vector< ParsedTemplate > m_parsed_templates;
+            std::vector<AppendageTemplate> m_appendage_templates;
+
+#ifdef TESTING
+        private:
+            friend class ArduinoGenTest;
+
+            FRIEND_TEST(ArduinoGenTest, includes_no_appendages);
+            FRIEND_TEST(ArduinoGenTest, includes_one_empty_appendage);
+            FRIEND_TEST(ArduinoGenTest, includes_one_appendage);
+            FRIEND_TEST(ArduinoGenTest, includes_two_appendages_same);
+            FRIEND_TEST(ArduinoGenTest, includes_two_appendages_different);
+
+            FRIEND_TEST(ArduinoGenTest, constructors_no_appendages);
+            FRIEND_TEST(ArduinoGenTest, constructors_one_empty_appendage);
+            FRIEND_TEST(ArduinoGenTest, constructors_one_appendage);
+            FRIEND_TEST(ArduinoGenTest, constructors_two_appendages_same);
+            FRIEND_TEST(ArduinoGenTest, constructors_two_appendages_different);
+#endif
         };
     }
 }

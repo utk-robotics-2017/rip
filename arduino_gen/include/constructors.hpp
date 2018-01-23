@@ -39,10 +39,10 @@ namespace rip
              * @param  appendages The appendages of this type
              * @return The code for these constructors
              */
-            std::string toString(std::vector< std::shared_ptr<Appendage> >& appendages) const;
+            std::string toString(const std::vector<std::shared_ptr<Appendage>>& appendages) const;
 
         private:
-            std::vector< Argument > m_arguments;
+            std::vector<Argument> m_arguments;
 
             bool m_exists;
             std::string m_type;

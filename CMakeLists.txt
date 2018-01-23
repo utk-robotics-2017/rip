@@ -16,19 +16,22 @@ set (CMAKE_CXX_STANDARD 11)
 
 message("Git branch: ${GIT_BRANCH}")
 
+LIST(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMakeModules)
+
 add_subdirectory(external)
 
-if( GIT_BRANCH MATCHES "arduino_gen/.*")
+if(GIT_BRANCH MATCHES "arduino_gen/.*")
+    add_subdirectory(core/utilities/exceptions_base)
 	add_subdirectory(arduino_gen)
 	add_subdirectory(gui)
 else()
 	add_subdirectory(core)
 	add_subdirectory(appendages)
-        add_subdirectory(arduino_gen)
+    add_subdirectory(arduino_gen)
 	add_subdirectory(gui)
 endif()
 
-## Previous CMake options 
+## Previous CMake options
 ## Todo: Determine if we want any of this
 
 #option(ALL "Build everything" OFF)

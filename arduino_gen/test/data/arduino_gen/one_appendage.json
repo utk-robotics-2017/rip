@@ -1,0 +1,8 @@
+[
+    {
+        "type": "Ultrasonic",
+        "label": "Ultrasonic1",
+        "triggerPin": 1,
+        "echoPin": 2
+    }
+]
