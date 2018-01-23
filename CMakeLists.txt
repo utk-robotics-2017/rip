@@ -10,7 +10,7 @@ execute_process(
 )
 
 # Can remove this if found to be not needed - was required on some machines
-# to correctly compile the codebase despite this line being in the
+# to correctly compile the codebase despite this line being in the 
 # downstream CMake files.
 set (CMAKE_CXX_STANDARD 11)
 
