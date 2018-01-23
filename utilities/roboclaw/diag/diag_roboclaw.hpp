@@ -100,6 +100,7 @@ namespace rip
                     prompts user to provide velocity in desired units, and magnitude. ie m/s, ft/ms.
                     */
                     units::Velocity velocityPrompt();
+					 
                 private:
                     std::vector<Roboclaw*> m_roboclaws;
                     std::vector<Roboclaw*> m_roboclaws_original;

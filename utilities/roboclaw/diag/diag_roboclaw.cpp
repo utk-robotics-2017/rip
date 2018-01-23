@@ -390,7 +390,8 @@ namespace rip
                 {
                     int choice, n, mag=0;
                     uint32_t mag2=0;
-					double d;
+					std::array<int, 2> s1, s2, v1, v2;
+					double d, acc;
                     MotorDynamics dynamics, stop;
                     units::Velocity v;
                     units::Distance dist;
@@ -411,6 +412,7 @@ namespace rip
                         std::cout << "7| set distance" << std::endl;
                         std::cout << "8| set acceleration" << std::endl;
                         std::cout << "9| set deceleration" << std::endl;
+						std::cout << "10| accel test" << std::endl;
                         std::cout << std::endl << std::endl << "Enter a choice" << std::endl;
                         std::cin.clear();
                         std::cin >> choice;
@@ -622,6 +624,7 @@ namespace rip
                                         dist = units::ft;
                                     }
                                 }
+								
 
                                 std::cout << "Select a time unit" << std::endl;
                                 std::cout << "1: seconds, 2: ms, 3: minute, 4: hour" << std::endl;
@@ -668,6 +671,116 @@ namespace rip
 							
                                 break;
                             }
+							case 10:
+							{
+								//test acceleration
+								int numb=0, dumb_iterator=0, j;
+								std::vector<int> averagesM1, averagesM2;
+								std::cout << "Enter number of iterations to do before prompting" << std::endl;
+								std::cin.clear();
+								std::cin >> j;
+								if(dynamics.getDType() != MotorDynamics::DType::kSpeedAccel)
+								{
+									std::cout << " Speed/acceleration dynamic type required" << std::endl;
+									break;
+								}
+								for(int i=0; i<m_roboclaws.size(); i++)
+								{
+									try
+									{
+										m_roboclaws[i]->resetEncoders();
+										m_roboclaws[i]->setDynamics(dynamics, 0);
+										averagesM1.push_back(0);
+										averagesM2.push_back(0);
+									}
+									catch(const std::exception &e)
+									{
+										std::cout << "claw "<< i << "| " << e.what() << std::endl;
+										std::cout << "Ensure that the dynamics are properly set." << std::endl;
+									}
+								}
+								s1[0] = m_roboclaws[0]->readEncoderRaw(Roboclaw::Motor::kM1);
+								v1[0] = m_roboclaws[0]->readEncoderVelocityRaw(Roboclaw::Motor::kM1);
+									
+								s1[1] = m_roboclaws[0]->readEncoderRaw(Roboclaw::Motor::kM2);
+								v1[1] = m_roboclaws[0]->readEncoderVelocityRaw(Roboclaw::Motor::kM2);
+							
+								do
+								{
+									for(int i=0; i<m_roboclaws.size(); i++)
+									{
+										try
+										{
+											s2[0] = m_roboclaws[i]->readEncoderRaw(Roboclaw::Motor::kM1);
+											v2[0] = m_roboclaws[i]->readEncoderVelocityRaw(Roboclaw::Motor::kM1);
+											acc = (pow(v2[0], 2) - pow(v1[0], 2)) / (2.0 * (s2[0] - (s1[0]+1)));
+											if((dumb_iterator % 10) == 0)
+											{
+												s1[0] = s2[0];
+												v1[0] = v2[0];
+											}
+											std::cout <<"Claw " << i << " , motor M1&M2, accel(M1): ";
+											std::cout << acc << std::endl;
+											if(acc > 10000 || acc < -10000)
+											{
+												acc = 0;
+											}
+											averagesM1[i]+= acc;
+											
+											s2[1] = m_roboclaws[i]->readEncoderRaw(Roboclaw::Motor::kM2);
+											v2[1] = m_roboclaws[i]->readEncoderVelocityRaw(Roboclaw::Motor::kM2);
+											acc = (pow(v2[1], 2) - pow(v1[1], 2)) / (2.0 * (s2[1] - (s1[1]+1)));
+											
+											if((dumb_iterator % 10) == 0)
+											{
+												s1[1] = s2[1];
+												v1[1] = v2[1];
+											}	
+											std::cout <<"Claw " << i << " , motor M1&M2, accel(M2): ";
+											std::cout << acc << std::endl;
+											if(acc > 10000 || acc < -10000)
+											{
+												acc = 0;
+											}
+											averagesM2[i]+=acc;
+										}
+										catch(const std::exception &e)
+										{	 
+											std::cout << "claw "<< i << "| " << e.what() << std::endl;
+											std::cout << "Ensure that the dynamics are properly set." << std::endl;
+										}
+										
+									}
+									if(dumb_iterator > j)
+									{
+										std::cout << std::endl << "Enter any number to continue, -1 to stop" << std::endl;
+										std::cin.clear();
+										std::cin >> numb;
+									}
+									dumb_iterator++;
+								} while(numb != -1);
+								for(int i=0; i<m_roboclaws.size(); i++)
+                                {
+                                    try
+                                    {
+                                        m_roboclaws[i]->setDynamics(stop, 0);
+										averagesM1[i]/= dumb_iterator;
+										averagesM2[i]/= dumb_iterator;
+										std::cout <<"Claw " << i << " , motor M1&M2, avg accel(M1): ";
+										std::cout << std::dec << averagesM1[i] << std::endl;
+										std::cout <<"Claw " << i << " , motor M1&M2, avg accel(M2): ";
+										std::cout << std::dec << averagesM2[i] << std::endl;
+                                    }
+                                    catch(const std::exception &e)
+                                    {
+                                        std::cout << "claw "<< i << "| " << e.what() << std::endl;
+                                        std::cout << "Ensure that the dynamics are properly set." << std::endl;
+                                    }
+                                }
+								
+								std::cout << "fin" << std::endl;
+								break;
+							}
                             default:
                             {
                                 std::cout << "invalid choice" << std::endl;
