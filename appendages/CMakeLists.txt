@@ -5,7 +5,6 @@ project(appendages)
 file(GLOB_RECURSE ${PROJECT_NAME}_SOURCES "src/*.cpp")
 file(GLOB_RECURSE ${PROJECT_NAME}_HEADERS "include/*.hpp")
 
-<<<<<<< HEAD
 add_library(${PROJECT_NAME} EXCLUDE_FROM_ALL ${${PROJECT_NAME}_SOURCES} ${${PROJECT_NAME}_HEADERS})
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
 target_link_libraries(${PROJECT_NAME}
@@ -13,7 +12,6 @@ target_link_libraries(${PROJECT_NAME}
     cmd_messenger misc)
 target_include_directories(${PROJECT_NAME} PUBLIC include)
 
-<<<<<<< HEAD
 # TODO(Anthony): Refactor to a function or macro
 file(GLOB_RECURSE ${PROJECT_NAME}_XMLS "xml/*.xml")
 set(copiedXmls "")
