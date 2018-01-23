@@ -1,8 +1,9 @@
 #include "appendage.hpp"
 
 #include <fmt/format.h>
-#include <path.hpp>
 #include <iostream>
+#include <cppfs/fs.h>
+#include <cppfs/FileHandle.h>
 
 #include "exceptions.hpp"
 
@@ -138,16 +139,16 @@ namespace rip
                     }
                 }
 
-                utilities::pathman::Path type_template(fmt::format("{}/json/{}.json", m_appendage_data_folder, type_file));
+                cppfs::FileHandle type_template = cppfs::fs::open(fmt::format("{}/json/{}.json", m_appendage_data_folder, type_file));
                 if(!type_template.exists() || !type_template.isFile())
                 {
                     throw AppendageDataException(fmt::format("Type template file not found for {}", type));
                 }
 
-                std::unique_ptr<std::ifstream> i = type_template.openInput();
+                //std::unique_ptr<std::ifstream> i = type_template.createInputStream();
 
                 nlohmann::json j;
-                (*i) >> j;
+                (*type_template.createInputStream()) >> j;
                 std::map< std::string, std::string > temp;
                 for (nlohmann::json::iterator it = j.begin(); it != j.end(); ++it) {
                     temp[it.key()] = it.value();

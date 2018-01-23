@@ -7,7 +7,8 @@
 #include <tinyxml2.h>
 #include <fmt/format.h>
 #include <json.hpp>
-#include <path.hpp>
+#include <cppfs/fs.h>
+#include <cppfs/FileHandle.h>
 
 #include "appendage_template.hpp"
 #include "appendage.hpp"
@@ -42,16 +43,17 @@ namespace rip
 
         void ArduinoGen::setupFolder()
         {
-            utilities::pathman::Path device_folder(fmt::format("{}/{}", m_parent_folder, m_arduino));
-            if(device_folder.exists())
+            cppfs::FileHandle device_folder = cppfs::fs::open(fmt::format("{}/{}", m_parent_folder, m_arduino));
+
+            if (device_folder.exists() && device_folder.isDirectory())
             {
-                device_folder.removeDir();
+                device_folder.removeDirectory();
             }
-            device_folder.createDir();
+            device_folder.createDirectory();
             // TODO: chmod
 
-            utilities::pathman::Path source_folder = device_folder + "/src"; // TODO: Make better syntax
-            source_folder.createDir();
+            cppfs::FileHandle source_folder = cppfs::fs::open(fmt::format("{}/{}/{}", m_parent_folder, m_arduino, "src"));
+            source_folder.createDirectory();
             // TODO: chmod
         }
 
@@ -63,7 +65,7 @@ namespace rip
             }
 
             // Read the config file in as json
-            // REVIEW: We could change this to use pathman
+            // REVIEW: We could change this to use cppfs
             std::ifstream config_stream;
             config_stream.open(config_path);
             std::string config_string = "";

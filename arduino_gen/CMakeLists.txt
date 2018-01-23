@@ -11,7 +11,7 @@ set_property(TARGET _${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
 if(ENABLE_TESTING)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage -DTESTING")
 endif()
-target_link_libraries(_${PROJECT_NAME} fmt json spdlog tinyxml2 pathman exceptions_base)
+target_link_libraries(_${PROJECT_NAME} fmt json spdlog tinyxml2 cppfs exceptions_base)
 target_link_libraries(_${PROJECT_NAME} gtest)
 target_include_directories(_${PROJECT_NAME} PUBLIC include)
 
@@ -19,7 +19,9 @@ target_include_directories(_${PROJECT_NAME} PUBLIC include)
 add_executable(${PROJECT_NAME} "src/main.cpp")
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
 target_link_libraries(${PROJECT_NAME} _${PROJECT_NAME})
+add_subdirectory(../appendages ./appendages)
 add_dependencies(${PROJECT_NAME} AppendageTemplates)
+
 
 if(ENABLE_TESTING)
     # Get test source files and test data files

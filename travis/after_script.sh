@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 set -e
-
 cd build
 
 lcov --directory . --capture --output-file coverage.info # capture coverage info

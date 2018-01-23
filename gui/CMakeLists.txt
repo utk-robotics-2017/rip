@@ -1,0 +1,12 @@
+cmake_minimum_required(VERSION 3.1)
+project(gui)
+
+if(GIT_BRANCH MATCHES "navigation/.*")
+	add_subdirectory(path_planner)
+	add_subdirectory(motor_calculator)
+elseif(GIT_BRANCH MATCHES "arduino_gen/.*")
+        #add_subdirectory(arduino_gen)
+else()
+	add_subdirectory(path_planner)
+        #add_subdirectory(arduino_gen)
+endif()
