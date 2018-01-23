@@ -14,8 +14,11 @@ namespace rip
             std::map< std::string, std::map< std::string, std::string> >();
 
         Appendage::Appendage(nlohmann::json j,
-                             std::multimap< std::string, std::shared_ptr<Appendage> >& appendages, bool test)
-            : m_data(j)
+                             std::multimap< std::string, std::shared_ptr<Appendage> >& appendages,
+                             std::string appendage_data_folder,
+                             bool test)
+            : m_data(j),
+              m_appendage_data_folder(appendage_data_folder)
         {
             if(test)
             {
@@ -135,7 +138,7 @@ namespace rip
                     }
                 }
 
-                utilities::pathman::Path type_template(fmt::format("appendages/json/{}.json", type_file));
+                utilities::pathman::Path type_template(fmt::format("{}/json/{}.json", m_appendage_data_folder, type_file));
                 if(!type_template.exists() || !type_template.isFile())
                 {
                     throw AppendageDataException(fmt::format("Type template file not found for {}", type));

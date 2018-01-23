@@ -56,7 +56,7 @@ namespace rip
 
             std::string rv;
 
-            rv += fmt::format("{} {} = {{\n", m_type, m_variable);
+            rv += fmt::format("{} {} [{}] = {{\n", m_type, m_variable, appendages.size());
 
             for(std::shared_ptr<Appendage> appendage : appendages)
             {
@@ -64,20 +64,39 @@ namespace rip
 
                 for(const Argument& argument : m_arguments)
                 {
-                    if (appendage->isType(argument.getName(), "string"))
+                    if (appendage->has(argument.getName()))
                     {
-                        rv += fmt::format("\"{}\"", argument.toString(appendage));
+                        if (appendage->isType(argument.getName(), "string"))
+                        {
+                            rv += fmt::format("\"{}\"", argument.toString(appendage));
+                        }
+                        else
+                        {
+                            rv += argument.toString(appendage);
+                        }
                     }
                     else
                     {
-                        rv += argument.toString(appendage);
+                        std::string value = argument.getValue();
+                        if (value.size() > 0)
+                        {
+                            rv += value;
+                        }
+                        else
+                        {
+                            // TODO(Anthony): Throw Exception
+                        }
                     }
 
                     rv += ", ";
                 }
 
                 // Remove last comma and add the end of the single constructor
-                rv = rv.substr(0, rv.size() - 2) + "),\n";
+                if (m_arguments.size() > 0)
+                {
+                    rv = rv.substr(0, rv.size() - 2);
+                }
+                rv += "),\n";
             }
 
             // Remove the last comma and new line and add the end of the constructor list
