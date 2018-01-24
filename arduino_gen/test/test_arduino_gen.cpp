@@ -146,7 +146,6 @@ namespace rip
 
         TEST_F(ArduinoGenTest, setup_no_appendages)
         {
-            FAIL() << "Not Implemented";
             std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "/", "test/data/arduino_gen", true));
 
             RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/no_appendages.json", false));
@@ -158,7 +157,6 @@ namespace rip
 
         TEST_F(ArduinoGenTest, setup_one_empty_appendage)
         {
-            FAIL() << "Not Implemented";
             std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "/", "test/data/arduino_gen", true));
 
             RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/one_empty_appendage.json", false));
@@ -170,40 +168,40 @@ namespace rip
 
         TEST_F(ArduinoGenTest, setup_one_appendage)
         {
-            FAIL() << "Not Implemented";
             std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "/", "test/data/arduino_gen", true));
 
             RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/one_appendage.json", false));
 
             ASSERT_EQ(ag->getSetup(),
-                ""
+                "\t// Ultrasonic triggerPin: 1\n\n"
             );
         }
 
         TEST_F(ArduinoGenTest, setup_two_appendages_same)
         {
-            FAIL() << "Not Implemented";
             std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "/", "test/data/arduino_gen", true));
 
             RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/two_appendages_same.json", false));
 
             ASSERT_EQ(ag->getSetup(),
-                ""
+                "\t// Ultrasonic triggerPin: 1\n\n"
+                "\t// Ultrasonic triggerPin: 3\n\n"
             );
         }
 
         TEST_F(ArduinoGenTest, setup_two_appendages_different)
         {
-            FAIL() << "Not Implemented";
             std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "/", "test/data/arduino_gen", true));
 
             RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/two_appendages_different.json", false));
 
             ASSERT_EQ(ag->getSetup(),
-                ""
+                "\tservo.attach(3);\n\n"
+                "\t// Ultrasonic triggerPin: 1\n\n"
             );
         }
 
+        #if (false)
         TEST_F(ArduinoGenTest, loop_no_appendages)
         {
             FAIL() << "Not Implemented";
@@ -443,5 +441,6 @@ namespace rip
                 ""
             );
         }
+        #endif
     }
 }

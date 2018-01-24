@@ -21,11 +21,13 @@ namespace rip
 
         std::string Setup::toString(std::vector< std::shared_ptr<Appendage> > appendages) const
         {
-            std::string appendage_setup = getCode();
+            std::string rv = "";
             std::regex replace_regex("\\$(\\w+)\\$");
 
             for(std::shared_ptr<Appendage> appendage : appendages)
             {
+                std::string appendage_setup = getCode();
+
                 std::sregex_iterator reg_begin = std::sregex_iterator(appendage_setup.begin(),
                                                  appendage_setup.end(), replace_regex);
                 std::sregex_iterator reg_end = std::sregex_iterator();
@@ -56,9 +58,16 @@ namespace rip
                         str_iter = appendage_setup.find(replacee);
                     }
                 }
+
+                rv += appendage_setup + "\n";
             }
 
-            return appendage_setup;
+            if (rv.size() > 0)
+            {
+                rv.pop_back();
+            }
+
+            return rv;
         }
     } // arduinogen
 }
