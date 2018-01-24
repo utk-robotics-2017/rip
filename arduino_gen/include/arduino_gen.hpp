@@ -140,6 +140,36 @@ namespace rip
             FRIEND_TEST(ArduinoGenTest, constructors_one_appendage);
             FRIEND_TEST(ArduinoGenTest, constructors_two_appendages_same);
             FRIEND_TEST(ArduinoGenTest, constructors_two_appendages_different);
+
+            FRIEND_TEST(ArduinoGenTest, setup_no_appendages);
+            FRIEND_TEST(ArduinoGenTest, setup_one_empty_appendage);
+            FRIEND_TEST(ArduinoGenTest, setup_one_appendage);
+            FRIEND_TEST(ArduinoGenTest, setup_two_appendages_same);
+            FRIEND_TEST(ArduinoGenTest, setup_two_appendages_different);
+
+            FRIEND_TEST(ArduinoGenTest, loop_no_appendages);
+            FRIEND_TEST(ArduinoGenTest, loop_one_empty_appendage);
+            FRIEND_TEST(ArduinoGenTest, loop_one_appendage);
+            FRIEND_TEST(ArduinoGenTest, loop_two_appendages_same);
+            FRIEND_TEST(ArduinoGenTest, loop_two_appendages_different);
+
+            FRIEND_TEST(ArduinoGenTest, command_enums_no_appendages);
+            FRIEND_TEST(ArduinoGenTest, command_enums_one_empty_appendage);
+            FRIEND_TEST(ArduinoGenTest, command_enums_one_appendage);
+            FRIEND_TEST(ArduinoGenTest, command_enums_two_appendages_same);
+            FRIEND_TEST(ArduinoGenTest, command_enums_two_appendages_different);
+
+            FRIEND_TEST(ArduinoGenTest, command_attaches_no_appendages);
+            FRIEND_TEST(ArduinoGenTest, command_attaches_one_empty_appendage);
+            FRIEND_TEST(ArduinoGenTest, command_attaches_one_appendage);
+            FRIEND_TEST(ArduinoGenTest, command_attaches_two_appendages_same);
+            FRIEND_TEST(ArduinoGenTest, command_attaches_two_appendages_different);
+
+            FRIEND_TEST(ArduinoGenTest, command_callbacks_no_appendages);
+            FRIEND_TEST(ArduinoGenTest, command_callbacks_one_empty_appendage);
+            FRIEND_TEST(ArduinoGenTest, command_callbacks_one_appendage);
+            FRIEND_TEST(ArduinoGenTest, command_callbacks_two_appendages_same);
+            FRIEND_TEST(ArduinoGenTest, command_callbacks_two_appendages_different);
 #endif
         };
     }

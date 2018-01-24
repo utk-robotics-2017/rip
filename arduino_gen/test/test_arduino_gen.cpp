@@ -143,5 +143,305 @@ namespace rip
                 "};\n\n"
             );
         }
+
+        TEST_F(ArduinoGenTest, setup_no_appendages)
+        {
+            FAIL() << "Not Implemented";
+            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "/", "test/data/arduino_gen", true));
+
+            RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/no_appendages.json", false));
+
+            ASSERT_EQ(ag->getSetup(),
+                ""
+            );
+        }
+
+        TEST_F(ArduinoGenTest, setup_one_empty_appendage)
+        {
+            FAIL() << "Not Implemented";
+            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "/", "test/data/arduino_gen", true));
+
+            RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/one_empty_appendage.json", false));
+
+            ASSERT_EQ(ag->getSetup(),
+                ""
+            );
+        }
+
+        TEST_F(ArduinoGenTest, setup_one_appendage)
+        {
+            FAIL() << "Not Implemented";
+            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "/", "test/data/arduino_gen", true));
+
+            RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/one_appendage.json", false));
+
+            ASSERT_EQ(ag->getSetup(),
+                ""
+            );
+        }
+
+        TEST_F(ArduinoGenTest, setup_two_appendages_same)
+        {
+            FAIL() << "Not Implemented";
+            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "/", "test/data/arduino_gen", true));
+
+            RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/two_appendages_same.json", false));
+
+            ASSERT_EQ(ag->getSetup(),
+                ""
+            );
+        }
+
+        TEST_F(ArduinoGenTest, setup_two_appendages_different)
+        {
+            FAIL() << "Not Implemented";
+            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "/", "test/data/arduino_gen", true));
+
+            RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/two_appendages_different.json", false));
+
+            ASSERT_EQ(ag->getSetup(),
+                ""
+            );
+        }
+
+        TEST_F(ArduinoGenTest, loop_no_appendages)
+        {
+            FAIL() << "Not Implemented";
+            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "/", "test/data/arduino_gen", true));
+
+            RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/no_appendages.json", false));
+
+            ASSERT_EQ(ag->getLoop(),
+                ""
+            );
+        }
+
+        TEST_F(ArduinoGenTest, loop_one_empty_appendage)
+        {
+            FAIL() << "Not Implemented";
+            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "/", "test/data/arduino_gen", true));
+
+            RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/one_empty_appendage.json", false));
+
+            ASSERT_EQ(ag->getLoop(),
+                ""
+            );
+        }
+
+        TEST_F(ArduinoGenTest, loop_one_appendage)
+        {
+            FAIL() << "Not Implemented";
+            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "/", "test/data/arduino_gen", true));
+
+            RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/one_appendage.json", false));
+
+            ASSERT_EQ(ag->getLoop(),
+                ""
+            );
+        }
+
+        TEST_F(ArduinoGenTest, loop_two_appendages_same)
+        {
+            FAIL() << "Not Implemented";
+            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "/", "test/data/arduino_gen", true));
+
+            RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/two_appendages_same.json", false));
+
+            ASSERT_EQ(ag->getLoop(),
+                ""
+            );
+        }
+
+        TEST_F(ArduinoGenTest, loop_two_appendages_different)
+        {
+            FAIL() << "Not Implemented";
+            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "/", "test/data/arduino_gen", true));
+
+            RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/two_appendages_different.json", false));
+
+            ASSERT_EQ(ag->getLoop(),
+                ""
+            );
+        }
+
+        TEST_F(ArduinoGenTest, command_enums_no_appendages)
+        {
+            FAIL() << "Not Implemented";
+            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "/", "test/data/arduino_gen", true));
+
+            RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/no_appendages.json", false));
+
+            ASSERT_EQ(ag->getCommandEnums(),
+                ""
+            );
+        }
+
+        TEST_F(ArduinoGenTest, command_enums_one_empty_appendage)
+        {
+            FAIL() << "Not Implemented";
+            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "/", "test/data/arduino_gen", true));
+
+            RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/one_empty_appendage.json", false));
+
+            ASSERT_EQ(ag->getCommandEnums(),
+                ""
+            );
+        }
+
+        TEST_F(ArduinoGenTest, command_enums_one_appendage)
+        {
+            FAIL() << "Not Implemented";
+            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "/", "test/data/arduino_gen", true));
+
+            RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/one_appendage.json", false));
+
+            ASSERT_EQ(ag->getCommandEnums(),
+                ""
+            );
+        }
+
+        TEST_F(ArduinoGenTest, command_enums_two_appendages_same)
+        {
+            FAIL() << "Not Implemented";
+            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "/", "test/data/arduino_gen", true));
+
+            RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/two_appendages_same.json", false));
+
+            ASSERT_EQ(ag->getCommandEnums(),
+                ""
+            );
+        }
+
+        TEST_F(ArduinoGenTest, command_enums_two_appendages_different)
+        {
+            FAIL() << "Not Implemented";
+            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "/", "test/data/arduino_gen", true));
+
+            RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/two_appendages_different.json", false));
+
+            ASSERT_EQ(ag->getCommandEnums(),
+                ""
+            );
+        }
+
+        TEST_F(ArduinoGenTest, command_attaches_no_appendages)
+        {
+            FAIL() << "Not Implemented";
+            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "/", "test/data/arduino_gen", true));
+
+            RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/no_appendages.json", false));
+
+            ASSERT_EQ(ag->getCommandAttaches(),
+                ""
+            );
+        }
+
+        TEST_F(ArduinoGenTest, command_attaches_one_empty_appendage)
+        {
+            FAIL() << "Not Implemented";
+            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "/", "test/data/arduino_gen", true));
+
+            RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/one_empty_appendage.json", false));
+
+            ASSERT_EQ(ag->getCommandAttaches(),
+                ""
+            );
+        }
+
+        TEST_F(ArduinoGenTest, command_attaches_one_appendage)
+        {
+            FAIL() << "Not Implemented";
+            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "/", "test/data/arduino_gen", true));
+
+            RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/one_appendage.json", false));
+
+            ASSERT_EQ(ag->getCommandAttaches(),
+                ""
+            );
+        }
+
+        TEST_F(ArduinoGenTest, command_attaches_two_appendages_same)
+        {
+            FAIL() << "Not Implemented";
+            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "/", "test/data/arduino_gen", true));
+
+            RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/two_appendages_same.json", false));
+
+            ASSERT_EQ(ag->getCommandAttaches(),
+                ""
+            );
+        }
+
+        TEST_F(ArduinoGenTest, command_attaches_two_appendages_different)
+        {
+            FAIL() << "Not Implemented";
+            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "/", "test/data/arduino_gen", true));
+
+            RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/two_appendages_different.json", false));
+
+            ASSERT_EQ(ag->getCommandAttaches(),
+                ""
+            );
+        }
+
+        TEST_F(ArduinoGenTest, command_callbacks_no_appendages)
+        {
+            FAIL() << "Not Implemented";
+            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "/", "test/data/arduino_gen", true));
+
+            RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/no_appendages.json", false));
+
+            ASSERT_EQ(ag->getCommandCallbacks(),
+                ""
+            );
+        }
+
+        TEST_F(ArduinoGenTest, command_callbacks_one_empty_appendage)
+        {
+            FAIL() << "Not Implemented";
+            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "/", "test/data/arduino_gen", true));
+
+            RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/one_empty_appendage.json", false));
+
+            ASSERT_EQ(ag->getCommandCallbacks(),
+                ""
+            );
+        }
+
+        TEST_F(ArduinoGenTest, command_callbacks_one_appendage)
+        {
+            FAIL() << "Not Implemented";
+            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "/", "test/data/arduino_gen", true));
+
+            RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/one_appendage.json", false));
+
+            ASSERT_EQ(ag->getCommandCallbacks(),
+                ""
+            );
+        }
+
+        TEST_F(ArduinoGenTest, command_callbacks_two_appendages_same)
+        {
+            FAIL() << "Not Implemented";
+            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "/", "test/data/arduino_gen", true));
+
+            RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/two_appendages_same.json", false));
+
+            ASSERT_EQ(ag->getCommandCallbacks(),
+                ""
+            );
+        }
+
+        TEST_F(ArduinoGenTest, command_callbacks_two_appendages_different)
+        {
+            FAIL() << "Not Implemented";
+            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "/", "test/data/arduino_gen", true));
+
+            RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/two_appendages_different.json", false));
+
+            ASSERT_EQ(ag->getCommandCallbacks(),
+                ""
+            );
+        }
     }
 }
