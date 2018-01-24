@@ -26,7 +26,8 @@ namespace rip
              * @param test Whether to test the type or not (default: true)
              */
             Appendage(nlohmann::json data,
-                      std::multimap< std::string, std::shared_ptr<Appendage> >& appendages, bool test = true);
+                      std::multimap<std::string, std::shared_ptr<Appendage>>& appendages, 
+                      std::string appendage_data_folder = "appendages", bool test = true);
 
             /**
              * @brief Returns the label for this appendage
@@ -88,6 +89,8 @@ namespace rip
             nlohmann::json m_data;
 
             static std::map< std::string, std::map< std::string, std::string > > m_type_cache;
+
+            std::string m_appendage_data_folder;
         };
     }
 }

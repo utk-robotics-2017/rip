@@ -1,3 +1,5 @@
+#include "appendage.hpp"
+#include "command.hpp"
 #include "appendage_template.hpp"
 #include "exceptions.hpp"
 #include "xml_utils.hpp"
@@ -10,6 +12,7 @@
 #include <vector>
 #include <memory>
 
+using Appendage = rip::arduinogen::Appendage;
 using AppendageTemplate = rip::arduinogen::AppendageTemplate;
 using AttributeException = rip::arduinogen::AttributeException;
 using ElementException = rip::arduinogen::ElementException;
@@ -29,8 +32,10 @@ namespace rip
                 tinyxml2::XMLElement* appendageTemplateElement = doc.FirstChildElement("appendage-template");
                 ASSERT_NE(appendageTemplateElement, nullptr);
 
+                std::vector<std::shared_ptr<Appendage>> appendages;
+
                 std::unique_ptr<AppendageTemplate> appendageTemplate;
-                RIP_ASSERT_NO_THROW(appendageTemplate = std::unique_ptr<AppendageTemplate>(new AppendageTemplate(appendageTemplateElement)));
+                RIP_ASSERT_NO_THROW(appendageTemplate = std::unique_ptr<AppendageTemplate>(new AppendageTemplate(appendageTemplateElement, "no_attributes_no_elements", appendages)));
 
                 EXPECT_EQ(appendageTemplate->GetIncludes(), nullptr);
                 EXPECT_EQ(appendageTemplate->GetConstructors(), nullptr);
@@ -47,8 +52,10 @@ namespace rip
                 tinyxml2::XMLElement* appendageTemplateElement = doc.FirstChildElement("appendage-template");
                 ASSERT_NE(appendageTemplateElement, nullptr);
 
+                std::vector<std::shared_ptr<Appendage>> appendages;
+
                 std::unique_ptr<AppendageTemplate> appendageTemplate;
-                RIP_ASSERT_NO_THROW(appendageTemplate = std::unique_ptr<AppendageTemplate>(new AppendageTemplate(appendageTemplateElement)));
+                RIP_ASSERT_NO_THROW(appendageTemplate = std::unique_ptr<AppendageTemplate>(new AppendageTemplate(appendageTemplateElement, "includes", appendages)));
 
                 EXPECT_NE(appendageTemplate->GetIncludes(), nullptr);
                 EXPECT_EQ(appendageTemplate->GetConstructors(), nullptr);
@@ -65,8 +72,10 @@ namespace rip
                 tinyxml2::XMLElement* appendageTemplateElement = doc.FirstChildElement("appendage-template");
                 ASSERT_NE(appendageTemplateElement, nullptr);
 
+                std::vector<std::shared_ptr<Appendage>> appendages;
+
                 std::unique_ptr<AppendageTemplate> appendageTemplate;
-                RIP_ASSERT_NO_THROW(appendageTemplate = std::unique_ptr<AppendageTemplate>(new AppendageTemplate(appendageTemplateElement)));
+                RIP_ASSERT_NO_THROW(appendageTemplate = std::unique_ptr<AppendageTemplate>(new AppendageTemplate(appendageTemplateElement, "constructors", appendages)));
 
                 EXPECT_EQ(appendageTemplate->GetIncludes(), nullptr);
                 EXPECT_NE(appendageTemplate->GetConstructors(), nullptr);
@@ -83,8 +92,10 @@ namespace rip
                 tinyxml2::XMLElement* appendageTemplateElement = doc.FirstChildElement("appendage-template");
                 ASSERT_NE(appendageTemplateElement, nullptr);
 
+                std::vector<std::shared_ptr<Appendage>> appendages;
+
                 std::unique_ptr<AppendageTemplate> appendageTemplate;
-                RIP_ASSERT_NO_THROW(appendageTemplate = std::unique_ptr<AppendageTemplate>(new AppendageTemplate(appendageTemplateElement)));
+                RIP_ASSERT_NO_THROW(appendageTemplate = std::unique_ptr<AppendageTemplate>(new AppendageTemplate(appendageTemplateElement, "setup", appendages)));
 
                 EXPECT_EQ(appendageTemplate->GetIncludes(), nullptr);
                 EXPECT_EQ(appendageTemplate->GetConstructors(), nullptr);
@@ -101,8 +112,10 @@ namespace rip
                 tinyxml2::XMLElement* appendageTemplateElement = doc.FirstChildElement("appendage-template");
                 ASSERT_NE(appendageTemplateElement, nullptr);
 
+                std::vector<std::shared_ptr<Appendage>> appendages;
+
                 std::unique_ptr<AppendageTemplate> appendageTemplate;
-                RIP_ASSERT_NO_THROW(appendageTemplate = std::unique_ptr<AppendageTemplate>(new AppendageTemplate(appendageTemplateElement)));
+                RIP_ASSERT_NO_THROW(appendageTemplate = std::unique_ptr<AppendageTemplate>(new AppendageTemplate(appendageTemplateElement, "loop", appendages)));
 
                 EXPECT_EQ(appendageTemplate->GetIncludes(), nullptr);
                 EXPECT_EQ(appendageTemplate->GetConstructors(), nullptr);
@@ -119,8 +132,10 @@ namespace rip
                 tinyxml2::XMLElement* appendageTemplateElement = doc.FirstChildElement("appendage-template");
                 ASSERT_NE(appendageTemplateElement, nullptr);
 
+                std::vector<std::shared_ptr<Appendage>> appendages;
+
                 std::unique_ptr<AppendageTemplate> appendageTemplate;
-                RIP_ASSERT_NO_THROW(appendageTemplate = std::unique_ptr<AppendageTemplate>(new AppendageTemplate(appendageTemplateElement)));
+                RIP_ASSERT_NO_THROW(appendageTemplate = std::unique_ptr<AppendageTemplate>(new AppendageTemplate(appendageTemplateElement, "commands", appendages)));
 
                 EXPECT_EQ(appendageTemplate->GetIncludes(), nullptr);
                 EXPECT_EQ(appendageTemplate->GetConstructors(), nullptr);
@@ -137,14 +152,86 @@ namespace rip
                 tinyxml2::XMLElement* appendageTemplateElement = doc.FirstChildElement("appendage-template");
                 ASSERT_NE(appendageTemplateElement, nullptr);
 
+                std::vector<std::shared_ptr<Appendage>> appendages;
+
                 std::unique_ptr<AppendageTemplate> appendageTemplate;
-                RIP_ASSERT_NO_THROW(appendageTemplate = std::unique_ptr<AppendageTemplate>(new AppendageTemplate(appendageTemplateElement)));
+                RIP_ASSERT_NO_THROW(appendageTemplate = std::unique_ptr<AppendageTemplate>(new AppendageTemplate(appendageTemplateElement, "everything", appendages)));
 
                 EXPECT_NE(appendageTemplate->GetIncludes(), nullptr);
                 EXPECT_NE(appendageTemplate->GetConstructors(), nullptr);
                 EXPECT_NE(appendageTemplate->GetSetup(), nullptr);
                 EXPECT_NE(appendageTemplate->GetLoop(), nullptr);
                 EXPECT_EQ(appendageTemplate->GetCommands().size(), 3);
+            }
+
+            TEST(AppendageTemplate_constructor, two_includes)
+            {
+                tinyxml2::XMLDocument doc;
+                ASSERT_EQ(loadXmlFile(doc, "test/data/appendage_template/two_includes.xml", { "code", "setup", "loop" }), tinyxml2::XML_SUCCESS);
+
+                tinyxml2::XMLElement* appendageTemplateElement = doc.FirstChildElement("appendage-template");
+                ASSERT_NE(appendageTemplateElement, nullptr);
+
+                std::vector<std::shared_ptr<Appendage>> appendages;
+
+                std::unique_ptr<AppendageTemplate> appendageTemplate;
+                ASSERT_THROW(appendageTemplate = std::unique_ptr<AppendageTemplate>(new AppendageTemplate(appendageTemplateElement, "two_includes", appendages)), ElementException);
+            }
+
+            TEST(AppendageTemplate_constructor, two_constructors)
+            {
+                tinyxml2::XMLDocument doc;
+                ASSERT_EQ(loadXmlFile(doc, "test/data/appendage_template/two_constructors.xml", { "code", "setup", "loop" }), tinyxml2::XML_SUCCESS);
+
+                tinyxml2::XMLElement* appendageTemplateElement = doc.FirstChildElement("appendage-template");
+                ASSERT_NE(appendageTemplateElement, nullptr);
+
+                std::vector<std::shared_ptr<Appendage>> appendages;
+
+                std::unique_ptr<AppendageTemplate> appendageTemplate;
+                ASSERT_THROW(appendageTemplate = std::unique_ptr<AppendageTemplate>(new AppendageTemplate(appendageTemplateElement, "two_constructors", appendages)), ElementException);
+            }
+
+            TEST(AppendageTemplate_constructor, two_setup)
+            {
+                tinyxml2::XMLDocument doc;
+                ASSERT_EQ(loadXmlFile(doc, "test/data/appendage_template/two_setup.xml", { "code", "setup", "loop" }), tinyxml2::XML_SUCCESS);
+
+                tinyxml2::XMLElement* appendageTemplateElement = doc.FirstChildElement("appendage-template");
+                ASSERT_NE(appendageTemplateElement, nullptr);
+
+                std::vector<std::shared_ptr<Appendage>> appendages;
+
+                std::unique_ptr<AppendageTemplate> appendageTemplate;
+                ASSERT_THROW(appendageTemplate = std::unique_ptr<AppendageTemplate>(new AppendageTemplate(appendageTemplateElement, "two_setup", appendages)), ElementException);
+            }
+
+            TEST(AppendageTemplate_constructor, two_loop)
+            {
+                tinyxml2::XMLDocument doc;
+                ASSERT_EQ(loadXmlFile(doc, "test/data/appendage_template/two_loop.xml", { "code", "setup", "loop" }), tinyxml2::XML_SUCCESS);
+
+                tinyxml2::XMLElement* appendageTemplateElement = doc.FirstChildElement("appendage-template");
+                ASSERT_NE(appendageTemplateElement, nullptr);
+
+                std::vector<std::shared_ptr<Appendage>> appendages;
+
+                std::unique_ptr<AppendageTemplate> appendageTemplate;
+                ASSERT_THROW(appendageTemplate = std::unique_ptr<AppendageTemplate>(new AppendageTemplate(appendageTemplateElement, "two_loop", appendages)), ElementException);
+            }
+
+            TEST(AppendageTemplate_constructor, two_commands)
+            {
+                tinyxml2::XMLDocument doc;
+                ASSERT_EQ(loadXmlFile(doc, "test/data/appendage_template/two_commands.xml", { "code", "setup", "loop" }), tinyxml2::XML_SUCCESS);
+
+                tinyxml2::XMLElement* appendageTemplateElement = doc.FirstChildElement("appendage-template");
+                ASSERT_NE(appendageTemplateElement, nullptr);
+
+                std::vector<std::shared_ptr<Appendage>> appendages;
+
+                std::unique_ptr<AppendageTemplate> appendageTemplate;
+                ASSERT_THROW(appendageTemplate = std::unique_ptr<AppendageTemplate>(new AppendageTemplate(appendageTemplateElement, "two_commands", appendages)), ElementException);
             }
         }
     }

@@ -50,9 +50,12 @@ namespace rip
 
             const std::string& getType() const;
 
+            const std::string& getValue() const;
+
         private:
             std::string m_name;
             std::string m_type;
+            std::string m_value;
         };
     } // arduinogen
 }

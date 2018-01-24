@@ -1,0 +1,24 @@
+<appendage-template>
+    <includes>
+        <include standard="true">NewPing.h</include>
+    </includes>
+    <constructors type="NewPing" variable="sonar">
+        <argument type="int" name="triggerPin" />
+        <argument type="int" name="echoPin" />
+        <argument type="int" name="maxDistance" value="200" />
+    </constructors>
+    <setup>
+        // Ultrasonic triggerPin: $triggerPin$
+    </setup>
+    <loop>
+        // Ultrasonic echoPin: $echoPin$
+    </loop>
+    <commands>
+        <command id="kReadUltrasonic" name="readUltraSonic" index-num="true">
+            <return-value name="rv" type="unsigned long"/>
+            <code>
+                rv = sonar[index_num].ping_cm();
+            </code>
+        </command>
+    </commands>
+</appendage-template>
