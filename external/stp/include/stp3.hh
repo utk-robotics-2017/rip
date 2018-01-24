@@ -1,6 +1,6 @@
 
 #pragma once
-#include "stp.hh"
+#include "stp_base.hh"
 #include <iostream>
 
 namespace stp
