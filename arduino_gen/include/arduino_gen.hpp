@@ -128,11 +128,18 @@ namespace rip
 #ifdef TESTING
         private:
             friend class ArduinoGenTest;
+
             FRIEND_TEST(ArduinoGenTest, includes_no_appendages);
             FRIEND_TEST(ArduinoGenTest, includes_one_empty_appendage);
             FRIEND_TEST(ArduinoGenTest, includes_one_appendage);
             FRIEND_TEST(ArduinoGenTest, includes_two_appendages_same);
             FRIEND_TEST(ArduinoGenTest, includes_two_appendages_different);
+
+            FRIEND_TEST(ArduinoGenTest, constructors_no_appendages);
+            FRIEND_TEST(ArduinoGenTest, constructors_one_empty_appendage);
+            FRIEND_TEST(ArduinoGenTest, constructors_one_appendage);
+            FRIEND_TEST(ArduinoGenTest, constructors_two_appendages_same);
+            FRIEND_TEST(ArduinoGenTest, constructors_two_appendages_different);
 #endif
         };
     }

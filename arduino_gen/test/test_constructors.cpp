@@ -73,7 +73,10 @@ namespace rip
 
                 std::vector<std::shared_ptr<Appendage>> appendages;
 
-                ASSERT_EQ(constructors->toString(appendages), "Type type = {\n};\n");
+                ASSERT_EQ(constructors->toString(appendages),
+                    "Type type [0] = {\n"
+                    "};\n"
+                );
             }
 
             TEST(Constructors, IntArgumentConstructor)
@@ -91,11 +94,15 @@ namespace rip
                 j["something"] = 1;
 
                 std::multimap<std::string, std::shared_ptr<Appendage>> appendage_map;
-                appendage_map.emplace(std::make_pair("A Type", std::make_shared<Appendage>(j, appendage_map, false)));
+                appendage_map.emplace(std::make_pair("A Type", std::make_shared<Appendage>(j, appendage_map, "", false)));
 
                 std::vector<std::shared_ptr<Appendage>> appendages = mmap_to_vector(appendage_map, "A Type");
 
-                ASSERT_EQ(constructors->toString(appendages), "Type type = {\n\tType(1)\n};\n");
+                ASSERT_EQ(constructors->toString(appendages),
+                    "Type type [1] = {\n"
+                    "\tType(1)\n"
+                    "};\n"
+                );
             }
 
             TEST(Constructors, FloatArgumentConstructor)
@@ -113,11 +120,15 @@ namespace rip
                 j["something"] = 3.0f;
 
                 std::multimap< std::string, std::shared_ptr<Appendage> > appendage_map;
-                appendage_map.emplace(std::make_pair("A Type", std::make_shared<Appendage>(j, appendage_map, false)));
+                appendage_map.emplace(std::make_pair("A Type", std::make_shared<Appendage>(j, appendage_map, "", false)));
 
                 std::vector<std::shared_ptr<Appendage>> appendages = mmap_to_vector(appendage_map, "A Type");
 
-                ASSERT_EQ(constructors->toString(appendages), "Type type = {\n\tType(3.000000)\n};\n");
+                ASSERT_EQ(constructors->toString(appendages),
+                    "Type type [1] = {\n"
+                    "\tType(3.000000)\n"
+                    "};\n"
+                );
             }
 
             TEST(Constructors, BoolArgumentConstructor)
@@ -135,11 +146,15 @@ namespace rip
                 j["something"] = true;
 
                 std::multimap< std::string, std::shared_ptr<Appendage> > appendage_map;
-                appendage_map.emplace(std::make_pair("A Type", std::make_shared<Appendage>(j, appendage_map, false)));
+                appendage_map.emplace(std::make_pair("A Type", std::make_shared<Appendage>(j, appendage_map, "", false)));
 
                 std::vector<std::shared_ptr<Appendage>> appendages = mmap_to_vector(appendage_map, "A Type");
 
-                ASSERT_EQ(constructors->toString(appendages), "Type type = {\n\tType(true)\n};\n");
+                ASSERT_EQ(constructors->toString(appendages),
+                    "Type type [1] = {\n"
+                    "\tType(true)\n"
+                    "};\n"
+                );
             }
 
             TEST(Constructors, StringArgumentConstructor)
@@ -157,13 +172,17 @@ namespace rip
                 j["something"] = "asdf";
 
                 std::multimap< std::string, std::shared_ptr<Appendage> > appendage_map;
-                appendage_map.emplace(std::make_pair("A Type", std::make_shared<Appendage>(j, appendage_map, false)));
+                appendage_map.emplace(std::make_pair("A Type", std::make_shared<Appendage>(j, appendage_map, "", false)));
 
                 std::vector<std::shared_ptr<Appendage>> appendages = mmap_to_vector(appendage_map, "A Type");
 
                 ASSERT_EQ(appendages.size(), 1);
 
-                ASSERT_EQ(constructors->toString(appendages), "Type type = {\n\tType(\"asdf\")\n};\n");
+                ASSERT_EQ(constructors->toString(appendages),
+                    "Type type [1] = {\n"
+                    "\tType(\"asdf\")\n"
+                    "};\n"
+                );
             }
 
             TEST(Constructors, SingleAppendageMultipleArgumentConstructor)
@@ -184,17 +203,21 @@ namespace rip
                 j["something_bool"] = true;
 
                 std::multimap< std::string, std::shared_ptr<Appendage> > appendage_map;
-                appendage_map.emplace(std::make_pair("A Type", std::make_shared<Appendage>(j, appendage_map, false)));
+                appendage_map.emplace(std::make_pair("A Type", std::make_shared<Appendage>(j, appendage_map, "", false)));
 
-                appendage_map.emplace(std::make_pair("Other Type", std::make_shared<Appendage>(j, appendage_map, false)));
-                appendage_map.emplace(std::make_pair("abc Type", std::make_shared<Appendage>(j, appendage_map, false)));
-                appendage_map.emplace(std::make_pair("one more Type", std::make_shared<Appendage>(j, appendage_map, false)));
+                appendage_map.emplace(std::make_pair("Other Type", std::make_shared<Appendage>(j, appendage_map, "", false)));
+                appendage_map.emplace(std::make_pair("abc Type", std::make_shared<Appendage>(j, appendage_map, "", false)));
+                appendage_map.emplace(std::make_pair("one more Type", std::make_shared<Appendage>(j, appendage_map, "", false)));
 
                 std::vector<std::shared_ptr<Appendage>> appendages = mmap_to_vector(appendage_map, "A Type");
 
                 ASSERT_EQ(appendages.size(), 1);
 
-                ASSERT_EQ(constructors->toString(appendages), "Type type = {\n\tType(1, true, 16.000000, \"four\")\n};\n");
+                ASSERT_EQ(constructors->toString(appendages),
+                    "Type type [1] = {\n"
+                    "\tType(1, true, 16.000000, \"four\")\n"
+                    "};\n"
+                );
             }
 
             TEST(Constructors, MultipleAppendageMultipleArgumentConstructor)
@@ -215,37 +238,44 @@ namespace rip
                 j["something_bool"] = true;
 
                 std::multimap< std::string, std::shared_ptr<Appendage> > appendage_map;
-                appendage_map.emplace(std::make_pair("A Type", std::make_shared<Appendage>(j, appendage_map, false)));
+                appendage_map.emplace(std::make_pair("A Type", std::make_shared<Appendage>(j, appendage_map, "", false)));
 
                 j["something_int"] = 2;
                 j["something_float"] = 1290.0f;
                 j["something_string"] = "three";
                 j["something_bool"] = false;
 
-                appendage_map.emplace(std::make_pair("A Type", std::make_shared<Appendage>(j, appendage_map, false)));
+                appendage_map.emplace(std::make_pair("A Type", std::make_shared<Appendage>(j, appendage_map, "", false)));
 
                 j["something_int"] = 3;
                 j["something_float"] = 2.5f;
                 j["something_string"] = "two";
                 j["something_bool"] = true;
 
-                appendage_map.emplace(std::make_pair("A Type", std::make_shared<Appendage>(j, appendage_map, false)));
+                appendage_map.emplace(std::make_pair("A Type", std::make_shared<Appendage>(j, appendage_map, "", false)));
 
                 j["something_int"] = 4;
                 j["something_float"] = 1.125f;
                 j["something_string"] = "one";
                 j["something_bool"] = false;
-                appendage_map.emplace(std::make_pair("A Type", std::make_shared<Appendage>(j, appendage_map, false)));
+                appendage_map.emplace(std::make_pair("A Type", std::make_shared<Appendage>(j, appendage_map, "", false)));
 
-                appendage_map.emplace(std::make_pair("Other Type", std::make_shared<Appendage>(j, appendage_map, false)));
-                appendage_map.emplace(std::make_pair("abc Type", std::make_shared<Appendage>(j, appendage_map, false)));
-                appendage_map.emplace(std::make_pair("one more Type", std::make_shared<Appendage>(j, appendage_map, false)));
+                appendage_map.emplace(std::make_pair("Other Type", std::make_shared<Appendage>(j, appendage_map, "", false)));
+                appendage_map.emplace(std::make_pair("abc Type", std::make_shared<Appendage>(j, appendage_map, "", false)));
+                appendage_map.emplace(std::make_pair("one more Type", std::make_shared<Appendage>(j, appendage_map, "", false)));
 
                 std::vector<std::shared_ptr<Appendage>> appendages = mmap_to_vector(appendage_map, "A Type");
 
                 ASSERT_EQ(appendages.size(), 4);
 
-                ASSERT_EQ(constructors->toString(appendages), "Type type = {\n\tType(1, true, 16.000000, \"four\"),\n\tType(2, false, 1290.000000, \"three\"),\n\tType(3, true, 2.500000, \"two\"),\n\tType(4, false, 1.125000, \"one\")\n};\n");
+                ASSERT_EQ(constructors->toString(appendages),
+                    "Type type [4] = {\n"
+                    "\tType(1, true, 16.000000, \"four\"),\n"
+                    "\tType(2, false, 1290.000000, \"three\"),\n"
+                    "\tType(3, true, 2.500000, \"two\"),\n"
+                    "\tType(4, false, 1.125000, \"one\")\n"
+                    "};\n"
+                );
             }
         }
     }

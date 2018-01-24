@@ -82,8 +82,10 @@ namespace rip
                 std::string type = appendage_json["type"];
 
                 m_appendages.insert(std::make_pair(type, std::make_shared<Appendage>(appendage_json,
-                                                   m_appendages)));
+                                                   m_appendages, m_appendage_data_folder, true)));
             }
+
+            loadTemplates();
         }
 
         void ArduinoGen::generateOutput()
@@ -113,8 +115,6 @@ namespace rip
 
         std::string ArduinoGen::getArduinoCode()
         {
-            loadTemplates();
-
             return fmt::format(
                 "{includes}\n"
                 "{constructors}\n"
