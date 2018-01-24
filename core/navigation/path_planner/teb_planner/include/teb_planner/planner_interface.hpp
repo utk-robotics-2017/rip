@@ -13,6 +13,10 @@ namespace rip
         class PlannerBase
         {
         public:
+            PlannerBase() = default;
+
+            virtual ~PlannerBase() = default;
+
             /**
              * Plan a trajectory
              *
@@ -27,11 +31,13 @@ namespace rip
 
             /**
              * Checks whether the trajectory is collision free
-             * @return [description]
              */
-            virtual bool isTrajectoryFeasible();
+            virtual bool isTrajectoryFeasible() = 0;
 
-
+            virtual bool isHorizonReductionAppropriate(const std::vector<Pose>& poses)
+            {
+                return false;
+            }
         };
     }
 }

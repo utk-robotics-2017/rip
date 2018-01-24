@@ -18,12 +18,29 @@ namespace rip
             /**
              * Constructor
              */
+            PointObstacle(const units::Distance& x, const units::Distance& y);
+
+            /**
+             * Constructor
+             */
             PointObstacle(const geometry::Point& point);
 
             /**
              * Returns the centroid of the obstacle
              */
             virtual geometry::Point centroid() const override;
+
+            geometry::Point position() const;
+
+            void setPosition(const geometry::Point& p);
+
+            units::Distance x() const;
+
+            void setX(const units::Distance& x);
+
+            units::Distance y() const;
+
+            void setY(const units::Distance& y);
 
             /**
              * Returns if the given point intersects with

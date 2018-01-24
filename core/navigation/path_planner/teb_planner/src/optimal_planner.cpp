@@ -131,6 +131,32 @@ namespace rip
             addEdgesKinematics();
         }
 
+        void TebOptimalPlanner::optimizeGraph(int num_iterations)
+        {
+            if(m_config->robot.max_velocity_x < 0.01 * units::m / units::s)
+            {
+                clear();
+                // todo: throw exception
+            }
+
+            if(!m_teb.isInit() || m_teb.size() < m_config->trajectory.min_samples)
+            {
+                clear();
+                // todo: throw exception
+            }
+
+            m_optimizer->initializeOptimization();
+
+            int iter = m_optimizer->optimize(num_iterations);
+
+            if(!iter)
+            {
+                // todo: throw exception
+            }
+
+            clear();
+        }
+
         void TebOptimalPlanner::clearGraph()
         {
             m_optimizer->clear();

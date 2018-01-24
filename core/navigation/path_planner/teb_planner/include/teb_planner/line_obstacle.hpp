@@ -16,16 +16,42 @@ namespace rip
             /**
              * Constructor
              */
+            LineObstacle(const units::Distance& start_x, const units::Distance& start_y, const units::Distance& end_x, const units::Distance& end_y);
+
+            /**
+             * Constructor
+             */
             LineObstacle(const geometry::Point& start, const geometry::Point& end);
 
+            /**
+             * Returns the starting point for this line segment
+             */
             geometry::Point start() const;
 
+            /**
+             * Sets the start point for this line segment
+             */
+            void setStart(const geometry::Point& start);
+
+            /**
+             * Returns the end point for this line segment
+             */
             geometry::Point end() const;
+
+            /**
+             * Sets the end point for this line segment
+             */
+            void setEnd(const geometry::Point& end);
 
             /**
              * Returns the centroid of the obstacle
              */
             virtual geometry::Point centroid() const override;
+
+            /**
+             * Moves the centroid
+             */
+            void setCentroid(const geometry::Point& centroid);
 
             /**
              * Returns if the given point intersects with

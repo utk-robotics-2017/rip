@@ -7,6 +7,11 @@ namespace rip
     namespace navigation
     {
 
+        PointObstacle::PointObstacle(const units::Distance& x, const units::Distance& y)
+            : m_point(x, y)
+        {
+        }
+
         PointObstacle::PointObstacle(const geometry::Point& point)
             : m_point(point)
         {}
@@ -14,6 +19,36 @@ namespace rip
         geometry::Point PointObstacle::centroid() const
         {
             return m_point;
+        }
+
+        geometry::Point PointObstacle::position() const
+        {
+            return m_point;
+        }
+
+        void PointObstacle::setPosition(const geometry::Point &p)
+        {
+            m_point = p;
+        }
+
+        units::Distance PointObstacle::x() const
+        {
+            return m_point.x();
+        }
+
+        void PointObstacle::setX(const units::Distance& x)
+        {
+            m_point.setX(x);
+        }
+
+        units::Distance PointObstacle::y() const
+        {
+            return m_point.y();
+        }
+
+        void PointObstacle::setY(const units::Distance& y)
+        {
+            m_point.setY(y);
         }
 
         bool PointObstacle::collision(const geometry::Point& point, const units::Distance& minimum_distance) const

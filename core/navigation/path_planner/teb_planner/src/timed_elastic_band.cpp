@@ -78,7 +78,7 @@ namespace rip
             }
             else
             {
-                // throw exception
+                // todo: throw exception
             }
         }
 
@@ -192,7 +192,46 @@ namespace rip
 
         void TimedElasticBand::updateAndPrune(const Pose* new_start, const Pose* new_goal, int min_samples)
         {
-            // todo
+            // first and simple appraoch: change only start confs (amd virtual start confs)
+            if(new_start && size() > 0)
+            {
+                // Find nearest state in order to prune the trajectory
+                // (remove already passed states
+                units::Distance distance_cache = new_start->position().distance(pose(0).position());
+                units::Distance dist;
+                int lookahead = std::min<int>(size() - min_samples, 10);
+
+                int nearest_index = 0;
+                for(int i = 1; i <= lookahead; i++)
+                {
+                    dist = new_start->position().distance(pose(i).position());
+                    if( dist < distance_cache)
+                    {
+                        distance_cache = dist;
+                        nearest_index = i;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+
+                // prune trajectory at the beginning (and extrapolate sequences at the end
+                // if the horizon is fixed)
+                if(nearest_index > 0)
+                {
+                    removePoses(1, nearest_index);
+                    removeTimeDiffs(1, nearest_index);
+                }
+
+                // update start
+                m_poses[0]->setPose(*new_start);
+            }
+
+            if(new_goal && size()> 0)
+            {
+                m_poses.back()->setPose(*new_goal);
+            }
         }
 
         void TimedElasticBand::autoResize(const units::Time& dt_ref, const units::Time& dt_hysteresis, int min_samples, int max_samples, bool fast_mode)

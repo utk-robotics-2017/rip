@@ -30,7 +30,15 @@ namespace rip
 
                 units::Distance x() const;
 
+                void setX(const units::Distance& x);
+
                 units::Distance y() const;
+
+                void setY(const units::Distance& y);
+
+                geometry::Point position() const;
+
+                void setPosition(const geometry::Point& p);
 
             signals:
                 void updatePosition();

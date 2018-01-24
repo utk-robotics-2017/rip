@@ -24,6 +24,12 @@ namespace rip
             return geometry::Point(m_x, m_y);
         }
 
+        void Pose::setPosition(const geometry::Point& p)
+        {
+            m_x = p.x();
+            m_y = p.y();
+        }
+
         units::Distance Pose::x() const
         {
             return m_x;

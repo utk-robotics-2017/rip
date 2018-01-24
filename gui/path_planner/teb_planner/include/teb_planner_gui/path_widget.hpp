@@ -54,6 +54,15 @@ namespace rip
                  */
                 void setObstacles(const std::vector< std::shared_ptr<navigation::Obstacle> >& obstacles);
 
+            private slots:
+                void updateSelectedPosition();
+
+                void addPointObstacle();
+
+                void addLineObstacle();
+
+                void addPolygonObstacle();
+
             protected:
                 /**
                  * Paints the widget
@@ -69,7 +78,31 @@ namespace rip
                  * Handle mouse click events
                  */
                 virtual void mousePressEvent(QMouseEvent* event) override;
+
+                /**
+                 * Handle mouse drag events
+                 */
+                virtual void mouseMoveEvent(QMouseEvent* event) override;
+
+                /**
+                 * Handle mosue release events
+                 */
+                virtual void mouseReleaseEvent(QMouseEvent* event) override;
             private:
+                QMatrix getTransform(double* scale = nullptr) const;
+
+                /**
+                 * Draw the bounding box
+                 */
+                void drawBoundingBox(QPainter& painter, double scale);
+
+                /**
+                 * Draw the start and goal poses
+                 */
+                void drawStartAndGoal(QPainter& painter, double scale);
+
+                void drawPose(const navigation::Pose& pose, Qt::GlobalColor color, QPainter& painter, double scale);
+
                 /**
                  * Draw the obstacles
                  */
@@ -102,17 +135,26 @@ namespace rip
 
                 enum class SelectedType
                 {
-                    kStart,
-                    kGoal,
+                    kNone,
+                    kStartPoint,
+                    kStartDirection,
+                    kGoalPoint,
+                    kGoalDirection,
                     kWaypoint,
                     kPoint,
                     kLineStart,
                     kLineEnd,
-                    kPolygon
+                    kLine,
+                    kPolygonPoint, // todo
+                    kPolygon // todo
                 };
+
+                bool checkPointClick(const geometry::Point& point, const QMatrix& transform, const QPoint& mouse_pos,SelectedType select, int index = -1, int polygon_index = -1, unsigned int pixel_theshold = 15);
+
 
                 SelectedType m_selected_type;
                 int m_selected_index;
+                int m_selected_polygon_index;
 
                 bool m_animate;
                 int m_timestep;

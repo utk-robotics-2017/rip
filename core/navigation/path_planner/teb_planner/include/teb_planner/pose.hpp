@@ -24,6 +24,8 @@ namespace rip
 
             geometry::Point position() const;
 
+            void setPosition(const geometry::Point& p);
+
             units::Distance x() const;
 
             void setX(const units::Distance& x);

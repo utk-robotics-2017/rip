@@ -45,6 +45,12 @@ namespace rip
 
             Distance maxY() const;
 
+            Distance clipX(const Distance& x) const;
+
+            Distance clipY(const Distance& y) const;
+
+            Point clip(const Point& p) const;
+
         private:
             Point m_top_left;
             Point m_bottom_right;

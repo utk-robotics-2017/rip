@@ -6,6 +6,13 @@ namespace rip
 {
     namespace navigation
     {
+        LineObstacle::LineObstacle(const units::Distance& start_x, const units::Distance& start_y, const units::Distance& end_x, const units::Distance& end_y)
+            : m_start(start_x, start_y)
+            , m_end(end_x, end_y)
+        {
+
+        }
+
         LineObstacle::LineObstacle(const geometry::Point& start, const geometry::Point& end)
             : m_start(start)
             , m_end(end)
@@ -16,14 +23,32 @@ namespace rip
             return m_start;
         }
 
+        void LineObstacle::setStart(const geometry::Point& start)
+        {
+            m_start = start;
+        }
+
         geometry::Point LineObstacle::end() const
         {
             return m_end;
         }
 
+        void LineObstacle::setEnd(const geometry::Point& end)
+        {
+            m_end = end;
+        }
+
         geometry::Point LineObstacle::centroid() const
         {
             return m_start + (m_end - m_start) / 2.0;
+        }
+
+        void LineObstacle::setCentroid(const geometry::Point& new_centroid)
+        {
+            geometry::Point offset = new_centroid - centroid();
+
+            m_start += offset;
+            m_end += offset;
         }
 
         bool LineObstacle::collision(const geometry::Point& point, const units::Distance& minimum_distance) const

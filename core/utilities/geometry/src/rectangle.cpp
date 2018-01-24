@@ -87,5 +87,20 @@ namespace rip
         {
             return m_top_left.y();
         }
+
+        Distance Rectangle::clipX(const Distance& x) const
+        {
+            return units::max(m_top_left.x(), units::min(m_bottom_right.x(), x));
+        }
+
+        Distance Rectangle::clipY(const Distance& y) const
+        {
+            return units::max(m_bottom_right.y(), units::min(m_top_left.y(), y));
+        }
+
+        Point Rectangle::clip(const Point& p) const
+        {
+            return Point(clipX(p.x()), clipY(p.y()));
+        }
     }
 }

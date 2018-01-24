@@ -32,11 +32,18 @@ namespace rip
 
             /**
              * Returns the pose for this vertex
-             * @return [description]
              */
             Pose pose() const
             {
                 return _estimate;
+            }
+
+            /**
+             * Sets the pose for this vertex
+             */
+            void setPose(const Pose& pose)
+            {
+                _estimate = pose;
             }
 
             /**
