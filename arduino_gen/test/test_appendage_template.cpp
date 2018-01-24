@@ -35,7 +35,7 @@ namespace rip
                 std::vector<std::shared_ptr<Appendage>> appendages;
 
                 std::unique_ptr<AppendageTemplate> appendageTemplate;
-                RIP_ASSERT_NO_THROW(appendageTemplate = std::unique_ptr<AppendageTemplate>(new AppendageTemplate(appendageTemplateElement, appendages)));
+                RIP_ASSERT_NO_THROW(appendageTemplate = std::unique_ptr<AppendageTemplate>(new AppendageTemplate(appendageTemplateElement, "no_attributes_no_elements", appendages)));
 
                 EXPECT_EQ(appendageTemplate->GetIncludes(), nullptr);
                 EXPECT_EQ(appendageTemplate->GetConstructors(), nullptr);
@@ -55,7 +55,7 @@ namespace rip
                 std::vector<std::shared_ptr<Appendage>> appendages;
 
                 std::unique_ptr<AppendageTemplate> appendageTemplate;
-                RIP_ASSERT_NO_THROW(appendageTemplate = std::unique_ptr<AppendageTemplate>(new AppendageTemplate(appendageTemplateElement, appendages)));
+                RIP_ASSERT_NO_THROW(appendageTemplate = std::unique_ptr<AppendageTemplate>(new AppendageTemplate(appendageTemplateElement, "includes", appendages)));
 
                 EXPECT_NE(appendageTemplate->GetIncludes(), nullptr);
                 EXPECT_EQ(appendageTemplate->GetConstructors(), nullptr);
@@ -75,7 +75,7 @@ namespace rip
                 std::vector<std::shared_ptr<Appendage>> appendages;
 
                 std::unique_ptr<AppendageTemplate> appendageTemplate;
-                RIP_ASSERT_NO_THROW(appendageTemplate = std::unique_ptr<AppendageTemplate>(new AppendageTemplate(appendageTemplateElement, appendages)));
+                RIP_ASSERT_NO_THROW(appendageTemplate = std::unique_ptr<AppendageTemplate>(new AppendageTemplate(appendageTemplateElement, "constructors", appendages)));
 
                 EXPECT_EQ(appendageTemplate->GetIncludes(), nullptr);
                 EXPECT_NE(appendageTemplate->GetConstructors(), nullptr);
@@ -95,7 +95,7 @@ namespace rip
                 std::vector<std::shared_ptr<Appendage>> appendages;
 
                 std::unique_ptr<AppendageTemplate> appendageTemplate;
-                RIP_ASSERT_NO_THROW(appendageTemplate = std::unique_ptr<AppendageTemplate>(new AppendageTemplate(appendageTemplateElement, appendages)));
+                RIP_ASSERT_NO_THROW(appendageTemplate = std::unique_ptr<AppendageTemplate>(new AppendageTemplate(appendageTemplateElement, "setup", appendages)));
 
                 EXPECT_EQ(appendageTemplate->GetIncludes(), nullptr);
                 EXPECT_EQ(appendageTemplate->GetConstructors(), nullptr);
@@ -115,7 +115,7 @@ namespace rip
                 std::vector<std::shared_ptr<Appendage>> appendages;
 
                 std::unique_ptr<AppendageTemplate> appendageTemplate;
-                RIP_ASSERT_NO_THROW(appendageTemplate = std::unique_ptr<AppendageTemplate>(new AppendageTemplate(appendageTemplateElement, appendages)));
+                RIP_ASSERT_NO_THROW(appendageTemplate = std::unique_ptr<AppendageTemplate>(new AppendageTemplate(appendageTemplateElement, "loop", appendages)));
 
                 EXPECT_EQ(appendageTemplate->GetIncludes(), nullptr);
                 EXPECT_EQ(appendageTemplate->GetConstructors(), nullptr);
@@ -135,7 +135,7 @@ namespace rip
                 std::vector<std::shared_ptr<Appendage>> appendages;
 
                 std::unique_ptr<AppendageTemplate> appendageTemplate;
-                RIP_ASSERT_NO_THROW(appendageTemplate = std::unique_ptr<AppendageTemplate>(new AppendageTemplate(appendageTemplateElement, appendages)));
+                RIP_ASSERT_NO_THROW(appendageTemplate = std::unique_ptr<AppendageTemplate>(new AppendageTemplate(appendageTemplateElement, "commands", appendages)));
 
                 EXPECT_EQ(appendageTemplate->GetIncludes(), nullptr);
                 EXPECT_EQ(appendageTemplate->GetConstructors(), nullptr);
@@ -155,7 +155,7 @@ namespace rip
                 std::vector<std::shared_ptr<Appendage>> appendages;
 
                 std::unique_ptr<AppendageTemplate> appendageTemplate;
-                RIP_ASSERT_NO_THROW(appendageTemplate = std::unique_ptr<AppendageTemplate>(new AppendageTemplate(appendageTemplateElement, appendages)));
+                RIP_ASSERT_NO_THROW(appendageTemplate = std::unique_ptr<AppendageTemplate>(new AppendageTemplate(appendageTemplateElement, "everything", appendages)));
 
                 EXPECT_NE(appendageTemplate->GetIncludes(), nullptr);
                 EXPECT_NE(appendageTemplate->GetConstructors(), nullptr);
@@ -175,7 +175,7 @@ namespace rip
                 std::vector<std::shared_ptr<Appendage>> appendages;
 
                 std::unique_ptr<AppendageTemplate> appendageTemplate;
-                ASSERT_THROW(appendageTemplate = std::unique_ptr<AppendageTemplate>(new AppendageTemplate(appendageTemplateElement, appendages)), ElementException);
+                ASSERT_THROW(appendageTemplate = std::unique_ptr<AppendageTemplate>(new AppendageTemplate(appendageTemplateElement, "two_includes", appendages)), ElementException);
             }
 
             TEST(AppendageTemplate_constructor, two_constructors)
@@ -189,7 +189,7 @@ namespace rip
                 std::vector<std::shared_ptr<Appendage>> appendages;
 
                 std::unique_ptr<AppendageTemplate> appendageTemplate;
-                ASSERT_THROW(appendageTemplate = std::unique_ptr<AppendageTemplate>(new AppendageTemplate(appendageTemplateElement, appendages)), ElementException);
+                ASSERT_THROW(appendageTemplate = std::unique_ptr<AppendageTemplate>(new AppendageTemplate(appendageTemplateElement, "two_constructors", appendages)), ElementException);
             }
 
             TEST(AppendageTemplate_constructor, two_setup)
@@ -203,7 +203,7 @@ namespace rip
                 std::vector<std::shared_ptr<Appendage>> appendages;
 
                 std::unique_ptr<AppendageTemplate> appendageTemplate;
-                ASSERT_THROW(appendageTemplate = std::unique_ptr<AppendageTemplate>(new AppendageTemplate(appendageTemplateElement, appendages)), ElementException);
+                ASSERT_THROW(appendageTemplate = std::unique_ptr<AppendageTemplate>(new AppendageTemplate(appendageTemplateElement, "two_setup", appendages)), ElementException);
             }
 
             TEST(AppendageTemplate_constructor, two_loop)
@@ -217,7 +217,7 @@ namespace rip
                 std::vector<std::shared_ptr<Appendage>> appendages;
 
                 std::unique_ptr<AppendageTemplate> appendageTemplate;
-                ASSERT_THROW(appendageTemplate = std::unique_ptr<AppendageTemplate>(new AppendageTemplate(appendageTemplateElement, appendages)), ElementException);
+                ASSERT_THROW(appendageTemplate = std::unique_ptr<AppendageTemplate>(new AppendageTemplate(appendageTemplateElement, "two_loop", appendages)), ElementException);
             }
 
             TEST(AppendageTemplate_constructor, two_commands)
@@ -231,7 +231,7 @@ namespace rip
                 std::vector<std::shared_ptr<Appendage>> appendages;
 
                 std::unique_ptr<AppendageTemplate> appendageTemplate;
-                ASSERT_THROW(appendageTemplate = std::unique_ptr<AppendageTemplate>(new AppendageTemplate(appendageTemplateElement, appendages)), ElementException);
+                ASSERT_THROW(appendageTemplate = std::unique_ptr<AppendageTemplate>(new AppendageTemplate(appendageTemplateElement, "two_commands", appendages)), ElementException);
             }
         }
     }

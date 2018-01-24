@@ -27,6 +27,8 @@ namespace rip
 
             return values;
         }
+
+        void replace(std::string& base, const std::string& replacee, const std::string& replacer);
     }
 }
 

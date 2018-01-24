@@ -23,6 +23,16 @@ namespace rip
             {
                 XmlElement include(includeElement);
 
+                bool standard;
+                try
+                {
+                    standard = include.getAttribute("standard")->BoolValue();
+                }
+                catch (AttributeException)
+                {
+                    standard = false;
+                }
+
                 if (!include.isAttributesEmpty())
                 {
                     throw AttributeException(fmt::format("Extra attribute for Include on line number {}",
@@ -35,7 +45,14 @@ namespace rip
                                                        include.getLineNum()));
                 }
 
-                m_includes.emplace_back(include.getText());
+                if (standard)
+                {
+                    m_includes.emplace_back(fmt::format("<{0}>", include.getText()));
+                }
+                else
+                {
+                    m_includes.emplace_back(fmt::format("\"{0}\"", include.getText()));
+                }
             }
 
             // If there are any extra attributes, throw an exception
