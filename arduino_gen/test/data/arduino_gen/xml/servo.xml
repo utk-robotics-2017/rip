@@ -11,14 +11,14 @@
         // Servo pin: $pin$
     </loop>
     <commands>
-    	<command id="kSetServo" name="setServo" index-num="true">
+        <command id="kSetServo" name="setServo" index-num="true">
             <parameter type="int" name="value" />
-    		<code>
-    			if (!servos[indexNum].attached()) {
+            <code>
+                if (!servos[indexNum].attached()) {
                     servos[indexNum].attach(servo_pins[indexNum]);
                 }
                 servos[indexNum].write(value);
-    		</code>
-    	</command>
+            </code>
+        </command>
     </commands>
 </appendage-template>

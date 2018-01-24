@@ -1,6 +1,6 @@
 <constructors type="Type" variable="type">
-	<argument name="something_int" type="int"/>
-	<argument name="something_bool" type="bool"/>
-	<argument name="something_float" type="float"/>
-	<argument name="something_string" type="string"/>
+    <argument name="something_int" type="int"/>
+    <argument name="something_bool" type="bool"/>
+    <argument name="something_float" type="float"/>
+    <argument name="something_string" type="string"/>
 </constructors>

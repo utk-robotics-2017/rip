@@ -1,4 +1,4 @@
 {
-	"pin": "int",
-	"pullup": "string"
+    "pin": "int",
+    "pullup": "string"
 }
