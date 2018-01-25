@@ -118,9 +118,25 @@ namespace rip
             return fmt::format(
                 "{includes}\n"
                 "{constructors}\n"
+                "void setup()\n{{\n"
                 "{setup}\n"
+                "}}\n"
+                "\n"
+                "void loop()\n{{\n"
                 "{loop}\n"
-                "{commands}\n"
+                "}}\n"
+                "\n"
+                "enum class Commands\n{{\n"
+                "\tkAcknowledge,\n"
+                "\tkError,\n"
+                "\tkUnknown,\n"
+                "\tkSetLed,\n"
+                "\tkPing,\n"
+                "\tkPingResult,\n"
+                "\tkPong,\n"
+                "{command_enums}"
+                "}};\n"
+                "\n"
                 "{command_attaches}\n"
                 "{command_callbacks}\n"
                 "{extra}\n",
@@ -128,7 +144,7 @@ namespace rip
                 fmt::arg("constructors", getConstructors()),
                 fmt::arg("setup", getSetup()),
                 fmt::arg("loop", getLoop()),
-                fmt::arg("commands", getCommandEnums()),
+                fmt::arg("command_enums", getCommandEnums()),
                 fmt::arg("command_attaches", getCommandAttaches()),
                 fmt::arg("command_callbacks", getCommandCallbacks()),
                 fmt::arg("extra", getExtras())
@@ -245,6 +261,7 @@ namespace rip
         std::string ArduinoGen::getCommandEnums()
         {
             std::string rv = "";
+
             m_commands["kAcknowledge"] = 0;
             m_commands["kError"] = 1;
             m_commands["kUnknown"] = 2;
@@ -252,28 +269,26 @@ namespace rip
             m_commands["kPing"] = 4;
             m_commands["kPingResult"] = 5;
             m_commands["kPong"] = 6;
+
             int cmd_idx = 7;
 
-            std::string cmd_id;
-            std::string result_id;
             for(const AppendageTemplate& at : m_appendage_templates)
             {
                 for(const std::shared_ptr<Command>& cmd : at.GetCommands())
                 {
-                    cmd_id = cmd->getId();
+                    std::string cmd_id = cmd->getId();
                     rv += fmt::format("\t{},\n", cmd_id);
-                    m_commands[cmd_id] = cmd_idx;
-                    cmd_idx ++;
+                    m_commands[cmd_id] = cmd_idx++;
 
-                    result_id = cmd->getResultId();
+                    std::string result_id = cmd->getResultId();
                     if(result_id.size())
                     {
                         rv += fmt::format("\t{},\n", result_id);
-                        m_commands[result_id] = cmd_idx;
-                        cmd_idx ++;
+                        m_commands[result_id] = cmd_idx++;
                     }
                 }
             }
+
             rv = rv.substr(0, rv.size() - 2); // Remove last comma
 
             return rv;
