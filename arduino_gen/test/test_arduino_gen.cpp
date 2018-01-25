@@ -317,10 +317,8 @@ namespace rip
             );
         }
 
-        #if (false)
         TEST_F(ArduinoGenTest, command_attaches_no_appendages)
         {
-            FAIL() << "Not Implemented";
             std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "/", "test/data/arduino_gen", true));
 
             RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/no_appendages.json", false));
@@ -332,7 +330,6 @@ namespace rip
 
         TEST_F(ArduinoGenTest, command_attaches_one_empty_appendage)
         {
-            FAIL() << "Not Implemented";
             std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "/", "test/data/arduino_gen", true));
 
             RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/one_empty_appendage.json", false));
@@ -344,40 +341,39 @@ namespace rip
 
         TEST_F(ArduinoGenTest, command_attaches_one_appendage)
         {
-            FAIL() << "Not Implemented";
             std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "/", "test/data/arduino_gen", true));
 
             RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/one_appendage.json", false));
 
             ASSERT_EQ(ag->getCommandAttaches(),
-                ""
+                "\tcmdMessenger.attach(Commands::kReadUltrasonic, readUltraSonic);\n"
             );
         }
 
         TEST_F(ArduinoGenTest, command_attaches_two_appendages_same)
         {
-            FAIL() << "Not Implemented";
             std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "/", "test/data/arduino_gen", true));
 
             RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/two_appendages_same.json", false));
 
             ASSERT_EQ(ag->getCommandAttaches(),
-                ""
+                "\tcmdMessenger.attach(Commands::kReadUltrasonic, readUltraSonic);\n"
             );
         }
 
         TEST_F(ArduinoGenTest, command_attaches_two_appendages_different)
         {
-            FAIL() << "Not Implemented";
             std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "/", "test/data/arduino_gen", true));
 
             RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/two_appendages_different.json", false));
 
             ASSERT_EQ(ag->getCommandAttaches(),
-                ""
+                "\tcmdMessenger.attach(Commands::kSetServo, setServo);\n"
+                "\tcmdMessenger.attach(Commands::kReadUltrasonic, readUltraSonic);\n"
             );
         }
 
+        #if (false)
         TEST_F(ArduinoGenTest, command_callbacks_no_appendages)
         {
             FAIL() << "Not Implemented";
