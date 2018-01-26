@@ -33,3 +33,6 @@ script:
 
 after_script:
     - ./travis/after_script.sh $TRAVIS_BRANCH $TRAVIS_PULL_REQUEST $TRAVIS_PULL_REQUEST_BRANCH
+
+after_success:
+    - bash <(curl -s https://codecov.io/bash) -t 233dc217-113d-4ab4-9db7-cfd9f85e41c7 || echo "Codecov did not collect coverage reports"
