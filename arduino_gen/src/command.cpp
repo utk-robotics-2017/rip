@@ -109,7 +109,7 @@ namespace rip
                 rv += fmt::format(
                     "\tint indexNum = cmdMessenger.readBinArg<int>();\n"
                     "\tif(!cmdMessenger.isArgOk() || indexNum < 0 || indexNum > {num_appendages}) {{\n"
-                    "\t\tcmdMessenger.sendBinCmd(kError, {m_id});\n"
+                    "\t\tcmdMessenger.sendBinCmd(Commands::kError, Commands::{m_id});\n"
                     "\t\treturn;\n"
                     "\t}}\n",
                     fmt::arg("num_appendages", num_appendages),
@@ -127,11 +127,11 @@ namespace rip
 
             rv += m_code->getCode();
 
-            rv += fmt::format("\tcmdMessenger.sendBindCmd(kAcknowledge, {});\n", m_id);
+            rv += fmt::format("\tcmdMessenger.sendBinCmd(Commands::kAcknowledge, Commands::{});\n", m_id);
 
             if(m_return_values.size())
             {
-                rv += fmt::format("\tcmdMessenger.sendCmdStart({}Result);\n", m_id);
+                rv += fmt::format("\tcmdMessenger.sendCmdStart(Commands::{}Result);\n", m_id);
 
                 for(const ReturnValue& return_value : m_return_values)
                 {
