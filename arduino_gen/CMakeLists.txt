@@ -6,7 +6,7 @@ file(GLOB_RECURSE ${PROJECT_NAME}_SOURCES "src/*.cpp")
 list(REMOVE_ITEM ${PROJECT_NAME}_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp")
 
 # Create the arduino_gen library, set to c++11, link external libraries, and set include dir
-add_library(_${PROJECT_NAME} ${${PROJECT_NAME}_SOURCES} ${copiedAppendageTemplates})
+add_library(_${PROJECT_NAME} ${${PROJECT_NAME}_SOURCES})
 set_property(TARGET _${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
 if(ENABLE_TESTING)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage -DTESTING")
@@ -15,8 +15,17 @@ target_link_libraries(_${PROJECT_NAME} fmt json spdlog tinyxml2 cppfs exceptions
 target_link_libraries(_${PROJECT_NAME} gtest)
 target_include_directories(_${PROJECT_NAME} PUBLIC include)
 
+add_custom_command(
+    OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/code_template.txt
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            ${CMAKE_CURRENT_SOURCE_DIR}/code_template.txt
+            ${CMAKE_CURRENT_BINARY_DIR}/code_template.txt
+    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/code_template.txt
+    COMMENT "Copying code_template.txt"
+    VERBATIM)
+
 # Create arduino_gen executable, set to c++11, and link arduino_gen library
-add_executable(${PROJECT_NAME} "src/main.cpp")
+add_executable(${PROJECT_NAME} "src/main.cpp" ${CMAKE_CURRENT_BINARY_DIR}/code_template.txt)
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
 target_link_libraries(${PROJECT_NAME} _${PROJECT_NAME})
 add_subdirectory(../appendages ./appendages)

@@ -170,6 +170,12 @@ namespace rip
             FRIEND_TEST(ArduinoGenTest, command_callbacks_one_appendage);
             FRIEND_TEST(ArduinoGenTest, command_callbacks_two_appendages_same);
             FRIEND_TEST(ArduinoGenTest, command_callbacks_two_appendages_different);
+
+            FRIEND_TEST(ArduinoGenTest, arduino_code_no_appendages);
+            FRIEND_TEST(ArduinoGenTest, arduino_code_one_empty_appendage);
+            FRIEND_TEST(ArduinoGenTest, arduino_code_one_appendage);
+            FRIEND_TEST(ArduinoGenTest, arduino_code_two_appendages_same);
+            FRIEND_TEST(ArduinoGenTest, arduino_code_two_appendages_different);
 #endif
         };
     }

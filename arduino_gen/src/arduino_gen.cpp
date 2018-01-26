@@ -115,31 +115,10 @@ namespace rip
 
         std::string ArduinoGen::getArduinoCode()
         {
-            return fmt::format(
-                "{includes}\n"
-                "{constructors}\n"
-                "void setup()\n{{\n"
-                "{setup}\n"
-                "}}\n"
-                "\n"
-                "void loop()\n{{\n"
-                "{loop}\n"
-                "}}\n"
-                "\n"
-                "enum class Commands\n{{\n"
-                "\tkAcknowledge,\n"
-                "\tkError,\n"
-                "\tkUnknown,\n"
-                "\tkSetLed,\n"
-                "\tkPing,\n"
-                "\tkPingResult,\n"
-                "\tkPong,\n"
-                "{command_enums}"
-                "}};\n"
-                "\n"
-                "{command_attaches}\n"
-                "{command_callbacks}\n"
-                "{extra}\n",
+            std::unique_ptr<std::istream> code_template_istream = cppfs::fs::open("code_template.txt").createInputStream();
+            std::string code_template(std::istreambuf_iterator<char>(*code_template_istream), {});
+
+            return fmt::format(code_template,
                 fmt::arg("includes", getIncludes()),
                 fmt::arg("constructors", getConstructors()),
                 fmt::arg("setup", getSetup()),
