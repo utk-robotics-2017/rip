@@ -32,3 +32,5 @@ elif [[ $BRANCH == "appendages/"* ]]; then
 fi
 
 lcov --list coverage.info #debug info
+
+bash <(curl -s https://codecov.io/bash) -t 233dc217-113d-4ab4-9db7-cfd9f85e41c7 || echo "Codecov did not collect coverage reports"
