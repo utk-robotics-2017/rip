@@ -10,7 +10,7 @@ const char LED = 13;
 
 {constructors}
 
-enum class Commands
+enum
 {{
 	kAcknowledge,
 	kError,
@@ -56,22 +56,22 @@ void loop()
 void attachCommandCallbacks()
 {{
 	cmdMessenger.attach(unknownCommand);
-	cmdMessenger.attach(Commands::kPing, ping);
-	cmdMessenger.attach(Commands::kSetLed, setLed);
+	cmdMessenger.attach(kPing, ping);
+	cmdMessenger.attach(kSetLed, setLed);
 {command_attaches}
 }}
 
 // Called when a received command has no attached function
 void unknownCommand()
 {{
-	cmdMessenger.sendCmd(Commands::kError, Commands::kUnknown);
+	cmdMessenger.sendCmd(kError, kUnknown);
 }}
 
 // Called upon initialization of Spine to check connection
 void ping()
 {{
-	cmdMessenger.sendBinCmd(Commands::kAcknowledge, Commands::kPing);
-	cmdMessenger.sendBinCmd(Commands::kPingResult, Commands::kPong);
+	cmdMessenger.sendBinCmd(kAcknowledge, kPing);
+	cmdMessenger.sendBinCmd(kPingResult, kPong);
 }}
 
 // Callback function that sets led on or off
@@ -80,7 +80,7 @@ void setLed()
 	// Read led state argument, interpret string as boolean
 	bool ledState = cmdMessenger.readBoolArg();
 	digitalWrite(LED, ledState);
-	cmdMessenger.sendBinCmd(Commands::kAcknowledge, Commands::kSetLed);
+	cmdMessenger.sendBinCmd(kAcknowledge, kSetLed);
 }}
 
 {command_callbacks}

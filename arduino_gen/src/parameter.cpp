@@ -37,7 +37,7 @@ namespace rip
             return fmt::format(
                 "\t{type} {name} = cmdMessenger.readBinArg<{type}>();\n"
                 "\tif(!cmdMessenger.isArgOk()) {{\n"
-                "\t\tcmdMessenger.sendBinCmd(Commands::kError, Commands::{id});\n"
+                "\t\tcmdMessenger.sendBinCmd(kError, {id});\n"
                 "\t\treturn;\n"
                 "\t}}\n",
                 fmt::arg("name", m_name),

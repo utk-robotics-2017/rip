@@ -280,7 +280,7 @@ namespace rip
             {
                 for(const std::shared_ptr<Command>& cmd : at.GetCommands())
                 {
-                    rv += fmt::format("\tcmdMessenger.attach(Commands::{}, {});\n", cmd->getId(), cmd->getName());
+                    rv += fmt::format("\tcmdMessenger.attach({}, {});\n", cmd->getId(), cmd->getName());
                 }
             }
             return rv;

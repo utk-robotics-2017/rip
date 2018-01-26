@@ -8,6 +8,8 @@
 #include <map>
 #include <memory>
 
+#include "appendage_template.hpp"
+
 namespace rip
 {
     namespace arduinogen
@@ -40,16 +42,17 @@ namespace rip
              */
             void generateOutput();
 
+            /**
+             * TODO: Properly comment
+             * TODO: Make private again
+             */
+            std::string getArduinoCode();
+
         private:
             /**
              * @brief Removes the device folder if it exists and creates a new one
              */
             void setupFolder();
-
-            /**
-             * TODO: Properly comment
-             */
-            std::string getArduinoCode();
 
             /**
              * TODO: Properly comment

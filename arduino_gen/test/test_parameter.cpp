@@ -183,7 +183,7 @@ namespace rip
                 std::string expected_string =
                     "\tint var = cmdMessenger.readBinArg<int>();\n"
                     "\tif(!cmdMessenger.isArgOk()) {\n"
-                    "\t\tcmdMessenger.sendBinCmd(Commands::kError, Commands::TestId);\n"
+                    "\t\tcmdMessenger.sendBinCmd(kError, TestId);\n"
                     "\t\treturn;\n"
                     "\t}\n";
 
@@ -208,7 +208,7 @@ namespace rip
                 std::string expected_string =
                     "\tchar thing = cmdMessenger.readBinArg<char>();\n"
                     "\tif(!cmdMessenger.isArgOk()) {\n"
-                    "\t\tcmdMessenger.sendBinCmd(Commands::kError, Commands::TestId);\n"
+                    "\t\tcmdMessenger.sendBinCmd(kError, TestId);\n"
                     "\t\treturn;\n"
                     "\t}\n";
 
