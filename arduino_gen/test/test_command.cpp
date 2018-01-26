@@ -338,8 +338,8 @@ namespace rip
                     "\tcloud = 9;\n"
                     "\tcmdMessenger.sendBinCmd(kAcknowledge, Euphoria);\n"
                     "\tcmdMessenger.sendCmdStart(EuphoriaResult);\n"
-                    "\tcmdMessenger.sendBinArg(cloud);\n"
-                    "\tcmdMeessenger.sendCmdEnd();\n"
+                    "\tcmdMessenger.sendCmdBinArg(cloud);\n"
+                    "\tcmdMessenger.sendCmdEnd();\n"
                     "}\n");
             }
 
@@ -374,9 +374,9 @@ namespace rip
                     "\tNotAsBadAsOne = 2;\n"
                     "\tcmdMessenger.sendBinCmd(kAcknowledge, ThreeDog);\n"
                     "\tcmdMessenger.sendCmdStart(ThreeDogResult);\n"
-                    "\tcmdMessenger.sendBinArg(TheLoneliestNumber);\n"
-                    "\tcmdMessenger.sendBinArg(NotAsBadAsOne);\n"
-                    "\tcmdMeessenger.sendCmdEnd();\n"
+                    "\tcmdMessenger.sendCmdBinArg(TheLoneliestNumber);\n"
+                    "\tcmdMessenger.sendCmdBinArg(NotAsBadAsOne);\n"
+                    "\tcmdMessenger.sendCmdEnd();\n"
                     "}\n");
             }
 
@@ -413,8 +413,8 @@ namespace rip
                     "\tout = in;\n"
                     "\tcmdMessenger.sendBinCmd(kAcknowledge, kEcho);\n"
                     "\tcmdMessenger.sendCmdStart(kEchoResult);\n"
-                    "\tcmdMessenger.sendBinArg(out);\n"
-                    "\tcmdMeessenger.sendCmdEnd();\n"
+                    "\tcmdMessenger.sendCmdBinArg(out);\n"
+                    "\tcmdMessenger.sendCmdEnd();\n"
                     "}\n");
             }
 
@@ -460,8 +460,8 @@ namespace rip
                     "\t    rv *= x;\n"
                     "\tcmdMessenger.sendBinCmd(kAcknowledge, kExponent);\n"
                     "\tcmdMessenger.sendCmdStart(kExponentResult);\n"
-                    "\tcmdMessenger.sendBinArg(rv);\n"
-                    "\tcmdMeessenger.sendCmdEnd();\n"
+                    "\tcmdMessenger.sendCmdBinArg(rv);\n"
+                    "\tcmdMessenger.sendCmdEnd();\n"
                     "}\n");
             }
 
@@ -499,9 +499,9 @@ namespace rip
                     "\t// Make two outputs from one input\n"
                     "\tcmdMessenger.sendBinCmd(kAcknowledge, kOneToTwo);\n"
                     "\tcmdMessenger.sendCmdStart(kOneToTwoResult);\n"
-                    "\tcmdMessenger.sendBinArg(rv1);\n"
-                    "\tcmdMessenger.sendBinArg(rv2);\n"
-                    "\tcmdMeessenger.sendCmdEnd();\n"
+                    "\tcmdMessenger.sendCmdBinArg(rv1);\n"
+                    "\tcmdMessenger.sendCmdBinArg(rv2);\n"
+                    "\tcmdMessenger.sendCmdEnd();\n"
                     "}\n");
             }
 
@@ -546,9 +546,9 @@ namespace rip
                     "\tremainder = a % b;\n"
                     "\tcmdMessenger.sendBinCmd(kAcknowledge, kDivide);\n"
                     "\tcmdMessenger.sendCmdStart(kDivideResult);\n"
-                    "\tcmdMessenger.sendBinArg(quotient);\n"
-                    "\tcmdMessenger.sendBinArg(remainder);\n"
-                    "\tcmdMeessenger.sendCmdEnd();\n"
+                    "\tcmdMessenger.sendCmdBinArg(quotient);\n"
+                    "\tcmdMessenger.sendCmdBinArg(remainder);\n"
+                    "\tcmdMessenger.sendCmdEnd();\n"
                     "}\n");
             }
         }
