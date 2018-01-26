@@ -14,9 +14,9 @@ fi
 # REVIEW: Do we need any of this?
 
 if [[ $BRANCH == "arduino_gen/"* ]]; then
-    lcov --remove coverage.info '/utilities/*' --output-file coverage.info # filter out utils
+    lcov --remove coverage.info '/external/*' --output-file coverage.info # filter out utils
 elif [[ $BRANCH == "pathfinder/"* ]]; then
-    lcov --remove coverage.info '/utilities/*' --output-file coverage.info # filter out utils
+    lcov --remove coverage.info '/external/*' --output-file coverage.info # filter out utils
 elif [[ $BRANCH == "roboclaw/"* ]]; then
     echo "TODO: lcov for roboclaw"
 elif [[ $BRANCH == "cmd_messenger/"* ]]; then
@@ -24,11 +24,11 @@ elif [[ $BRANCH == "cmd_messenger/"* ]]; then
 elif [[ $BRANCH == "pathman/"* ]]; then
     echo "TODO: lcov for pathman"
 elif [[ $BRANCH == "navx/"* ]]; then
-    lcov --remove coverage.info '/utilities/*' --output-file coverage.info # filter out utils
+    lcov --remove coverage.info '/external/*' --output-file coverage.info # filter out utils
 elif [[ $BRANCH == "communication/"* ]]; then
-    lcov --remove coverage.info '/utilities/*' --output-file coverage.info # filter out utils
+    lcov --remove coverage.info '/external/*' --output-file coverage.info # filter out utils
 elif [[ $BRANCH == "appendages/"* ]]; then
-    lcov --remove coverage.info '/utilities/*' --output-file coverage.info # filter out utils
+    lcov --remove coverage.info '/external/*' --output-file coverage.info # filter out utils
 fi
 
 lcov --list coverage.info #debug info
