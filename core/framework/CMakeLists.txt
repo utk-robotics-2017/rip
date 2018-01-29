@@ -13,8 +13,7 @@ file(GLOB_RECURSE ${PROJECT_NAME}_HEADERS "include/*.hpp")
 add_library(${PROJECT_NAME} ${${PROJECT_NAME}_SOURCES} ${${PROJECT_NAME}_HEADERS})
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
 if(ENABLE_TESTING)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -fprofile-arcs
-    -ftest-coveragcoverage")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage")
 endif()
 target_link_libraries(${PROJECT_NAME}
     fmt json spdlog cppfs
@@ -28,31 +27,16 @@ if(ENABLE_TESTING)
     file(GLOB_RECURSE ${PROJECT_NAME}_TEST_SOURCES "test/*.cpp")
     file(GLOB_RECURSE ${PROJECT_NAME}_TEST_DATA "test/data/*")
 
+    include(FileOutputs)
+
     # Copy test data to outdir/test
-    set(copiedTestData "")
-    foreach(TestDataFile ${${PROJECT_NAME}_TEST_DATA})
-          file(RELATIVE_PATH name ${CMAKE_CURRENT_SOURCE_DIR} ${TestDataFile})
-          add_custom_command(
-            OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${name}
-            COMMAND ${CMAKE_COMMAND} -E copy_if_different ${TestDataFile} ${CMAKE_CURRENT_BINARY_DIR}/${name}
-            DEPENDS ${TestDataFile}
-            COMMENT "Copying ${name}"
-            VERBATIM
-            )
-          list(APPEND copiedTestData ${CMAKE_CURRENT_BINARY_DIR}/${name})
-    endforeach()
+    make_outputs(${CMAKE_CURRENT_SOURCE_DIR} "${${PROJECT_NAME}_TEST_DATA}" ${CMAKE_CURRENT_BINARY_DIR} testDataOutputs)
 
     # Create arduino_gen_test executable, set to c++11, link arduino_gen library and google test libraries
-    add_executable(${PROJECT_NAME}_test ${${PROJECT_NAME}_TEST_SOURCES} ${copiedTestData})
+    add_executable(${PROJECT_NAME}_test ${${PROJECT_NAME}_TEST_SOURCES} ${testDataOutputs})
     set_property(TARGET ${PROJECT_NAME}_test PROPERTY CXX_STANDARD 11)
-    target_link_libraries(${PROJECT_NAME}_test _${PROJECT_NAME})
-    target_link_libraries(${PROJECT_NAME}_test gmock)
-    target_link_libraries(${PROJECT_NAME}_test gtest)
-    target_link_libraries(${PROJECT_NAME}_test googletest_rip_macros)
-
-
-    # In CMakeModules I include code coverage for c++
-    set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMakeModules)
+    target_link_libraries(${PROJECT_NAME}_test ${PROJECT_NAME})
+    target_link_libraries(${PROJECT_NAME}_test gmock gtest googletest_rip_macros)
 
     if(CMAKE_COMPILER_IS_GNUCXX)
         include(CodeCoverage)

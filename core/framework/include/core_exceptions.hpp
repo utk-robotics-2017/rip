@@ -23,9 +23,9 @@
 
 namespace rip
 {
-    NEW_EX(AppendageNotFound)
-    NEW_EX(FileNotFound)
-    NEW_EX(AppendageWithoutType)
-    NEW_EX(CannotLoadDevice)
+    NEW_EX(AppendageNotFound);
+    NEW_EX(FileNotFound);
+    NEW_EX(AppendageWithoutType);
+    NEW_EX(CannotLoadDevice);
 }
 #endif // EXCEPTIONS_HPP

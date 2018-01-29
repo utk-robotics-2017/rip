@@ -37,6 +37,7 @@ option(COMMUNICATION "Build RIP's communication module" OFF)
 option(NAVIGATION "Build RIP's navigation module" OFF)
 option(NAVX "Build RIP's navx submodule" OFF)
 option(PATHFINDER "Build RIP's pathfinder submodule" OFF)
+option(PATH_PLANNER "Build RIP's path planner submodule" OFF)
 option(VISION "Build RIP's vision module" OFF)
 option(FSM "Build RIP's fsm and action scheduler modules" OFF)
 
@@ -52,9 +53,10 @@ option(CMD_MESENGER "Build CmdMessenger" OFF)
 
 # Testing
 option(ENABLE_TESTING "Enable testing of the modules" OFF)
+option(DEBUG_RIP_CMAKE "Prints more debug cmake info" OFF)
 
-if (NOT (ALL OR RIP OR COMMUNICATION OR NAVIGATION OR
-         NAVX OR PATHFINDER OR VISION OR FSM OR RIPCOM OR
+if (NOT (ALL OR RIP OR COMMUNICATION OR NAVIGATION OR NAVX OR
+         PATH_PLANNER OR PATHFINDER OR VISION OR FSM OR RIPCOM OR
          ARDUINO_GEN OR ROBOCLAW OR PATHMAN OR CMD_MESENGER))
 
     if(GIT_BRANCH MATCHES "appendages/.*")
@@ -69,24 +71,41 @@ if (NOT (ALL OR RIP OR COMMUNICATION OR NAVIGATION OR
         set(NAVX ON)
     elseif(GIT_BRANCH MATCHES "roboclaw/.*")
         set(ROBOCLAW ON)
+    elseif(GIT_BRANCH MATCHES "path_planner/.*")
+        set(PATH_PLANNER ON)
     endif()
+endif()
+
+if (DEBUG_RIP_CMAKE)
+    message("ALL: " ${ALL})
+    message("RIP: " ${RIP})
+    message("COMMUNICATION: " ${COMMUNICATION})
+    message("NAVIGATION: " ${NAVIGATION})
+    message("NAVX: " ${NAVX})
+    message("PATHFINDER: " ${PATHFINDER})
+    message("PATH_PLANNER: " ${PATH_PLANNER})
+    message("VISION: " ${VISION})
+    message("FSM: " ${FSM})
+    message("RIPCOM: " ${RIPCOM})
+    message("ARDUINO_GEN: " ${ARDUINO_GEN})
+    message("ROBOCLAW: " ${ROBOCLAW})
+    message("PATHMAN: " ${PATHMAN})
+    message("CMD_MESENGER: " ${CMD_MESENGER})
 endif()
 
 add_subdirectory(external)
 
-if(ALL OR RIP OR CORE OR RIPCOM OR APPENDAGES)
+if(ALL OR RIP OR CORE OR RIPCOM OR APPENDAGES OR ARDUINO_GEN)
     message("Adding appendages")
     add_subdirectory(appendages)
 endif()
 
 if(ALL OR ARDUINO_GEN)
     message("Adding ArduinoGen")
-    add_subdirectory(core/utilities/exceptions_base)
-    add_subdirectory(appendages)
     add_subdirectory(arduino_gen)
 endif()
 
-if(ALL OR RIP OR COMMUNICATION OR NAVIGATION OR NAVX OR PATHFINDER OR VISION OR FSM)
+if(ALL OR RIP OR COMMUNICATION OR NAVIGATION OR NAVX OR PATHFINDER OR VISION OR FSM OR ARDUINO_GEN)
     message("Adding RIP Core")
     add_subdirectory(core)
 endif()
