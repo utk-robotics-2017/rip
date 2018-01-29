@@ -15,98 +15,82 @@ namespace rip
             /**
              * Constructor
              */
-            PolygonObstacle(const geometry::Polygon& polygon)
-                : m_polygon(polygon)
-            {}
+            PolygonObstacle(const geometry::Polygon& polygon);
 
+            /**
+             * Returns the polygon that makes up the shape of this
+             * obstacle
+             */
+            geometry::Polygon polygon() const;
 
-            geometry::Polygon polygon() const
-            {
-                return m_polygon;
-            }
+            /**
+             * Sets the polygon that makes up the shape of this
+             * obstacle
+             */
+            void setPolygon(const geometry::Polygon& polygon);
+
+            /**
+             * Sets an individual point in the polygon
+             */
+            void setPoint(unsigned int index, const geometry::Point& point);
 
             /**
              * Returns the centroid of the obstacle
              */
-            virtual geometry::Point centroid() const  override
-            {
-                return m_polygon.centroid();
-            }
+            virtual geometry::Point centroid() const  override;
+
+            /**
+             * Moves the centroid of the obstacle
+             */
+            void setCentroid(const geometry::Point& new_centroid);
 
             /**
              * Returns if the given point intersects with
              * the obstacle or is with in the given distance
              */
-            virtual bool collision(const geometry::Point& point, const units::Distance& minimum_distance = 0.0) const override
-            {
-                return m_polygon.offset(minimum_distance).inside(point);
-            }
+            virtual bool collision(const geometry::Point& point, const units::Distance& minimum_distance = 0.0) const override;
 
             /**
              * Returns if the given line intersects with
              * the obstacle or is with in the given distance
              */
-            virtual bool lineIntersection(const geometry::Point& start, const geometry::Point& end, const units::Distance& minimum_distance = 0.0) const override
-            {
-
-            }
+            virtual bool lineIntersection(const geometry::Point& start, const geometry::Point& end, const units::Distance& minimum_distance = 0.0) const override;
 
             /**
              * Returns the minimum distance from the point to the obstacle
              */
-            virtual units::Distance minimumDistance(const geometry::Point& point) const override
-            {
-
-            }
+            virtual units::Distance minimumDistance(const geometry::Point& point) const override;
 
             /**
              * Returns the minimum distance from the line to the obstacle
              */
-            virtual units::Distance minimumDistance(const geometry::Point& start, const geometry::Point& end) const override
-            {
-
-            }
+            virtual units::Distance minimumDistance(const geometry::Point& start, const geometry::Point& end) const override;
 
             /**
              * Returns the minimum distance from the polygon to the obstacle
              */
-            virtual units::Distance minimumDistance(const geometry::Polygon& polygon) const override
-            {
-
-            }
+            virtual units::Distance minimumDistance(const geometry::Polygon& polygon) const override;
 
             /**
              * Returns the closest point on the boundary of the obstacle to the
              * specified point
              */
-            virtual geometry::Point closestPoint(const geometry::Point& point) const override
-            {
-
-            }
+            virtual geometry::Point closestPoint(const geometry::Point& point) const override;
 
             /**
              * Get the estimated distance to the moving obstacle using a constant velocity model
              */
-            virtual units::Distance minimumSpatioTemporalDistance(const geometry::Point& point, const units::Time& t) const override
-            {
-
-            }
+            virtual units::Distance minimumSpatioTemporalDistance(const geometry::Point& point, const units::Time& t) const override;
 
             /**
              * Get the estimated distance to the moving obstacle using a constant velocity model
              */
-            virtual units::Distance minimumSpatioTemporalDistance(const geometry::Point& start, const geometry::Point& end, const units::Time& t) const override
-            {
-
-            }
+            virtual units::Distance minimumSpatioTemporalDistance(const geometry::Point& start, const geometry::Point& end, const units::Time& t) const override;
 
             /**
              * Get the estimated distance to the moving obstacle using a constant velocity model
              */
-            virtual units::Distance minimumSpatioTemporalDistance(const geometry::Polygon& polygon, const units::Time& t) const override
-            {
-
-            }
+            virtual units::Distance minimumSpatioTemporalDistance(const geometry::Polygon& polygon, const units::Time& t) const override;
         private:
             geometry::Polygon m_polygon;
         };

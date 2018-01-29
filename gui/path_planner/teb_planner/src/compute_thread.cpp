@@ -1,5 +1,7 @@
 #include <teb_planner_gui/compute_thread.hpp>
 
+#include <teb_planner/optimal_planner.hpp>
+
 namespace rip
 {
     namespace gui
@@ -18,79 +20,53 @@ namespace rip
                 return m_singleton;
             }
 
-            void ComputeThread::updateConfig(const nlohmann::json& config)
+            void ComputeThread::setRobot(std::shared_ptr< navigation::RobotFootprintModel > robot)
             {
-                *m_config = config;
-                m_wait_condition.wakeOne();
+                m_robot = robot;
             }
 
-            void ComputeThread::updateObstacles(const std::vector< std::shared_ptr< navigation::Obstacle > >& obstacles)
+            void ComputeThread::setObstacles(std::shared_ptr < std::vector< std::shared_ptr< navigation::Obstacle > > > obstacles)
             {
                 m_obstacles = obstacles;
-                m_wait_condition.wakeOne();
             }
 
-            void ComputeThread::updateStart(const navigation::Pose& start)
+            void ComputeThread::setConfig(std::shared_ptr<navigation::TebConfig> config)
+            {
+                m_config = config;
+            }
+
+            void ComputeThread::setStart(std::shared_ptr< navigation::Pose > start)
             {
                 m_start = start;
-                m_wait_condition.wakeOne();
             }
 
-            void ComputeThread::updateGoal(const navigation::Pose& goal)
+            void ComputeThread::setGoal(std::shared_ptr< navigation::Pose > goal)
             {
                 m_goal = goal;
-                m_wait_condition.wakeOne();
-            }
-
-            void ComputeThread::updateWaypoints(const std::vector<geometry::Point>& waypoints)
-            {
-                m_waypoints = waypoints;
-                m_wait_condition.wakeOne();
             }
 
             std::vector<navigation::TrajectoryPoint> ComputeThread::trajectory() const
             {
-                if(m_planner)
-                {
-                    return m_planner->getTrajectory();
-                }
-                return std::vector<navigation::TrajectoryPoint>();
-            }
-
-            void ComputeThread::stop()
-            {
-                requestInterruption();
-                m_wait_condition.wakeAll();
+                return m_planner->getTrajectory();
             }
 
             void ComputeThread::run()
             {
-                /*
-                forever
+                if(m_config && m_robot && m_obstacles && m_start && m_goal)
                 {
-                    m_wait_condition.wait(&m_mutex);
-                    if(interruptionRequested())
-                    {
-                        break;
-                    }
-                    if(m_config && m_obstacles.size() && m_robot)
-                    {
-                        m_planner = std::unique_ptr<navigation::TebOptimalPlanner>(new navigation::TebOptimalPlanner(m_config, m_obstacles, m_robot, m_waypoints));
-                        m_planner->plan(m_start, m_goal);
-                    }
-                    if(interruptionRequested())
-                    {
-                        break;
-                    }
+                    m_planner.reset(new navigation::TebOptimalPlanner(m_config, *m_obstacles, m_robot, m_waypoints));
+                    m_planner->plan(*m_start, *m_goal);
                 }
-                */
             }
 
             ComputeThread::ComputeThread(QObject* parent)
                 : QThread(parent)
-                , m_config(nullptr)
                 , m_planner(nullptr)
+                , m_start(nullptr)
+                , m_goal(nullptr)
+                , m_config(nullptr)
                 , m_robot(nullptr)
+                , m_obstacles(nullptr)
             {
             }
         }

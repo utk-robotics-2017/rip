@@ -16,7 +16,7 @@ namespace rip
             PlannerBase() = default;
 
             virtual ~PlannerBase() = default;
-
+#ifdef ZERO
             /**
              * Plan a trajectory
              *
@@ -24,7 +24,7 @@ namespace rip
              * @param start_velocity Starting velocity
              */
             virtual void plan(const std::vector<Pose> initial_plan, const VelocityPose& start_velocity) = 0;
-
+#endif
             virtual void plan(const Pose& start, const Pose& goal, const VelocityPose& start_velocity) = 0;
 
             virtual void clear() = 0;
@@ -32,7 +32,7 @@ namespace rip
             /**
              * Checks whether the trajectory is collision free
              */
-            virtual bool isTrajectoryFeasible() = 0;
+            //virtual bool isTrajectoryFeasible() = 0;
 
             virtual bool isHorizonReductionAppropriate(const std::vector<Pose>& poses)
             {

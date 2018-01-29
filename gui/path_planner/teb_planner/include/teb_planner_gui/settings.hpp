@@ -10,6 +10,9 @@
 
 #include <misc/settings_base.hpp>
 
+#include <teb_planner/polygon_robot_footprint_model.hpp>
+#include <teb_planner/teb_config.hpp>
+
 namespace rip
 {
     namespace gui
@@ -21,54 +24,56 @@ namespace rip
             public:
                 static std::shared_ptr<Settings> getInstance();
 
+                ~Settings();
+
                 void load();
 
                 void save() const;
 
-                std::shared_ptr<misc::SettingsBase> addRobot(const std::string& name);
+                std::shared_ptr< navigation::PolygonRobotFootprintModel > addRobot(const std::string& name);
 
                 void removeRobot(const std::string& name);
 
-                std::shared_ptr<misc::SettingsBase> robot(const std::string& name) const;
+                std::shared_ptr< navigation::PolygonRobotFootprintModel > robot(const std::string& name) const;
 
                 void saveRobot(const std::string& name) const;
 
                 void loadRobot(const std::string& name);
 
-                std::shared_ptr<misc::SettingsBase> addObstacles(const std::string& name);
+                std::shared_ptr< std::vector< std::shared_ptr<navigation::Obstacle> > > addObstacles(const std::string& name);
 
                 void removeObstacles(const std::string& name);
 
-                std::shared_ptr<misc::SettingsBase> obstacles(const std::string& name) const;
+                std::shared_ptr< std::vector< std::shared_ptr<navigation::Obstacle> > > obstacles(const std::string& name);
 
                 void saveObstacles(const std::string& name) const;
 
                 void loadObstacles(const std::string& name);
 
-                std::shared_ptr<misc::SettingsBase> addTrajectory(const std::string& name);
+                std::shared_ptr< navigation::TebConfig > addConfig(const std::string& name);
 
-                void removeTrajectory(const std::string& name);
+                void removeConfig(const std::string& name);
 
-                std::shared_ptr<misc::SettingsBase> trajectory(const std::string& name) const;
+                std::shared_ptr<navigation::TebConfig> config(const std::string& name) const;
 
-                void saveTrajectory(const std::string& name) const;
+                void saveConfig(const std::string& name) const;
 
-                void loadTrajectory(const std::string& name);
+                void loadConfig(const std::string& name);
 
                 std::vector<std::string> getRobotNames() const;
 
                 std::vector<std::string> getObstaclesNames() const;
 
-                std::vector<std::string> getTrajectoryNames() const;
+                std::vector<std::string> getConfigNames() const;
 
             private:
                 Settings() = default;
 
                 static std::shared_ptr<Settings> m_singleton;
 
-                std::map< std::string, std::shared_ptr<misc::SettingsBase> > m_robots;
-                std::map< std::string, std::shared_ptr<misc::SettingsBase> > m_obstacles;
-                std::map< std::string, std::shared_ptr<misc::SettingsBase> > m_trajectories;
+                std::map< std::string, std::shared_ptr<navigation::PolygonRobotFootprintModel> > m_robots;
+                std::map< std::string, std::shared_ptr<navigation::TebConfig> > m_config;
+                std::map< std::string, std::shared_ptr< std::vector< std::shared_ptr<navigation::Obstacle> > > > m_obstacles;
             };
         }
     }

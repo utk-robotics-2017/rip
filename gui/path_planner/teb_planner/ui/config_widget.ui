@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>RobotSettingsWidget</class>
- <widget class="QWidget" name="RobotSettingsWidget">
+ <class>ConfigWidget</class>
+ <widget class="QWidget" name="ConfigWidget">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -15,6 +15,34 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QLabel" name="label_58">
+       <property name="text">
+        <string>Config:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="config_options"/>
+     </item>
+     <item>
+      <widget class="QPushButton" name="add_config">
+       <property name="text">
+        <string>Add</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="delete_config">
+       <property name="text">
+        <string>Delete</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
     <widget class="QScrollArea" name="scrollArea">
      <property name="widgetResizable">
       <bool>true</bool>
@@ -25,7 +53,7 @@
         <x>0</x>
         <y>0</y>
         <width>534</width>
-        <height>1685</height>
+        <height>1693</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -38,27 +66,32 @@
        </item>
        <item>
         <layout class="QFormLayout" name="trajectory_form">
+         <property name="fieldGrowthPolicy">
+          <enum>QFormLayout::FieldsStayAtSizeHint</enum>
+         </property>
+         <property name="labelAlignment">
+          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+         </property>
+         <property name="formAlignment">
+          <set>Qt::AlignHCenter|Qt::AlignTop</set>
+         </property>
+         <property name="horizontalSpacing">
+          <number>6</number>
+         </property>
          <item row="0" column="0">
           <widget class="QLabel" name="label_2">
            <property name="toolTip">
-            <string>Enable automatic resizing of the trajectory w.r.t. the temporal resolution (recommended)</string>
+            <string>Enable automatic resizing of the trajectory w.r.t. the\ntemporal resolution (recommended)</string>
            </property>
            <property name="text">
             <string>Autosize:</string>
            </property>
           </widget>
          </item>
-         <item row="0" column="1">
-          <widget class="QCheckBox" name="autosize">
-           <property name="text">
-            <string/>
-           </property>
-          </widget>
-         </item>
          <item row="1" column="0">
           <widget class="QLabel" name="label_3">
            <property name="toolTip">
-            <string>Desired temporal resolution of the trajectory (should be in the magnitude of the underlying control rate)</string>
+            <string>Desired temporal resolution of the trajectory (should be in\nthe magnitude of the underlying control rate)</string>
            </property>
            <property name="text">
             <string>dt ref (s):</string>
@@ -68,7 +101,7 @@
          <item row="2" column="0">
           <widget class="QLabel" name="label_4">
            <property name="toolTip">
-            <string>Hysteresis for automatic resizing depending on the current temporal resolution (dt): usually 10%  of dt_ref</string>
+            <string>Hysteresis for automatic resizing depending on the current\ntemporal resolution (dt): usually 10%  of dt_ref</string>
            </property>
            <property name="text">
             <string>dt hysteresis (s):</string>
@@ -98,7 +131,7 @@
          <item row="5" column="0">
           <widget class="QLabel" name="label_7">
            <property name="toolTip">
-            <string>Overwrite the orientation of the local subgoals provided by the global planner</string>
+            <string>Overwrite the orientation of the local subgoals provided\nby the global planner</string>
            </property>
            <property name="text">
             <string>Overwrite global plan:</string>
@@ -108,7 +141,7 @@
          <item row="6" column="0">
           <widget class="QLabel" name="label_8">
            <property name="toolTip">
-            <string>If true, the underlying trajectories might be initialized with backwards motion in case the goal is behind the start  within the local costmap (this is only recommended if the robot is equipped with rear sensors)</string>
+            <string>If true, the underlying trajectories might be initialized\nwith backwards motion in case the goal is behind the start\n within the local costmap (this is only recommended if the\nrobot is equipped with rear sensors)</string>
            </property>
            <property name="text">
             <string>Backwards motion:</string>
@@ -118,7 +151,7 @@
          <item row="7" column="0">
           <widget class="QLabel" name="label_9">
            <property name="toolTip">
-            <string>Minimum separation between two consecutive waypoints from the global plan (if negative: disabled)</string>
+            <string>Minimum separation between two consecutive waypoints from\nthe global plan (if negative: disabled)</string>
            </property>
            <property name="text">
             <string>Global plan waypoint separation (in):</string>
@@ -128,7 +161,7 @@
          <item row="8" column="0">
           <widget class="QLabel" name="label_10">
            <property name="toolTip">
-            <string>If true, the planner adheres to the order of the waypoints in the storage container</string>
+            <string>If true, the planner adheres to the order of the waypoints\nin the storage container</string>
            </property>
            <property name="text">
             <string>Waypoints ordered:</string>
@@ -138,7 +171,7 @@
          <item row="9" column="0">
           <widget class="QLabel" name="label_11">
            <property name="toolTip">
-            <string>Specify the maximum length (cumulative Euclidean distances) of the subset of the global plan taken into account for optimization [if &lt;= 0: disabled; The length is also bounded by the local costmap size]</string>
+            <string>Specify the maximum length (cumulative Euclidean distances)\nof the subset of the global plan taken into account for\noptimization [if &lt;= 0: disabled; The length is also\nbounded by the local costmap size]</string>
            </property>
            <property name="text">
             <string>Max global plan lookahead distance (in):</string>
@@ -148,7 +181,7 @@
          <item row="10" column="0">
           <widget class="QLabel" name="label_12">
            <property name="toolTip">
-            <string>If true, the planner uses the exact arc length in velocity, acceleration, and turning rate computations [-&gt; increased cpu time], otherwise the euclidean approximation is used</string>
+            <string>If true, the planner uses the exact arc length in velocity,\nacceleration, and turning rate computations [-&gt; increased\ncpu time], otherwise the euclidean approximation is used</string>
            </property>
            <property name="text">
             <string>Exact Arc Length:</string>
@@ -158,7 +191,7 @@
          <item row="11" column="0">
           <widget class="QLabel" name="label_13">
            <property name="toolTip">
-            <string>Reinitialize the trajectory if the previous goal is updated with new goal with a separation more than the given value</string>
+            <string>Reinitialize the trajectory if the previous goal is updated\nwith new goal with a separation more than the given value</string>
            </property>
            <property name="text">
             <string>Force new goal distance (in):</string>
@@ -168,7 +201,7 @@
          <item row="12" column="0">
           <widget class="QLabel" name="label_14">
            <property name="toolTip">
-            <string>Specify up to which pose on the predicted plan the feasibility should be checked each sampling interval</string>
+            <string>Specify up to which pose on the predicted plan the feasibility\nshould be checked each sampling interval</string>
            </property>
            <property name="text">
             <string>Feasibility check num poses:</string>
@@ -213,7 +246,7 @@
           <widget class="QLineEdit" name="max_global_plan_lookahead_distance"/>
          </item>
          <item row="7" column="1">
-          <widget class="QLineEdit" name="global_plan_waypoiny_separation"/>
+          <widget class="QLineEdit" name="global_plan_waypoint_separation"/>
          </item>
          <item row="4" column="1">
           <widget class="QLineEdit" name="max_samples"/>
@@ -222,10 +255,13 @@
           <widget class="QLineEdit" name="dt_ref"/>
          </item>
          <item row="2" column="1">
-          <widget class="QLineEdit" name="dt_hystersis"/>
+          <widget class="QLineEdit" name="dt_hysteresis"/>
          </item>
          <item row="3" column="1">
           <widget class="QLineEdit" name="min_samples"/>
+         </item>
+         <item row="0" column="1">
+          <widget class="QLineEdit" name="autosize"/>
          </item>
         </layout>
        </item>
@@ -238,6 +274,12 @@
        </item>
        <item>
         <layout class="QFormLayout" name="robot_form">
+         <property name="fieldGrowthPolicy">
+          <enum>QFormLayout::FieldsStayAtSizeHint</enum>
+         </property>
+         <property name="formAlignment">
+          <set>Qt::AlignHCenter|Qt::AlignTop</set>
+         </property>
          <item row="0" column="0">
           <widget class="QLabel" name="label_16">
            <property name="toolTip">
@@ -261,7 +303,7 @@
          <item row="2" column="0">
           <widget class="QLabel" name="label_18">
            <property name="toolTip">
-            <string>Maximum strafing velocity of the robot (should be zero for non-holonomic robots) @note This should be zero for non-holonomic robots</string>
+            <string>Maximum strafing velocity of the robot (should be zero for\nnon-holonomic robots) @note This should be zero for non-holonomic robots</string>
            </property>
            <property name="text">
             <string>Max velocity y (in/s):</string>
@@ -274,7 +316,7 @@
             <string>Maximum angular velocity of the robot</string>
            </property>
            <property name="text">
-            <string>Max velocity theta (rad/s):</string>
+            <string>Max velocity theta (deg/s):</string>
            </property>
           </widget>
          </item>
@@ -304,14 +346,14 @@
             <string>Maximum angular acceleration of the robot</string>
            </property>
            <property name="text">
-            <string>Acceleration limit theta (rad/s^2):</string>
+            <string>Acceleration limit theta (deg/s^2):</string>
            </property>
           </widget>
          </item>
          <item row="7" column="0">
           <widget class="QLabel" name="label_23">
            <property name="toolTip">
-            <string>Minimum turning radius for Ackerman steering (car-like) @note For differential drive robots this should be zero</string>
+            <string>Minimum turning radius for Ackerman steering (car-like)\nNote: For differential drive robots this should be zero</string>
            </property>
            <property name="text">
             <string>Minimum turning radius (in):</string>
@@ -321,7 +363,7 @@
          <item row="8" column="0">
           <widget class="QLabel" name="label_24">
            <property name="toolTip">
-            <string>The distance between the drive shaft and the steering axle @note Only required for Ackerman steering (car-like)</string>
+            <string>The distance between the drive shaft and the steering axle\nNote: Only required for Ackerman steering (car-like)</string>
            </property>
            <property name="text">
             <string>Wheelbase (in):</string>
@@ -331,7 +373,7 @@
          <item row="9" column="0">
           <widget class="QLabel" name="label_25">
            <property name="toolTip">
-            <string>If true, updated the footprint before checking trajectory feasibility</string>
+            <string>If true, updated the footprint before checking trajectory\nfeasibility</string>
            </property>
            <property name="text">
             <string>Dynamic Footprint:</string>
@@ -363,7 +405,7 @@
           <widget class="QLineEdit" name="wheelbase"/>
          </item>
          <item row="7" column="1">
-          <widget class="QLineEdit" name="minimum_turing_radius"/>
+          <widget class="QLineEdit" name="min_turning_radius"/>
          </item>
          <item row="9" column="1">
           <widget class="QCheckBox" name="dynamic_footprint">
@@ -383,13 +425,19 @@
        </item>
        <item>
         <layout class="QFormLayout" name="goal_tolerance_form">
+         <property name="fieldGrowthPolicy">
+          <enum>QFormLayout::FieldsStayAtSizeHint</enum>
+         </property>
+         <property name="formAlignment">
+          <set>Qt::AlignHCenter|Qt::AlignTop</set>
+         </property>
          <item row="0" column="0">
           <widget class="QLabel" name="label_29">
            <property name="toolTip">
             <string>Allowed final orientation error</string>
            </property>
            <property name="text">
-            <string>Yaw (rad):</string>
+            <string>Yaw (deg):</string>
            </property>
           </widget>
          </item>
@@ -412,7 +460,7 @@
          <item row="2" column="0">
           <widget class="QLabel" name="label_31">
            <property name="toolTip">
-            <string>Allows the robot's velocity to be non-zero (usually max_velocity) upon reaching the goal pose</string>
+            <string>Allows the robot's velocity to be non-zero (usually\nmax_velocity) upon reaching the goal pose</string>
            </property>
            <property name="text">
             <string>Free goal velocity:</string>
@@ -437,8 +485,17 @@
        </item>
        <item>
         <layout class="QFormLayout" name="obstacles_form">
+         <property name="fieldGrowthPolicy">
+          <enum>QFormLayout::FieldsStayAtSizeHint</enum>
+         </property>
+         <property name="formAlignment">
+          <set>Qt::AlignHCenter|Qt::AlignTop</set>
+         </property>
          <item row="0" column="0">
           <widget class="QLabel" name="label_32">
+           <property name="toolTip">
+            <string>Minimum desired separation from obstacles</string>
+           </property>
            <property name="text">
             <string>Minimum obstacle distance (in):</string>
            </property>
@@ -446,6 +503,9 @@
          </item>
          <item row="1" column="0">
           <widget class="QLabel" name="label_34">
+           <property name="toolTip">
+            <string>Buffer zone around obstacles with non-zero penalty cost\n(should be larger than min_obstacle_distance in order to\ntake effect)</string>
+           </property>
            <property name="text">
             <string>Inflation distance (in):</string>
            </property>
@@ -453,6 +513,9 @@
          </item>
          <item row="4" column="0">
           <widget class="QLabel" name="label_35">
+           <property name="toolTip">
+            <string>The obstacles position is attached to the closest pose on\nthe trajectory to reduce computational effort, but take a\nnumber of neighbors into account as well</string>
+           </property>
            <property name="text">
             <string>Obstacles poses affected:</string>
            </property>
@@ -460,6 +523,9 @@
          </item>
          <item row="3" column="0">
           <widget class="QLabel" name="label_36">
+           <property name="toolTip">
+            <string>Specify whether the movement of dynamic obstacles should be\npredicted by a constant velocity model.\nNote:If false all obstacles are considered to be static.</string>
+           </property>
            <property name="text">
             <string>Dynamic obstacles:</string>
            </property>
@@ -467,6 +533,9 @@
          </item>
          <item row="2" column="0">
           <widget class="QLabel" name="label_37">
+           <property name="toolTip">
+            <string>Buffer zone around predicted locations of dynamic\nobstacles with non-zero penalty costs (should be larger\nmin_obstacle_distance in order to take effect)</string>
+           </property>
            <property name="text">
             <string>Dynamic obstacle inflation distance (in):</string>
            </property>
@@ -474,6 +543,9 @@
          </item>
          <item row="5" column="0">
           <widget class="QLabel" name="label_38">
+           <property name="toolTip">
+            <string>The obstacle association technique tries to connect only\nrelevant obstacles with the discretized trajectory during\noptimization, all obstacles within a specified distance are\nforced to be included (as a multiple of min_obstacle_distance),\ne.g. choose 2.0 in order to consider obstacles within a radius\nof 2.0*min_obstacle_dist.</string>
+           </property>
            <property name="text">
             <string>Obstacle association force inclusion factor:</string>
            </property>
@@ -481,13 +553,16 @@
          </item>
          <item row="6" column="0">
           <widget class="QLabel" name="label_39">
+           <property name="toolTip">
+            <string>See obstacle_association_force_inclusion_factor, but beyond a\nmultiple of [value]*min_obstacle_dist all obstacles are ignored\nduring optimization.</string>
+           </property>
            <property name="text">
             <string>Obstacle association cutoff factor:</string>
            </property>
           </widget>
          </item>
          <item row="0" column="1">
-          <widget class="QLineEdit" name="minimum_obstacle_distance"/>
+          <widget class="QLineEdit" name="min_obstacle_distance"/>
          </item>
          <item row="1" column="1">
           <widget class="QLineEdit" name="inflation_distance"/>
@@ -496,7 +571,7 @@
           <widget class="QLineEdit" name="dynamic_obstacle_inflation_distance"/>
          </item>
          <item row="4" column="1">
-          <widget class="QLineEdit" name="lineEdit_4"/>
+          <widget class="QLineEdit" name="obstacles_poses_affected"/>
          </item>
          <item row="5" column="1">
           <widget class="QLineEdit" name="obstacle_association_force_inclusion_factor"/>
@@ -505,7 +580,7 @@
           <widget class="QLineEdit" name="obstacle_association_cutoff_factor"/>
          </item>
          <item row="3" column="1">
-          <widget class="QCheckBox" name="dynamic_obstacles">
+          <widget class="QCheckBox" name="include_dynamic_obstacles">
            <property name="text">
             <string/>
            </property>
@@ -522,8 +597,17 @@
        </item>
        <item>
         <layout class="QFormLayout" name="optimization_form">
+         <property name="fieldGrowthPolicy">
+          <enum>QFormLayout::FieldsStayAtSizeHint</enum>
+         </property>
+         <property name="formAlignment">
+          <set>Qt::AlignHCenter|Qt::AlignTop</set>
+         </property>
          <item row="0" column="0">
           <widget class="QLabel" name="label_33">
+           <property name="toolTip">
+            <string>Number of solver iterations called in each outer loop iterations</string>
+           </property>
            <property name="text">
             <string>Number of inner iterations:</string>
            </property>
@@ -531,6 +615,9 @@
          </item>
          <item row="1" column="0">
           <widget class="QLabel" name="label_40">
+           <property name="toolTip">
+            <string>Each outer loop iteration automatically resizes the\ntrajectory and invokes the internal optimizer</string>
+           </property>
            <property name="text">
             <string>Number of outer iterations:</string>
            </property>
@@ -538,6 +625,9 @@
          </item>
          <item row="6" column="0">
           <widget class="QLabel" name="label_41">
+           <property name="toolTip">
+            <string>Optimization weight for satisfying the maximum allowed\ntranslational acceleration</string>
+           </property>
            <property name="text">
             <string>Acceleration limit x weight:</string>
            </property>
@@ -545,6 +635,9 @@
          </item>
          <item row="2" column="0">
           <widget class="QLabel" name="label_42">
+           <property name="toolTip">
+            <string>Add a small safety margin to penalty functions for\nhard-constraint approximations</string>
+           </property>
            <property name="text">
             <string>Penalty epsilon:</string>
            </property>
@@ -552,6 +645,9 @@
          </item>
          <item row="3" column="0">
           <widget class="QLabel" name="label_43">
+           <property name="toolTip">
+            <string>Optimization weight for satisfying the maximum allowed\ntranslational velocity</string>
+           </property>
            <property name="text">
             <string>Max velocity x weight:</string>
            </property>
@@ -559,6 +655,9 @@
          </item>
          <item row="5" column="0">
           <widget class="QLabel" name="label_44">
+           <property name="toolTip">
+            <string>Optimization weight for satisfying the maximum allowed\ntranslational acceleration</string>
+           </property>
            <property name="text">
             <string>Max velocity theta weight:</string>
            </property>
@@ -566,6 +665,9 @@
          </item>
          <item row="4" column="0">
           <widget class="QLabel" name="label_45">
+           <property name="toolTip">
+            <string>Optimization weight for satisfying the maximum allowed\nstrafing velocity</string>
+           </property>
            <property name="text">
             <string>Max velocity y weight:</string>
            </property>
@@ -573,6 +675,9 @@
          </item>
          <item row="9" column="0">
           <widget class="QLabel" name="label_46">
+           <property name="toolTip">
+            <string>Optimization weight for satisfying the non-holonomic-nkinematics</string>
+           </property>
            <property name="text">
             <string>Kinematics non-holomic weight:</string>
            </property>
@@ -580,6 +685,9 @@
          </item>
          <item row="8" column="0">
           <widget class="QLabel" name="label_47">
+           <property name="toolTip">
+            <string>Optimization weight for satisfying the maximum allowed\nangular acceleration</string>
+           </property>
            <property name="text">
             <string>Acceleration limit theta weight:</string>
            </property>
@@ -587,6 +695,9 @@
          </item>
          <item row="7" column="0">
           <widget class="QLabel" name="label_48">
+           <property name="toolTip">
+            <string>Optimization wieght for satisfying the maximum allowed\nstrafing acceleration</string>
+           </property>
            <property name="text">
             <string>Acceleration limit y weight:</string>
            </property>
@@ -594,6 +705,9 @@
          </item>
          <item row="10" column="0">
           <widget class="QLabel" name="label_49">
+           <property name="toolTip">
+            <string>Optimization weight for forcing the robot to choose\nonly forward directions\nNote: Differential drive only</string>
+           </property>
            <property name="text">
             <string>Kinematics forward weight:</string>
            </property>
@@ -601,6 +715,9 @@
          </item>
          <item row="11" column="0">
           <widget class="QLabel" name="label_50">
+           <property name="toolTip">
+            <string>Optimization weight for enforcing a minimum turning radius\nNote: Ackerman steering only</string>
+           </property>
            <property name="text">
             <string>Kinematics turning radius weight:</string>
            </property>
@@ -608,6 +725,9 @@
          </item>
          <item row="12" column="0">
           <widget class="QLabel" name="label_51">
+           <property name="toolTip">
+            <string>Optimization weight for contracting the trajectory w.r.t.\ntransition time</string>
+           </property>
            <property name="text">
             <string>Optimal time weight:</string>
            </property>
@@ -615,6 +735,9 @@
          </item>
          <item row="13" column="0">
           <widget class="QLabel" name="label_52">
+           <property name="toolTip">
+            <string>Optimization weight for satisfying a minimum separation\nfrom obstacles</string>
+           </property>
            <property name="text">
             <string>Obstacle weight:</string>
            </property>
@@ -622,6 +745,9 @@
          </item>
          <item row="14" column="0">
           <widget class="QLabel" name="label_53">
+           <property name="toolTip">
+            <string>Optimization weight for the inflation penalty (should be\nsmall)</string>
+           </property>
            <property name="text">
             <string>Inflation weight:</string>
            </property>
@@ -629,6 +755,9 @@
          </item>
          <item row="15" column="0">
           <widget class="QLabel" name="label_54">
+           <property name="toolTip">
+            <string>Optimization weight for satisfying the minimum separation\nfrom dynamic obstacles</string>
+           </property>
            <property name="text">
             <string>Dynamic obstacle weight:</string>
            </property>
@@ -636,6 +765,9 @@
          </item>
          <item row="16" column="0">
           <widget class="QLabel" name="label_55">
+           <property name="toolTip">
+            <string>Optimization weight for satisfying minimum separation\nfrom dynamic obstacles</string>
+           </property>
            <property name="text">
             <string>Dynamic obstacle inflation weight:</string>
            </property>
@@ -643,6 +775,9 @@
          </item>
          <item row="17" column="0">
           <widget class="QLabel" name="label_56">
+           <property name="toolTip">
+            <string>Optimization weight for...</string>
+           </property>
            <property name="text">
             <string>Waypoint weight:</string>
            </property>
@@ -650,6 +785,9 @@
          </item>
          <item row="18" column="0">
           <widget class="QLabel" name="label_57">
+           <property name="toolTip">
+            <string>Some special weights (currently the obstacle weight) are\nrepeatedly scaled by this factoring each outer iteration</string>
+           </property>
            <property name="text">
             <string>Weight adapt factor:</string>
            </property>
@@ -686,7 +824,7 @@
           <widget class="QLineEdit" name="kinematics_nh_weight"/>
          </item>
          <item row="10" column="1">
-          <widget class="QLineEdit" name="kinematics_forward_weight"/>
+          <widget class="QLineEdit" name="kinematics_forward_drive_weight"/>
          </item>
          <item row="11" column="1">
           <widget class="QLineEdit" name="kinematics_turning_radius_weight"/>

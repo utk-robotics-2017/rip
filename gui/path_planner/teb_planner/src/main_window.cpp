@@ -10,8 +10,18 @@ namespace rip
             MainWindow::MainWindow(QWidget* parent)
                 : QMainWindow(parent)
                 , m_ui(new Ui::MainWindow)
+                , m_settings(Settings::getInstance())
             {
                 m_ui->setupUi(this);
+                m_settings->load();
+
+                m_ui->config->setOptions();
+                m_ui->robot->setOptions();
+            }
+
+            MainWindow::~MainWindow()
+            {
+                m_settings->save();
             }
         }
     }

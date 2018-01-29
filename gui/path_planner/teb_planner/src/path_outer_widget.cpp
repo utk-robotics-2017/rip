@@ -1,0 +1,81 @@
+#include <teb_planner_gui/path_outer_widget.hpp>
+#include "ui_path_outer_widget.h"
+
+#include <QInputDialog>
+
+namespace rip
+{
+    namespace gui
+    {
+        namespace tebplanner
+        {
+
+            PathOuterWidget::PathOuterWidget(QWidget* parent)
+                : QWidget(parent)
+                , m_ui(new Ui::PathOuterWidget)
+                , m_settings(Settings::getInstance())
+                , m_compute_thread(ComputeThread::getInstance())
+            {
+                m_ui->setupUi(this);
+
+                connect(m_ui->obstacle_options, SIGNAL(currentIndexChanged(QString)), this, SLOT(setObstacles(QString)));
+                connect(m_ui->add_obstacles, SIGNAL(clicked()), this, SLOT(addObstacles()));
+                connect(m_ui->delete_obstacles, SIGNAL(clicked()), this, SLOT(deleteObstacles()));
+
+                connect(m_ui->robot_options, SIGNAL(currentIndexChanged(QString)), this, SLOT(setRobot(QString)));
+
+                connect(m_ui->config_options, SIGNAL(currentIndexChanged(QString)), this, SLOT(setConfig(QString)));
+            }
+
+            void PathOuterWidget::setRobot(const QString& text)
+            {
+                std::string name = text.toStdString();
+                std::shared_ptr<navigation::PolygonRobotFootprintModel> robot = m_settings->robot(name);
+                m_compute_thread->setRobot(robot);
+            }
+
+            void PathOuterWidget::addObstacles()
+            {
+                bool ok;
+                QString name = QInputDialog::getText(this, tr("Add Obstacles"), tr("Name:"), QLineEdit::Normal, "Default", &ok);
+                if (ok && !name.isEmpty())
+                {
+                    m_obstacles_name = name.toStdString();
+                    std::shared_ptr< std::vector< std::shared_ptr<navigation::Obstacle> > > obstacles = m_settings->addObstacles(m_obstacles_name);
+                    m_compute_thread->setObstacles(obstacles);
+                    m_ui->widget->setObstacles(obstacles);
+                }
+            }
+
+            void PathOuterWidget::setObstacles(const QString& text)
+            {
+                m_obstacles_name = text.toStdString();
+                std::shared_ptr< std::vector< std::shared_ptr<navigation::Obstacle> > > obstacles = m_settings->obstacles(m_obstacles_name);
+                m_compute_thread->setObstacles(obstacles);
+                m_ui->widget->setObstacles(obstacles);
+            }
+
+            void PathOuterWidget::removeObstacles()
+            {
+                m_settings->removeObstacles(m_obstacles_name);
+                m_obstacles_name = "";
+                m_compute_thread->setObstacles(nullptr);
+                m_ui->widget->setObstacles(nullptr);
+                m_ui->obstacle_options->removeItem(m_ui->obstacle_options->currentIndex());
+            }
+
+            void PathOuterWidget::setConfig(const QString& text)
+            {
+                std::string name = text.toStdString();
+                std::shared_ptr< navigation::TebConfig > config = m_settings->config(name);
+                m_compute_thread->setConfig(config);
+            }
+
+            void PathOuterWidget::run()
+            {
+                m_compute_thread->start();
+            }
+
+        }
+    }
+}

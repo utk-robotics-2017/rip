@@ -21,6 +21,22 @@ namespace rip
             return transformToWorld(pose);
         }
 
+        geometry::Polygon PolygonRobotFootprintModel::polygon() const
+        {
+            return m_polygon;
+        }
+
+        void PolygonRobotFootprintModel::setPolygon(const geometry::Polygon& polygon)
+        {
+            m_polygon = polygon;
+        }
+
+        void PolygonRobotFootprintModel::setPoint(unsigned int index, const geometry::Point& point)
+        {
+            assert(index < m_polygon.size());
+            m_polygon[index] = point;
+        }
+
         units::Distance PolygonRobotFootprintModel::distance(const Pose& current_pose, std::shared_ptr<Obstacle> obstacle) const
         {
             geometry::Polygon transformed_polygon = transformToWorld(current_pose);

@@ -39,6 +39,13 @@ namespace rip
             virtual void plan(const Pose& start, const Pose& goal, const VelocityPose& start_velocity = VelocityPose()) override;
 
             std::vector< TrajectoryPoint > getTrajectory() const;
+
+            /**
+             * Check whether the planned trajectory is feasible or not.
+             *
+             * @note Currently only checks that the trajectory is collision free
+             */
+            bool isTrajectoryFeasible() const;
         private:
             /**
              * Optimize a previously initialized trajectory (acutal TEB optimization loop)
@@ -63,7 +70,7 @@ namespace rip
              */
             void optimizeGraph(int num_iterations);
 
-            void clearGraph();
+            void clear();
 
             /**
              * Add all relevant vertices to the hyper-graph as optimizable variables
@@ -117,13 +124,6 @@ namespace rip
             void addEdgesKinematics();
 
             /**
-             * Check whether the planned trajectory is feasible or not.
-             *
-             * @note Currently only checks that the trajectory is collision free
-             */
-            bool isTrajectoryFeasible() const;
-
-            /**
              * Check if the planner suggests a shorter horizon
              *
              * @note Only needed if the trajectory provided by the planner is infeasible
@@ -143,7 +143,7 @@ namespace rip
             VelocityPose m_start_velocity;
             VelocityPose m_end_velocity;
         public:
-            EIGEN_MAKE_ALIGNED_OPERATOR_NEW;
+            EIGEN_MAKE_ALIGNED_OPERATOR_NEW
         };
     }
 }

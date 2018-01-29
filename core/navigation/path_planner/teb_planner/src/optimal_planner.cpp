@@ -82,7 +82,7 @@ namespace rip
                 }
                 catch (...)
                 {
-                    clearGraph();
+                    clear();
                     return;
                 }
 
@@ -92,7 +92,7 @@ namespace rip
                 }
                 catch (...)
                 {
-                    clearGraph();
+                    clear();
                     return;
                 }
 
@@ -103,14 +103,14 @@ namespace rip
                     }
                     */
 
-                clearGraph();
+                clear();
                 weight *= m_config->optimization.weight_adapt_factor;
             }
         }
 
         void TebOptimalPlanner::buildGraph(double weight)
         {
-            clearGraph();
+            clear();
 
             addVertices();
 
@@ -157,7 +157,7 @@ namespace rip
             clear();
         }
 
-        void TebOptimalPlanner::clearGraph()
+        void TebOptimalPlanner::clear()
         {
             m_optimizer->clear();
         }

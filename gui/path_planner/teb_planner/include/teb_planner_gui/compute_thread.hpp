@@ -27,19 +27,22 @@ namespace rip
             public:
                 static std::shared_ptr<ComputeThread> getInstance();
 
-                void updateConfig(const nlohmann::json& config);
+                void setRobot(std::shared_ptr< navigation::RobotFootprintModel > robot);
 
-                void updateObstacles(const std::vector< std::shared_ptr< navigation::Obstacle > >& obstacles);
+                void setObstacles(std::shared_ptr< std::vector< std::shared_ptr< navigation::Obstacle > > > obstacles);
 
-                void updateStart(const navigation::Pose& start);
+                void setConfig(std::shared_ptr< navigation::TebConfig > config);
 
-                void updateGoal(const navigation::Pose& goal);
+                void setStart(std::shared_ptr< navigation::Pose > start);
 
-                void updateWaypoints(const std::vector< geometry::Point >& waypoints);
+                void setGoal(std::shared_ptr< navigation::Pose > goal);
+
+                void stop();
 
                 std::vector< navigation::TrajectoryPoint > trajectory() const;
 
-                void stop();
+            signals:
+                void trajectoryUpdated();
 
             protected:
                 virtual void run() override;
@@ -49,15 +52,12 @@ namespace rip
 
                 static std::shared_ptr< ComputeThread > m_singleton;
 
-                QMutex m_mutex;
-                QWaitCondition m_wait_condition;
-
-                std::shared_ptr< navigation::TebConfig > m_config;
-                std::vector< std::shared_ptr< navigation::Obstacle > > m_obstacles;
                 std::vector< geometry::Point > m_waypoints;
                 std::shared_ptr< navigation::RobotFootprintModel > m_robot;
-                navigation::Pose m_start;
-                navigation::Pose m_goal;
+                std::shared_ptr< navigation::TebConfig > m_config;
+                std::shared_ptr< std::vector< std::shared_ptr< navigation::Obstacle > > > m_obstacles;
+                std::shared_ptr< navigation::Pose > m_start;
+                std::shared_ptr< navigation::Pose > m_goal;
                 std::unique_ptr< navigation::TebOptimalPlanner > m_planner;
             };
         }

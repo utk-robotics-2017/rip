@@ -25,13 +25,13 @@ namespace rip
                  * Desired temporal resolution of the trajectory (should be in
                  * the magnitude of the underlying control rate)
                  */
-                double dt_ref;
+                units::Time dt_ref;
 
                 /**
                  * Hysteresis for automatic resizing depending on the current
                  * temporal resolution (dt): usually 10%  of dt_ref
                  */
-                double dt_hysteresis;
+                units::Time dt_hysteresis;
 
                 /**
                  * Minimum number of samples (should always be greater than 2)

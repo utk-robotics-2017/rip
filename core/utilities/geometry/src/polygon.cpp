@@ -56,11 +56,13 @@ namespace rip
             x = x / 6 / a;
             y = y / 6 / a;
 
+            /*
             if (x < 0)
             {
                 x = -x;
                 y = -y;
             }
+            */
             return Point(x, y);
         }
 
@@ -169,6 +171,26 @@ namespace rip
             return PolygonList(paths);
         }
 
+        Point&Polygon::front()
+        {
+            return m_points.front();
+        }
+
+        const Point&Polygon::front() const
+        {
+            return m_points.front();
+        }
+
+        Point&Polygon::back()
+        {
+            return m_points.back();
+        }
+
+        const Point&Polygon::back() const
+        {
+            return m_points.back();
+        }
+
         std::vector<Point>::const_iterator Polygon::begin() const
         {
             return m_points.cbegin();
@@ -187,6 +209,11 @@ namespace rip
         std::vector<Point>::iterator Polygon::end()
         {
             return m_points.end();
+        }
+
+        Point& Polygon::operator [](int index)
+        {
+            return m_points[index];
         }
 
         Point Polygon::operator [](int index) const

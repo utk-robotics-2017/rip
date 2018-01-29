@@ -20,15 +20,20 @@
       <property name="currentIndex">
        <number>1</number>
       </property>
-      <widget class="rip::gui::tebplanner::PlannerWidget" name="planner">
+      <widget class="rip::gui::tebplanner::PathOuterWidget" name="planner">
        <attribute name="title">
         <string>Planner</string>
        </attribute>
       </widget>
-      <widget class="rip::gui::tebplanner::RobotSettingsWidget" name="robot">
+      <widget class="rip::gui::tebplanner::ConfigWidget" name="config">
        <attribute name="title">
-        <string>Robot</string>
+        <string>Config</string>
        </attribute>
+      </widget>
+      <widget class="rip::gui::tebplanner::RobotOuterWidget" name="robot">
+        <attribute name="title">
+          <string>Robot</string>
+        </attribute>
       </widget>
      </widget>
     </item>
@@ -48,16 +53,22 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>rip::gui::tebplanner::PlannerWidget</class>
+   <class>rip::gui::tebplanner::PathOuterWidget</class>
    <extends>QWidget</extends>
-   <header>teb_planner_gui/planner_widget.hpp</header>
+   <header>teb_planner_gui/path_outer_widget.hpp</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>rip::gui::tebplanner::RobotSettingsWidget</class>
+   <class>rip::gui::tebplanner::ConfigWidget</class>
    <extends>QWidget</extends>
-   <header>teb_planner_gui/robot_settings_widget.hpp</header>
+   <header>teb_planner_gui/config_widget.hpp</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+    <class>rip::gui::tebplanner::RobotOuterWidget</class>
+    <extends>QWidget</extends>
+    <header>teb_planner_gui/robot_outer_widget.hpp</header>
+    <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>

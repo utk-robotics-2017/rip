@@ -1,5 +1,5 @@
-#ifndef PATH_WIDGET_HPP
-#define PATH_WIDGET_HPP
+#ifndef PATH_INNER_WIDGET_HPP
+#define PATH_INNER_WIDGET_HPP
 
 #include <memory>
 #include <vector>
@@ -15,6 +15,7 @@
 #include "teb_planner/trajectory_point.hpp"
 
 #include "position_widget.hpp"
+#include "compute_thread.hpp"
 
 namespace rip
 {
@@ -26,14 +27,14 @@ namespace rip
              * A widget that draws the start position, goal position, waypoints, the trajectory and the robot following
              * the trajectory. Adding new obstacles and waypoints is also possible
              */
-            class PathWidget : public QWidget
+            class PathInnerWidget : public QWidget
             {
                 Q_OBJECT
             public:
                 /**
                  * Constructor
                  */
-                explicit PathWidget(QWidget* parent = nullptr);
+                explicit PathInnerWidget(QWidget* parent = nullptr);
 
                 /**
                  * Sets whether the robot should be animated
@@ -52,7 +53,7 @@ namespace rip
                 /**
                  * Sets the obstacles
                  */
-                void setObstacles(const std::vector< std::shared_ptr<navigation::Obstacle> >& obstacles);
+                void setObstacles(std::shared_ptr< std::vector< std::shared_ptr<navigation::Obstacle > > > obstacles);
 
             private slots:
                 void updateSelectedPosition();
@@ -145,32 +146,35 @@ namespace rip
                     kLineStart,
                     kLineEnd,
                     kLine,
-                    kPolygonPoint, // todo
-                    kPolygon // todo
+                    kPolygonPoint,
+                    kPolygon
                 };
 
-                bool checkPointClick(const geometry::Point& point, const QMatrix& transform, const QPoint& mouse_pos,SelectedType select, int index = -1, int polygon_index = -1, unsigned int pixel_theshold = 15);
+                bool checkPointClick(const geometry::Point& point, const QMatrix& transform, const QPoint& mouse_pos, SelectedType select, int index = -1, int polygon_index = -1, unsigned int pixel_theshold = 15);
 
 
                 SelectedType m_selected_type;
                 int m_selected_index;
                 int m_selected_polygon_index;
+                std::unique_ptr<PositionWidget> m_position_widget;
 
                 bool m_animate;
                 int m_timestep;
                 QTimer m_timer;
 
-                std::unique_ptr<PositionWidget> m_position_widget;
+
                 geometry::Rectangle m_bounding_box;
-                std::unique_ptr< navigation::Pose > m_start;
-                std::unique_ptr< navigation::Pose > m_goal;
-                std::vector< std::shared_ptr< navigation::Obstacle > > m_obstacles;
+                std::shared_ptr< navigation::Pose > m_start;
+                std::shared_ptr< navigation::Pose > m_goal;
+                std::shared_ptr< std::vector< std::shared_ptr< navigation::Obstacle > > > m_obstacles;
+                std::shared_ptr< navigation::RobotFootprintModel > m_robot;
                 std::vector< navigation::TrajectoryPoint > m_trajectory;
                 std::vector< geometry::Point > m_waypoints;
-                std::shared_ptr< navigation::RobotFootprintModel > m_robot;
+
+                std::shared_ptr< ComputeThread > m_compute_thread;
             };
         }
     }
 }
 
-#endif // PATH_WIDGET_HPP
+#endif // PATH_INNER_WIDGET_HPP

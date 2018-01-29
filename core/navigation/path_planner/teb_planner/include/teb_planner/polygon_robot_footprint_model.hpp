@@ -22,6 +22,12 @@ namespace rip
 
             geometry::Polygon polygon( const Pose& pose) const;
 
+            geometry::Polygon polygon() const;
+
+            void setPolygon(const geometry::Polygon& polygon);
+
+            void setPoint(unsigned int index, const geometry::Point& point);
+
             /**
              * Returns the distance between the robot and an obstacle
              * @param  current_pose Current robot pose

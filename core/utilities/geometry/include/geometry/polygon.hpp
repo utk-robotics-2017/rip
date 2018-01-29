@@ -86,25 +86,13 @@ namespace rip
              */
             PolygonList offset(const Distance& rhs) const;
 
-            Point& front()
-            {
-                return m_points.front();
-            }
+            Point& front();
 
-            const Point& front() const
-            {
-                return m_points.front();
-            }
+            const Point& front() const;
 
-            Point& back()
-            {
-                return m_points.back();
-            }
+            Point& back();
 
-            const Point& back() const
-            {
-                return m_points.back();
-            }
+            const Point& back() const;
 
             std::vector<Point>::const_iterator begin() const;
 
@@ -113,6 +101,8 @@ namespace rip
             std::vector<Point>::iterator begin();
 
             std::vector<Point>::iterator end();
+
+            Point& operator [](int index);
 
             Point operator [](int index) const;
 

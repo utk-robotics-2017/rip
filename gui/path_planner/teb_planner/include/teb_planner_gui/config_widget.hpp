@@ -1,5 +1,5 @@
-#ifndef ROBOT_SETTINGS_WIDGET_HPP
-#define ROBOT_SETTINGS_WIDGET_HPP
+#ifndef CONFIG_WIDGET_HPP
+#define CONFIG_WIDGET_HPP
 
 #include <memory>
 #include <map>
@@ -7,6 +7,7 @@
 
 #include <QLineEdit>
 #include <QCheckBox>
+#include <QString>
 
 #include <misc/settings_base.hpp>
 
@@ -14,7 +15,7 @@
 
 namespace Ui
 {
-    class RobotSettingsWidget;
+    class ConfigWidget;
 }
 
 namespace rip
@@ -23,34 +24,48 @@ namespace rip
     {
         namespace tebplanner
         {
-            class RobotSettingsWidget : public QWidget
+            class ConfigWidget : public QWidget
             {
                 Q_OBJECT
             public:
-                explicit RobotSettingsWidget(QWidget* parent = nullptr);
+                explicit ConfigWidget(QWidget* parent = nullptr);
 
+                void setOptions();
             private slots:
                 void updateDistance();
+                void updateTime();
                 void updateVelocity();
                 void updateAcceleration();
+                void updateAngle();
+                void updateAngularVelocity();
+                void updateAngularAcceleration();
                 void updateDouble();
                 void updateInteger();
                 void updateBool();
 
+                void addConfig();
+                void setConfig(const QString& name);
+                void removeConfig();
+
             private:
-                std::shared_ptr<Ui::RobotSettingsWidget> m_ui;
+                std::shared_ptr<Ui::ConfigWidget> m_ui;
                 std::map< QLineEdit*, std::string> m_distances;
+                std::map< QLineEdit*, std::string> m_times;
                 std::map< QLineEdit*, std::string> m_velocities;
                 std::map< QLineEdit*, std::string> m_accelerations;
+                std::map< QLineEdit*, std::string> m_angular_velocities;
+                std::map< QLineEdit*, std::string> m_angular_accelerations;
+                std::map< QLineEdit*, std::string> m_angles;
                 std::map< QLineEdit*, std::string> m_integers;
                 std::map< QLineEdit*, std::string> m_doubles;
                 std::map< QCheckBox*, std::string> m_bools;
 
                 std::shared_ptr<Settings> m_settings;
-                std::shared_ptr<misc::SettingsBase> m_current;
+                std::string m_name;
+                std::shared_ptr<navigation::TebConfig> m_current;
             };
         }
     }
 }
 
-#endif // ROBOT_SETTINGS_WIDGET_HPP
+#endif // CONFIG_WIDGET_HPP
