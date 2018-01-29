@@ -82,6 +82,7 @@ endif()
 if(ALL OR ARDUINO_GEN)
     message("Adding ArduinoGen")
     add_subdirectory(core/utilities/exceptions_base)
+    add_subdirectory(appendages)
     add_subdirectory(arduino_gen)
 endif()
 

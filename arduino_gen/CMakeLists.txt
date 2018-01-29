@@ -15,21 +15,16 @@ target_link_libraries(_${PROJECT_NAME} fmt json spdlog tinyxml2 cppfs exceptions
 target_link_libraries(_${PROJECT_NAME} gtest)
 target_include_directories(_${PROJECT_NAME} PUBLIC include)
 
-add_custom_command(
-    OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/code_template.txt
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-            ${CMAKE_CURRENT_SOURCE_DIR}/code_template.txt
-            ${CMAKE_CURRENT_BINARY_DIR}/code_template.txt
-    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/code_template.txt
-    COMMENT "Copying code_template.txt"
-    VERBATIM)
+include(FileOutputs)
+
+make_outputs(${CMAKE_CURRENT_SOURCE_DIR} "code_template.txt" ${CMAKE_CURRENT_BINARY_DIR} code_template)
+make_appendage_xml_outputs(${CMAKE_CURRENT_BINARY_DIR}/appendages appendage_xml_outputs)
+make_appendage_json_outputs(${CMAKE_CURRENT_BINARY_DIR}/appendages appendage_json_outputs)
 
 # Create arduino_gen executable, set to c++11, and link arduino_gen library
-add_executable(${PROJECT_NAME} "src/main.cpp" ${CMAKE_CURRENT_BINARY_DIR}/code_template.txt)
+add_executable(${PROJECT_NAME} "src/main.cpp" ${code_template} ${appendage_xml_outputs} ${appendage_json_outputs})
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
 target_link_libraries(${PROJECT_NAME} _${PROJECT_NAME})
-add_subdirectory(../appendages ./appendages)
-add_dependencies(${PROJECT_NAME} AppendageTemplates)
 
 
 if(ENABLE_TESTING)
@@ -38,20 +33,10 @@ if(ENABLE_TESTING)
     file(GLOB_RECURSE ${PROJECT_NAME}_TEST_DATA "test/data/*")
 
     # Copy test data to outdir/test
-    set(copiedTestData "")
-    foreach(TestDataFile ${${PROJECT_NAME}_TEST_DATA})
-        file(RELATIVE_PATH name ${CMAKE_CURRENT_SOURCE_DIR} ${TestDataFile})
-        add_custom_command(
-            OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${name}
-            COMMAND ${CMAKE_COMMAND} -E copy_if_different ${TestDataFile} ${CMAKE_CURRENT_BINARY_DIR}/${name}
-            DEPENDS ${TestDataFile}
-            COMMENT "Copying ${name}"
-            VERBATIM)
-        list(APPEND copiedTestData ${CMAKE_CURRENT_BINARY_DIR}/${name})
-    endforeach()
+    make_outputs(${CMAKE_CURRENT_SOURCE_DIR} "${${PROJECT_NAME}_TEST_DATA}" ${CMAKE_CURRENT_BINARY_DIR} testDataOutputs)
 
     # Create arduino_gen_test executable, set to c++11, link arduino_gen library and google test libraries
-    add_executable(${PROJECT_NAME}_test ${${PROJECT_NAME}_TEST_SOURCES} ${copiedTestData})
+    add_executable(${PROJECT_NAME}_test ${${PROJECT_NAME}_TEST_SOURCES} ${testDataOutputs})
     set_property(TARGET ${PROJECT_NAME}_test PROPERTY CXX_STANDARD 11)
     target_link_libraries(${PROJECT_NAME}_test _${PROJECT_NAME})
     target_link_libraries(${PROJECT_NAME}_test gmock gtest googletest_rip_macros)
