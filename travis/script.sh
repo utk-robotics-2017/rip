@@ -47,4 +47,6 @@ elif [[ $BRANCH == "appendages/"* ]]; then
     cd ../../appendages
 fi
 
-cppcheck src/*.cpp include/*.hpp
+if [[ $BRANCH != "master/"* ]]; then
+    cppcheck src/*.cpp include/*.hpp
+fi
