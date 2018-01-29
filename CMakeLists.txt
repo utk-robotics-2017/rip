@@ -110,7 +110,8 @@ if(ALL OR RIP OR COMMUNICATION OR NAVIGATION OR NAVX OR PATHFINDER OR VISION OR 
     add_subdirectory(core)
 endif()
 
-if(ALL OR RIPCOM)
-    message("Adding RIPCOM")
-    add_subdirectory(ripcom)
-endif()
+# No RipCom yet
+#if(ALL OR RIPCOM)
+#    message("Adding RIPCOM")
+#    add_subdirectory(ripcom)
+#endif()
