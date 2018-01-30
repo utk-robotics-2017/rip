@@ -20,7 +20,8 @@ namespace rip
     namespace navigation
     {
 
-        TebOptimalPlanner::TebOptimalPlanner(std::shared_ptr<TebConfig> config, const std::vector<std::shared_ptr<Obstacle> >& obstacles, std::shared_ptr<RobotFootprintModel> robot_model, const std::vector< geometry::Point >& waypoints)
+        TebPlanner::TebPlanner(std::shared_ptr<TebConfig> config, const std::vector<std::shared_ptr<Obstacle> >& obstacles,
+                               std::shared_ptr<RobotFootprintModel> robot_model, const std::vector< geometry::Point >& waypoints)
             : m_config(config)
             , m_obstacles(obstacles)
             , m_robot_model(robot_model)
@@ -42,23 +43,25 @@ namespace rip
 
         }
 
-        void TebOptimalPlanner::plan(const Pose& start, const Pose& goal, const VelocityPose& start_velocity)
+        void TebPlanner::plan(const Pose& start, const Pose& goal, const VelocityPose& start_velocity)
         {
             if (!m_teb.isInit())
             {
-                m_teb.initTrajectoryToGoal(start, goal, 0, m_config->robot.max_velocity_x, m_config->trajectory.min_samples, m_config->trajectory.allow_init_with_backwards_motion);
+                m_teb.initTrajectoryToGoal(start, goal, 0, m_config->robot.max_velocity_x, m_config->trajectory.min_samples,
+                                           m_config->trajectory.allow_init_with_backwards_motion);
             }
             else
             {
                 if (m_teb.size() > 0 &&
-                    goal.position().distance(m_teb.pose(m_teb.size() - 1).position()) < m_config->trajectory.force_reinit_new_goal_distance)
+                        goal.position().distance(m_teb.pose(m_teb.size() - 1).position()) < m_config->trajectory.force_reinit_new_goal_distance)
                 {
                     m_teb.updateAndPrune(&start, &goal, m_config->trajectory.min_samples);
                 }
                 else
                 {
                     m_teb.clear();
-                    m_teb.initTrajectoryToGoal(start, goal, 0, m_config->robot.max_velocity_x, m_config->trajectory.min_samples, m_config->trajectory.allow_init_with_backwards_motion);
+                    m_teb.initTrajectoryToGoal(start, goal, 0, m_config->robot.max_velocity_x, m_config->trajectory.min_samples,
+                                               m_config->trajectory.allow_init_with_backwards_motion);
                 }
             }
 
@@ -67,7 +70,7 @@ namespace rip
             optimizeTEB(m_config->optimization.num_inner_iterations, m_config->optimization.num_outer_iterations);
         }
 
-        void TebOptimalPlanner::optimizeTEB(int iterations_innerloop, int iterations_outerloop)
+        void TebPlanner::optimizeTEB(int iterations_innerloop, int iterations_outerloop)
         {
             double weight = 1.0;
 
@@ -75,7 +78,8 @@ namespace rip
             {
                 if (m_config->trajectory.autosize)
                 {
-                    m_teb.autoResize(m_config->trajectory.dt_ref, m_config->trajectory.dt_hysteresis, m_config->trajectory.min_samples, m_config->trajectory.max_samples);
+                    m_teb.autoResize(m_config->trajectory.dt_ref, m_config->trajectory.dt_hysteresis, m_config->trajectory.min_samples,
+                                     m_config->trajectory.max_samples);
                 }
 
                 try
@@ -110,7 +114,7 @@ namespace rip
             }
         }
 
-        void TebOptimalPlanner::buildGraph(double weight)
+        void TebPlanner::buildGraph(double weight)
         {
             clear();
 
@@ -133,15 +137,15 @@ namespace rip
             addEdgesKinematics();
         }
 
-        void TebOptimalPlanner::optimizeGraph(int num_iterations)
+        void TebPlanner::optimizeGraph(int num_iterations)
         {
-            if(m_config->robot.max_velocity_x < 0.01 * units::m / units::s)
+            if (m_config->robot.max_velocity_x < 0.01 * units::m / units::s)
             {
                 clear();
                 // todo: throw exception
             }
 
-            if(!m_teb.isInit() || m_teb.size() < m_config->trajectory.min_samples)
+            if (!m_teb.isInit() || m_teb.size() < m_config->trajectory.min_samples)
             {
                 clear();
                 // todo: throw exception
@@ -151,7 +155,7 @@ namespace rip
 
             int iter = m_optimizer->optimize(num_iterations);
 
-            if(!iter)
+            if (!iter)
             {
                 // todo: throw exception
             }
@@ -159,13 +163,13 @@ namespace rip
             clear();
         }
 
-        void TebOptimalPlanner::clear()
+        void TebPlanner::clear()
         {
             m_optimizer->vertices().clear();
             m_optimizer->clear();
         }
 
-        void TebOptimalPlanner::addVertices()
+        void TebPlanner::addVertices()
         {
             unsigned int id = 0;
             for (int i = 0, end = m_teb.size(); i < end; i++)
@@ -182,7 +186,7 @@ namespace rip
             }
         }
 
-        void TebOptimalPlanner::addEdgesObstacles(double weight_multiplier)
+        void TebPlanner::addEdgesObstacles(double weight_multiplier)
         {
             if (m_config->optimization.obstacle_weight == 0 || weight_multiplier == 0 || m_obstacles.size() == 0)
             {
@@ -223,7 +227,8 @@ namespace rip
                     units::Distance distance = obstacle->minimumDistance(m_teb.pose(i).position());
 
                     // Force considering obstacle if really close to the current pose
-                    if (distance < m_config->obstacles.min_obstacle_distance * m_config->obstacles.obstacle_association_force_inclusion_factor)
+                    if (distance < m_config->obstacles.min_obstacle_distance *
+                            m_config->obstacles.obstacle_association_force_inclusion_factor)
                     {
                         relevant_obstacles.push_back(obstacle);
                         continue;
@@ -317,7 +322,7 @@ namespace rip
             }
         }
 
-        void TebOptimalPlanner::addEdgeDynamicObstacles(double weight_multiplier)
+        void TebPlanner::addEdgeDynamicObstacles(double weight_multiplier)
         {
             if (m_config->optimization.obstacle_weight == 0 || weight_multiplier == 0 || m_obstacles.size() == 0)
             {
@@ -350,7 +355,7 @@ namespace rip
             }
         }
 
-        void TebOptimalPlanner::addEdgesWaypoints()
+        void TebPlanner::addEdgesWaypoints()
         {
             if (m_config->optimization.waypoint_weight == 0 || m_waypoints.size() == 0)
             {
@@ -400,7 +405,7 @@ namespace rip
             }
         }
 
-        void TebOptimalPlanner::addEdgesVelocity()
+        void TebPlanner::addEdgesVelocity()
         {
             // Non-holonomic robot
             if (m_config->robot.max_velocity_y == 0)
@@ -430,7 +435,8 @@ namespace rip
             // holonomic-robot
             else
             {
-                if (m_config->optimization.max_velocity_x_weight == 0 && m_config->optimization.max_velocity_y_weight == 0 && m_config->optimization.max_velocity_theta_weight == 0)
+                if (m_config->optimization.max_velocity_x_weight == 0 && m_config->optimization.max_velocity_y_weight == 0 &&
+                        m_config->optimization.max_velocity_theta_weight == 0)
                 {
                     return;
                 }
@@ -455,9 +461,10 @@ namespace rip
             }
         }
 
-        void TebOptimalPlanner::addEdgesAcceleration()
+        void TebPlanner::addEdgesAcceleration()
         {
-            if (m_config->optimization.acceleration_limit_x_weight == 0 && m_config->optimization.acceleration_limit_theta_weight == 0)
+            if (m_config->optimization.acceleration_limit_x_weight == 0 &&
+                    m_config->optimization.acceleration_limit_theta_weight == 0)
             {
                 return;
             }
@@ -567,7 +574,7 @@ namespace rip
             }
         }
 
-        void TebOptimalPlanner::addEdgesTimeOptimal()
+        void TebPlanner::addEdgesTimeOptimal()
         {
             if (m_config->optimization.optimal_time_weight == 0)
             {
@@ -587,7 +594,7 @@ namespace rip
             }
         }
 
-        void TebOptimalPlanner::addEdgesKinematics()
+        void TebPlanner::addEdgesKinematics()
         {
             if (m_config->optimization.kinematics_nh_weight == 0 && m_config->optimization.kinematics_forward_drive_weight == 0)
             {
@@ -611,7 +618,7 @@ namespace rip
             }
         }
 
-        std::vector<TrajectoryPoint> TebOptimalPlanner::getTrajectory() const
+        std::vector<TrajectoryPoint> TebPlanner::getTrajectory() const
         {
             std::vector< TrajectoryPoint > trajectory;
             int n = m_teb.size();
@@ -651,13 +658,13 @@ namespace rip
             start.setT(time);
         }
 
-        bool TebOptimalPlanner::isTrajectoryFeasible() const
+        bool TebPlanner::isTrajectoryFeasible() const
         {}
 
-        void TebOptimalPlanner::registerG2OTypes()
+        void TebPlanner::registerG2OTypes()
         {
             static bool first = true;
-            if(first)
+            if (first)
             {
                 g2o::Factory* factory = g2o::Factory::instance();
                 factory->registerType("VERTEX_POSE", new g2o::HyperGraphElementCreator<VertexPose>);
@@ -670,8 +677,10 @@ namespace rip
                 factory->registerType("EDGE_ACCELERATION_START", new g2o::HyperGraphElementCreator<EdgeAccelerationStart>);
                 factory->registerType("EDGE_ACCELERATION_GOAL", new g2o::HyperGraphElementCreator<EdgeAccelerationGoal>);
                 factory->registerType("EDGE_ACCELERATION_HOLONOMIC", new g2o::HyperGraphElementCreator<EdgeAccelerationHolonomic>);
-                factory->registerType("EDGE_ACCELERATION_HOLONOMIC_START", new g2o::HyperGraphElementCreator<EdgeAccelerationHolonomicStart>);
-                factory->registerType("EDGE_ACCELERATION_HOLONOMIC_GOAL", new g2o::HyperGraphElementCreator<EdgeAccelerationHolonomicGoal>);
+                factory->registerType("EDGE_ACCELERATION_HOLONOMIC_START",
+                                      new g2o::HyperGraphElementCreator<EdgeAccelerationHolonomicStart>);
+                factory->registerType("EDGE_ACCELERATION_HOLONOMIC_GOAL",
+                                      new g2o::HyperGraphElementCreator<EdgeAccelerationHolonomicGoal>);
                 factory->registerType("EDGE_KINEMATICS_DIFF_DRIVE", new g2o::HyperGraphElementCreator<EdgeKinematics>);
                 factory->registerType("EDGE_OBSTACLE", new g2o::HyperGraphElementCreator<EdgeObstacle>);
                 factory->registerType("EDGE_INFLATED_OBSTACLE", new g2o::HyperGraphElementCreator<EdgeInflatedObstacle>);
@@ -682,14 +691,14 @@ namespace rip
             }
         }
 
-        bool TebOptimalPlanner::isHorzonReductionAppropriate() const
+        bool TebPlanner::isHorzonReductionAppropriate() const
         {}
 
-        VelocityPose TebOptimalPlanner::extractVelocity(const Pose& pose1, const Pose& pose2, const units::Time& dt) const
+        VelocityPose TebPlanner::extractVelocity(const Pose& pose1, const Pose& pose2, const units::Time& dt) const
         {
-            if(dt == 0)
+            if (dt == 0)
             {
-                return VelocityPose(0,0,0);
+                return VelocityPose(0, 0, 0);
             }
 
             geometry::Point delta_s = pose2.position() - pose1.position();
@@ -697,7 +706,7 @@ namespace rip
             VelocityPose velocity;
 
             // Non-holonomic robot
-            if(m_config->robot.max_velocity_y == 0)
+            if (m_config->robot.max_velocity_y == 0)
             {
                 geometry::Point conf1dir(units::cos(pose1.theta()), units::sin(pose1.theta()));
 

@@ -22,13 +22,14 @@ namespace rip
 {
     namespace navigation
     {
-        class TebOptimalPlanner : public PlannerBase
+        class TebPlanner : public PlannerBase
         {
         public:
             /**
              * Construct and initialize the TEB optimal planner
              */
-            TebOptimalPlanner(std::shared_ptr<TebConfig> config, const std::vector< std::shared_ptr<Obstacle> >& obstacles, std::shared_ptr<RobotFootprintModel> robot_model, const std::vector< geometry::Point >& waypoints);
+            TebPlanner(std::shared_ptr<TebConfig> config, const std::vector< std::shared_ptr<Obstacle> >& obstacles,
+                       std::shared_ptr<RobotFootprintModel> robot_model, const std::vector< geometry::Point >& waypoints);
 
             /**
              * Plan a trajectory between a given start and goal pose
