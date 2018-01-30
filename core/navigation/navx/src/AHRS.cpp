@@ -869,8 +869,9 @@ namespace rip
                 commonInit(update_rate_hz);
                 bool processed_data = (data_type == SerialDataType::kProcessedData);
                 io = new SerialIO(serial_port_id, update_rate_hz, processed_data, ahrs_internal, ahrs_internal);
-                pthread_t trd;
-                pthread_create(&trd, NULL, AHRS::ThreadFunc, io);
+                ::pthread_t trd;
+                ::pthread_create(&trd, NULL, AHRS::ThreadFunc, io);
+
             }
 
             void AHRS::commonInit( uint8_t update_rate_hz ) {
