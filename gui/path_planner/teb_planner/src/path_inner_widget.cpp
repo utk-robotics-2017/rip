@@ -38,6 +38,8 @@ namespace rip
 
                 m_timer.setInterval(100);
                 setContextMenuPolicy(Qt::CustomContextMenu);
+
+                connect(m_compute_thread.get(), SIGNAL(trajectoryUpdated()), this, SLOT(trajectoryUpdated()));
             }
 
             void PathInnerWidget::setAnimate(bool animate)
@@ -75,88 +77,88 @@ namespace rip
 
                 switch (m_selected_type)
                 {
-                    case SelectedType::kNone:
-                    {
-                        return; // Shouldn't happen...
-                    }
-                    case SelectedType::kStartPoint:
-                    {
-                        m_start->setPosition(m_position_widget->position());
-                        screen_point = QPoint(m_start->position().x()(), m_start->position().y()());
-                        screen_point = screen_point * transform;
-                        m_position_widget->move(QPoint(screen_point.x() - 45, screen_point.y() + 17));
-                        update();
-                        return;
-                    }
-                    case SelectedType::kGoalPoint:
-                    {
-                        m_goal->setPosition(m_position_widget->position());
-                        screen_point = QPoint(m_goal->position().x()(), m_goal->position().y()());
-                        screen_point = screen_point * transform;
-                        m_position_widget->move(QPoint(screen_point.x() - 45, screen_point.y() + 17));
-                        update();
-                        return;
-                    }
-                    case SelectedType::kPoint:
-                    {
-                        std::shared_ptr<navigation::PointObstacle> point = std::dynamic_pointer_cast<navigation::PointObstacle>((*m_obstacles)[m_selected_index]);
-                        point->setPosition(m_position_widget->position());
-                        screen_point = QPoint(point->position().x()(), point->position().y()());
-                        screen_point = screen_point * transform;
-                        m_position_widget->move(QPoint(screen_point.x() - 45, screen_point.y() + 17));
-                        update();
-                        return;
-                    }
-                    case SelectedType::kLineStart:
-                    {
-                        std::shared_ptr<navigation::LineObstacle> line = std::dynamic_pointer_cast<navigation::LineObstacle>((*m_obstacles)[m_selected_index]);
-                        line->setStart(m_position_widget->position());
-                        screen_point = QPoint(line->start().x()(), line->start().y()());
-                        screen_point = screen_point * transform;
-                        m_position_widget->move(QPoint(screen_point.x() - 45, screen_point.y() + 17));
-                        update();
-                        return;
-                    }
-                    case SelectedType::kLineEnd:
-                    {
-                        std::shared_ptr<navigation::LineObstacle> line = std::dynamic_pointer_cast<navigation::LineObstacle>((*m_obstacles)[m_selected_index]);
-                        line->setEnd(m_position_widget->position());
-                        screen_point = QPoint(line->end().x()(), line->end().y()());
-                        screen_point = screen_point * transform;
-                        m_position_widget->move(QPoint(screen_point.x() - 45, screen_point.y() + 17));
-                        update();
-                        return;
-                    }
-                    case SelectedType::kLine:
-                    {
-                        std::shared_ptr<navigation::LineObstacle> line = std::dynamic_pointer_cast<navigation::LineObstacle>((*m_obstacles)[m_selected_index]);
-                        line->setCentroid(m_position_widget->position());
-                        screen_point = QPoint(line->centroid().x()(), line->centroid().y()());
-                        screen_point = screen_point * transform;
-                        m_position_widget->move(QPoint(screen_point.x() - 45, screen_point.y() + 17));
-                        update();
-                        return;
-                    }
-                    case SelectedType::kPolygonPoint:
-                    {
-                        std::shared_ptr<navigation::PolygonObstacle> polygon = std::dynamic_pointer_cast<navigation::PolygonObstacle>((*m_obstacles)[m_selected_index]);
-                        polygon->setPoint(m_selected_polygon_index, m_position_widget->position());
-                        screen_point = QPoint(polygon->polygon()[m_selected_polygon_index].x()(), polygon->polygon()[m_selected_polygon_index].y()());
-                        screen_point = screen_point * transform;
-                        m_position_widget->move(QPoint(screen_point.x() - 45, screen_point.y() + 17));
-                        update();
-                        return;
-                    }
-                    case SelectedType::kPolygon:
-                    {
-                        std::shared_ptr<navigation::PolygonObstacle> polygon = std::dynamic_pointer_cast<navigation::PolygonObstacle>((*m_obstacles)[m_selected_index]);
-                        polygon->setCentroid(m_position_widget->position());
-                        screen_point = QPoint(polygon->centroid().x()(), polygon->centroid().y()());
-                        screen_point = screen_point * transform;
-                        m_position_widget->move(QPoint(screen_point.x() - 45, screen_point.y() + 17));
-                        update();
-                        return;
-                    }
+                case SelectedType::kNone:
+                {
+                    return; // Shouldn't happen...
+                }
+                case SelectedType::kStartPoint:
+                {
+                    m_start->setPosition(m_position_widget->position());
+                    screen_point = QPoint(m_start->position().x()(), m_start->position().y()());
+                    screen_point = screen_point * transform;
+                    m_position_widget->move(QPoint(screen_point.x() - 45, screen_point.y() + 17));
+                    update();
+                    return;
+                }
+                case SelectedType::kGoalPoint:
+                {
+                    m_goal->setPosition(m_position_widget->position());
+                    screen_point = QPoint(m_goal->position().x()(), m_goal->position().y()());
+                    screen_point = screen_point * transform;
+                    m_position_widget->move(QPoint(screen_point.x() - 45, screen_point.y() + 17));
+                    update();
+                    return;
+                }
+                case SelectedType::kPoint:
+                {
+                    std::shared_ptr<navigation::PointObstacle> point = std::dynamic_pointer_cast<navigation::PointObstacle>((*m_obstacles)[m_selected_index]);
+                    point->setPosition(m_position_widget->position());
+                    screen_point = QPoint(point->position().x()(), point->position().y()());
+                    screen_point = screen_point * transform;
+                    m_position_widget->move(QPoint(screen_point.x() - 45, screen_point.y() + 17));
+                    update();
+                    return;
+                }
+                case SelectedType::kLineStart:
+                {
+                    std::shared_ptr<navigation::LineObstacle> line = std::dynamic_pointer_cast<navigation::LineObstacle>((*m_obstacles)[m_selected_index]);
+                    line->setStart(m_position_widget->position());
+                    screen_point = QPoint(line->start().x()(), line->start().y()());
+                    screen_point = screen_point * transform;
+                    m_position_widget->move(QPoint(screen_point.x() - 45, screen_point.y() + 17));
+                    update();
+                    return;
+                }
+                case SelectedType::kLineEnd:
+                {
+                    std::shared_ptr<navigation::LineObstacle> line = std::dynamic_pointer_cast<navigation::LineObstacle>((*m_obstacles)[m_selected_index]);
+                    line->setEnd(m_position_widget->position());
+                    screen_point = QPoint(line->end().x()(), line->end().y()());
+                    screen_point = screen_point * transform;
+                    m_position_widget->move(QPoint(screen_point.x() - 45, screen_point.y() + 17));
+                    update();
+                    return;
+                }
+                case SelectedType::kLine:
+                {
+                    std::shared_ptr<navigation::LineObstacle> line = std::dynamic_pointer_cast<navigation::LineObstacle>((*m_obstacles)[m_selected_index]);
+                    line->setCentroid(m_position_widget->position());
+                    screen_point = QPoint(line->centroid().x()(), line->centroid().y()());
+                    screen_point = screen_point * transform;
+                    m_position_widget->move(QPoint(screen_point.x() - 45, screen_point.y() + 17));
+                    update();
+                    return;
+                }
+                case SelectedType::kPolygonPoint:
+                {
+                    std::shared_ptr<navigation::PolygonObstacle> polygon = std::dynamic_pointer_cast<navigation::PolygonObstacle>((*m_obstacles)[m_selected_index]);
+                    polygon->setPoint(m_selected_polygon_index, m_position_widget->position());
+                    screen_point = QPoint(polygon->polygon()[m_selected_polygon_index].x()(), polygon->polygon()[m_selected_polygon_index].y()());
+                    screen_point = screen_point * transform;
+                    m_position_widget->move(QPoint(screen_point.x() - 45, screen_point.y() + 17));
+                    update();
+                    return;
+                }
+                case SelectedType::kPolygon:
+                {
+                    std::shared_ptr<navigation::PolygonObstacle> polygon = std::dynamic_pointer_cast<navigation::PolygonObstacle>((*m_obstacles)[m_selected_index]);
+                    polygon->setCentroid(m_position_widget->position());
+                    screen_point = QPoint(polygon->centroid().x()(), polygon->centroid().y()());
+                    screen_point = screen_point * transform;
+                    m_position_widget->move(QPoint(screen_point.x() - 45, screen_point.y() + 17));
+                    update();
+                    return;
+                }
                 }
             }
 
@@ -213,6 +215,13 @@ namespace rip
                     (*m_obstacles).push_back(std::make_shared<navigation::PolygonObstacle>(points));
                     update();
                 }
+            }
+
+            void PathInnerWidget::trajectoryUpdated()
+            {
+                m_trajectory = m_compute_thread->trajectory();
+                update();
+                int breakpoint = -1;
             }
 
             void PathInnerWidget::paintEvent(QPaintEvent* event)
@@ -284,7 +293,10 @@ namespace rip
             {
                 if (event->button() == Qt::RightButton)
                 {
-                    showContextMenu(event->pos());
+                    if(m_obstacles)
+                    {
+                        showContextMenu(event->pos());
+                    }
                     return;
                 }
 
@@ -336,67 +348,70 @@ namespace rip
                     }
                 }
 
-                for (int idx = 0; idx < m_obstacles->size(); idx++)
+                if(m_obstacles && m_obstacles->size())
                 {
-                    std::shared_ptr<navigation::Obstacle> obstacle = (*m_obstacles)[idx];
-
-                    std::shared_ptr<navigation::PointObstacle> point = std::dynamic_pointer_cast<navigation::PointObstacle>(obstacle);
-                    if (point)
+                    for (int idx = 0; idx < m_obstacles->size(); idx++)
                     {
-                        if (checkPointClick(point->centroid(), transform, pos, SelectedType::kPoint, idx))
-                        {
-                            return;
-                        }
-                        continue;
-                    }
+                        std::shared_ptr<navigation::Obstacle> obstacle = (*m_obstacles)[idx];
 
-                    std::shared_ptr<navigation::LineObstacle> line = std::dynamic_pointer_cast<navigation::LineObstacle>(obstacle);
-                    if (line)
-                    {
-                        if (checkPointClick(line->start(), transform, pos, SelectedType::kLineStart, idx))
+                        std::shared_ptr<navigation::PointObstacle> point = std::dynamic_pointer_cast<navigation::PointObstacle>(obstacle);
+                        if (point)
                         {
-                            return;
+                            if (checkPointClick(point->centroid(), transform, pos, SelectedType::kPoint, idx))
+                            {
+                                return;
+                            }
+                            continue;
                         }
 
-                        if (checkPointClick(line->end(), transform, pos, SelectedType::kLineEnd, idx))
+                        std::shared_ptr<navigation::LineObstacle> line = std::dynamic_pointer_cast<navigation::LineObstacle>(obstacle);
+                        if (line)
                         {
-                            return;
-                        }
+                            if (checkPointClick(line->start(), transform, pos, SelectedType::kLineStart, idx))
+                            {
+                                return;
+                            }
 
-                        if (checkPointClick(line->centroid(), transform, pos, SelectedType::kLine, idx))
-                        {
-                            return;
-                        }
-                    }
+                            if (checkPointClick(line->end(), transform, pos, SelectedType::kLineEnd, idx))
+                            {
+                                return;
+                            }
 
-                    std::shared_ptr<navigation::PolygonObstacle> polygon = std::dynamic_pointer_cast<navigation::PolygonObstacle>(obstacle);
-                    if (polygon)
-                    {
-                        geometry::Polygon poly = polygon->polygon();
-                        for (int i = 0; i < poly.size(); i++)
-                        {
-                            if (checkPointClick(poly[i], transform, pos, SelectedType::kPolygonPoint, idx, i))
+                            if (checkPointClick(line->centroid(), transform, pos, SelectedType::kLine, idx))
                             {
                                 return;
                             }
                         }
 
-                        if (checkPointClick(polygon->centroid(), transform, pos, SelectedType::kPolygon, idx))
+                        std::shared_ptr<navigation::PolygonObstacle> polygon = std::dynamic_pointer_cast<navigation::PolygonObstacle>(obstacle);
+                        if (polygon)
                         {
-                            return;
-                        }
+                            geometry::Polygon poly = polygon->polygon();
+                            for (int i = 0; i < poly.size(); i++)
+                            {
+                                if (checkPointClick(poly[i], transform, pos, SelectedType::kPolygonPoint, idx, i))
+                                {
+                                    return;
+                                }
+                            }
+
+                            if (checkPointClick(polygon->centroid(), transform, pos, SelectedType::kPolygon, idx))
+                            {
+                                return;
+                            }
 
 
-                        if (polygon->polygon().inside(real_point))
-                        {
-                            m_selected_type = SelectedType::kPolygon;
-                            m_selected_index = idx;
+                            if (polygon->polygon().inside(real_point))
+                            {
+                                m_selected_type = SelectedType::kPolygon;
+                                m_selected_index = idx;
 
-                            m_position_widget = std::unique_ptr<PositionWidget>(new PositionWidget(polygon->centroid(), this));
-                            m_position_widget->move(QPoint(pos.x() - 90, pos.y() + 17));
-                            m_position_widget->show();
-                            connect(m_position_widget.get(), SIGNAL(updatePosition()), this, SLOT(updateSelectedPosition()));
-                            return;
+                                m_position_widget = std::unique_ptr<PositionWidget>(new PositionWidget(polygon->centroid(), this));
+                                m_position_widget->move(QPoint(pos.x() - 90, pos.y() + 17));
+                                m_position_widget->show();
+                                connect(m_position_widget.get(), SIGNAL(updatePosition()), this, SLOT(updateSelectedPosition()));
+                                return;
+                            }
                         }
                     }
                 }
@@ -433,87 +448,87 @@ namespace rip
 
                 switch (m_selected_type)
                 {
-                    case SelectedType::kStartPoint:
-                    {
-                        m_position_widget->setX(rp.x());
-                        m_position_widget->setY(rp.y());
-                        m_start->setX(rp.x());
-                        m_start->setY(rp.y());
-                        m_position_widget->move(QPoint(pos.x() - 90, pos.y() + 17));
-                        update();
-                        return;
-                    }
-                    case SelectedType::kGoalPoint:
-                    {
-                        m_position_widget->setX(rp.x());
-                        m_position_widget->setY(rp.y());
-                        m_goal->setX(rp.x());
-                        m_goal->setY(rp.y());
-                        m_position_widget->move(QPoint(pos.x() - 90, pos.y() + 17));
-                        update();
-                        return;
-                    }
-                    case SelectedType::kPoint:
-                    {
-                        m_position_widget->setX(rp.x());
-                        m_position_widget->setY(rp.y());
-                        std::shared_ptr<navigation::PointObstacle> p_obstacle = std::dynamic_pointer_cast<navigation::PointObstacle>((*m_obstacles)[m_selected_index]);
-                        p_obstacle->setX(rp.x());
-                        p_obstacle->setY(rp.y());
-                        m_position_widget->move(QPoint(pos.x() - 90, pos.y() + 17));
-                        update();
-                        return;
-                    }
-                    case SelectedType::kLineStart:
-                    {
-                        m_position_widget->setX(rp.x());
-                        m_position_widget->setY(rp.y());
-                        std::shared_ptr<navigation::LineObstacle> l_obstacle = std::dynamic_pointer_cast<navigation::LineObstacle>((*m_obstacles)[m_selected_index]);
-                        l_obstacle->setStart(geometry::Point(rp.x(), rp.y()));
-                        m_position_widget->move(QPoint(pos.x() - 90, pos.y() + 17));
-                        update();
-                        return;
-                    }
-                    case SelectedType::kLineEnd:
-                    {
-                        m_position_widget->setX(rp.x());
-                        m_position_widget->setY(rp.y());
-                        std::shared_ptr<navigation::LineObstacle> l_obstacle = std::dynamic_pointer_cast<navigation::LineObstacle>((*m_obstacles)[m_selected_index]);
-                        l_obstacle->setEnd(geometry::Point(rp.x(), rp.y()));
-                        m_position_widget->move(QPoint(pos.x() - 90, pos.y() + 17));
-                        update();
-                        return;
-                    }
-                    case SelectedType::kLine:
-                    {
-                        m_position_widget->setX(rp.x());
-                        m_position_widget->setY(rp.y());
-                        std::shared_ptr<navigation::LineObstacle> l_obstacle = std::dynamic_pointer_cast<navigation::LineObstacle>((*m_obstacles)[m_selected_index]);
-                        l_obstacle->setCentroid(geometry::Point(rp.x(), rp.y()));
-                        m_position_widget->move(QPoint(pos.x() - 90, pos.y() + 17));
-                        update();
-                        return;
-                    }
-                    case SelectedType::kPolygonPoint:
-                    {
-                        m_position_widget->setX(rp.x());
-                        m_position_widget->setY(rp.y());
-                        std::shared_ptr<navigation::PolygonObstacle> p_obstacle = std::dynamic_pointer_cast<navigation::PolygonObstacle>((*m_obstacles)[m_selected_index]);
-                        p_obstacle->setPoint(m_selected_polygon_index, geometry::Point(rp.x(), rp.y()));
-                        m_position_widget->move(QPoint(pos.x() - 90, pos.y() + 17));
-                        update();
-                        return;
-                    }
-                    case SelectedType::kPolygon:
-                    {
-                        m_position_widget->setX(rp.x());
-                        m_position_widget->setY(rp.y());
-                        std::shared_ptr<navigation::PolygonObstacle> p_obstacle = std::dynamic_pointer_cast<navigation::PolygonObstacle>((*m_obstacles)[m_selected_index]);
-                        p_obstacle->setCentroid(geometry::Point(rp.x(), rp.y()));
-                        m_position_widget->move(QPoint(pos.x() - 90, pos.y() + 17));
-                        update();
-                        return;
-                    }
+                case SelectedType::kStartPoint:
+                {
+                    m_position_widget->setX(rp.x());
+                    m_position_widget->setY(rp.y());
+                    m_start->setX(rp.x());
+                    m_start->setY(rp.y());
+                    m_position_widget->move(QPoint(pos.x() - 90, pos.y() + 17));
+                    update();
+                    return;
+                }
+                case SelectedType::kGoalPoint:
+                {
+                    m_position_widget->setX(rp.x());
+                    m_position_widget->setY(rp.y());
+                    m_goal->setX(rp.x());
+                    m_goal->setY(rp.y());
+                    m_position_widget->move(QPoint(pos.x() - 90, pos.y() + 17));
+                    update();
+                    return;
+                }
+                case SelectedType::kPoint:
+                {
+                    m_position_widget->setX(rp.x());
+                    m_position_widget->setY(rp.y());
+                    std::shared_ptr<navigation::PointObstacle> p_obstacle = std::dynamic_pointer_cast<navigation::PointObstacle>((*m_obstacles)[m_selected_index]);
+                    p_obstacle->setX(rp.x());
+                    p_obstacle->setY(rp.y());
+                    m_position_widget->move(QPoint(pos.x() - 90, pos.y() + 17));
+                    update();
+                    return;
+                }
+                case SelectedType::kLineStart:
+                {
+                    m_position_widget->setX(rp.x());
+                    m_position_widget->setY(rp.y());
+                    std::shared_ptr<navigation::LineObstacle> l_obstacle = std::dynamic_pointer_cast<navigation::LineObstacle>((*m_obstacles)[m_selected_index]);
+                    l_obstacle->setStart(geometry::Point(rp.x(), rp.y()));
+                    m_position_widget->move(QPoint(pos.x() - 90, pos.y() + 17));
+                    update();
+                    return;
+                }
+                case SelectedType::kLineEnd:
+                {
+                    m_position_widget->setX(rp.x());
+                    m_position_widget->setY(rp.y());
+                    std::shared_ptr<navigation::LineObstacle> l_obstacle = std::dynamic_pointer_cast<navigation::LineObstacle>((*m_obstacles)[m_selected_index]);
+                    l_obstacle->setEnd(geometry::Point(rp.x(), rp.y()));
+                    m_position_widget->move(QPoint(pos.x() - 90, pos.y() + 17));
+                    update();
+                    return;
+                }
+                case SelectedType::kLine:
+                {
+                    m_position_widget->setX(rp.x());
+                    m_position_widget->setY(rp.y());
+                    std::shared_ptr<navigation::LineObstacle> l_obstacle = std::dynamic_pointer_cast<navigation::LineObstacle>((*m_obstacles)[m_selected_index]);
+                    l_obstacle->setCentroid(geometry::Point(rp.x(), rp.y()));
+                    m_position_widget->move(QPoint(pos.x() - 90, pos.y() + 17));
+                    update();
+                    return;
+                }
+                case SelectedType::kPolygonPoint:
+                {
+                    m_position_widget->setX(rp.x());
+                    m_position_widget->setY(rp.y());
+                    std::shared_ptr<navigation::PolygonObstacle> p_obstacle = std::dynamic_pointer_cast<navigation::PolygonObstacle>((*m_obstacles)[m_selected_index]);
+                    p_obstacle->setPoint(m_selected_polygon_index, geometry::Point(rp.x(), rp.y()));
+                    m_position_widget->move(QPoint(pos.x() - 90, pos.y() + 17));
+                    update();
+                    return;
+                }
+                case SelectedType::kPolygon:
+                {
+                    m_position_widget->setX(rp.x());
+                    m_position_widget->setY(rp.y());
+                    std::shared_ptr<navigation::PolygonObstacle> p_obstacle = std::dynamic_pointer_cast<navigation::PolygonObstacle>((*m_obstacles)[m_selected_index]);
+                    p_obstacle->setCentroid(geometry::Point(rp.x(), rp.y()));
+                    m_position_widget->move(QPoint(pos.x() - 90, pos.y() + 17));
+                    update();
+                    return;
+                }
                 }
             }
 
@@ -635,7 +650,7 @@ namespace rip
 
             void PathInnerWidget::drawObstacles(QPainter& painter, double scale)
             {
-                if (m_obstacles->empty())
+                if (!m_obstacles || m_obstacles->empty())
                 {
                     return;
                 }
@@ -693,13 +708,16 @@ namespace rip
                 painter.setBrush(Qt::red);
 
                 bool first = true;
-                geometry::Point p0;
+                geometry::Point p0 = m_trajectory.front().position();
+
+                double diameter = scale * 5;
 
                 for (const navigation::TrajectoryPoint& point : m_trajectory)
                 {
+                    painter.drawEllipse(p0.x()() - diameter / 2.0, p0.y()() - diameter / 2.0, diameter, diameter);
                     if (first)
                     {
-                        p0 = point.position();
+                        first = false;
                         continue;
                     }
 
@@ -776,7 +794,7 @@ namespace rip
 
             void PathInnerWidget::createBoundingBox()
             {
-                if (m_obstacles->empty())
+                if (!m_obstacles || m_obstacles->empty())
                 {
                     m_bounding_box = geometry::Rectangle(-1 * units::in, 1 * units::in, -1 * units::in, 1 * units::in);
                     return;

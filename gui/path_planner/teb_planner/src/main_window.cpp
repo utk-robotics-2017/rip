@@ -17,6 +17,7 @@ namespace rip
 
                 m_ui->config->setOptions();
                 m_ui->robot->setOptions();
+                m_ui->planner->setOptions();
             }
 
             MainWindow::~MainWindow()

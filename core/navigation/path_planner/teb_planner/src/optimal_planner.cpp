@@ -26,6 +26,8 @@ namespace rip
             , m_robot_model(robot_model)
             , m_waypoints(waypoints)
         {
+            registerG2OTypes();
+
             m_optimizer = std::make_shared<g2o::SparseOptimizer>();
 
             using BlockSolver = g2o::BlockSolver < g2o::BlockSolverTraits < -1, -1 > >;
@@ -159,17 +161,23 @@ namespace rip
 
         void TebOptimalPlanner::clear()
         {
+            m_optimizer->vertices().clear();
             m_optimizer->clear();
         }
 
         void TebOptimalPlanner::addVertices()
         {
+            unsigned int id = 0;
             for (int i = 0, end = m_teb.size(); i < end; i++)
             {
-                m_optimizer->addVertex(m_teb.poseVertex(i).get());
+                std::shared_ptr<VertexPose> vp = m_teb.poseVertex(i);
+                vp->setId(id++);
+                m_optimizer->addVertex(vp.get());
                 if (m_teb.sizeTD() != 0 && i < m_teb.sizeTD())
                 {
-                    m_optimizer->addVertex(m_teb.timeDiffVertex(i).get());
+                    std::shared_ptr<VertexTimeDiff> vtd = m_teb.timeDiffVertex(i);
+                    vtd->setId(id++);
+                    m_optimizer->addVertex(vtd.get());
                 }
             }
         }
@@ -645,6 +653,34 @@ namespace rip
 
         bool TebOptimalPlanner::isTrajectoryFeasible() const
         {}
+
+        void TebOptimalPlanner::registerG2OTypes()
+        {
+            static bool first = true;
+            if(first)
+            {
+                g2o::Factory* factory = g2o::Factory::instance();
+                factory->registerType("VERTEX_POSE", new g2o::HyperGraphElementCreator<VertexPose>);
+                factory->registerType("VERTEX_TIMEDIFF", new g2o::HyperGraphElementCreator<VertexTimeDiff>);
+
+                factory->registerType("EDGE_TIME_OPTIMAL", new g2o::HyperGraphElementCreator<EdgeTimeOptimal>);
+                factory->registerType("EDGE_VELOCITY", new g2o::HyperGraphElementCreator<EdgeVelocity>);
+                factory->registerType("EDGE_VELOCITY_HOLONOMIC", new g2o::HyperGraphElementCreator<EdgeVelocityHolonomic>);
+                factory->registerType("EDGE_ACCELERATION", new g2o::HyperGraphElementCreator<EdgeAcceleration>);
+                factory->registerType("EDGE_ACCELERATION_START", new g2o::HyperGraphElementCreator<EdgeAccelerationStart>);
+                factory->registerType("EDGE_ACCELERATION_GOAL", new g2o::HyperGraphElementCreator<EdgeAccelerationGoal>);
+                factory->registerType("EDGE_ACCELERATION_HOLONOMIC", new g2o::HyperGraphElementCreator<EdgeAccelerationHolonomic>);
+                factory->registerType("EDGE_ACCELERATION_HOLONOMIC_START", new g2o::HyperGraphElementCreator<EdgeAccelerationHolonomicStart>);
+                factory->registerType("EDGE_ACCELERATION_HOLONOMIC_GOAL", new g2o::HyperGraphElementCreator<EdgeAccelerationHolonomicGoal>);
+                factory->registerType("EDGE_KINEMATICS_DIFF_DRIVE", new g2o::HyperGraphElementCreator<EdgeKinematics>);
+                factory->registerType("EDGE_OBSTACLE", new g2o::HyperGraphElementCreator<EdgeObstacle>);
+                factory->registerType("EDGE_INFLATED_OBSTACLE", new g2o::HyperGraphElementCreator<EdgeInflatedObstacle>);
+                factory->registerType("EDGE_DYNAMIC_OBSTACLE", new g2o::HyperGraphElementCreator<EdgeDynamicObstacle>);
+                factory->registerType("EDGE_WAYPOINT", new g2o::HyperGraphElementCreator<EdgeWaypoint>);
+
+                first = false;
+            }
+        }
 
         bool TebOptimalPlanner::isHorzonReductionAppropriate() const
         {}

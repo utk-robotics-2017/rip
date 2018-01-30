@@ -20,11 +20,37 @@ namespace rip
 
                 connect(m_ui->obstacle_options, SIGNAL(currentIndexChanged(QString)), this, SLOT(setObstacles(QString)));
                 connect(m_ui->add_obstacles, SIGNAL(clicked()), this, SLOT(addObstacles()));
-                connect(m_ui->delete_obstacles, SIGNAL(clicked()), this, SLOT(deleteObstacles()));
+                connect(m_ui->delete_obstacles, SIGNAL(clicked()), this, SLOT(removeObstacles()));
 
                 connect(m_ui->robot_options, SIGNAL(currentIndexChanged(QString)), this, SLOT(setRobot(QString)));
 
                 connect(m_ui->config_options, SIGNAL(currentIndexChanged(QString)), this, SLOT(setConfig(QString)));
+
+                connect(m_ui->run, SIGNAL(clicked(bool)), this, SLOT(run()));
+            }
+
+            void PathOuterWidget::setOptions()
+            {
+                QStringList names;
+                for(const std::string& name : m_settings->getRobotNames())
+                {
+                    names << name.c_str();
+                }
+                m_ui->robot_options->addItems(names);
+
+                names.clear();
+                for(const std::string& name : m_settings->getConfigNames())
+                {
+                    names << name.c_str();
+                }
+                m_ui->config_options->addItems(names);
+
+                names.clear();
+                for(const std::string& name : m_settings->getObstaclesNames())
+                {
+                    names << name.c_str();
+                }
+                m_ui->obstacle_options->addItems(names);
             }
 
             void PathOuterWidget::setRobot(const QString& text)
@@ -44,6 +70,7 @@ namespace rip
                     std::shared_ptr< std::vector< std::shared_ptr<navigation::Obstacle> > > obstacles = m_settings->addObstacles(m_obstacles_name);
                     m_compute_thread->setObstacles(obstacles);
                     m_ui->widget->setObstacles(obstacles);
+                    m_ui->obstacle_options->addItem(QString::fromStdString(m_obstacles_name));
                 }
             }
 

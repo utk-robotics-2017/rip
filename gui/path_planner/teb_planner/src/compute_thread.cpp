@@ -56,6 +56,7 @@ namespace rip
                 {
                     m_planner.reset(new navigation::TebOptimalPlanner(m_config, *m_obstacles, m_robot, m_waypoints));
                     m_planner->plan(*m_start, *m_goal);
+                    emit trajectoryUpdated();
                 }
             }
 

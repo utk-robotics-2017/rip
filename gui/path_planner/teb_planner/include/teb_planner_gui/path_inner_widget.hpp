@@ -64,6 +64,8 @@ namespace rip
 
                 void addPolygonObstacle();
 
+                void trajectoryUpdated();
+
             protected:
                 /**
                  * Paints the widget

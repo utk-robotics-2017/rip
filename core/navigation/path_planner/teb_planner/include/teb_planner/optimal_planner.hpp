@@ -47,6 +47,8 @@ namespace rip
              */
             bool isTrajectoryFeasible() const;
         private:
+            static void registerG2OTypes();
+
             /**
              * Optimize a previously initialized trajectory (acutal TEB optimization loop)
              *

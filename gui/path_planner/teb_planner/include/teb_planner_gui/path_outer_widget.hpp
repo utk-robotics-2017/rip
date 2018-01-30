@@ -27,6 +27,8 @@ namespace rip
             public:
                 explicit PathOuterWidget(QWidget* parent = nullptr);
 
+                void setOptions();
+
             private slots:
                 void setRobot(const QString& text);
 
