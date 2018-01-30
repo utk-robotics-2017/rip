@@ -10,8 +10,16 @@ set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
 if(ENABLE_TESTING)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage")
 endif()
-target_link_libraries(${PROJECT_NAME} units spdlog)
+target_link_libraries(${PROJECT_NAME} units spdlog periphery)
 target_include_directories(${PROJECT_NAME} PUBLIC include)
+
+if(ENABLE_DIAG)
+	file(GLOB_RECURSE ${PROJECT_NAME}_DIAG_SOURCES "diag/*.cpp")
+	add_executable(${PROJECT_NAME}_diag ${${PROJECT_NAME}_DIAG_SOURCES})
+	set_property(TARGET ${PROJECT_NAME}_diag PROPERTY CXX_STANDARD 11)
+	target_link_libraries(${PROJECT_NAME}_diag ${PROJECT_NAME})
+	target_link_libraries(${PROJECT_NAME}_diag periphery units)
+endif()
 
 if(ENABLE_TESTING)
     # Get test source files and test data files
