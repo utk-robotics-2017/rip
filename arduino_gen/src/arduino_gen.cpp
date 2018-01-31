@@ -1,4 +1,4 @@
-#include "arduino_gen.hpp"
+#include "arduino_gen/arduino_gen.hpp"
 
 #include <fstream>
 #include <sys/stat.h>
@@ -10,17 +10,17 @@
 #include <cppfs/fs.h>
 #include <cppfs/FileHandle.h>
 
-#include "appendage_template.hpp"
-#include "appendage.hpp"
-#include "includes.hpp"
-#include "setup.hpp"
-#include "constructors.hpp"
-#include "argument.hpp"
-#include "loop.hpp"
-#include "command.hpp"
-#include "utils.hpp"
-#include "xml_utils.hpp"
-#include "exceptions.hpp"
+#include "arduino_gen/appendage_template.hpp"
+#include "arduino_gen/appendage.hpp"
+#include "arduino_gen/includes.hpp"
+#include "arduino_gen/setup.hpp"
+#include "arduino_gen/constructors.hpp"
+#include "arduino_gen/argument.hpp"
+#include "arduino_gen/loop.hpp"
+#include "arduino_gen/command.hpp"
+#include "arduino_gen/utils.hpp"
+#include "arduino_gen/xml_utils.hpp"
+#include "arduino_gen/exceptions.hpp"
 
 namespace rip
 {

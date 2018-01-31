@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "arduino_gen.hpp"
+#include "arduino_gen/arduino_gen.hpp"
 
 int main(int argc, char* argv[])
 {

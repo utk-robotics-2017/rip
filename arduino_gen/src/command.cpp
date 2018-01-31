@@ -1,4 +1,4 @@
-#include "command.hpp"
+#include "arduino_gen/command.hpp"
 
 #include <sstream>
 #include <regex>
@@ -8,11 +8,11 @@
 #include <fmt/format.h>
 #include <tinyxml2.h>
 
-#include "code.hpp"
-#include "parameter.hpp"
-#include "return_value.hpp"
-#include "appendage.hpp"
-#include "exceptions.hpp"
+#include "arduino_gen/code.hpp"
+#include "arduino_gen/parameter.hpp"
+#include "arduino_gen/return_value.hpp"
+#include "arduino_gen/appendage.hpp"
+#include "arduino_gen/exceptions.hpp"
 
 namespace rip
 {

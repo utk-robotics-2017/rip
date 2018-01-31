@@ -1,9 +1,9 @@
-#include "xml_element.hpp"
+#include "arduino_gen/xml_element.hpp"
 
 #include <fmt/format.h>
 #include <tinyxml2.h>
 
-#include "exceptions.hpp"
+#include "arduino_gen/exceptions.hpp"
 
 namespace rip
 {

@@ -1,11 +1,11 @@
-#include "return_value.hpp"
+#include "arduino_gen/return_value.hpp"
 
 #include <map>
 
 #include <fmt/format.h>
 #include <tinyxml2.h>
 
-#include "exceptions.hpp"
+#include "arduino_gen/exceptions.hpp"
 
 namespace rip
 {

@@ -1,13 +1,13 @@
-#include "includes.hpp"
+#include "arduino_gen/includes.hpp"
 
 #include <fmt/format.h>
 #include <tinyxml2.h>
 
-#include "constructors.hpp"
-#include "setup.hpp"
-#include "loop.hpp"
-#include "command.hpp"
-#include "exceptions.hpp"
+#include "arduino_gen/constructors.hpp"
+#include "arduino_gen/setup.hpp"
+#include "arduino_gen/loop.hpp"
+#include "arduino_gen/command.hpp"
+#include "arduino_gen/exceptions.hpp"
 
 namespace rip
 {

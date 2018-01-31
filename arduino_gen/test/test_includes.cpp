@@ -1,6 +1,6 @@
-#include "includes.hpp"
-#include "exceptions.hpp"
-#include "xml_utils.hpp"
+#include "arduino_gen/includes.hpp"
+#include "arduino_gen/exceptions.hpp"
+#include "arduino_gen/xml_utils.hpp"
 
 #include <tinyxml2.h>
 #include <gtest/gtest.h>

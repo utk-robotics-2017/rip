@@ -1,7 +1,7 @@
-#include "arduino_gen.hpp"
-#include "appendage.hpp"
-#include "appendage_template.hpp"
-#include "exceptions.hpp"
+#include "arduino_gen/arduino_gen.hpp"
+#include "arduino_gen/appendage.hpp"
+#include "arduino_gen/appendage_template.hpp"
+#include "arduino_gen/exceptions.hpp"
 
 #include <gtest/gtest.h>
 #include <googletest_rip_macros.hpp>

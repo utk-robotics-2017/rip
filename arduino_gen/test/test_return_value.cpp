@@ -1,5 +1,5 @@
-#include "return_value.hpp"
-#include "exceptions.hpp"
+#include "arduino_gen/return_value.hpp"
+#include "arduino_gen/exceptions.hpp"
 
 #include <tinyxml2.h>
 #include <gtest/gtest.h>

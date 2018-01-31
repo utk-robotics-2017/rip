@@ -1,4 +1,4 @@
-#include "setup.hpp"
+#include "arduino_gen/setup.hpp"
 
 #include <regex>
 #include <set>
@@ -7,8 +7,8 @@
 #include <tinyxml2.h>
 #include <fmt/format.h>
 
-#include "appendage.hpp"
-#include "exceptions.hpp"
+#include "arduino_gen/appendage.hpp"
+#include "arduino_gen/exceptions.hpp"
 
 namespace rip
 {
