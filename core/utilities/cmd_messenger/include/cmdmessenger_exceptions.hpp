@@ -25,18 +25,18 @@ namespace rip
 {
     namespace cmdmessenger
     {
-        NEW_EX(EmptyDevice)
-        NEW_EX(EmptyCommand)
+        NEW_EX(EmptyDevice);
+        NEW_EX(EmptyCommand);
 
-        NEW_EX(IncorrectAcknowledgementCommand)
-        NEW_EX(IncorrectArgumentListSize)
-        NEW_EX(IncorrectCommandSeparator)
-        NEW_EX(IncorrectFieldSeparator)
-        NEW_EX(IncorrectResponseCommand)
-        NEW_EX(OutOfBounds)
-        NEW_EX(NoLastDeviceException)
-        NEW_EX(UnconvertibleArgument)
-        NEW_EX(UnknownArgument)
+        NEW_EX(IncorrectAcknowledgementCommand);
+        NEW_EX(IncorrectArgumentListSize);
+        NEW_EX(IncorrectCommandSeparator);
+        NEW_EX(IncorrectFieldSeparator);
+        NEW_EX(IncorrectResponseCommand);
+        NEW_EX(OutOfBounds);
+        NEW_EX(NoLastDeviceException);
+        NEW_EX(UnconvertibleArgument);
+        NEW_EX(UnknownArgument);
     }
 }
 #endif // EXCEPTIONS_HPP

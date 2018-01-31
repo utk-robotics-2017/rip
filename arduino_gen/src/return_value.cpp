@@ -39,7 +39,7 @@ namespace rip
 
         std::string ReturnValue::send() const
         {
-            return fmt::format("\tcmdMessenger.sendBinArg({});\n", m_name);
+            return fmt::format("\tcmdMessenger.sendCmdBinArg({});\n", m_name);
         }
 
         std::string ReturnValue::getName() const

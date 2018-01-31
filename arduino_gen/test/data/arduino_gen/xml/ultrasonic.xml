@@ -17,7 +17,7 @@
         <command id="kReadUltrasonic" name="readUltraSonic" index-num="true">
             <return-value name="rv" type="unsigned long"/>
             <code>
-                rv = sonar[index_num].ping_cm();
+                rv = sonar[indexNum].ping_cm();
             </code>
         </command>
     </commands>

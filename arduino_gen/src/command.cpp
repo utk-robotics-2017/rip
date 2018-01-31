@@ -127,7 +127,7 @@ namespace rip
 
             rv += m_code->getCode();
 
-            rv += fmt::format("\tcmdMessenger.sendBindCmd(kAcknowledge, {});\n", m_id);
+            rv += fmt::format("\tcmdMessenger.sendBinCmd(kAcknowledge, {});\n", m_id);
 
             if(m_return_values.size())
             {
@@ -138,7 +138,7 @@ namespace rip
                     rv += return_value.send();
                 }
 
-                rv += "\tcmdMeessenger.sendCmdEnd();\n";
+                rv += "\tcmdMessenger.sendCmdEnd();\n";
             }
 
             rv += "}\n";

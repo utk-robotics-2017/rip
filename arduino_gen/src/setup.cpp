@@ -21,11 +21,15 @@ namespace rip
 
         std::string Setup::toString(std::vector< std::shared_ptr<Appendage> > appendages) const
         {
-            std::string appendage_setup = getCode();
+            std::string rv = "";
             std::regex replace_regex("\\$(\\w+)\\$");
 
-            for(std::shared_ptr<Appendage> appendage : appendages)
+            for(int i = 0; i < appendages.size(); i++)
             {
+                std::shared_ptr<Appendage> appendage = appendages[i];
+
+                std::string appendage_setup = getCode();
+
                 std::sregex_iterator reg_begin = std::sregex_iterator(appendage_setup.begin(),
                                                  appendage_setup.end(), replace_regex);
                 std::sregex_iterator reg_end = std::sregex_iterator();
@@ -44,7 +48,17 @@ namespace rip
                     std::string replacee = fmt::format("${}$", match);
                     std::size_t str_iter = appendage_setup.find(replacee);
 
-                    if (!appendage->has(match))
+                    std::string value = "";
+
+                    if (match == "i")
+                    {
+                        value = std::to_string(i);
+                    }
+                    else if (appendage->has(match))
+                    {
+                        value = appendage->getString(match);
+                    }
+                    else
                     {
                         throw PatternNotFoundException(fmt::format("Appendage \"{}\" does not have the variable \"{}\"",
                             appendage->getType(), match));
@@ -52,13 +66,20 @@ namespace rip
 
                     while(str_iter != std::string::npos)
                     {
-                        appendage_setup.replace(str_iter, replacee.length(), appendage->getString(match));
+                        appendage_setup.replace(str_iter, replacee.length(), value);
                         str_iter = appendage_setup.find(replacee);
                     }
                 }
+
+                rv += appendage_setup + "\n";
             }
 
-            return appendage_setup;
+            if (rv.size() > 0)
+            {
+                rv.pop_back();
+            }
+
+            return rv;
         }
     } // arduinogen
 }
