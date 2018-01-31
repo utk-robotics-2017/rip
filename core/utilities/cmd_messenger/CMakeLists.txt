@@ -14,7 +14,7 @@ endif()
 target_include_directories(${PROJECT_NAME} PUBLIC include)
 target_link_libraries(${PROJECT_NAME} units serial spdlog fmt exceptions_base)
 
-if(GIT_BRANCH MATCHES "cmd_messenger/unittests")
+if(ENABLE_TESTING)
     # Get test source files and test data files
     file(GLOB_RECURSE ${PROJECT_NAME}_TEST_SOURCES "test/*.cpp")
     file(GLOB_RECURSE ${PROJECT_NAME}_TEST_DATA "test/data/*")
