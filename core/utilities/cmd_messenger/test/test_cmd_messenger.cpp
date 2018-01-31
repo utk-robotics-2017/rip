@@ -16,9 +16,6 @@ namespace rip
     {
         namespace cmdmessenger
         {
-            //using MockDevice = mocks::MockDevice;
-            //typedef mocks::MockDevice Device;
-
             namespace tests
             {
                 TEST(CmdMessenger_send, Empty)

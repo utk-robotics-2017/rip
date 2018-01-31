@@ -26,6 +26,7 @@
 #include <memory>
 #include <map>
 #include <tuple>
+#include <iostream>
 
 #include <fmt/format.h>
 
@@ -194,6 +195,7 @@ namespace rip
                 {
                     // First part should be the acknowledgment id
                     T_IntegerType acknowledgement_id = fromBytes<T_IntegerType>(acknowledgement);
+                    std::cout << acknowledgement_id << std::endl;
                     if (acknowledgement_id != 0) //TODO(Andrew): Look up number
                     {
                         throw IncorrectAcknowledgementCommand("Acknowledge command incorrect");
