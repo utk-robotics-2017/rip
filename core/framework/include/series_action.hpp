@@ -27,56 +27,62 @@
 
 namespace rip
 {
-    /**
-     * Executes one action at a time.
-     *
-     * @note Useful as a member of {@link ParallelAction}
-     */
-    class SeriesAction : public Action
+    namespace core
     {
-    public:
-        /**
-         * Constructor
-         *
-         * @param action A list of actions to complete in sequential order
-         */
-        SeriesAction(const std::vector< std::shared_ptr<Action> >& actions);
+        namespace framework
+        {
+            /**
+             * Executes one action at a time.
+             *
+             * @note Useful as a member of {@link ParallelAction}
+             */
+            class SeriesAction : public Action
+            {
+            public:
+                /**
+                 * Constructor
+                 *
+                 * @param action A list of actions to complete in sequential order
+                 */
+                SeriesAction(const std::vector< std::shared_ptr<Action> >& actions);
 
-        /**
-         * Returns whether this action is finished
-         */
-        virtual bool isFinished() override;
+                /**
+                 * Returns whether this action is finished
+                 */
+                virtual bool isFinished() override;
 
-        /**
-         * Sets up the action
-         */
-        virtual void setup() override;
+                /**
+                 * Sets up the action
+                 */
+                virtual void setup() override;
 
-        /**
-         * Updates the action
-         */
-        virtual void update() override;
+                /**
+                 * Updates the action
+                 */
+                virtual void update() override;
 
-        /**
-         * Tears down the action
-         */
-        virtual void teardown() override;
+                /**
+                 * Tears down the action
+                 */
+                virtual void teardown() override;
 
-        /**
-         * Saves the state of this action
-         */
-        virtual nlohmann::json save() const override;
+                /**
+                 * Saves the state of this action
+                 */
+                virtual nlohmann::json save() const override;
 
-        /**
-         * Restores the state of this action
-         */
-        virtual void restore(const nlohmann::json& state) override;
+                /**
+                 * Restores the state of this action
+                 */
+                virtual void restore(const nlohmann::json& state) override;
 
-    private:
-        std::vector< std::shared_ptr<Action> > m_actions;
-        int m_current;
-        int m_previous;
-    };
+            private:
+                std::vector< std::shared_ptr<Action> > m_actions;
+                int m_current;
+                int m_previous;
+            };
+        }
+    }
 }
 
 #endif // SERIES_ACTION

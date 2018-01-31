@@ -39,73 +39,79 @@
 
 namespace rip
 {
-    /**
-     * Main robot base class
-     */
-    class RobotBase
+    namespace core
     {
-    public:
-        /**
-         * Constructor
-         *
-         * @param config_path The path to the config file for this robot
-         */
-        RobotBase(const std::string& config_path);
+        namespace framework
+        {
+            /**
+             * Main robot base class
+             */
+            class RobotBase
+            {
+            public:
+                /**
+                 * Constructor
+                 *
+                 * @param config_path The path to the config file for this robot
+                 */
+                RobotBase(const std::string& config_path);
 
-        /**
-         * Destructor
-         */
-        ~RobotBase();
+                /**
+                 * Destructor
+                 */
+                ~RobotBase();
 
-        /**
-         * Initalize robot
-         */
-        void init();
+                /**
+                 * Initalize robot
+                 */
+                void init();
 
-        /**
-         * Builds the routine to run for the robot
-         */
-        virtual void createRoutine() = 0;
+                /**
+                 * Builds the routine to run for the robot
+                 */
+                virtual void createRoutine() = 0;
 
-        /**
-         * Create the subsystem controllers for the robot
-         */
-        virtual void createSubsystems(const nlohmann::json& config) = 0;
+                /**
+                 * Create the subsystem controllers for the robot
+                 */
+                virtual void createSubsystems(const nlohmann::json& config) = 0;
 
-        /**
-         * Start the routine
-         */
-        void start();
+                /**
+                 * Start the routine
+                 */
+                void start();
 
-        /**
-         * Stop the routine
-         */
-        void stop();
+                /**
+                 * Stop the routine
+                 */
+                void stop();
 
-        /**
-         * Run the diagnostics for all of the subsystems and appendages
-         */
-        void diagnostic();
+                /**
+                 * Run the diagnostics for all of the subsystems and appendages
+                 */
+                void diagnostic();
 
-    protected:
-        /**
-         * Main loop for the routine
-         */
-        void run();
+            protected:
+                /**
+                 * Main loop for the routine
+                 */
+                void run();
 
-    protected:
-        bool m_running;
-        units::Time m_update_time;
-        std::unique_ptr<std::thread> m_thread;
-        std::unique_ptr<std::ostream> m_state_file;
+            protected:
+                bool m_running;
+                units::Time m_update_time;
+                std::unique_ptr<std::thread> m_thread;
+                std::unique_ptr<std::ostream> m_state_file;
 
-        std::vector< std::shared_ptr<Action> > m_routine;
+                std::vector< std::shared_ptr<Action> > m_routine;
 
-        std::unique_ptr<Spine> m_spine;
-        std::map<std::string, std::shared_ptr<Subsystem> > m_subsystems;
+                std::unique_ptr<Spine> m_spine;
+                std::map<std::string, std::shared_ptr<Subsystem> > m_subsystems;
 
-        std::string m_config_path;
-    };
+                std::string m_config_path;
+            };
+        }
+    }
 }
 
 #endif // ROBOT_BASE_HPP

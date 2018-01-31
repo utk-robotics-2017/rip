@@ -24,42 +24,48 @@
 
 namespace rip
 {
-    /**
-     * Abstract Action Base class
-     */
-    class Action
+    namespace core
     {
-    public:
-        /**
-         * Returns whether or not the action has finished execution.
-         */
-        virtual bool isFinished() = 0;
+        namespace framework
+        {
+            /**
+             * Abstract Action Base class
+             */
+            class Action
+            {
+            public:
+                /**
+                 * Returns whether or not the action has finished execution.
+                 */
+                virtual bool isFinished() = 0;
 
-        /**
-         * Iteratively called until {@see Action#isFinished()} returns true
-         */
-        virtual void update() = 0;
+                /**
+                 * Iteratively called until {@see Action#isFinished()} returns true
+                 */
+                virtual void update() = 0;
 
-        /**
-         * Run once before the main code
-         */
-        virtual void setup() = 0;
+                /**
+                 * Run once before the main code
+                 */
+                virtual void setup() = 0;
 
-        /**
-         * Run once after finished
-         */
-        virtual void teardown() = 0;
+                /**
+                 * Run once after finished
+                 */
+                virtual void teardown() = 0;
 
-        /**
-         * Returns the state which can be used in case of a crash
-         */
-        virtual nlohmann::json save() const = 0;
+                /**
+                 * Returns the state which can be used in case of a crash
+                 */
+                virtual nlohmann::json save() const = 0;
 
-        /**
-         * Restores the action to state
-         */
-        virtual void restore(const nlohmann::json& state) = 0;
-    };
+                /**
+                 * Restores the action to state
+                 */
+                virtual void restore(const nlohmann::json& state) = 0;
+            };
+        }
+    }
 }
 
 #endif // ACTION_HPP

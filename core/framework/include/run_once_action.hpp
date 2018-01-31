@@ -24,50 +24,56 @@
 
 namespace rip
 {
-    /**
-     * Base action for something that only needs to be done
-     * once
-     */
-    class RunOnceAction : public Action
+    namespace core
     {
-    public:
-        /**
-         * Returns whether the action is finished
-         *
-         * @note Is always true
-         */
-        virtual bool isFinished() override;
+        namespace framework
+        {
+            /**
+             * Base action for something that only needs to be done
+             * once
+             */
+            class RunOnceAction : public Action
+            {
+            public:
+                /**
+                 * Returns whether the action is finished
+                 *
+                 * @note Is always true
+                 */
+                virtual bool isFinished() override;
 
-        /**
-         * Action has already happened, so nothing
-         */
-        virtual void update() override;
+                /**
+                 * Action has already happened, so nothing
+                 */
+                virtual void update() override;
 
-        /**
-         * Where the action actually does stuff
-         */
-        virtual void setup() override;
+                /**
+                 * Where the action actually does stuff
+                 */
+                virtual void setup() override;
 
-        /**
-         * [teardown description]
-         */
-        virtual void teardown() override;
+                /**
+                 * [teardown description]
+                 */
+                virtual void teardown() override;
 
-        /**
-         * This is where the magic happens for this action
-         */
-        virtual void runOnce() = 0;
+                /**
+                 * This is where the magic happens for this action
+                 */
+                virtual void runOnce() = 0;
 
-        /**
-         * @note No state to save
-         */
-        virtual nlohmann::json save() const override;
+                /**
+                 * @note No state to save
+                 */
+                virtual nlohmann::json save() const override;
 
-        /**
-         * @note No state to restore
-         */
-        virtual void restore(const nlohmann::json& state) override;
-    };
+                /**
+                 * @note No state to restore
+                 */
+                virtual void restore(const nlohmann::json& state) override;
+            };
+        }
+    }
 }
 
 #endif // RUN_ONCE_ACTION_HPP
