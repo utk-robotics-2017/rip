@@ -29,12 +29,14 @@
 
 #include <fmt/format.h>
 
-#include "cmdmessenger_exceptions.hpp"
+#include "exceptions.hpp"
 #include "command.hpp"
 #include "device.hpp"
 
 namespace rip
 {
+    namespace utilities
+    {
         namespace cmdmessenger
         {
             /**
@@ -132,20 +134,20 @@ namespace rip
                  * @ref http://en.cppreference.com/w/cpp/utility/tuple
                  */
                 template <typename... Args>
-                void send(std::shared_ptr<Device> device, const Command& command, Args... args)
+                void send(std::shared_ptr<Device> device, std::shared_ptr<Command> command, Args... args)
                 {
                     if (device == nullptr)
                     {
                         throw EmptyDevice();
                     }
 
-                    if (command.getId() == "")
+                    if (command->getId() == "")
                     {
                         throw EmptyCommand();
                     }
 
                     // Get the argument types
-                    std::string argument_types = command.getArgumentTypes();
+                    std::string argument_types = command->getArgumentTypes();
                     const std::size_t value = sizeof...(Args);
                     if (value != argument_types.size())
                     {
@@ -153,7 +155,7 @@ namespace rip
                     }
 
                     // Pack the command to send
-                    std::string message = toBytes<int, T_IntegerType>(command.getEnum()) + static_cast<T_CharType>(m_field_separator);
+                    std::string message = toBytes<int, T_IntegerType>(command->getEnum()) + static_cast<T_CharType>(m_field_separator);
 
                     std::tuple<Args...> args_tuple(args...);
 
@@ -188,7 +190,7 @@ namespace rip
                  * @exception IncorrectCommandSeparator Thrown if the acknowledgment does not end with the correct command separator
                  * @exception IncorrectAcknowledgementCommand Thrown if the command acknowledged is not the one previously sent
                  */
-                void handleAck(std::string& acknowledgement, const Command& command)
+                void handleAck(std::string& acknowledgement, std::shared_ptr<Command> command)
                 {
                     // First part should be the acknowledgment id
                     T_IntegerType acknowledgement_id = fromBytes<T_IntegerType>(acknowledgement);
@@ -206,9 +208,9 @@ namespace rip
 
                     // Then the command sent
                     T_IntegerType acknowledge_command = fromBytes<T_IntegerType>(acknowledgement);
-                    if (acknowledge_command != command.getEnum())
+                    if (acknowledge_command != command->getEnum())
                     {
-                        throw IncorrectAcknowledgementCommand(fmt::format("Acknowledgement command {} is not the same as the current command {}", acknowledge_command, command.getEnum()));
+                        throw IncorrectAcknowledgementCommand(fmt::format("Acknowledgement command {} is not the same as the current command {}", acknowledge_command, command->getEnum()));
                     }
                     if (acknowledgement[0] != m_command_separator)
                     {
@@ -231,7 +233,7 @@ namespace rip
                  * @todo(Andrew): add exceptions
                  */
                 template<typename... Args>
-                std::tuple<Args...> receive(const Command& command)
+                std::tuple<Args...> receive(std::shared_ptr<Command> command)
                 {
                     // \todo(Andrew): add comment to this function
                     if (!m_last_device)
@@ -242,7 +244,7 @@ namespace rip
 
                     const std::size_t num_arguments = sizeof...(Args);
 
-                    std::string argument_types = command.getArgumentTypes();
+                    std::string argument_types = command->getArgumentTypes();
 
                     if (num_arguments != argument_types.size())
                     {
@@ -255,7 +257,7 @@ namespace rip
                     // Check that response command is correct
                     T_IntegerType response_command_enum = fromBytes<T_IntegerType>(response);
 
-                    if (response_command_enum != command.getEnum())
+                    if (response_command_enum != command->getEnum())
                     {
                         throw IncorrectResponseCommand();
                     }
@@ -743,5 +745,6 @@ namespace rip
                                         /* class T_CharType            = */ char
                                         >;
         }
+    }
 }
 #endif // CMD_MESSENGER_HPP
