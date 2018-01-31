@@ -6,7 +6,7 @@
 #include <string>
 
 
-#include "command.hpp"
+#include <cmd_messenger/command.hpp>
 
 #include "appendages/appendage.hpp"
 #include "appendages/appendage_factory.hpp"

@@ -27,7 +27,7 @@
 #include <fmt/format.h>
 
 #include <appendages/appendage.hpp>
-#include <device.hpp>
+#include <cmd_messenger/device.hpp>
 
 #include "exceptions.hpp"
 

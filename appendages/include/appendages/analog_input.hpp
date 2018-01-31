@@ -7,8 +7,8 @@
 
 #include "appendages/appendage.hpp"
 
-#include <device.hpp>
-#include <command.hpp>
+#include <cmd_messenger/device.hpp>
+#include <cmd_messenger/command.hpp>
 
 namespace rip
 {
