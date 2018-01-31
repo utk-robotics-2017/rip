@@ -45,6 +45,8 @@ case $BRANCH in
     test_roboclaw
     test_cmd_messenger
     ;;
+  *)
+    test_arduino_gen
 esac
 
 ### Done with tests
