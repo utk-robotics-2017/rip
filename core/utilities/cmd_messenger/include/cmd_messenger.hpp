@@ -72,11 +72,11 @@ namespace rip
                 typedef T_StringType          StringType         ;
                 typedef T_IntegerType         IntegerType        ;
                 typedef T_UnsignedIntegerType UnsignedIntegerType;
-                typedef T_LongType            LongType           ;  
-                typedef T_UnsignedLongType    UnsignedLongType   ;  
-                typedef T_FloatType           FloatType          ;   
-                typedef T_DoubleType          DoubleType         ;  
-                typedef T_BooleanType         BooleanType        ;   
+                typedef T_LongType            LongType           ;
+                typedef T_UnsignedLongType    UnsignedLongType   ;
+                typedef T_FloatType           FloatType          ;
+                typedef T_DoubleType          DoubleType         ;
+                typedef T_BooleanType         BooleanType        ;
                 typedef T_CharType            CharType           ;
 
 
@@ -335,7 +335,7 @@ namespace rip
 
                     char* byte_pointer = reinterpret_cast<char*>(&t);
                     std::string rv;
-                    for (int i = 0; i < sizeof(t); i++)
+                    for (size_t i = 0; i < sizeof(t); i++)
                     {
                         // Add the escape character
                         if (*byte_pointer == m_field_separator ||
@@ -513,7 +513,7 @@ namespace rip
                 {
                     T rv;
                     char* byte_pointer = reinterpret_cast<char*>(&rv);
-                    for (int i = 0; i < sizeof(rv); i++)
+                    for (size_t i = 0; i < sizeof(rv); i++)
                     {
                         // Skip the escape character
                         if (message[i] == m_escape_character)
@@ -721,13 +721,13 @@ namespace rip
                 static constexpr char m_string_key = 's';
                 static constexpr char m_bool_key = 'b';
 
-                std::shared_ptr<Device> m_last_device;
-
                 std::size_t m_max_response_length;
 
                 char m_field_separator;
                 char m_command_separator;
                 char m_escape_character;
+
+                std::shared_ptr<Device> m_last_device;
             };
 
             /**

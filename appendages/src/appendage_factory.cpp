@@ -6,7 +6,9 @@
 #include "digital_input.hpp"
 #include "analog_input.hpp"
 
-#include "appendages_exceptions.hpp"
+#include "exceptions.hpp"
+
+using namespace rip::utilities;
 
 namespace rip
 {
