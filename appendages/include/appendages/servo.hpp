@@ -1,32 +1,33 @@
-#ifndef ANALOG_INPUT_HPP
-#define ANALOG_INPUT_HPP
+#ifndef SERVO_HPP
+#define SERVO_HPP
 
 #include <memory>
 #include <map>
 #include <string>
 
-#include <appendage.hpp>
-#include <device.hpp>
-#include <command.hpp>
+
+#include "command.hpp"
+
+#include "appendages/appendage.hpp"
+#include "appendages/appendage_factory.hpp"
+
+#include <json.hpp>
 
 namespace rip
 {
     namespace appendages
     {
-        /**
-         * @class AnalogInput
-         *
-         * @brief A simple analog input
-         */
-        class AnalogInput : public Appendage
+        class Servo : public Appendage
         {
         public:
             /**
-             * Reads the analog port
-             * @returns The analog value [0 - 1023]
+             * Writes a value to adjust the angle of the servo
              */
-            int read();
+            void write(int value);
 
+            /**
+             * Stop
+             */
             virtual void stop() override;
 
             virtual bool diagnostic() override;
@@ -51,11 +52,10 @@ namespace rip
              * @param command_map A map of the name of the commands to their enumerations
              * @param device The connection to the device
              */
-            AnalogInput(const nlohmann::json& config, const std::map<std::string, int>& command_map, std::shared_ptr<utilities::cmdmessenger::Device> device);
+            Servo(const nlohmann::json& config, const std::map<std::string, int>& command_map, std::shared_ptr<utilities::cmdmessenger::Device> device);
 
-            std::shared_ptr<utilities::cmdmessenger::Command> m_read;
-            std::shared_ptr<utilities::cmdmessenger::Command> m_read_result;
-        }; // class AnalogInput
-    } // namespace appendages
+            std::shared_ptr<utilities::cmdmessenger::Command> m_write;
+        };
+    }
 }
-#endif // ANALOG_INPUT_HPP
+#endif

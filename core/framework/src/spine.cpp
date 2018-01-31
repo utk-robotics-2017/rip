@@ -4,7 +4,7 @@
 #include <cppfs/FileHandle.h>
 
 #include <json.hpp>
-#include <appendage_factory.hpp>
+#include <appendages/appendage_factory.hpp>
 
 #include "exceptions.hpp"
 

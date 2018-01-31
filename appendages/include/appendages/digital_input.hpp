@@ -1,5 +1,5 @@
-#ifndef ULTRASONIC_HPP
-#define ULTRASONIC_HPP
+#ifndef DIGITAL_INPUT_HPP
+#define DIGITAL_INPUT_HPP
 
 #include <memory>
 #include <map>
@@ -8,8 +8,8 @@
 
 #include "command.hpp"
 
-#include <appendage.hpp>
-#include <appendage_factory.hpp>
+#include "appendages/appendage.hpp"
+#include "appendages/appendage_factory.hpp"
 
 #include <json.hpp>
 
@@ -17,13 +17,14 @@ namespace rip
 {
     namespace appendages
     {
-        class Ultrasonic : public Appendage
+        class DigitalInput : public Appendage
         {
         public:
             /**
-             * Reads the distance from the ultrasonic
+             * Reads the digital port
+             * @returns The binary value of high/low
              */
-            units::Distance read();
+            bool read();
 
             /**
              * Stop
@@ -52,7 +53,7 @@ namespace rip
              * @param command_map A map of the name of the commands to their enumerations
              * @param device The connection to the device
              */
-            Ultrasonic(const nlohmann::json& config, const std::map<std::string, int>& command_map, std::shared_ptr<utilities::cmdmessenger::Device> device);
+            DigitalInput(const nlohmann::json& config, const std::map<std::string, int>& command_map, std::shared_ptr<utilities::cmdmessenger::Device> device);
 
             std::shared_ptr<utilities::cmdmessenger::Command> m_read;
             std::shared_ptr<utilities::cmdmessenger::Command> m_read_result;

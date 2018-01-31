@@ -1,7 +1,7 @@
-#include "appendage.hpp"
+#include "appendages/appendage.hpp"
 
 #include <fmt/format.h>
-#include "exceptions.hpp"
+#include "appendages/exceptions.hpp"
 
 using namespace rip::utilities;
 

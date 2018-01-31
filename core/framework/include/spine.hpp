@@ -26,7 +26,7 @@
 
 #include <fmt/format.h>
 
-#include <appendage.hpp>
+#include <appendages/appendage.hpp>
 #include <device.hpp>
 
 #include "exceptions.hpp"

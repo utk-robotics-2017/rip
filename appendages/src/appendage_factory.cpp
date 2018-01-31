@@ -1,12 +1,12 @@
-#include "appendage_factory.hpp"
+#include "appendages/appendage_factory.hpp"
 
 #include <fmt/format.h>
 
 // Appendages
-#include "digital_input.hpp"
-#include "analog_input.hpp"
+#include "appendages/digital_input.hpp"
+#include "appendages/analog_input.hpp"
 
-#include "exceptions.hpp"
+#include "appendages/exceptions.hpp"
 
 using namespace rip::utilities;
 

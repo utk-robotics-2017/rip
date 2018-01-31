@@ -1,10 +1,10 @@
-#include "digital_input.hpp"
+#include "appendages/digital_input.hpp"
 
 #include <utility>
 #include <tuple>
 #include <memory>
 
-#include "cmd_messenger.hpp"
+#include <cmd_messenger.hpp>
 
 using namespace rip::utilities;
 
