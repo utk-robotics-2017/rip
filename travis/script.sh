@@ -40,13 +40,10 @@ case $BRANCH in
   cmd_messenger*)
     test_cmd_messenger
     ;;
-  master|dev)
-    test_arduino_gen
-    #test_roboclaw
-    test_cmd_messenger
-    ;;
   *)
     test_arduino_gen
+    test_cmd_messenger
+    ;;
 esac
 
 ### Done with tests
