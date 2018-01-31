@@ -32,18 +32,18 @@ function test_cmd_messenger() {
 
 case $BRANCH in
   arduino_gen*)
-    test_arduino_gen()
+    test_arduino_gen
     ;;
   roboclaw*)
-    test_roboclaw()
+    test_roboclaw
     ;;
   cmd_messenger*)
-    test_cmd_messenger()
+    test_cmd_messenger
     ;;
   master|dev)
-    test_arduino_gen()
-    test_roboclaw()
-    test_cmd_messenger()
+    test_arduino_gen
+    test_roboclaw
+    test_cmd_messenger
     ;;
 esac
 
