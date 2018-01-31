@@ -1,4 +1,4 @@
-#include "wait_action.hpp"
+#include "framework/wait_action.hpp"
 
 namespace rip
 {
