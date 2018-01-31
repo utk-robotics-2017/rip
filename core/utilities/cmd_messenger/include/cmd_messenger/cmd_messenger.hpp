@@ -193,11 +193,14 @@ namespace rip
                  */
                 void handleAck(std::string& acknowledgement, std::shared_ptr<Command> command)
                 {
+                    //std::string debugString = byteStringToHexDebugString(acknowledgement);
+
                     // First part should be the acknowledgment id
                     T_IntegerType acknowledgement_id = fromBytes<T_IntegerType>(acknowledgement);
-                    std::cout << acknowledgement_id << std::endl;
+
                     if (acknowledgement_id != 0) //TODO(Andrew): Look up number
                     {
+                        //std::cout << fmt::format("Ack Str: {}\nAck Id: {}", debugString, acknowledgement_id) << std::endl;
                         throw IncorrectAcknowledgementCommand("Acknowledge command incorrect");
                     }
 
@@ -712,6 +715,29 @@ namespace rip
                  * If the makeArgumentChar function is called with a template argument that is not one of the above then it will not compile
                  */
 
+                std::string byteStringToHexDebugString(std::string input)
+                {
+                    std::string rv = "";
+
+                    for (char c : input)
+                    {
+                        rv += fmt::format("{:02X}", c);
+
+                        if (c >= 32 && c <= 126)
+                        {
+                            rv += fmt::format("({})", c);
+                        }
+
+                        rv += " ";
+                    }
+
+                    if (rv.size() > 0)
+                    {
+                        rv.pop_back();
+                    }
+
+                    return rv;
+                }
 
                 static constexpr char m_integer_key = 'i';
                 static constexpr char m_unsigned_integer_key = 'u';
