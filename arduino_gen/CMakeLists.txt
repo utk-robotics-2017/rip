@@ -25,6 +25,7 @@ make_appendage_json_outputs(${CMAKE_CURRENT_BINARY_DIR}/appendages appendage_jso
 add_executable(${PROJECT_NAME} "src/main.cpp" ${code_template} ${appendage_xml_outputs} ${appendage_json_outputs})
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
 target_link_libraries(${PROJECT_NAME} _${PROJECT_NAME})
+add_dependencies(${PROJECT_NAME} AppendageTemplates)
 
 
 if(ENABLE_TESTING)
