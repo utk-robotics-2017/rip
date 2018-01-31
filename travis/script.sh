@@ -42,7 +42,7 @@ case $BRANCH in
     ;;
   master|dev)
     test_arduino_gen
-    test_roboclaw
+    #test_roboclaw
     test_cmd_messenger
     ;;
   *)
