@@ -12,34 +12,27 @@ target_link_libraries(${PROJECT_NAME}
     cmd_messenger misc)
 target_include_directories(${PROJECT_NAME} PUBLIC include)
 
-# TODO(Anthony): Refactor to a function or macro
-file(GLOB_RECURSE ${PROJECT_NAME}_XMLS "xml/*.xml")
-set(copiedXmls "")
-foreach(template ${${PROJECT_NAME}_XMLS})
-    file(RELATIVE_PATH name ${CMAKE_CURRENT_SOURCE_DIR} ${template})
-    add_custom_command(
-        OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${name}
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different ${template} ${CMAKE_CURRENT_BINARY_DIR}/${name}
-        DEPENDS ${template}
-        COMMENT "Copying ${name}"
-        VERBATIM)
-    list(APPEND copiedXmls ${CMAKE_CURRENT_BINARY_DIR}/${name})
-endforeach()
-add_custom_target(AppendageXmls SOURCES ${copiedXmls})
+set_property(GLOBAL PROPERTY AppendageRoot ${CMAKE_CURRENT_SOURCE_DIR})
 
-file(GLOB_RECURSE ${PROJECT_NAME}_JSONS "json/*.json")
-set(copiedJsons "")
-foreach(template ${${PROJECT_NAME}_JSONS})
-    file(RELATIVE_PATH name ${CMAKE_CURRENT_SOURCE_DIR} ${template})
-    add_custom_command(
-        OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${name}
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different ${template} ${CMAKE_CURRENT_BINARY_DIR}/${name}
-        DEPENDS ${template}
-        COMMENT "Copying ${name}"
-        VERBATIM)
-    list(APPEND copiedJsons ${CMAKE_CURRENT_BINARY_DIR}/${name})
-endforeach()
-add_custom_target(AppendageJsons SOURCES ${copiedJsons})
+file(GLOB _AppendageXmls "xml/*.xml")
+set_property(GLOBAL PROPERTY AppendageXmls ${_AppendageXmls})
+file(GLOB _AppendageJsons "json/*.json")
+set_property(GLOBAL PROPERTY AppendageJsons ${_AppendageJsons})
 
-add_custom_target(AppendageTemplates)
-add_dependencies(AppendageTemplates AppendageXmls AppendageJsons)
+include(FileOutputs)
+
+function(make_appendage_xml_outputs outdir xml_outputs)
+    get_property(_AppendageRoot GLOBAL PROPERTY AppendageRoot)
+    get_property(_AppendageXmls GLOBAL PROPERTY AppendageXmls)
+
+    make_outputs(${_AppendageRoot} "${_AppendageXmls}" ${outdir} _outputs)
+    set(${xml_outputs} ${_outputs} PARENT_SCOPE)
+endfunction()
+
+function(make_appendage_json_outputs outdir json_outputs)
+    get_property(_AppendageRoot GLOBAL PROPERTY AppendageRoot)
+    get_property(_AppendageJsons GLOBAL PROPERTY AppendageJsons)
+
+    make_outputs(${_AppendageRoot} "${_AppendageJsons}" ${outdir} _outputs)
+    set(${json_outputs} ${_outputs} PARENT_SCOPE)
+endfunction()

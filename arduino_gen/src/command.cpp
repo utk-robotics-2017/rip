@@ -1,4 +1,4 @@
-#include "command.hpp"
+#include "arduino_gen/command.hpp"
 
 #include <sstream>
 #include <regex>
@@ -8,11 +8,11 @@
 #include <fmt/format.h>
 #include <tinyxml2.h>
 
-#include "code.hpp"
-#include "parameter.hpp"
-#include "return_value.hpp"
-#include "appendage.hpp"
-#include "exceptions.hpp"
+#include "arduino_gen/code.hpp"
+#include "arduino_gen/parameter.hpp"
+#include "arduino_gen/return_value.hpp"
+#include "arduino_gen/appendage.hpp"
+#include "arduino_gen/exceptions.hpp"
 
 namespace rip
 {
@@ -127,7 +127,7 @@ namespace rip
 
             rv += m_code->getCode();
 
-            rv += fmt::format("\tcmdMessenger.sendBindCmd(kAcknowledge, {});\n", m_id);
+            rv += fmt::format("\tcmdMessenger.sendBinCmd(kAcknowledge, {});\n", m_id);
 
             if(m_return_values.size())
             {
@@ -138,7 +138,7 @@ namespace rip
                     rv += return_value.send();
                 }
 
-                rv += "\tcmdMeessenger.sendCmdEnd();\n";
+                rv += "\tcmdMessenger.sendCmdEnd();\n";
             }
 
             rv += "}\n";

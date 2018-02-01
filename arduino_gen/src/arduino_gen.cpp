@@ -1,4 +1,4 @@
-#include "arduino_gen.hpp"
+#include "arduino_gen/arduino_gen.hpp"
 
 #include <fstream>
 #include <sys/stat.h>
@@ -10,17 +10,17 @@
 #include <cppfs/fs.h>
 #include <cppfs/FileHandle.h>
 
-#include "appendage_template.hpp"
-#include "appendage.hpp"
-#include "includes.hpp"
-#include "setup.hpp"
-#include "constructors.hpp"
-#include "argument.hpp"
-#include "loop.hpp"
-#include "command.hpp"
-#include "utils.hpp"
-#include "xml_utils.hpp"
-#include "exceptions.hpp"
+#include "arduino_gen/appendage_template.hpp"
+#include "arduino_gen/appendage.hpp"
+#include "arduino_gen/includes.hpp"
+#include "arduino_gen/setup.hpp"
+#include "arduino_gen/constructors.hpp"
+#include "arduino_gen/argument.hpp"
+#include "arduino_gen/loop.hpp"
+#include "arduino_gen/command.hpp"
+#include "arduino_gen/utils.hpp"
+#include "arduino_gen/xml_utils.hpp"
+#include "arduino_gen/exceptions.hpp"
 
 namespace rip
 {
@@ -115,20 +115,15 @@ namespace rip
 
         std::string ArduinoGen::getArduinoCode()
         {
-            return fmt::format(
-                "{includes}\n"
-                "{constructors}\n"
-                "{setup}\n"
-                "{loop}\n"
-                "{commands}\n"
-                "{command_attaches}\n"
-                "{command_callbacks}\n"
-                "{extra}\n",
+            std::unique_ptr<std::istream> code_template_istream = cppfs::fs::open("code_template.txt").createInputStream();
+            std::string code_template(std::istreambuf_iterator<char>(*code_template_istream), {});
+
+            return fmt::format(code_template,
                 fmt::arg("includes", getIncludes()),
                 fmt::arg("constructors", getConstructors()),
                 fmt::arg("setup", getSetup()),
                 fmt::arg("loop", getLoop()),
-                fmt::arg("commands", getCommandEnums()),
+                fmt::arg("command_enums", getCommandEnums()),
                 fmt::arg("command_attaches", getCommandAttaches()),
                 fmt::arg("command_callbacks", getCommandCallbacks()),
                 fmt::arg("extra", getExtras())
@@ -245,6 +240,7 @@ namespace rip
         std::string ArduinoGen::getCommandEnums()
         {
             std::string rv = "";
+
             m_commands["kAcknowledge"] = 0;
             m_commands["kError"] = 1;
             m_commands["kUnknown"] = 2;
@@ -252,28 +248,26 @@ namespace rip
             m_commands["kPing"] = 4;
             m_commands["kPingResult"] = 5;
             m_commands["kPong"] = 6;
+
             int cmd_idx = 7;
 
-            std::string cmd_id;
-            std::string result_id;
             for(const AppendageTemplate& at : m_appendage_templates)
             {
                 for(const std::shared_ptr<Command>& cmd : at.GetCommands())
                 {
-                    cmd_id = cmd->getId();
+                    std::string cmd_id = cmd->getId();
                     rv += fmt::format("\t{},\n", cmd_id);
-                    m_commands[cmd_id] = cmd_idx;
-                    cmd_idx ++;
+                    m_commands[cmd_id] = cmd_idx++;
 
-                    result_id = cmd->getResultId();
+                    std::string result_id = cmd->getResultId();
                     if(result_id.size())
                     {
                         rv += fmt::format("\t{},\n", result_id);
-                        m_commands[result_id] = cmd_idx;
-                        cmd_idx ++;
+                        m_commands[result_id] = cmd_idx++;
                     }
                 }
             }
+
             rv = rv.substr(0, rv.size() - 2); // Remove last comma
 
             return rv;

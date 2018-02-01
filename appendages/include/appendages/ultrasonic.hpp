@@ -1,15 +1,15 @@
-#ifndef SERVO_HPP
-#define SERVO_HPP
+#ifndef ULTRASONIC_HPP
+#define ULTRASONIC_HPP
 
 #include <memory>
 #include <map>
 #include <string>
 
 
-#include "command.hpp"
+#include <cmd_messenger/command.hpp>
 
-#include <appendage.hpp>
-#include <appendage_factory.hpp>
+#include "appendages/appendage.hpp"
+#include "appendages/appendage_factory.hpp"
 
 #include <json.hpp>
 
@@ -17,13 +17,13 @@ namespace rip
 {
     namespace appendages
     {
-        class Servo : public Appendage
+        class Ultrasonic : public Appendage
         {
         public:
             /**
-             * Writes a value to adjust the angle of the servo
+             * Reads the distance from the ultrasonic
              */
-            void write(int value);
+            units::Distance read();
 
             /**
              * Stop
@@ -42,7 +42,7 @@ namespace rip
              * @param command_map A map of the name of the commands to their enumerations
              * @param device The connection to the device
              */
-            static std::shared_ptr<Appendage> create(const nlohmann::json& config, const std::map<std::string, int>& command_map, std::shared_ptr<cmdmessenger::Device> device);
+            static std::shared_ptr<Appendage> create(const nlohmann::json& config, const std::map<std::string, int>& command_map, std::shared_ptr<utilities::cmdmessenger::Device> device);
 
         private:
             /**
@@ -52,9 +52,10 @@ namespace rip
              * @param command_map A map of the name of the commands to their enumerations
              * @param device The connection to the device
              */
-            Servo(const nlohmann::json& config, const std::map<std::string, int>& command_map, std::shared_ptr<cmdmessenger::Device> device);
+            Ultrasonic(const nlohmann::json& config, const std::map<std::string, int>& command_map, std::shared_ptr<utilities::cmdmessenger::Device> device);
 
-            cmdmessenger::Command m_write;
+            std::shared_ptr<utilities::cmdmessenger::Command> m_read;
+            std::shared_ptr<utilities::cmdmessenger::Command> m_read_result;
         };
     }
 }

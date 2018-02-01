@@ -35,7 +35,7 @@ namespace rip
              */
             std::shared_ptr<Appendage> makeAppendage(const nlohmann::json& config,
                     const std::map<std::string, int>& command_map,
-                    std::shared_ptr<cmdmessenger::Device> device);
+                    std::shared_ptr<utilities::cmdmessenger::Device> device);
         private:
             static std::shared_ptr<AppendageFactory> m_singleton;
 
@@ -53,13 +53,13 @@ namespace rip
             void registerAppendage(const std::string& type,
                                    std::function<std::shared_ptr<Appendage>(const nlohmann::json&,
                                                                             const std::map<std::string, int>&,
-                                                                            std::shared_ptr<cmdmessenger::Device>)
+                                                                            std::shared_ptr<utilities::cmdmessenger::Device>)
                                    > constructor
                                    );
 
             std::map<std::string, std::function<std::shared_ptr<Appendage>(const nlohmann::json&,
                                                                            const std::map<std::string, int>&,
-                                                                           std::shared_ptr<cmdmessenger::Device>)
+                                                                           std::shared_ptr<utilities::cmdmessenger::Device>)
                                   >> m_constructors;
         };
     }

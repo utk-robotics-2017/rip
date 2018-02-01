@@ -1,11 +1,11 @@
-#include "return_value.hpp"
+#include "arduino_gen/return_value.hpp"
 
 #include <map>
 
 #include <fmt/format.h>
 #include <tinyxml2.h>
 
-#include "exceptions.hpp"
+#include "arduino_gen/exceptions.hpp"
 
 namespace rip
 {
@@ -39,7 +39,7 @@ namespace rip
 
         std::string ReturnValue::send() const
         {
-            return fmt::format("\tcmdMessenger.sendBinArg({});\n", m_name);
+            return fmt::format("\tcmdMessenger.sendCmdBinArg({});\n", m_name);
         }
 
         std::string ReturnValue::getName() const

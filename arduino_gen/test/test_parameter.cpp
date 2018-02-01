@@ -1,5 +1,5 @@
-#include "parameter.hpp"
-#include "exceptions.hpp"
+#include "arduino_gen/parameter.hpp"
+#include "arduino_gen/exceptions.hpp"
 
 #include <tinyxml2.h>
 #include <gtest/gtest.h>

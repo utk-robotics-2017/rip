@@ -1,3 +1,5 @@
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated"
 #include <sstream>
 #include <iostream>
 
@@ -340,3 +342,4 @@ namespace stp
         return os;
     }
 }
+#pragma GCC diagnostic pop

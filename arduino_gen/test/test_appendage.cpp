@@ -1,5 +1,5 @@
-#include "appendage.hpp"
-#include "exceptions.hpp"
+#include "arduino_gen/appendage.hpp"
+#include "arduino_gen/exceptions.hpp"
 
 #include <gtest/gtest.h>
 #include <googletest_rip_macros.hpp>

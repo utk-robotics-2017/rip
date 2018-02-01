@@ -17,26 +17,36 @@
  *  \$$    $$   | $$   | $$  \$$\      | $$  | $$|   $$ \| $$
  *   \$$$$$$     \$$    \$$   \$$       \$$   \$$ \$$$$$$ \$$
  */
-#ifndef EXCEPTIONS_HPP
-#define EXCEPTIONS_HPP
-#include <exception_base.hpp>
+#ifndef SUBSYSTEM_HPP
+#define SUBSYSTEM_HPP
+
+#include <string>
 
 namespace rip
 {
-    namespace cmdmessenger
+    namespace core
     {
-        NEW_EX(EmptyDevice)
-        NEW_EX(EmptyCommand)
+        namespace framework
+        {
+            class Subsystem
+            {
+            public:
+                Subsystem(const std::string& name)
+                    : m_name(name)
+                {}
 
-        NEW_EX(IncorrectAcknowledgementCommand)
-        NEW_EX(IncorrectArgumentListSize)
-        NEW_EX(IncorrectCommandSeparator)
-        NEW_EX(IncorrectFieldSeparator)
-        NEW_EX(IncorrectResponseCommand)
-        NEW_EX(OutOfBounds)
-        NEW_EX(NoLastDeviceException)
-        NEW_EX(UnconvertibleArgument)
-        NEW_EX(UnknownArgument)
+                std::string name() const
+                {
+                    return m_name;
+                }
+
+                virtual bool diagnostic() = 0;
+                virtual void stop() = 0;
+            private:
+                std::string m_name;
+            };
+        }
     }
 }
-#endif // EXCEPTIONS_HPP
+
+#endif // SUBSYSTEM_HPP

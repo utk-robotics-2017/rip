@@ -26,15 +26,18 @@
 #include <memory>
 #include <map>
 #include <tuple>
+#include <iostream>
 
 #include <fmt/format.h>
 
-#include "cmdmessenger_exceptions.hpp"
+#include "exceptions.hpp"
 #include "command.hpp"
 #include "device.hpp"
 
 namespace rip
 {
+    namespace utilities
+    {
         namespace cmdmessenger
         {
             /**
@@ -70,11 +73,11 @@ namespace rip
                 typedef T_StringType          StringType         ;
                 typedef T_IntegerType         IntegerType        ;
                 typedef T_UnsignedIntegerType UnsignedIntegerType;
-                typedef T_LongType            LongType           ;  
-                typedef T_UnsignedLongType    UnsignedLongType   ;  
-                typedef T_FloatType           FloatType          ;   
-                typedef T_DoubleType          DoubleType         ;  
-                typedef T_BooleanType         BooleanType        ;   
+                typedef T_LongType            LongType           ;
+                typedef T_UnsignedLongType    UnsignedLongType   ;
+                typedef T_FloatType           FloatType          ;
+                typedef T_DoubleType          DoubleType         ;
+                typedef T_BooleanType         BooleanType        ;
                 typedef T_CharType            CharType           ;
 
 
@@ -132,20 +135,20 @@ namespace rip
                  * @ref http://en.cppreference.com/w/cpp/utility/tuple
                  */
                 template <typename... Args>
-                void send(std::shared_ptr<Device> device, const Command& command, Args... args)
+                void send(std::shared_ptr<Device> device, std::shared_ptr<Command> command, Args... args)
                 {
                     if (device == nullptr)
                     {
                         throw EmptyDevice();
                     }
 
-                    if (command.getId() == "")
+                    if (command->getId() == "")
                     {
                         throw EmptyCommand();
                     }
 
                     // Get the argument types
-                    std::string argument_types = command.getArgumentTypes();
+                    std::string argument_types = command->getArgumentTypes();
                     const std::size_t value = sizeof...(Args);
                     if (value != argument_types.size())
                     {
@@ -153,7 +156,7 @@ namespace rip
                     }
 
                     // Pack the command to send
-                    std::string message = toBytes<int, T_IntegerType>(command.getEnum()) + static_cast<T_CharType>(m_field_separator);
+                    std::string message = toBytes<int, T_IntegerType>(command->getEnum()) + static_cast<T_CharType>(m_field_separator);
 
                     std::tuple<Args...> args_tuple(args...);
 
@@ -188,12 +191,16 @@ namespace rip
                  * @exception IncorrectCommandSeparator Thrown if the acknowledgment does not end with the correct command separator
                  * @exception IncorrectAcknowledgementCommand Thrown if the command acknowledged is not the one previously sent
                  */
-                void handleAck(std::string& acknowledgement, const Command& command)
+                void handleAck(std::string& acknowledgement, std::shared_ptr<Command> command)
                 {
+                    //std::string debugString = byteStringToHexDebugString(acknowledgement);
+
                     // First part should be the acknowledgment id
                     T_IntegerType acknowledgement_id = fromBytes<T_IntegerType>(acknowledgement);
+
                     if (acknowledgement_id != 0) //TODO(Andrew): Look up number
                     {
+                        //std::cout << fmt::format("Ack Str: {}\nAck Id: {}", debugString, acknowledgement_id) << std::endl;
                         throw IncorrectAcknowledgementCommand("Acknowledge command incorrect");
                     }
 
@@ -206,9 +213,9 @@ namespace rip
 
                     // Then the command sent
                     T_IntegerType acknowledge_command = fromBytes<T_IntegerType>(acknowledgement);
-                    if (acknowledge_command != command.getEnum())
+                    if (acknowledge_command != command->getEnum())
                     {
-                        throw IncorrectAcknowledgementCommand(fmt::format("Acknowledgement command {} is not the same as the current command {}", acknowledge_command, command.getEnum()));
+                        throw IncorrectAcknowledgementCommand(fmt::format("Acknowledgement command {} is not the same as the current command {}", acknowledge_command, command->getEnum()));
                     }
                     if (acknowledgement[0] != m_command_separator)
                     {
@@ -231,7 +238,7 @@ namespace rip
                  * @todo(Andrew): add exceptions
                  */
                 template<typename... Args>
-                std::tuple<Args...> receive(const Command& command)
+                std::tuple<Args...> receive(std::shared_ptr<Command> command)
                 {
                     // \todo(Andrew): add comment to this function
                     if (!m_last_device)
@@ -242,7 +249,7 @@ namespace rip
 
                     const std::size_t num_arguments = sizeof...(Args);
 
-                    std::string argument_types = command.getArgumentTypes();
+                    std::string argument_types = command->getArgumentTypes();
 
                     if (num_arguments != argument_types.size())
                     {
@@ -255,7 +262,7 @@ namespace rip
                     // Check that response command is correct
                     T_IntegerType response_command_enum = fromBytes<T_IntegerType>(response);
 
-                    if (response_command_enum != command.getEnum())
+                    if (response_command_enum != command->getEnum())
                     {
                         throw IncorrectResponseCommand();
                     }
@@ -333,7 +340,7 @@ namespace rip
 
                     char* byte_pointer = reinterpret_cast<char*>(&t);
                     std::string rv;
-                    for (int i = 0; i < sizeof(t); i++)
+                    for (size_t i = 0; i < sizeof(t); i++)
                     {
                         // Add the escape character
                         if (*byte_pointer == m_field_separator ||
@@ -511,7 +518,7 @@ namespace rip
                 {
                     T rv;
                     char* byte_pointer = reinterpret_cast<char*>(&rv);
-                    for (int i = 0; i < sizeof(rv); i++)
+                    for (size_t i = 0; i < sizeof(rv); i++)
                     {
                         // Skip the escape character
                         if (message[i] == m_escape_character)
@@ -708,6 +715,29 @@ namespace rip
                  * If the makeArgumentChar function is called with a template argument that is not one of the above then it will not compile
                  */
 
+                std::string byteStringToHexDebugString(std::string input)
+                {
+                    std::string rv = "";
+
+                    for (char c : input)
+                    {
+                        rv += fmt::format("{:02X}", c);
+
+                        if (c >= 32 && c <= 126)
+                        {
+                            rv += fmt::format("({})", c);
+                        }
+
+                        rv += " ";
+                    }
+
+                    if (rv.size() > 0)
+                    {
+                        rv.pop_back();
+                    }
+
+                    return rv;
+                }
 
                 static constexpr char m_integer_key = 'i';
                 static constexpr char m_unsigned_integer_key = 'u';
@@ -719,13 +749,13 @@ namespace rip
                 static constexpr char m_string_key = 's';
                 static constexpr char m_bool_key = 'b';
 
-                std::shared_ptr<Device> m_last_device;
-
                 std::size_t m_max_response_length;
 
                 char m_field_separator;
                 char m_command_separator;
                 char m_escape_character;
+
+                std::shared_ptr<Device> m_last_device;
             };
 
             /**
@@ -743,5 +773,6 @@ namespace rip
                                         /* class T_CharType            = */ char
                                         >;
         }
+    }
 }
 #endif // CMD_MESSENGER_HPP

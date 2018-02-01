@@ -1,4 +1,4 @@
-#include "xml_utils.hpp"
+#include "arduino_gen/xml_utils.hpp"
 
 #include <fstream>
 #include <sstream>
@@ -10,7 +10,7 @@
 
 #include <fmt/format.h>
 
-#include "exceptions.hpp"
+#include "arduino_gen/exceptions.hpp"
 
 namespace rip
 {

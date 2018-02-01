@@ -17,49 +17,21 @@
  *  \$$    $$   | $$   | $$  \$$\      | $$  | $$|   $$ \| $$
  *   \$$$$$$     \$$    \$$   \$$       \$$   \$$ \$$$$$$ \$$
  */
-#ifndef ACTION_HPP
-#define ACTION_HPP
-
-#include <json.hpp>
+#ifndef EXCEPTIONS_HPP
+#define EXCEPTIONS_HPP
+#include <exception_base.hpp>
 
 namespace rip
 {
-    /**
-     * Abstract Action Base class
-     */
-    class Action
+    namespace core
     {
-    public:
-        /**
-         * Returns whether or not the action has finished execution.
-         */
-        virtual bool isFinished() = 0;
-
-        /**
-         * Iteratively called until {@see Action#isFinished()} returns true
-         */
-        virtual void update() = 0;
-
-        /**
-         * Run once before the main code
-         */
-        virtual void setup() = 0;
-
-        /**
-         * Run once after finished
-         */
-        virtual void teardown() = 0;
-
-        /**
-         * Returns the state which can be used in case of a crash
-         */
-        virtual nlohmann::json save() const = 0;
-
-        /**
-         * Restores the action to state
-         */
-        virtual void restore(const nlohmann::json& state) = 0;
-    };
+        namespace framework
+        {
+            NEW_EX(AppendageNotFound)
+            NEW_EX(FileNotFound)
+            NEW_EX(AppendageWithoutType)
+            NEW_EX(CannotLoadDevice)
+        }
+    }
 }
-
-#endif // ACTION_HPP
+#endif // EXCEPTIONS_HPP

@@ -1,10 +1,12 @@
-#include "servo.hpp"
+#include "appendages/servo.hpp"
 
 #include <utility>
 #include <tuple>
 #include <memory>
 
-#include <cmd_messenger.hpp>
+#include <cmd_messenger/cmd_messenger.hpp>
+
+using namespace rip::utilities;
 
 namespace rip
 {
@@ -12,7 +14,7 @@ namespace rip
     {
         Servo::Servo(const nlohmann::json& config, const std::map<std::string, int>& command_map, std::shared_ptr<cmdmessenger::Device> device)
             : Appendage(config, device)
-            , m_write(createCommand("kServoWrite", command_map, cmdmessenger::ArduinoCmdMessenger::makeArgumentString<typename cmdmessenger::ArduinoCmdMessenger::IntegerType, typename cmdmessenger::ArduinoCmdMessenger::IntegerType>()))
+            , m_write(createCommand("kServoWrite", command_map, cmdmessenger::ArduinoCmdMessenger::makeArgumentString<typename utilities::cmdmessenger::ArduinoCmdMessenger::IntegerType, typename utilities::cmdmessenger::ArduinoCmdMessenger::IntegerType>()))
         {
         }
 
