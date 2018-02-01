@@ -12,7 +12,7 @@
 
 #include <teb_planner/trajectory_point.hpp>
 #include <teb_planner/obstacle.hpp>
-#include <teb_planner/optimal_planner.hpp>
+#include <teb_planner/teb_planner.hpp>
 #include <teb_planner/teb_config.hpp>
 
 namespace rip
@@ -58,7 +58,7 @@ namespace rip
                 std::shared_ptr< std::vector< std::shared_ptr< navigation::Obstacle > > > m_obstacles;
                 std::shared_ptr< navigation::Pose > m_start;
                 std::shared_ptr< navigation::Pose > m_goal;
-                std::unique_ptr< navigation::TebOptimalPlanner > m_planner;
+                std::unique_ptr< navigation::TebPlanner > m_planner;
             };
         }
     }

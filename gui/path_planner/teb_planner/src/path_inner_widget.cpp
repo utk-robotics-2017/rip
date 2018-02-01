@@ -221,7 +221,6 @@ namespace rip
             {
                 m_trajectory = m_compute_thread->trajectory();
                 update();
-                int breakpoint = -1;
             }
 
             void PathInnerWidget::paintEvent(QPaintEvent* event)
@@ -704,8 +703,8 @@ namespace rip
                     return;
                 }
 
-                painter.setPen(QPen(Qt::red, scale));
-                painter.setBrush(Qt::red);
+                painter.setPen(QPen(Qt::blue, scale));
+                painter.setBrush(Qt::blue);
 
                 bool first = true;
                 geometry::Point p0 = m_trajectory.front().position();
@@ -715,6 +714,7 @@ namespace rip
                 for (const navigation::TrajectoryPoint& point : m_trajectory)
                 {
                     painter.drawEllipse(p0.x()() - diameter / 2.0, p0.y()() - diameter / 2.0, diameter, diameter);
+
                     if (first)
                     {
                         first = false;
@@ -724,7 +724,7 @@ namespace rip
                     geometry::Point p1 = point.position();
 
                     painter.drawLine(p0.x()(), p0.y()(), p1.x()(), p1.y()());
-                    p1 = p0;
+                    p0 = p1;
                 }
             }
 
@@ -794,12 +794,6 @@ namespace rip
 
             void PathInnerWidget::createBoundingBox()
             {
-                if (!m_obstacles || m_obstacles->empty())
-                {
-                    m_bounding_box = geometry::Rectangle(-1 * units::in, 1 * units::in, -1 * units::in, 1 * units::in);
-                    return;
-                }
-
                 geometry::Point min(-1 * units::in, -1 * units::in);
                 geometry::Point max(1 * units::in, 1 * units::in);
 
@@ -872,103 +866,106 @@ namespace rip
                     }
                 }
 
-                for (std::shared_ptr< navigation::Obstacle > obstacle : (*m_obstacles))
+                if(m_obstacles)
                 {
-                    std::shared_ptr< navigation::PointObstacle > point = std::dynamic_pointer_cast< navigation::PointObstacle >(obstacle);
-                    if (point)
+                    for (std::shared_ptr< navigation::Obstacle > obstacle : (*m_obstacles))
                     {
-                        if (point->centroid().x() < min.x())
+                        std::shared_ptr< navigation::PointObstacle > point = std::dynamic_pointer_cast< navigation::PointObstacle >(obstacle);
+                        if (point)
                         {
-                            min.setX(point->centroid().x());
-                        }
-
-                        if (point->centroid().y() < min.y())
-                        {
-                            min.setY(point->centroid().y());
-                        }
-
-                        if (point->centroid().x() > max.x())
-                        {
-                            max.setX(point->centroid().x());
-                        }
-
-                        if (point->centroid().y() > max.y())
-                        {
-                            max.setY(point->centroid().y());
-                        }
-
-                        continue;
-                    }
-
-                    std::shared_ptr< navigation::LineObstacle > line = std::dynamic_pointer_cast< navigation::LineObstacle >(obstacle);
-                    if (line)
-                    {
-                        if (line->start().x() < min.x())
-                        {
-                            min.setX(line->start().x());
-                        }
-
-                        if (line->start().y() < min.y())
-                        {
-                            min.setY(line->start().y());
-                        }
-
-                        if (line->start().x() > max.x())
-                        {
-                            max.setX(line->start().x());
-                        }
-
-                        if (line->start().y() > max.y())
-                        {
-                            max.setY(line->start().y());
-                        }
-
-                        if (line->end().x() < min.x())
-                        {
-                            min.setX(line->end().x());
-                        }
-
-                        if (line->end().y() < min.y())
-                        {
-                            min.setY(line->end().y());
-                        }
-
-                        if (line->end().x() > max.x())
-                        {
-                            max.setX(line->end().x());
-                        }
-
-                        if (line->end().y() > max.y())
-                        {
-                            max.setY(line->end().y());
-                        }
-
-                        continue;
-                    }
-
-                    std::shared_ptr< navigation::PolygonObstacle> polygon = std::dynamic_pointer_cast< navigation::PolygonObstacle >(obstacle);
-                    if (polygon)
-                    {
-                        for (const geometry::Point& point : polygon->polygon())
-                        {
-                            if (point.x() < min.x())
+                            if (point->centroid().x() < min.x())
                             {
-                                min.setX(point.x());
+                                min.setX(point->centroid().x());
                             }
 
-                            if (point.y() < min.y())
+                            if (point->centroid().y() < min.y())
                             {
-                                min.setY(point.y());
+                                min.setY(point->centroid().y());
                             }
 
-                            if (point.x() > max.x())
+                            if (point->centroid().x() > max.x())
                             {
-                                max.setX(point.x());
+                                max.setX(point->centroid().x());
                             }
 
-                            if (point.y() > max.y())
+                            if (point->centroid().y() > max.y())
                             {
-                                max.setY(point.y());
+                                max.setY(point->centroid().y());
+                            }
+
+                            continue;
+                        }
+
+                        std::shared_ptr< navigation::LineObstacle > line = std::dynamic_pointer_cast< navigation::LineObstacle >(obstacle);
+                        if (line)
+                        {
+                            if (line->start().x() < min.x())
+                            {
+                                min.setX(line->start().x());
+                            }
+
+                            if (line->start().y() < min.y())
+                            {
+                                min.setY(line->start().y());
+                            }
+
+                            if (line->start().x() > max.x())
+                            {
+                                max.setX(line->start().x());
+                            }
+
+                            if (line->start().y() > max.y())
+                            {
+                                max.setY(line->start().y());
+                            }
+
+                            if (line->end().x() < min.x())
+                            {
+                                min.setX(line->end().x());
+                            }
+
+                            if (line->end().y() < min.y())
+                            {
+                                min.setY(line->end().y());
+                            }
+
+                            if (line->end().x() > max.x())
+                            {
+                                max.setX(line->end().x());
+                            }
+
+                            if (line->end().y() > max.y())
+                            {
+                                max.setY(line->end().y());
+                            }
+
+                            continue;
+                        }
+
+                        std::shared_ptr< navigation::PolygonObstacle> polygon = std::dynamic_pointer_cast< navigation::PolygonObstacle >(obstacle);
+                        if (polygon)
+                        {
+                            for (const geometry::Point& point : polygon->polygon())
+                            {
+                                if (point.x() < min.x())
+                                {
+                                    min.setX(point.x());
+                                }
+
+                                if (point.y() < min.y())
+                                {
+                                    min.setY(point.y());
+                                }
+
+                                if (point.x() > max.x())
+                                {
+                                    max.setX(point.x());
+                                }
+
+                                if (point.y() > max.y())
+                                {
+                                    max.setY(point.y());
+                                }
                             }
                         }
                     }

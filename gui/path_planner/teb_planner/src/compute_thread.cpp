@@ -1,7 +1,5 @@
 #include <teb_planner_gui/compute_thread.hpp>
 
-#include <teb_planner/optimal_planner.hpp>
-
 namespace rip
 {
     namespace gui
@@ -54,7 +52,7 @@ namespace rip
             {
                 if(m_config && m_robot && m_obstacles && m_start && m_goal)
                 {
-                    m_planner.reset(new navigation::TebOptimalPlanner(m_config, *m_obstacles, m_robot, m_waypoints));
+                    m_planner.reset(new navigation::TebPlanner(m_config, *m_obstacles, m_robot, m_waypoints));
                     m_planner->plan(*m_start, *m_goal);
                     emit trajectoryUpdated();
                 }
@@ -62,12 +60,12 @@ namespace rip
 
             ComputeThread::ComputeThread(QObject* parent)
                 : QThread(parent)
-                , m_planner(nullptr)
-                , m_start(nullptr)
-                , m_goal(nullptr)
                 , m_config(nullptr)
                 , m_robot(nullptr)
                 , m_obstacles(nullptr)
+                , m_start(nullptr)
+                , m_goal(nullptr)
+                , m_planner(nullptr)
             {
             }
         }

@@ -31,3 +31,6 @@
 [submodule "external/suitesparse"]
 	path = external/suitesparse
 	url = git@github.com:utk-robotics-2017/suitesparse.git
+[submodule "external/optional-lite"]
+	path = external/optional-lite
+	url = git@github.com:utk-robotics-2017/optional-lite.git

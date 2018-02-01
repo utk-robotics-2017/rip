@@ -1,134 +1,133 @@
+/*********************************************************************
+ *
+ * Software License Agreement (BSD License)
+ *
+ *  Copyright (c) 2016,
+ *  TU Dortmund - Institute of Control Theory and Systems Engineering.
+ *  All rights reserved.
+ *
+ *  Redistribution and use in source and binary forms, with or without
+ *  modification, are permitted provided that the following conditions
+ *  are met:
+ *
+ *   * Redistributions of source code must retain the above copyright
+ *     notice, this list of conditions and the following disclaimer.
+ *   * Redistributions in binary form must reproduce the above
+ *     copyright notice, this list of conditions and the following
+ *     disclaimer in the documentation and/or other materials provided
+ *     with the distribution.
+ *   * Neither the name of the institute nor the names of its
+ *     contributors may be used to endorse or promote products derived
+ *     from this software without specific prior written permission.
+ *
+ *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ *  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ *  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+ *  FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ *  COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+ *  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ *  BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ *  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ *  CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+ *  LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+ *  ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ *  POSSIBILITY OF SUCH DAMAGE.
+ *
+ * Author: Christoph Rösmann
+ *
+ * Modified by: Andrew Messing
+ * - Removed all aspects that required ROS or boost and added in RIP
+ *   elements
+ *********************************************************************/
+
 #include <teb_planner/teb_config.hpp>
 
 namespace rip
 {
     namespace navigation
     {
-        void from_json(const nlohmann::json& j, TebConfig& c)
+        namespace tebplanner
         {
-            // Trajectory
-            c.trajectory.autosize = j["autosize"];
-            c.trajectory.dt_ref = j["dt_ref"];
-            c.trajectory.dt_hysteresis = j["dt_hysteresis"];
-            c.trajectory.min_samples = j["min_samples"];
-            c.trajectory.max_samples = j["max_samples"];
-            c.trajectory.global_plan_overwrite_orientation = j["global_plan_overwrite_orientation"];
-            c.trajectory.allow_init_with_backwards_motion = j["allow_init_with_backwards_motion"];
-            c.trajectory.global_plan_waypoint_separation = j["global_plan_waypoint_separation"];
-            c.trajectory.waypoints_ordered = j["waypoint_ordered"];
-            c.trajectory.max_global_plan_lookahead_distance = j["max_global_plan_lookahead_distance"];
-            c.trajectory.exact_arc_length = j["exact_arc_length"];
-            c.trajectory.force_reinit_new_goal_distance = j["force_reinit_new_goal_distance"];
-            c.trajectory.feasibility_check_no_poses = j["feasibility_check_no_poses"];
-
-            // Robot
-            c.robot.max_velocity_x = j["max_velocity_x"];
-            c.robot.max_velocity_x_backwards = j["max_velocity_x_backwards"];
-            c.robot.max_velocity_y = j["max_velocity_y"];
-            c.robot.max_velocity_theta = j["max_velocity_theta"];
-            c.robot.acceleration_limit_x = j["acceleration_limit_x"];
-            c.robot.acceleration_limit_y = j["acceleration_limit_y"];
-            c.robot.acceleration_limit_theta = j["acceleration_limit_theta"];
-            c.robot.min_turning_radius = j["min_turning_radius"];
-            c.robot.wheelbase = j["wheelbase"];
-
-            // Goal Tolerance
-            c.goal_tolerance.yaw_goal_tolerance = j["yaw_goal_tolerance"];
-            c.goal_tolerance.xy_goal_tolerance = j["xy_goal_tolerance"];
-            c.goal_tolerance.free_goal_velocity = j["free_goal_velocity"];
-
-            // Obstacles
-            c.obstacles.min_obstacle_distance = j["min_obstacle_distance"];
-            c.obstacles.inflation_distance = j["inflation_distance"];
-            c.obstacles.dynamic_obstacle_inflation_distance = j["dynamic_obstacle_inflation_distance"];
-            c.obstacles.include_dynamic_obstacles = j["include_dynamic_obstacles"];
-            c.obstacles.obstacles_poses_affected = j["obstacles_poses_affected"];
-            c.obstacles.obstacle_association_force_inclusion_factor = j["obstacle_association_force_inclusion_factor"];
-            c.obstacles.obstacle_association_cutoff_factor = j["obstacle_association_cutoff_factor"];
-
-            // Optimization
-            c.optimization.num_inner_iterations = j["num_inner_iterations"];
-            c.optimization.num_outer_iterations = j["num_outer_iterations"];
-            c.optimization.penalty_epsilon = j["penalty_epsilon"];
-            c.optimization.max_velocity_x_weight = j["max_velocity_x_weight"];
-            c.optimization.max_velocity_y_weight = j["max_velocity_y_weight"];
-            c.optimization.max_velocity_theta_weight = j["max_velocity_theta_weight"];
-            c.optimization.acceleration_limit_x_weight = j["acceleration_limit_x_weight"];
-            c.optimization.acceleration_limit_y_weight = j["acceleration_limit_y_weight"];
-            c.optimization.acceleration_limit_theta_weight = j["acceleration_limit_theta_weight"];
-            c.optimization.kinematics_nh_weight = j["kinematics_nh_weight"];
-            c.optimization.kinematics_forward_drive_weight = j["kinematics_forward_drive_weight"];
-            c.optimization.kinematics_turning_radius_weight = j["kinematics_turning_radius_weight"];
-            c.optimization.optimal_time_weight = j["optimal_time_weight"];
-            c.optimization.obstacle_weight = j["obstacle_weight"];
-            c.optimization.inflation_weight = j["inflation_weight"];
-            c.optimization.dynamic_obstacle_weight = j["dynamic_obstacle_weight"];
-            c.optimization.dynamic_obstacle_inflation_weight = j["dynamic_obstacle_inflation_weight"];
-            c.optimization.waypoint_weight = j["waypoint_weight"];
-            c.optimization.weight_adapt_factor = j["weight_adapt_factor"];
-        }
-
-        void to_json(nlohmann::json& j, const TebConfig& c)
-        {
-            j = nlohmann::json
+            void TebConfig::checkParameters() const
             {
-                // Trajectory
-                {"autosize", c.trajectory.autosize},
-                {"dt_ref", c.trajectory.dt_ref},
-                {"dt_hysteresis", c.trajectory.dt_hysteresis},
-                {"min_samples", c.trajectory.min_samples},
-                {"max_samples", c.trajectory.max_samples},
-                {"global_plan_overwrite_orientation", c.trajectory.global_plan_overwrite_orientation},
-                {"allow_init_with_backwards_motion", c.trajectory.allow_init_with_backwards_motion},
-                {"global_plan_waypoint_separation", c.trajectory.global_plan_waypoint_separation},
-                {"waypoint_ordered", c.trajectory.waypoints_ordered},
-                {"max_global_plan_lookahead_distance", c.trajectory.max_global_plan_lookahead_distance},
-                {"exact_arc_length", c.trajectory.exact_arc_length},
-                {"force_reinit_new_goal_distance", c.trajectory.force_reinit_new_goal_distance},
-                {"feasibility_check_no_poses", c.trajectory.feasibility_check_no_poses},
-                // Robot
-                {"max_velocity_x", c.robot.max_velocity_x},
-                {"max_velocity_x_backwards", c.robot.max_velocity_x_backwards},
-                {"max_velocity_y", c.robot.max_velocity_y},
-                {"max_velocity_theta", c.robot.max_velocity_theta},
-                {"acceleration_limit_x", c.robot.acceleration_limit_x},
-                {"acceleration_limit_y", c.robot.acceleration_limit_y},
-                {"acceleration_limit_theta", c.robot.acceleration_limit_theta},
-                {"min_turning_radius", c.robot.min_turning_radius},
-                {"wheelbase", c.robot.wheelbase},
-                // Goal Tolerance
-                {"yaw_goal_tolerance", c.goal_tolerance.yaw_goal_tolerance},
-                {"xy_goal_tolerance", c.goal_tolerance.xy_goal_tolerance},
-                {"free_goal_velocity", c.goal_tolerance.free_goal_velocity},
-                // Obstacles
-                {"min_obstacle_distance", c.obstacles.min_obstacle_distance},
-                {"inflation_distance", c.obstacles.inflation_distance},
-                {"dynamic_obstacle_inflation_distance", c.obstacles.dynamic_obstacle_inflation_distance},
-                {"include_dynamic_obstacles", c.obstacles.include_dynamic_obstacles},
-                {"obstacles_poses_affected", c.obstacles.obstacles_poses_affected},
-                {"obstacle_association_force_inclusion_factor", c.obstacles.obstacle_association_force_inclusion_factor},
-                {"obstacle_association_cutoff_factor", c.obstacles.obstacle_association_cutoff_factor},
-                // Optimization
-                {"num_inner_iterations", c.optimization.num_inner_iterations},
-                {"num_outer_iterations", c.optimization.num_outer_iterations},
-                {"penalty_epsilon", c.optimization.penalty_epsilon},
-                {"max_velocity_x_weight", c.optimization.max_velocity_x_weight},
-                {"max_velocity_y_weight", c.optimization.max_velocity_y_weight},
-                {"max_velocity_theta_weight", c.optimization.max_velocity_theta_weight},
-                {"acceleration_limit_x_weight", c.optimization.acceleration_limit_x_weight},
-                {"acceleration_limit_y_weight", c.optimization.acceleration_limit_y_weight},
-                {"acceleration_limit_theta_weight", c.optimization.acceleration_limit_theta_weight},
-                {"kinematics_nh_weight", c.optimization.kinematics_nh_weight},
-                {"kinematics_forward_drive_weight", c.optimization.kinematics_forward_drive_weight},
-                {"kinematics_turning_radius_weight", c.optimization.kinematics_turning_radius_weight},
-                {"optimal_time_weight", c.optimization.optimal_time_weight},
-                {"obstacle_weight", c.optimization.obstacle_weight},
-                {"inflation_weight", c.optimization.inflation_weight},
-                {"dynamic_obstacle_weight", c.optimization.dynamic_obstacle_weight},
-                {"dynamic_obstacle_inflation_weight", c.optimization.dynamic_obstacle_inflation_weight},
-                {"waypoint_weight", c.optimization.waypoint_weight},
-                {"weight_adapt_factor", c.optimization.weight_adapt_factor}
-            };
+                // positive backward velocity?
+                if (robot.max_vel_x_backwards <= 0)
+                {
+                    Logger::getInstance()->warn("TebLocalPlannerROS() Param Warning: Do not choose max_vel_x_backwards to be <=0. Disable backwards driving by increasing the optimization weight for penalyzing backwards driving.");
+                }
+
+                // bounds smaller than penalty epsilon
+                if (robot.max_vel_x <= optim.penalty_epsilon)
+                {
+                    Logger::getInstance()->warn("TebLocalPlannerROS() Param Warning: max_vel_x <= penalty_epsilon. The resulting bound is negative. Undefined behavior... Change at least one of them!");
+                }
+
+                if (robot.max_vel_x_backwards <= optim.penalty_epsilon)
+                {
+                    Logger::getInstance()->warn("TebLocalPlannerROS() Param Warning: max_vel_x_backwards <= penalty_epsilon. The resulting bound is negative. Undefined behavior... Change at least one of them!");
+                }
+
+                if (robot.max_vel_theta <= optim.penalty_epsilon)
+                {
+                    Logger::getInstance()->warn("TebLocalPlannerROS() Param Warning: max_vel_theta <= penalty_epsilon. The resulting bound is negative. Undefined behavior... Change at least one of them!");
+                }
+
+                if (robot.acc_lim_x <= optim.penalty_epsilon)
+                {
+                    Logger::getInstance()->warn("TebLocalPlannerROS() Param Warning: acc_lim_x <= penalty_epsilon. The resulting bound is negative. Undefined behavior... Change at least one of them!");
+                }
+
+                if (robot.acc_lim_theta <= optim.penalty_epsilon)
+                {
+                    Logger::getInstance()->warn("TebLocalPlannerROS() Param Warning: acc_lim_theta <= penalty_epsilon. The resulting bound is negative. Undefined behavior... Change at least one of them!");
+                }
+
+                // dt_ref and dt_hyst
+                if (trajectory.dt_ref <= trajectory.dt_hysteresis)
+                {
+                    Logger::getInstance()->warn("TebLocalPlannerROS() Param Warning: dt_ref <= dt_hysteresis. The hysteresis is not allowed to be greater or equal!. Undefined behavior... Change at least one of them!");
+                }
+
+                // min number of samples
+                if (trajectory.min_samples < 3)
+                {
+                    Logger::getInstance()->warn("TebLocalPlannerROS() Param Warning: parameter min_samples is smaller than 3! Sorry, I haven't enough degrees of freedom to plan a trajectory for you. Please increase ...");
+                }
+
+                // costmap obstacle behind robot
+                if (obstacles.costmap_obstacles_behind_robot_dist < 0)
+                {
+                    Logger::getInstance()->warn("TebLocalPlannerROS() Param Warning: parameter 'costmap_obstacles_behind_robot_dist' should be positive or zero.");
+                }
+
+                // hcp: obstacle heading threshold
+                if (hcp.obstacle_keypoint_offset >= 1 || hcp.obstacle_keypoint_offset <= 0)
+                {
+                    Logger::getInstance()->warn("TebLocalPlannerROS() Param Warning: parameter obstacle_heading_threshold must be in the interval ]0,1[. 0=0deg opening angle, 1=90deg opening angle.");
+                }
+
+                // carlike
+                if (robot.cmd_angle_instead_rotvel && robot.wheelbase == 0)
+                {
+                    Logger::getInstance()->warn("TebLocalPlannerROS() Param Warning: parameter cmd_angle_instead_rotvel is non-zero but wheelbase is set to zero: undesired behavior.");
+                }
+
+                if (robot.cmd_angle_instead_rotvel && robot.min_turning_radius == 0)
+                {
+                    Logger::getInstance()->warn("TebLocalPlannerROS() Param Warning: parameter cmd_angle_instead_rotvel is non-zero but min_turning_radius is set to zero: undesired behavior. You are mixing a carlike and a diffdrive robot");
+                }
+
+                // positive weight_adapt_factor
+                if (optim.weight_adapt_factor < 1.0)
+                {
+                    Logger::getInstance()->warn("TebLocalPlannerROS() Param Warning: parameter weight_adapt_factor shoud be >= 1.0");
+                }
+
+                if (recovery.oscillation_filter_duration < 0)
+                {
+                    Logger::getInstance()->warn("TebLocalPlannerROS() Param Warning: parameter oscillation_filter_duration must be >= 0");
+                }
+            }
         }
     }
 }
