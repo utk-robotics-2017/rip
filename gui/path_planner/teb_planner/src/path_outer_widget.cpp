@@ -77,9 +77,17 @@ namespace rip
             void PathOuterWidget::setObstacles(const QString& text)
             {
                 m_obstacles_name = text.toStdString();
-                std::shared_ptr< std::vector< std::shared_ptr<navigation::tebplanner::Obstacle> > > obstacles = m_settings->obstacles(m_obstacles_name);
-                m_compute_thread->setObstacles(obstacles);
-                m_ui->widget->setObstacles(obstacles);
+                if(m_obstacles_name.empty())
+                {
+                    m_compute_thread->setObstacles(nullptr);
+                    m_ui->widget->setObstacles(nullptr);
+                }
+                else
+                {
+                    std::shared_ptr< std::vector< std::shared_ptr<navigation::tebplanner::Obstacle> > > obstacles = m_settings->obstacles(m_obstacles_name);
+                    m_compute_thread->setObstacles(obstacles);
+                    m_ui->widget->setObstacles(obstacles);
+                }
             }
 
             void PathOuterWidget::removeObstacles()

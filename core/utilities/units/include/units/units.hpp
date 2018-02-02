@@ -288,10 +288,22 @@ namespace rip
             return std::max(lhs(), rhs());
         }
 
+        template<int U1, int U2, int U3, int U4, int U5, int U6, typename... Args>
+        typename std::enable_if<1 < sizeof...(Args), Units<U1, U2, U3, U4, U5, U6>>::type max(const Units<U1, U2, U3, U4, U5, U6>& lhs, Args... rhs)
+        {
+            return units::max(lhs, units::max(rhs...));
+        }
+
         template<int U1, int U2, int U3, int U4, int U5, int U6>
         Units<U1, U2, U3, U4, U5, U6> min(const Units<U1, U2, U3, U4, U5, U6>& lhs, const Units<U1, U2, U3, U4, U5, U6>& rhs)
         {
             return std::min(lhs(), rhs());
+        }
+
+        template<int U1, int U2, int U3, int U4, int U5, int U6, typename... Args>
+        typename std::enable_if<1 < sizeof...(Args), Units<U1, U2, U3, U4, U5, U6>>::type min(const Units<U1, U2, U3, U4, U5, U6>& lhs, Args... rhs)
+        {
+            return units::min(lhs, units::min(rhs...));
         }
 
         template<int U1, int U2, int U3, int U4, int U5, int U6>

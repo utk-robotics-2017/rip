@@ -57,7 +57,7 @@ namespace rip
 
             TimedElasticBand::~TimedElasticBand()
             {
-                misc::Logger::getInstance()->debug("Destructor Timed_Elastic_Band...");
+                // misc::Logger::getInstance()->debug("Destructor Timed_Elastic_Band...");
                 clearTimedElasticBand();
             }
 

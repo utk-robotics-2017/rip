@@ -89,6 +89,25 @@ namespace rip
                 m_ui->waypoint_weight->setEnabled(false);
                 m_ui->weight_adapt_factor->setEnabled(false);
 
+                // HCP
+                m_ui->enable_hcp->setEnabled(false);
+                m_ui->enable_mt->setEnabled(false);
+                m_ui->simple_exploration->setEnabled(false);
+                m_ui->max_number_classes->setEnabled(false);
+                m_ui->selection_cost_hysteresis->setEnabled(false);
+                m_ui->selection_obstacle_cost_scale->setEnabled(false);
+                m_ui->selection_prefer_initial_plan->setEnabled(false);
+                m_ui->selection_waypoint_cost_scale->setEnabled(false);
+                m_ui->selection_alternative_time_cost->setEnabled(false);
+                m_ui->roadmap_graph_no_samples->setEnabled(false);
+                m_ui->roadmap_graph_area_width->setEnabled(false);
+                m_ui->roadmap_graph_area_length_scale->setEnabled(false);
+                m_ui->h_signature_prescaler->setEnabled(false);
+                m_ui->h_signature_threshold->setEnabled(false);
+                m_ui->obstacle_keypoint_offset->setEnabled(false);
+                m_ui->obstacle_heading_threshold->setEnabled(false);
+                m_ui->waypoint_all_candidates->setEnabled(false);
+
 
                 // Trajectory
                 setupMap(m_bools, autosize);
@@ -149,6 +168,25 @@ namespace rip
                 setupMap(m_doubles, dynamic_obstacle_inflation_weight);
                 setupMap(m_doubles, waypoint_weight);
                 setupMap(m_doubles, weight_adapt_factor);
+
+                // HCP
+                setupMap(m_bools, enable_hcp);
+                setupMap(m_bools, enable_mt);
+                setupMap(m_bools, simple_exploration);
+                setupMap(m_integers, max_number_classes);
+                setupMap(m_doubles, selection_cost_hysteresis);
+                setupMap(m_doubles, selection_prefer_initial_plan);
+                setupMap(m_doubles, selection_obstacle_cost_scale);
+                setupMap(m_doubles, selection_waypoint_cost_scale);
+                setupMap(m_bools, selection_alternative_time_cost);
+                setupMap(m_integers, roadmap_graph_no_samples);
+                setupMap(m_doubles, roadmap_graph_area_width);
+                setupMap(m_doubles, roadmap_graph_area_length_scale);
+                setupMap(m_doubles, h_signature_prescaler);
+                setupMap(m_doubles, h_signature_threshold);
+                setupMap(m_doubles, obstacle_keypoint_offset);
+                setupMap(m_doubles, obstacle_heading_threshold);
+                setupMap(m_bools, waypoint_all_candidates);
 
                 for (auto iter : m_distances)
                 {
@@ -523,6 +561,46 @@ namespace rip
                     {
                         m_current->optim.weight_adapt_factor = value;
                     }
+                    else if(var_name == "selection_cost_hysteresis")
+                    {
+                        m_current->hcp.selection_cost_hysteresis = value;
+                    }
+                    else if(var_name == "selection_prefer_initial_plan")
+                    {
+                        m_current->hcp.selection_prefer_initial_plan = value;
+                    }
+                    else if(var_name == "selection_obstacle_cost_scale")
+                    {
+                        m_current->hcp.selection_obst_cost_scale = value;
+                    }
+                    else if(var_name == "selection_waypoint_cost_scale")
+                    {
+                        m_current->hcp.selection_viapoint_cost_scale = value;
+                    }
+                    else if(var_name == "roadmap_graph_area_width")
+                    {
+                        m_current->hcp.roadmap_graph_area_width = value;
+                    }
+                    else if(var_name == "roadmap_graph_area_length_scale")
+                    {
+                        m_current->hcp.roadmap_graph_area_length_scale = value;
+                    }
+                    else if(var_name == "h_signature_prescaler")
+                    {
+                        m_current->hcp.h_signature_prescaler = value;
+                    }
+                    else if(var_name == "h_signarture_threshold")
+                    {
+                        m_current->hcp.h_signature_threshold = value;
+                    }
+                    else if(var_name == "obstacle_keypoint_offset")
+                    {
+                        m_current->hcp.obstacle_keypoint_offset = value;
+                    }
+                    else if(var_name == "obstacle_heading_threshold")
+                    {
+                        m_current->hcp.obstacle_heading_threshold = value;
+                    }
                     else
                     {
                         throw UnknownDoubleSettingException(fmt::format("Unknown double setting: {}", var_name));
@@ -568,6 +646,14 @@ namespace rip
                     {
                         m_current->optim.no_outer_iterations = value;
                     }
+                    else if(var_name == "max_number_classes")
+                    {
+                        m_current->hcp.max_number_classes = value;
+                    }
+                    else if(var_name == "roadmap_graph_no_samples")
+                    {
+                        m_current->hcp.roadmap_graph_no_samples = value;
+                    }
                     else
                     {
                         throw UnknownIntegerSettingException(fmt::format("Unknown integer setting: {}", var_name));
@@ -612,6 +698,26 @@ namespace rip
                 else if (var_name == "include_dynamic_obstacles")
                 {
                     m_current->obstacles.include_dynamic_obstacles = value;
+                }
+                else if(var_name == "enable_hcp")
+                {
+                    m_current->hcp.enable_homotopy_class_planning = value;
+                }
+                else if(var_name == "enable_mt")
+                {
+                    m_current->hcp.enable_multithreading = value;
+                }
+                else if(var_name == "simple_exploration")
+                {
+                    m_current->hcp.simple_exploration = value;
+                }
+                else if(var_name == "selection_alternative_time_cost")
+                {
+                    m_current->hcp.selection_alternative_time_cost = value;
+                }
+                else if(var_name == "waypoint_all_candidates")
+                {
+                    m_current->hcp.viapoints_all_candidates = value;
                 }
                 else
                 {
@@ -700,6 +806,25 @@ namespace rip
                     m_ui->waypoint_weight->setEnabled(true);
                     m_ui->weight_adapt_factor->setEnabled(true);
 
+                    // HCP
+                    m_ui->enable_hcp->setEnabled(true);
+                    m_ui->enable_mt->setEnabled(true);
+                    m_ui->simple_exploration->setEnabled(true);
+                    m_ui->max_number_classes->setEnabled(true);
+                    m_ui->selection_cost_hysteresis->setEnabled(true);
+                    m_ui->selection_obstacle_cost_scale->setEnabled(true);
+                    m_ui->selection_prefer_initial_plan->setEnabled(true);
+                    m_ui->selection_waypoint_cost_scale->setEnabled(true);
+                    m_ui->selection_alternative_time_cost->setEnabled(true);
+                    m_ui->roadmap_graph_no_samples->setEnabled(true);
+                    m_ui->roadmap_graph_area_width->setEnabled(true);
+                    m_ui->roadmap_graph_area_length_scale->setEnabled(true);
+                    m_ui->h_signature_prescaler->setEnabled(true);
+                    m_ui->h_signature_threshold->setEnabled(true);
+                    m_ui->obstacle_keypoint_offset->setEnabled(true);
+                    m_ui->obstacle_heading_threshold->setEnabled(true);
+                    m_ui->waypoint_all_candidates->setEnabled(true);
+
                     // Set
 
                     // Trajectory
@@ -762,6 +887,25 @@ namespace rip
                     m_ui->dynamic_obstacle_inflation_weight->setText(QString::number(m_current->optim.weight_dynamic_obstacle_inflation, 'f', 2));
                     m_ui->waypoint_weight->setText(QString::number(m_current->optim.weight_viapoint, 'f', 2));
                     m_ui->weight_adapt_factor->setText(QString::number(m_current->optim.weight_adapt_factor, 'f', 2));
+
+                    // HCP
+                    m_ui->enable_hcp->setChecked(m_current->hcp.enable_homotopy_class_planning);
+                    m_ui->enable_mt->setChecked(m_current->hcp.enable_multithreading);
+                    m_ui->simple_exploration->setChecked(m_current->hcp.simple_exploration);
+                    m_ui->max_number_classes->setText(QString::number(m_current->hcp.max_number_classes));
+                    m_ui->selection_cost_hysteresis->setText(QString::number(m_current->hcp.selection_cost_hysteresis, 'f', 2));
+                    m_ui->selection_obstacle_cost_scale->setText(QString::number(m_current->hcp.selection_obst_cost_scale, 'f', 2));
+                    m_ui->selection_prefer_initial_plan->setText(QString::number(m_current->hcp.selection_prefer_initial_plan, 'f', 2));
+                    m_ui->selection_waypoint_cost_scale->setText(QString::number(m_current->hcp.selection_viapoint_cost_scale, 'f', 2));
+                    m_ui->selection_alternative_time_cost->setText(QString::number(m_current->hcp.selection_alternative_time_cost, 'f', 2));
+                    m_ui->roadmap_graph_no_samples->setText(QString::number(m_current->hcp.roadmap_graph_no_samples, 'f', 2));
+                    m_ui->roadmap_graph_area_width->setText(QString::number(m_current->hcp.roadmap_graph_area_width, 'f', 2));
+                    m_ui->roadmap_graph_area_length_scale->setText(QString::number(m_current->hcp.roadmap_graph_area_length_scale, 'f', 2));
+                    m_ui->h_signature_prescaler->setText(QString::number(m_current->hcp.h_signature_prescaler, 'f', 2));
+                    m_ui->h_signature_threshold->setText(QString::number(m_current->hcp.h_signature_threshold, 'f', 2));
+                    m_ui->obstacle_keypoint_offset->setText(QString::number(m_current->hcp.obstacle_keypoint_offset, 'f', 2));
+                    m_ui->obstacle_heading_threshold->setText(QString::number(m_current->hcp.obstacle_heading_threshold, 'f', 2));
+                    m_ui->waypoint_all_candidates->setChecked(m_current->hcp.viapoints_all_candidates);
                 }
                 else
                 {
@@ -827,6 +971,25 @@ namespace rip
                     m_ui->dynamic_obstacle_inflation_weight->setEnabled(false);
                     m_ui->waypoint_weight->setEnabled(false);
                     m_ui->weight_adapt_factor->setEnabled(false);
+
+                    // HCP
+                    m_ui->enable_hcp->setEnabled(false);
+                    m_ui->enable_mt->setEnabled(false);
+                    m_ui->simple_exploration->setEnabled(false);
+                    m_ui->max_number_classes->setEnabled(false);
+                    m_ui->selection_cost_hysteresis->setEnabled(false);
+                    m_ui->selection_obstacle_cost_scale->setEnabled(false);
+                    m_ui->selection_prefer_initial_plan->setEnabled(false);
+                    m_ui->selection_waypoint_cost_scale->setEnabled(false);
+                    m_ui->selection_alternative_time_cost->setEnabled(false);
+                    m_ui->roadmap_graph_no_samples->setEnabled(false);
+                    m_ui->roadmap_graph_area_width->setEnabled(false);
+                    m_ui->roadmap_graph_area_length_scale->setEnabled(false);
+                    m_ui->h_signature_prescaler->setEnabled(false);
+                    m_ui->h_signature_threshold->setEnabled(false);
+                    m_ui->obstacle_keypoint_offset->setEnabled(false);
+                    m_ui->obstacle_heading_threshold->setEnabled(false);
+                    m_ui->waypoint_all_candidates->setEnabled(false);
                 }
             }
 

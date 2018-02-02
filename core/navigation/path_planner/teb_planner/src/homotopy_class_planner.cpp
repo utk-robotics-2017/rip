@@ -59,7 +59,7 @@ namespace rip
             {
             }
 
-            HomotopyClassPlanner::HomotopyClassPlanner(std::shared_ptr<TebConfig> cfg, ObstacleContainer* obstacles, RobotFootprintModelPtr robot_model,
+            HomotopyClassPlanner::HomotopyClassPlanner(std::shared_ptr<TebConfig> cfg, std::shared_ptr< ObstacleContainer > obstacles, RobotFootprintModelPtr robot_model,
                     const ViaPointContainer* via_points)
                 : m_initial_plan(nullptr)
             {
@@ -70,7 +70,7 @@ namespace rip
             {
             }
 
-            void HomotopyClassPlanner::initialize(std::shared_ptr<TebConfig> cfg, ObstacleContainer* obstacles, RobotFootprintModelPtr robot_model,
+            void HomotopyClassPlanner::initialize(std::shared_ptr<TebConfig> cfg, std::shared_ptr< ObstacleContainer > obstacles, RobotFootprintModelPtr robot_model,
                                                   const ViaPointContainer* via_points)
             {
                 m_config = cfg;
@@ -249,7 +249,7 @@ namespace rip
                         }
                         else
                         {
-                            tebs_[i]->setViaPoints(NULL);
+                            tebs_[i]->setViaPoints(nullptr);
                         }
                     }
                 }

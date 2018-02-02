@@ -20,8 +20,8 @@ namespace rip
                 , m_position_widget(nullptr)
                 , m_bounding_box(-1 * units::in, 1 * units::in, -1 * units::in, 1 * units::in)
                 , m_obstacles(nullptr)
-                , m_start(new navigation::tebplanner::Pose(-0.5 * units::in, 0, 0))
-                , m_goal(new navigation::tebplanner::Pose(0.5 * units::in, 0, 0))
+                , m_start(new navigation::tebplanner::Pose(-1 * units::m, 0, 0))
+                , m_goal(new navigation::tebplanner::Pose(1 * units::m, 0, 0))
                 , m_selected_type(SelectedType::kNone)
                 , m_compute_thread(ComputeThread::getInstance())
             {
@@ -64,7 +64,8 @@ namespace rip
 
             void PathInnerWidget::updateSelectedPosition()
             {
-                QMatrix transform = getTransform();
+                double scale;
+                QMatrix transform = getTransform(&scale);
                 QPoint screen_point;
 
                 switch (m_selected_type)
@@ -77,8 +78,18 @@ namespace rip
                 {
                     m_start->setPosition(m_position_widget->position());
                     screen_point = QPoint(m_start->position().x()(), m_start->position().y()());
+                    break;
+                }
+                case SelectedType::kStartDirection:
+                {
+                    m_start->setTheta(m_angle_widget->theta());
+                    geometry::Point orientation = m_start->orientationUnitVector() * 5 * scale;
+                    screen_point = QPoint(m_start->position().x()(), m_start->position().y()());
+
                     screen_point = screen_point * transform;
-                    m_position_widget->move(QPoint(screen_point.x() - 45, screen_point.y() + 17));
+                    int x = std::max(std::min(screen_point.x() - 45, width()-250), 100);
+                    int y = std::max(std::min(screen_point.y() + 17, height() - 115), 60);
+                    m_angle_widget->move(QPoint(x,y));
                     update();
                     return;
                 }
@@ -86,8 +97,18 @@ namespace rip
                 {
                     m_goal->setPosition(m_position_widget->position());
                     screen_point = QPoint(m_goal->position().x()(), m_goal->position().y()());
+                    break;
+                }
+                case SelectedType::kGoalDirection:
+                {
+                    m_goal->setTheta(m_angle_widget->theta());
+                    geometry::Point orientation = m_goal->orientationUnitVector() * 5 * scale;
+                    screen_point = QPoint(m_goal->position().x()(), m_goal->position().y()());
+
                     screen_point = screen_point * transform;
-                    m_position_widget->move(QPoint(screen_point.x() - 45, screen_point.y() + 17));
+                    int x = std::max(std::min(screen_point.x() - 45, width()-250), 100);
+                    int y = std::max(std::min(screen_point.y() + 17, height() - 115), 60);
+                    m_angle_widget->move(QPoint(x,y));
                     update();
                     return;
                 }
@@ -96,62 +117,49 @@ namespace rip
                     std::shared_ptr<navigation::tebplanner::PointObstacle> point = std::dynamic_pointer_cast<navigation::tebplanner::PointObstacle>((*m_obstacles)[m_selected_index]);
                     point->setPosition(m_position_widget->position());
                     screen_point = QPoint(point->point().x()(), point->point().y()());
-                    screen_point = screen_point * transform;
-                    m_position_widget->move(QPoint(screen_point.x() - 45, screen_point.y() + 17));
-                    update();
-                    return;
+                    break;
                 }
                 case SelectedType::kLineStart:
                 {
                     std::shared_ptr<navigation::tebplanner::LineObstacle> line = std::dynamic_pointer_cast<navigation::tebplanner::LineObstacle>((*m_obstacles)[m_selected_index]);
                     line->setStart(m_position_widget->position());
                     screen_point = QPoint(line->startPoint().x()(), line->startPoint().y()());
-                    screen_point = screen_point * transform;
-                    m_position_widget->move(QPoint(screen_point.x() - 45, screen_point.y() + 17));
-                    update();
-                    return;
+                    break;
                 }
                 case SelectedType::kLineEnd:
                 {
                     std::shared_ptr<navigation::tebplanner::LineObstacle> line = std::dynamic_pointer_cast<navigation::tebplanner::LineObstacle>((*m_obstacles)[m_selected_index]);
                     line->setEnd(m_position_widget->position());
                     screen_point = QPoint(line->endPoint().x()(), line->endPoint().y()());
-                    screen_point = screen_point * transform;
-                    m_position_widget->move(QPoint(screen_point.x() - 45, screen_point.y() + 17));
-                    update();
-                    return;
+                    break;
                 }
                 case SelectedType::kLine:
                 {
                     std::shared_ptr<navigation::tebplanner::LineObstacle> line = std::dynamic_pointer_cast<navigation::tebplanner::LineObstacle>((*m_obstacles)[m_selected_index]);
                     line->setCentroid(m_position_widget->position());
                     screen_point = QPoint(line->getCentroidPoint().x()(), line->getCentroidPoint().y()());
-                    screen_point = screen_point * transform;
-                    m_position_widget->move(QPoint(screen_point.x() - 45, screen_point.y() + 17));
-                    update();
-                    return;
+                    break;
                 }
                 case SelectedType::kPolygonPoint:
                 {
                     std::shared_ptr<navigation::tebplanner::PolygonObstacle> polygon = std::dynamic_pointer_cast<navigation::tebplanner::PolygonObstacle>((*m_obstacles)[m_selected_index]);
                     polygon->setPoint(m_selected_polygon_index, m_position_widget->position());
                     screen_point = QPoint(polygon->polygon()[m_selected_polygon_index].x()(), polygon->polygon()[m_selected_polygon_index].y()());
-                    screen_point = screen_point * transform;
-                    m_position_widget->move(QPoint(screen_point.x() - 45, screen_point.y() + 17));
-                    update();
-                    return;
+                    break;
                 }
                 case SelectedType::kPolygon:
                 {
                     std::shared_ptr<navigation::tebplanner::PolygonObstacle> polygon = std::dynamic_pointer_cast<navigation::tebplanner::PolygonObstacle>((*m_obstacles)[m_selected_index]);
                     polygon->setCentroid(m_position_widget->position());
                     screen_point = QPoint(polygon->getCentroidPoint().x()(), polygon->getCentroidPoint().y()());
-                    screen_point = screen_point * transform;
-                    m_position_widget->move(QPoint(screen_point.x() - 45, screen_point.y() + 17));
-                    update();
-                    return;
+                    break;
                 }
                 }
+                screen_point = screen_point * transform;
+                int x = std::max(std::min(screen_point.x() - 45, width()-250), 100);
+                int y = std::max(std::min(screen_point.y() + 17, height() - 115), 60);
+                m_position_widget->move(QPoint(x,y));
+                update();
             }
 
             void PathInnerWidget::addPointObstacle()
@@ -165,7 +173,8 @@ namespace rip
                     // todo: throw exception
                 }
                 p = p * inverse_transform;
-                (*m_obstacles).push_back(std::make_shared<navigation::tebplanner::PointObstacle>(p.x(), p.y()));
+                geometry::Point rp(p.x(), p.y());
+                m_obstacles->emplace_back(std::make_shared<navigation::tebplanner::PointObstacle>(rp));
                 update();
             }
 
@@ -182,7 +191,9 @@ namespace rip
                     // todo: throw exception
                 }
                 p = p * inverse_transform;
-                (*m_obstacles).push_back(std::make_shared<navigation::tebplanner::LineObstacle>(p.x(), p.y(), p.x(), p.y() + 15 * s));
+                geometry::Point start(p.x(), p.y());
+                geometry::Point end(p.x(), p.y() + 15 * s);
+                m_obstacles->emplace_back(std::make_shared<navigation::tebplanner::LineObstacle>(start, end));
                 update();
             }
 
@@ -204,7 +215,7 @@ namespace rip
                         points.emplace_back(units::cos(i * step), units::sin(i * step));
                         points.back() *= 15 * s;
                     }
-                    (*m_obstacles).push_back(std::make_shared<navigation::tebplanner::PolygonObstacle>(points));
+                    m_obstacles->emplace_back(std::make_shared<navigation::tebplanner::PolygonObstacle>(points));
                     update();
                 }
             }
@@ -317,8 +328,22 @@ namespace rip
                     geometry::Point tip_offset = m_start->orientationUnitVector() * 10 * s;
                     geometry::Point tip_location = m_start->position() + tip_offset;
 
-                    if (checkPointClick(tip_location, transform, pos, SelectedType::kStartDirection))
+                    QPoint screen_point(tip_location.x()(), tip_location.y()());
+                    screen_point = screen_point * transform;
+                    if ((screen_point - pos).manhattanLength() < 15)
                     {
+                        pos = QPoint(m_start->position().x()(), m_start->position().y()());
+                        pos = pos * transform;
+
+                        int x = std::max(std::min(pos.x() - 90, width() - 250), 75);
+                        int y = std::max(std::min(pos.y() + 17, height() - 115), 75);
+
+                        m_selected_type = SelectedType::kStartDirection;
+
+                        m_angle_widget = std::unique_ptr<AngleWidget>(new AngleWidget(m_start->theta(), this));
+                        m_angle_widget->move(QPoint(x, y));
+                        m_angle_widget->show();
+                        connect(m_angle_widget.get(), SIGNAL(updateAngle()), this, SLOT(updateSelectedPosition()));
                         return;
                     }
                 }
@@ -333,14 +358,30 @@ namespace rip
                     geometry::Point tip_offset = m_goal->orientationUnitVector() * 10 * s;
                     geometry::Point tip_location = m_goal->position() + tip_offset;
 
-                    if (checkPointClick(tip_location, transform, pos, SelectedType::kGoalDirection))
+                    QPoint screen_point(tip_location.x()(), tip_location.y()());
+                    screen_point = screen_point * transform;
+                    if ((screen_point - pos).manhattanLength() < 15)
                     {
+                        pos = QPoint(m_goal->position().x()(), m_goal->position().y()());
+                        pos = pos * transform;
+
+                        int x = std::max(std::min(pos.x() - 90, width() - 250), 75);
+                        int y = std::max(std::min(pos.y() + 17, height() - 115), 75);
+
+                        m_selected_type = SelectedType::kGoalDirection;
+
+                        m_angle_widget = std::unique_ptr<AngleWidget>(new AngleWidget(m_goal->theta(), this));
+                        m_angle_widget->move(QPoint(x, y));
+                        m_angle_widget->show();
+                        connect(m_angle_widget.get(), SIGNAL(updateAngle()), this, SLOT(updateSelectedPosition()));
                         return;
                     }
                 }
 
                 if(m_obstacles && m_obstacles->size())
                 {
+                    int x = std::max(std::min(pos.x() - 90, width() - 250), 75);
+                    int y = std::max(std::min(pos.y() + 17, height() - 115), 75);
                     for (int idx = 0; idx < m_obstacles->size(); idx++)
                     {
                         std::shared_ptr<navigation::tebplanner::Obstacle> obstacle = (*m_obstacles)[idx];
@@ -398,7 +439,7 @@ namespace rip
                                 m_selected_index = idx;
 
                                 m_position_widget = std::unique_ptr<PositionWidget>(new PositionWidget(polygon->getCentroidPoint(), this));
-                                m_position_widget->move(QPoint(pos.x() - 90, pos.y() + 17));
+                                m_position_widget->move(QPoint(x, y));
                                 m_position_widget->show();
                                 connect(m_position_widget.get(), SIGNAL(updatePosition()), this, SLOT(updateSelectedPosition()));
                                 return;
@@ -414,6 +455,14 @@ namespace rip
                     m_position_widget.reset();
                     m_selected_type = SelectedType::kNone;
                 }
+
+                if(m_angle_widget)
+                {
+                    m_angle_widget->hide();
+                    disconnect(m_angle_widget.get(), SIGNAL(updateAngle()), this, SLOT(updateSelectedPosition()));
+                    m_angle_widget.reset();
+                    m_selected_type = SelectedType::kNone;
+                }
             }
 
             void PathInnerWidget::mouseMoveEvent(QMouseEvent* event)
@@ -424,6 +473,8 @@ namespace rip
                 }
 
                 QPoint pos = event->pos();
+                int x = std::max(std::min(pos.x() - 90, width() - 250), 75);
+                int y = std::max(std::min(pos.y() + 17, height() - 115), 75);
 
                 QMatrix transform = getTransform();
 
@@ -441,85 +492,73 @@ namespace rip
                 {
                 case SelectedType::kStartPoint:
                 {
-                    m_position_widget->setX(rp.x());
-                    m_position_widget->setY(rp.y());
-                    m_start->setX(rp.x());
-                    m_start->setY(rp.y());
-                    m_position_widget->move(QPoint(pos.x() - 90, pos.y() + 17));
+                    m_start->setPosition(rp);
+                    break;
+                }
+                case SelectedType::kStartDirection:
+                {
+                    geometry::Point diff = rp - m_start->position();
+                    units::Angle theta = geometry::atan(diff);
+                    m_start->setTheta(theta);
+                    m_angle_widget->setTheta(theta);
                     update();
                     return;
                 }
                 case SelectedType::kGoalPoint:
                 {
-                    m_position_widget->setX(rp.x());
-                    m_position_widget->setY(rp.y());
-                    m_goal->setX(rp.x());
-                    m_goal->setY(rp.y());
-                    m_position_widget->move(QPoint(pos.x() - 90, pos.y() + 17));
+                    m_goal->setPosition(rp);
+                    break;
+
+                }
+                case SelectedType::kGoalDirection:
+                {
+                    geometry::Point diff = rp - m_goal->position();
+                    units::Angle theta = geometry::atan(diff);
+                    m_goal->setTheta(theta);
+                    m_angle_widget->setTheta(theta);
                     update();
                     return;
                 }
                 case SelectedType::kPoint:
                 {
-                    m_position_widget->setX(rp.x());
-                    m_position_widget->setY(rp.y());
                     std::shared_ptr<navigation::tebplanner::PointObstacle> p_obstacle = std::dynamic_pointer_cast<navigation::tebplanner::PointObstacle>((*m_obstacles)[m_selected_index]);
                     p_obstacle->setPosition(rp);
-                    m_position_widget->move(QPoint(pos.x() - 90, pos.y() + 17));
-                    update();
-                    return;
+                    break;
                 }
                 case SelectedType::kLineStart:
                 {
-                    m_position_widget->setX(rp.x());
-                    m_position_widget->setY(rp.y());
                     std::shared_ptr<navigation::tebplanner::LineObstacle> l_obstacle = std::dynamic_pointer_cast<navigation::tebplanner::LineObstacle>((*m_obstacles)[m_selected_index]);
                     l_obstacle->setStart(rp);
-                    m_position_widget->move(QPoint(pos.x() - 90, pos.y() + 17));
-                    update();
-                    return;
+                    break;
                 }
                 case SelectedType::kLineEnd:
                 {
-                    m_position_widget->setX(rp.x());
-                    m_position_widget->setY(rp.y());
                     std::shared_ptr<navigation::tebplanner::LineObstacle> l_obstacle = std::dynamic_pointer_cast<navigation::tebplanner::LineObstacle>((*m_obstacles)[m_selected_index]);
                     l_obstacle->setEnd(rp);
-                    m_position_widget->move(QPoint(pos.x() - 90, pos.y() + 17));
-                    update();
-                    return;
+                    break;
                 }
                 case SelectedType::kLine:
                 {
-                    m_position_widget->setX(rp.x());
-                    m_position_widget->setY(rp.y());
                     std::shared_ptr<navigation::tebplanner::LineObstacle> l_obstacle = std::dynamic_pointer_cast<navigation::tebplanner::LineObstacle>((*m_obstacles)[m_selected_index]);
                     l_obstacle->setCentroid(rp);
-                    m_position_widget->move(QPoint(pos.x() - 90, pos.y() + 17));
-                    update();
-                    return;
+                    break;
                 }
                 case SelectedType::kPolygonPoint:
                 {
-                    m_position_widget->setX(rp.x());
-                    m_position_widget->setY(rp.y());
                     std::shared_ptr<navigation::tebplanner::PolygonObstacle> p_obstacle = std::dynamic_pointer_cast<navigation::tebplanner::PolygonObstacle>((*m_obstacles)[m_selected_index]);
                     p_obstacle->setPoint(m_selected_polygon_index, rp);
-                    m_position_widget->move(QPoint(pos.x() - 90, pos.y() + 17));
-                    update();
-                    return;
+                    break;
                 }
                 case SelectedType::kPolygon:
                 {
-                    m_position_widget->setX(rp.x());
-                    m_position_widget->setY(rp.y());
                     std::shared_ptr<navigation::tebplanner::PolygonObstacle> p_obstacle = std::dynamic_pointer_cast<navigation::tebplanner::PolygonObstacle>((*m_obstacles)[m_selected_index]);
                     p_obstacle->setCentroid(rp);
-                    m_position_widget->move(QPoint(pos.x() - 90, pos.y() + 17));
-                    update();
-                    return;
+                    break;
                 }
                 }
+                m_position_widget->setPosition(rp);
+                m_position_widget->move(QPoint(x, y));
+                update();
             }
 
             void PathInnerWidget::mouseReleaseEvent(QMouseEvent* event)
@@ -625,12 +664,15 @@ namespace rip
                 screen_point = screen_point * transform;
                 if ((screen_point - mouse_pos).manhattanLength() < pixel_threshold)
                 {
+                    int x = std::max(std::min(mouse_pos.x() - 90, width() - 250), 75);
+                    int y = std::max(std::min(mouse_pos.y() + 17, height() - 115), 75);
+
                     m_selected_type = select;
                     m_selected_index = index;
                     m_selected_polygon_index = polygon_index;
 
                     m_position_widget = std::unique_ptr<PositionWidget>(new PositionWidget(point, this));
-                    m_position_widget->move(QPoint(screen_point.x() - 90, screen_point.y() + 17));
+                    m_position_widget->move(QPoint(x, y));
                     m_position_widget->show();
                     connect(m_position_widget.get(), SIGNAL(updatePosition()), this, SLOT(updateSelectedPosition()));
                     return true;
@@ -785,76 +827,25 @@ namespace rip
 
             void PathInnerWidget::createBoundingBox()
             {
-                geometry::Point min(-1 * units::in, -1 * units::in);
-                geometry::Point max(1 * units::in, 1 * units::in);
+                units::Distance minimum = -1 * units::in;
+                units::Distance maximum = 1 * units::in;
 
                 if (m_start)
                 {
-                    if (m_start->position().x() < min.x())
-                    {
-                        min.setX(m_start->position().x());
-                    }
-
-                    if (m_start->position().y() < min.y())
-                    {
-                        min.setY(m_start->position().y());
-                    }
-
-                    if (m_start->position().x() > max.x())
-                    {
-                        max.setX(m_start->position().x());
-                    }
-
-                    if (m_start->position().y() > max.y())
-                    {
-                        max.setY(m_start->position().y());
-                    }
+                    minimum = units::min(m_start->position().x(), m_start->position().y(), minimum);
+                    maximum = units::max(m_start->position().x(), m_start->position().y(), maximum);
                 }
 
                 if (m_goal)
                 {
-                    if (m_goal->position().x() < min.x())
-                    {
-                        min.setX(m_goal->position().x());
-                    }
-
-                    if (m_goal->position().y() < min.y())
-                    {
-                        min.setY(m_goal->position().y());
-                    }
-
-                    if (m_goal->position().x() > max.x())
-                    {
-                        max.setX(m_goal->position().x());
-                    }
-
-                    if (m_goal->position().y() > max.y())
-                    {
-                        max.setY(m_goal->position().y());
-                    }
+                    minimum = units::min(m_goal->position().x(), m_goal->position().y(), minimum);
+                    maximum = units::max(m_goal->position().x(), m_goal->position().y(), maximum);
                 }
 
                 for (const geometry::Point& point : m_waypoints)
                 {
-                    if (point.x() < min.x())
-                    {
-                        min.setX(point.x());
-                    }
-
-                    if (point.y() < min.y())
-                    {
-                        min.setY(point.y());
-                    }
-
-                    if (point.x() > max.x())
-                    {
-                        max.setX(point.x());
-                    }
-
-                    if (point.y() > max.y())
-                    {
-                        max.setY(point.y());
-                    }
+                    minimum = units::min(point.x(), point.y(), minimum);
+                    maximum = units::max(point.x(), point.y(), maximum);
                 }
 
                 if(m_obstacles)
@@ -864,72 +855,16 @@ namespace rip
                         std::shared_ptr< navigation::tebplanner::PointObstacle > point = std::dynamic_pointer_cast< navigation::tebplanner::PointObstacle >(obstacle);
                         if (point)
                         {
-                            if (point->getCentroidPoint().x() < min.x())
-                            {
-                                min.setX(point->getCentroidPoint().x());
-                            }
-
-                            if (point->getCentroidPoint().y() < min.y())
-                            {
-                                min.setY(point->getCentroidPoint().y());
-                            }
-
-                            if (point->getCentroidPoint().x() > max.x())
-                            {
-                                max.setX(point->getCentroidPoint().x());
-                            }
-
-                            if (point->getCentroidPoint().y() > max.y())
-                            {
-                                max.setY(point->getCentroidPoint().y());
-                            }
-
+                            minimum = units::min(point->getCentroidPoint().x(), point->getCentroidPoint().y(), minimum);
+                            maximum = units::max(point->getCentroidPoint().x(), point->getCentroidPoint().y(), maximum);
                             continue;
                         }
 
                         std::shared_ptr< navigation::tebplanner::LineObstacle > line = std::dynamic_pointer_cast< navigation::tebplanner::LineObstacle >(obstacle);
                         if (line)
                         {
-                            if (line->startPoint().x() < min.x())
-                            {
-                                min.setX(line->startPoint().x());
-                            }
-
-                            if (line->startPoint().y() < min.y())
-                            {
-                                min.setY(line->startPoint().y());
-                            }
-
-                            if (line->startPoint().x() > max.x())
-                            {
-                                max.setX(line->startPoint().x());
-                            }
-
-                            if (line->startPoint().y() > max.y())
-                            {
-                                max.setY(line->startPoint().y());
-                            }
-
-                            if (line->endPoint().x() < min.x())
-                            {
-                                min.setX(line->endPoint().x());
-                            }
-
-                            if (line->endPoint().y() < min.y())
-                            {
-                                min.setY(line->endPoint().y());
-                            }
-
-                            if (line->endPoint().x() > max.x())
-                            {
-                                max.setX(line->endPoint().x());
-                            }
-
-                            if (line->endPoint().y() > max.y())
-                            {
-                                max.setY(line->endPoint().y());
-                            }
-
+                            minimum = units::min(line->startPoint().x(), line->startPoint().y(), line->endPoint().x(), line->endPoint().y(), minimum);
+                            maximum = units::max(line->startPoint().x(), line->startPoint().y(), line->endPoint().x(), line->endPoint().y(), maximum);
                             continue;
                         }
 
@@ -938,32 +873,12 @@ namespace rip
                         {
                             for (const geometry::Point& point : polygon->polygon())
                             {
-                                if (point.x() < min.x())
-                                {
-                                    min.setX(point.x());
-                                }
-
-                                if (point.y() < min.y())
-                                {
-                                    min.setY(point.y());
-                                }
-
-                                if (point.x() > max.x())
-                                {
-                                    max.setX(point.x());
-                                }
-
-                                if (point.y() > max.y())
-                                {
-                                    max.setY(point.y());
-                                }
+                                minimum = units::min(point.x(), point.y(), minimum);
+                                maximum = units::max(point.x(), point.y(), maximum);
                             }
                         }
                     }
                 }
-
-                units::Distance minimum = units::min(min.x(), min.y());
-                units::Distance maximum = units::max(max.x(), max.y());
 
                 m_bounding_box = geometry::Rectangle(minimum, maximum, minimum, maximum);
             }

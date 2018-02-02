@@ -101,7 +101,7 @@ namespace rip
                  */
                 void computeError()
                 {
-                    if (!m_config || !_measurement)
+                    if (!m_config)
                     {
                         misc::Logger::getInstance()->error("You must call setTebConfig() on EdgeAcceleration()");
                         assert(false);
@@ -416,7 +416,7 @@ namespace rip
                  */
                 void computeError()
                 {
-                    if (!m_config || !_measurement)
+                    if (!m_config)
                     {
                         misc::Logger::getInstance()->error("You must call setTebConfig() on EdgeAccelerationHolonomic()");
                         assert(false);

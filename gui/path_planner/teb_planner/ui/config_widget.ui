@@ -51,9 +51,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>0</y>
+        <y>-1256</y>
         <width>534</width>
-        <height>1685</height>
+        <height>2197</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -853,6 +853,207 @@
          </item>
          <item row="18" column="1">
           <widget class="QLineEdit" name="weight_adapt_factor"/>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_59">
+         <property name="text">
+          <string>HCP</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <layout class="QFormLayout" name="hcp_form">
+         <item row="0" column="0">
+          <widget class="QLabel" name="label_60">
+           <property name="text">
+            <string>Enable HCP:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="label_61">
+           <property name="text">
+            <string>Enable Multithreading:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="label_62">
+           <property name="text">
+            <string>Simple Exploration:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="0">
+          <widget class="QLabel" name="label_63">
+           <property name="text">
+            <string>Max Number of Classes:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="4" column="0">
+          <widget class="QLabel" name="label_67">
+           <property name="text">
+            <string>Selection Cost Hysteresis:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="0">
+          <widget class="QLabel" name="label_66">
+           <property name="text">
+            <string>Selection Prefer Initial Plan:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="6" column="0">
+          <widget class="QLabel" name="label_65">
+           <property name="text">
+            <string>Selection Obstacle Cost Scale:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="7" column="0">
+          <widget class="QLabel" name="label_64">
+           <property name="text">
+            <string>Selection Waypoint Cost Scale:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="8" column="0">
+          <widget class="QLabel" name="label_70">
+           <property name="text">
+            <string>Selection Alternative Time Cost:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="9" column="0">
+          <widget class="QLabel" name="label_71">
+           <property name="text">
+            <string>Roadmap Graph Number of Samples:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="10" column="0">
+          <widget class="QLabel" name="label_72">
+           <property name="text">
+            <string>Roadmap Graph Area Width:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="11" column="0">
+          <widget class="QLabel" name="label_73">
+           <property name="text">
+            <string>Roadmap Graph Area Length Scale:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="12" column="0">
+          <widget class="QLabel" name="label_69">
+           <property name="text">
+            <string>H Signature Prescaler:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="13" column="0">
+          <widget class="QLabel" name="label_68">
+           <property name="text">
+            <string>H Signature Threshold:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="14" column="0">
+          <widget class="QLabel" name="label_76">
+           <property name="text">
+            <string>Obstacle Keypoint Offset:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="15" column="0">
+          <widget class="QLabel" name="label_75">
+           <property name="text">
+            <string>Obstacle Heading Threshold:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="16" column="0">
+          <widget class="QLabel" name="label_74">
+           <property name="text">
+            <string>Waypoints All Candidates:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QCheckBox" name="enable_hcp">
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QCheckBox" name="enable_mt">
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QCheckBox" name="simple_exploration">
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item row="8" column="1">
+          <widget class="QCheckBox" name="selection_alternative_time_cost">
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item row="16" column="1">
+          <widget class="QCheckBox" name="waypoint_all_candidates">
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="1">
+          <widget class="QLineEdit" name="max_number_classes"/>
+         </item>
+         <item row="5" column="1">
+          <widget class="QLineEdit" name="selection_prefer_initial_plan"/>
+         </item>
+         <item row="4" column="1">
+          <widget class="QLineEdit" name="selection_cost_hysteresis"/>
+         </item>
+         <item row="6" column="1">
+          <widget class="QLineEdit" name="selection_obstacle_cost_scale"/>
+         </item>
+         <item row="7" column="1">
+          <widget class="QLineEdit" name="selection_waypoint_cost_scale"/>
+         </item>
+         <item row="9" column="1">
+          <widget class="QLineEdit" name="roadmap_graph_no_samples"/>
+         </item>
+         <item row="12" column="1">
+          <widget class="QLineEdit" name="h_signature_prescaler"/>
+         </item>
+         <item row="11" column="1">
+          <widget class="QLineEdit" name="roadmap_graph_area_length_scale"/>
+         </item>
+         <item row="10" column="1">
+          <widget class="QLineEdit" name="roadmap_graph_area_width"/>
+         </item>
+         <item row="14" column="1">
+          <widget class="QLineEdit" name="obstacle_keypoint_offset"/>
+         </item>
+         <item row="13" column="1">
+          <widget class="QLineEdit" name="h_signature_threshold"/>
+         </item>
+         <item row="15" column="1">
+          <widget class="QLineEdit" name="obstacle_heading_threshold"/>
          </item>
         </layout>
        </item>

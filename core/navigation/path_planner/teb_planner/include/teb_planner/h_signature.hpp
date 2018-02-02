@@ -121,7 +121,7 @@ namespace rip
                  * @tparam Fun function of the form std::complex< long double > (const T& point_type)
                  */
                 template<typename BidirIter, typename Fun >
-                void calculateHSignature(BidirIter path_start, BidirIter path_end, Fun fun_cplx_point, const ObstacleContainer* obstacles)
+                void calculateHSignature(BidirIter path_start, BidirIter path_end, Fun fun_cplx_point, std::shared_ptr<ObstacleContainer> obstacles)
                 {
                     if (obstacles->empty())
                     {
@@ -325,7 +325,7 @@ namespace rip
                  * @tparam Fun function of the form std::complex< long double > (const T& point_type)
                  */
                 template<typename BidirIter, typename Fun>
-                void calculateHSignature(BidirIter path_start, BidirIter path_end, Fun fun_cplx_point, const ObstacleContainer* obstacles,
+                void calculateHSignature(BidirIter path_start, BidirIter path_end, Fun fun_cplx_point, std::shared_ptr<ObstacleContainer> obstacles,
                                          nonstd::optional<TimeDiffSequence::iterator> timediff_start, nonstd::optional<TimeDiffSequence::iterator> timediff_end)
                 {
                     m_hsignature_3d.resize(obstacles->size());
@@ -373,7 +373,10 @@ namespace rip
                             for (Eigen::Vector3d position = pose_with_time; (position - pose_with_time).norm() <= direction_vec.norm(); position += dl)
                             {
                                 double t = 120;
-                                Eigen::Vector3d s1 (obstacles->at(l)->getCentroid()(0), obstacles->at(l)->getCentroid()(1), 0);
+
+                                Eigen::Vector2d centroid = obstacles->at(l)->getCentroid();
+
+                                Eigen::Vector3d s1 (centroid(0), centroid(1), 0);
                                 Eigen::Vector3d s2;
                                 obstacles->at(l)->predictCentroidConstantVelocity(t, s2.head(2));
                                 s2[2] = t;

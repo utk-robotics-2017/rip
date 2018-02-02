@@ -65,7 +65,7 @@ namespace rip
             {
             }
 
-            TebOptimalPlanner::TebOptimalPlanner(std::shared_ptr<TebConfig> cfg, ObstacleContainer* obstacles, RobotFootprintModelPtr robot_model, const ViaPointContainer* via_points)
+            TebOptimalPlanner::TebOptimalPlanner(std::shared_ptr<TebConfig> cfg, std::shared_ptr< ObstacleContainer > obstacles, RobotFootprintModelPtr robot_model, const ViaPointContainer* via_points)
             {
                 initialize(cfg, obstacles, robot_model, via_points);
             }
@@ -75,7 +75,7 @@ namespace rip
                 clearGraph();
             }
 
-            void TebOptimalPlanner::initialize(std::shared_ptr<TebConfig> cfg, ObstacleContainer* obstacles, RobotFootprintModelPtr robot_model, const ViaPointContainer* via_points)
+            void TebOptimalPlanner::initialize(std::shared_ptr<TebConfig> cfg, std::shared_ptr< ObstacleContainer > obstacles, RobotFootprintModelPtr robot_model, const ViaPointContainer* via_points)
             {
                 // init optimizer (set solver and block ordering settings)
                 m_optimizer = initOptimizer();

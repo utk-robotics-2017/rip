@@ -21,12 +21,13 @@ namespace rip
             class TebPlanner
             {
             public:
-                TebPlanner(std::shared_ptr<TebConfig> config, std::vector< std::shared_ptr<Obstacle> > obstacles, std::shared_ptr<BaseRobotFootprintModel> robot)
+                TebPlanner(std::shared_ptr<TebConfig> config, std::shared_ptr< std::vector< std::shared_ptr<Obstacle> > > obstacles, std::shared_ptr<BaseRobotFootprintModel> robot)
                     : m_config(config)
                     , m_obstacles(obstacles)
                     , m_robot(robot)
-                    , m_planner(new HomotopyClassPlanner(config, &obstacles, robot))
-                {}
+                    , m_planner(new HomotopyClassPlanner(config, obstacles, robot))
+                {
+                }
 
                 void plan(const Pose& start, const Pose& goal)
                 {
@@ -36,7 +37,12 @@ namespace rip
                 std::vector< TrajectoryPoint > getTrajectory()
                 {
                     std::vector< fakeros::TrajectoryPointMsg > msgs;
-                    m_planner->bestTeb()->getFullTrajectory(msgs);
+                    std::shared_ptr< TebOptimalPlanner > best = m_planner->bestTeb();
+                    if(!best)
+                    {
+                        return std::vector< TrajectoryPoint >();
+                    }
+                    best->getFullTrajectory(msgs);
 
                     std::vector< TrajectoryPoint > ret;
                     for (const fakeros::TrajectoryPointMsg& msg : msgs)
@@ -49,7 +55,7 @@ namespace rip
 
             private:
                 std::shared_ptr<TebConfig> m_config;
-                std::vector< std::shared_ptr<Obstacle> > m_obstacles;
+                std::shared_ptr< std::vector< std::shared_ptr<Obstacle> > > m_obstacles;
                 std::shared_ptr<BaseRobotFootprintModel> m_robot;
                 std::shared_ptr<HomotopyClassPlanner> m_planner;
             };

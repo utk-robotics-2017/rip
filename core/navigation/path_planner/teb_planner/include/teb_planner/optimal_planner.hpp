@@ -124,7 +124,7 @@ namespace rip
                  * @param visual Shared pointer to the TebVisualization class (optional)
                  * @param via_points Container storing via-points (optional)
                  */
-                TebOptimalPlanner(std::shared_ptr<TebConfig> cfg, ObstacleContainer* obstacles = nullptr, RobotFootprintModelPtr robot_model = std::make_shared<PointRobotFootprint>(),
+                TebOptimalPlanner(std::shared_ptr<TebConfig> cfg, std::shared_ptr< ObstacleContainer > obstacles = nullptr, RobotFootprintModelPtr robot_model = std::make_shared<PointRobotFootprint>(),
                                   const ViaPointContainer* via_points = nullptr);
 
                 /**
@@ -140,7 +140,7 @@ namespace rip
                   * @param visual Shared pointer to the TebVisualization class (optional)
                   * @param via_points Container storing via-points (optional)
                   */
-                void initialize(std::shared_ptr<TebConfig> cfg, ObstacleContainer* obstacles = nullptr, RobotFootprintModelPtr robot_model = std::make_shared<PointRobotFootprint>(),
+                void initialize(std::shared_ptr<TebConfig> cfg, std::shared_ptr< ObstacleContainer > obstacles = nullptr, RobotFootprintModelPtr robot_model = std::make_shared<PointRobotFootprint>(),
                                 const ViaPointContainer* via_points = nullptr);
 
 
@@ -284,7 +284,7 @@ namespace rip
                  * @param obst_vector pointer to an obstacle container (can also be a nullptr)
                  * @remarks This method overrids the obstacle container optinally assigned in the constructor.
                  */
-                void setObstVector(ObstacleContainer* obst_vector)
+                void setObstVector(std::shared_ptr< ObstacleContainer > obst_vector)
                 {
                     m_obstacles = obst_vector;
                 }
@@ -692,7 +692,7 @@ namespace rip
 
                 // external objects (store weak pointers)
                 std::shared_ptr<TebConfig> m_config; //!< Config class that stores and manages all related parameters
-                ObstacleContainer* m_obstacles; //!< Store obstacles that are relevant for planning
+                std::shared_ptr< ObstacleContainer > m_obstacles; //!< Store obstacles that are relevant for planning
                 const ViaPointContainer* via_points_; //!< Store via points for planning
 
                 double m_cost; //!< Store cost value of the current hyper-graph

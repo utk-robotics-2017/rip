@@ -88,6 +88,8 @@ namespace rip
 
                 start->addEdge(edge);
                 m_edges.push_back(edge);
+
+                return edge;
             }
 
             void Graph::clear()

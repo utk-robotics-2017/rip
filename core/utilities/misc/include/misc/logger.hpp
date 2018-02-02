@@ -25,6 +25,8 @@
 #include <time.h>
 
 #include <spdlog/spdlog.h>
+#include <cppfs/FileHandle.h>
+#include <cppfs/fs.h>
 #include <misc/constants.hpp>
 
 namespace rip
@@ -42,6 +44,13 @@ namespace rip
                     std::vector<spdlog::sink_ptr> sinks;
                     sinks.push_back(std::make_shared<spdlog::sinks::ansicolor_stdout_sink_mt>());
                     time_t now = time(0);
+
+                    cppfs::FileHandle logs_folder = cppfs::fs::open("logs");
+                    if(!logs_folder.exists())
+                    {
+                        logs_folder.createDirectory();
+                    }
+
                     sinks.push_back(std::make_shared<spdlog::sinks::simple_file_sink_mt>(fmt::format("logs/{}.txt", asctime(localtime(&now)))));
                     std::shared_ptr<spdlog::logger> logger = std::make_shared<spdlog::logger>(constants::kLoggerName, begin(sinks),
                             end(sinks));

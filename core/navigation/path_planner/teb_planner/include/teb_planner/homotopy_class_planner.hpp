@@ -119,7 +119,7 @@ namespace rip
                  * @param visualization Shared pointer to the TebVisualization class (optional)
                  * @param via_points Container storing via-points (optional)
                  */
-                HomotopyClassPlanner(std::shared_ptr<TebConfig> cfg, ObstacleContainer* obstacles = nullptr, RobotFootprintModelPtr robot_model = std::make_shared<PointRobotFootprint>(),
+                HomotopyClassPlanner(std::shared_ptr<TebConfig> cfg, std::shared_ptr< ObstacleContainer > obstacles = nullptr, RobotFootprintModelPtr robot_model = std::make_shared<PointRobotFootprint>(),
                                      const ViaPointContainer* via_points = nullptr);
 
                 /**
@@ -135,7 +135,7 @@ namespace rip
                  * @param visualization Shared pointer to the TebVisualization class (optional)
                  * @param via_points Container storing via-points (optional)
                  */
-                void initialize(std::shared_ptr<TebConfig>cfg, ObstacleContainer* obstacles = nullptr, RobotFootprintModelPtr robot_model = std::make_shared<PointRobotFootprint>(),
+                void initialize(std::shared_ptr<TebConfig>cfg, std::shared_ptr< ObstacleContainer > obstacles = nullptr, RobotFootprintModelPtr robot_model = std::make_shared<PointRobotFootprint>(),
                                 const ViaPointContainer* via_points = nullptr);
 
 
@@ -372,7 +372,7 @@ namespace rip
                  * @return pointer to the equivalence class base type
                  */
                 template<typename BidirIter, typename Fun>
-                EquivalenceClassPtr calculateEquivalenceClass(BidirIter path_start, BidirIter path_end, Fun fun_cplx_point, const ObstacleContainer* obstacles = nullptr,
+                EquivalenceClassPtr calculateEquivalenceClass(BidirIter path_start, BidirIter path_end, Fun fun_cplx_point, std::shared_ptr< ObstacleContainer > obstacles = nullptr,
                         nonstd::optional<TimeDiffSequence::iterator> timediff_start = nonstd::nullopt, nonstd::optional<TimeDiffSequence::iterator> timediff_end = nonstd::nullopt);
 
                 /**
@@ -422,7 +422,7 @@ namespace rip
                  * @brief Access current obstacle container (read-only)
                  * @return const pointer to the obstacle container instance
                  */
-                const ObstacleContainer* obstacles() const
+                std::shared_ptr< ObstacleContainer > obstacles() const
                 {
                     return m_obstacles;
                 }
@@ -511,7 +511,7 @@ namespace rip
 
                 // external objects (store weak pointers)
                 std::shared_ptr<TebConfig> m_config; //!< Config class that stores and manages all related parameters
-                ObstacleContainer* m_obstacles; //!< Store obstacles that are relevant for planning
+                std::shared_ptr< ObstacleContainer > m_obstacles; //!< Store obstacles that are relevant for planning
                 const ViaPointContainer* via_points_; //!< Store the current list of via-points
 
                 // internal objects (memory management owned)
@@ -543,7 +543,7 @@ namespace rip
             typedef std::shared_ptr<HomotopyClassPlanner> HomotopyClassPlannerPtr;
 
             template<typename BidirIter, typename Fun>
-            EquivalenceClassPtr HomotopyClassPlanner::calculateEquivalenceClass(BidirIter path_start, BidirIter path_end, Fun fun_cplx_point, const ObstacleContainer* obstacles,
+            EquivalenceClassPtr HomotopyClassPlanner::calculateEquivalenceClass(BidirIter path_start, BidirIter path_end, Fun fun_cplx_point, std::shared_ptr< ObstacleContainer > obstacles,
                                                                                 nonstd::optional<TimeDiffSequence::iterator> timediff_start, nonstd::optional<TimeDiffSequence::iterator> timediff_end)
             {
               if(m_config->obstacles.include_dynamic_obstacles)

@@ -16,6 +16,7 @@
 #include <teb_planner/pose.hpp>
 
 #include "position_widget.hpp"
+#include "angle_widget.hpp"
 #include "compute_thread.hpp"
 
 namespace rip
@@ -160,6 +161,7 @@ namespace rip
                 int m_selected_index;
                 int m_selected_polygon_index;
                 std::unique_ptr<PositionWidget> m_position_widget;
+                std::unique_ptr<AngleWidget> m_angle_widget;
 
                 bool m_animate;
                 int m_timestep;

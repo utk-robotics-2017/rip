@@ -39,7 +39,6 @@ namespace rip
                 geometry::Point position() const;
 
                 void setPosition(const geometry::Point& p);
-
             signals:
                 void updatePosition();
 

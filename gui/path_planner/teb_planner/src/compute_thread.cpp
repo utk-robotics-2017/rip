@@ -52,7 +52,7 @@ namespace rip
             {
                 if(m_config && m_robot && m_obstacles && m_start && m_goal)
                 {
-                    m_planner.reset(new navigation::tebplanner::TebPlanner(m_config, *m_obstacles, m_robot));
+                    m_planner.reset(new navigation::tebplanner::TebPlanner(m_config, m_obstacles, m_robot));
                     m_planner->plan(*m_start, *m_goal);
                     emit trajectoryUpdated();
                 }

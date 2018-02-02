@@ -390,7 +390,7 @@ namespace rip
 
                 geometry::Point getCentroidPoint() const
                 {
-                    return geometry::Point(x() * units::m, y()* units::m);
+                    return geometry::Point(x() * units::m, y() * units::m);
                 }
 
                 // implements getCentroid() of the base class
@@ -509,7 +509,9 @@ namespace rip
                     : Obstacle()
                     , m_start(start.x().to(units::m), start.y().to(units::m))
                     , m_end(end.x().to(units::m), end.y().to(units::m))
-                {}
+                {
+                    calcCentroid();
+                }
 
                 // implements checkCollision() of the base class
                 virtual bool checkCollision(const Eigen::Vector2d& point, double min_dist) const
@@ -688,11 +690,7 @@ namespace rip
                 PolygonObstacle(const geometry::Polygon& polygon)
                     : Obstacle()
                 {
-                    for (const geometry::Point& point : polygon)
-                    {
-                        m_vertices.emplace_back(point.x().to(units::m), point.y().to(units::m));
-                    }
-                    finalizePolygon();
+                    setPolygon(polygon);
                 }
 
 
@@ -802,6 +800,7 @@ namespace rip
                     {
                         point += eigen_diff;
                     }
+                    finalizePolygon();
                 }
 
                 geometry::Point getCentroidPoint() const
@@ -843,7 +842,6 @@ namespace rip
                     for (const geometry::Point& point : polygon)
                     {
                         m_vertices.push_back(Eigen::Vector2d(point.x().to(units::m), point.y().to(units::m)));
-
                     }
                     finalizePolygon();
                 }
@@ -852,6 +850,7 @@ namespace rip
                 {
                     assert(index < m_vertices.size());
                     m_vertices[index] = Eigen::Vector2d(p.x().to(units::m), p.y().to(units::m));
+                    finalizePolygon();
                 }
 
                 // Access or modify polygon
