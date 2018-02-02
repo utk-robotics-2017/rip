@@ -338,7 +338,7 @@ namespace rip
                  */
                 void setTebConfig(std::shared_ptr<TebConfig> cfg)
                 {
-                    m_config = &cfg;
+                    m_config = cfg;
                 }
 
             protected:

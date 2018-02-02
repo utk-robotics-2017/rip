@@ -341,7 +341,7 @@ namespace rip
                 // hot-start from previous solutions
                 for (TebOptPlannerContainer::iterator it_teb = tebs_.begin(); it_teb != tebs_.end(); ++it_teb)
                 {
-                    it_teb->get()->teb().updateAndPruneTEB(*start, *goal);
+                    it_teb->get()->teb().updateAndPruneTEB(start, goal);
                     if (start_velocity)
                     {
                         it_teb->get()->setVelocityStart(*start_velocity);

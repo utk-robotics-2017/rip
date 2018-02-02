@@ -24,11 +24,11 @@ namespace rip
 {
     namespace misc
     {
-        namespace constants
+        struct constants
         {
-            const char* kArduinoGenHome = "arduino_gen_home";
-            const char* kLoggerName = "rip_logger";
-        }
+            static const char* kArduinoGenHome;
+            static const char* kLoggerName;
+        };
     }
 }
 

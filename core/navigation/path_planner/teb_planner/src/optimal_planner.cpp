@@ -40,7 +40,7 @@
  *   elements
  *********************************************************************/
 
-#include <teb_local_planner/optimal_planner.h>
+#include <teb_planner/optimal_planner.hpp>
 #include <map>
 #include <limits>
 
@@ -53,53 +53,54 @@ namespace rip
         {
             // ============== Implementation ===================
 
-            TebOptimalPlanner::TebOptimalPlanner() : cfg_(NULL), obstacles_(NULL), via_points_(NULL), cost_(HUGE_VAL), prefer_rotdir_(RotType::none),
-                robot_model_(new PointRobotFootprint()), initialized_(false), optimized_(false)
+            TebOptimalPlanner::TebOptimalPlanner()
+                : m_config(nullptr)
+                , m_obstacles(nullptr)
+                , via_points_(nullptr)
+                , m_cost(HUGE_VAL)
+                , prefer_rotdir_(RotType::none)
+                , m_robot_model(new PointRobotFootprint())
+                , m_initialized(false)
+                , m_optimized(false)
             {
             }
 
-            TebOptimalPlanner::TebOptimalPlanner(const TebConfig& cfg, ObstContainer* obstacles, RobotFootprintModelPtr robot_model, TebVisualizationPtr visual, const ViaPointContainer* via_points)
+            TebOptimalPlanner::TebOptimalPlanner(std::shared_ptr<TebConfig> cfg, ObstacleContainer* obstacles, RobotFootprintModelPtr robot_model, const ViaPointContainer* via_points)
             {
-                initialize(cfg, obstacles, robot_model, visual, via_points);
+                initialize(cfg, obstacles, robot_model, via_points);
             }
 
             TebOptimalPlanner::~TebOptimalPlanner()
             {
                 clearGraph();
-                // free dynamically allocated memory
-                //if (optimizer_)
-                //  g2o::Factory::destroy();
-                //g2o::OptimizationAlgorithmFactory::destroy();
-                //g2o::HyperGraphActionLibrary::destroy();
             }
 
-            void TebOptimalPlanner::initialize(const TebConfig& cfg, ObstContainer* obstacles, RobotFootprintModelPtr robot_model, TebVisualizationPtr visual, const ViaPointContainer* via_points)
+            void TebOptimalPlanner::initialize(std::shared_ptr<TebConfig> cfg, ObstacleContainer* obstacles, RobotFootprintModelPtr robot_model, const ViaPointContainer* via_points)
             {
                 // init optimizer (set solver and block ordering settings)
-                optimizer_ = initOptimizer();
+                m_optimizer = initOptimizer();
 
-                cfg_ = &cfg;
-                obstacles_ = obstacles;
-                robot_model_ = robot_model;
+                m_config = cfg;
+                m_obstacles = obstacles;
+                m_robot_model = robot_model;
                 via_points_ = via_points;
-                cost_ = HUGE_VAL;
-                setVisualization(visual);
+                m_cost = HUGE_VAL;
 
-                vel_start_.first = true;
-                vel_start_.second.linear.x = 0;
-                vel_start_.second.linear.y = 0;
-                vel_start_.second.angular.z = 0;
+                m_vel_start.first = true;
+                m_vel_start.second.linear.x = 0;
+                m_vel_start.second.linear.y = 0;
+                m_vel_start.second.angular.z = 0;
 
-                vel_goal_.first = true;
-                vel_goal_.second.linear.x = 0;
-                vel_goal_.second.linear.y = 0;
-                vel_goal_.second.angular.z = 0;
-                initialized_ = true;
+                m_vel_goal.first = true;
+                m_vel_goal.second.linear.x = 0;
+                m_vel_goal.second.linear.y = 0;
+                m_vel_goal.second.angular.z = 0;
+                m_initialized = true;
             }
 
             /*
-     * registers custom vertices and edges in g2o framework
-     */
+            * registers custom vertices and edges in g2o framework
+            */
             void TebOptimalPlanner::registerG2OTypes()
             {
                 g2o::Factory* factory = g2o::Factory::instance();
@@ -120,28 +121,28 @@ namespace rip
                 factory->registerType("EDGE_OBSTACLE", new g2o::HyperGraphElementCreator<EdgeObstacle>);
                 factory->registerType("EDGE_INFLATED_OBSTACLE", new g2o::HyperGraphElementCreator<EdgeInflatedObstacle>);
                 factory->registerType("EDGE_DYNAMIC_OBSTACLE", new g2o::HyperGraphElementCreator<EdgeDynamicObstacle>);
-                factory->registerType("EDGE_VIA_POINT", new g2o::HyperGraphElementCreator<EdgeViaPoint>);
-                factory->registerType("EDGE_PREFER_ROTDIR", new g2o::HyperGraphElementCreator<EdgePreferRotDir>);
+                //factory->registerType("EDGE_VIA_POINT", new g2o::HyperGraphElementCreator<EdgeViaPoint>);
+                //factory->registerType("EDGE_PREFER_ROTDIR", new g2o::HyperGraphElementCreator<EdgePreferRotDir>);
                 return;
             }
 
             /*
-     * initialize g2o optimizer. Set solver settings here.
-     * Return: pointer to new SparseOptimizer Object.
-     */
-            boost::shared_ptr<g2o::SparseOptimizer> TebOptimalPlanner::initOptimizer()
+            * initialize g2o optimizer. Set solver settings here.
+            * Return: pointer to new SparseOptimizer Object.
+            */
+            std::shared_ptr<g2o::SparseOptimizer> TebOptimalPlanner::initOptimizer()
             {
                 // Call register_g2o_types once, even for multiple TebOptimalPlanner instances (thread-safe)
-                static boost::once_flag flag = BOOST_ONCE_INIT;
-                boost::call_once(&registerG2OTypes, flag);
+                static std::once_flag flag;
+                std::call_once(flag, &registerG2OTypes);
 
                 // allocating the optimizer
-                boost::shared_ptr<g2o::SparseOptimizer> optimizer = boost::make_shared<g2o::SparseOptimizer>();
-                TEBLinearSolver* linearSolver = new TEBLinearSolver(); // see typedef in optimization.h
-                linearSolver->setBlockOrdering(true);
-                TEBBlockSolver* blockSolver = new TEBBlockSolver(linearSolver);
-                g2o::OptimizationAlgorithmLevenberg* solver = new g2o::OptimizationAlgorithmLevenberg(blockSolver);
+                std::shared_ptr<g2o::SparseOptimizer> optimizer = std::make_shared<g2o::SparseOptimizer>();
 
+                std::unique_ptr<TEBLinearSolver> linear_solver = std::unique_ptr<TEBLinearSolver>(new TEBLinearSolver);
+                linear_solver->setBlockOrdering(true);
+                std::unique_ptr<TEBBlockSolver> block_solver = std::unique_ptr<TEBBlockSolver>(new TEBBlockSolver(std::move(linear_solver)));
+                g2o::OptimizationAlgorithmLevenberg* solver = new g2o::OptimizationAlgorithmLevenberg(std::move(block_solver));
                 optimizer->setAlgorithm(solver);
 
                 optimizer->initMultiThreading(); // required for >Eigen 3.1
@@ -150,16 +151,16 @@ namespace rip
             }
 
 
-            bool TebOptimalPlanner::optimizeTEB(int iterations_innerloop, int iterations_outerloop, bool compute_cost_afterwards,
-                                                double obst_cost_scale, double viapoint_cost_scale, bool alternative_time_cost)
+            bool TebOptimalPlanner::optimizeTEB(int iterations_innerloop, int iterations_outerloop, bool compute_m_costafterwards,
+                                                double obst_m_costscale, double viapoint_m_costscale, bool alternative_time_cost)
             {
-                if (cfg_->optim.optimization_activate == false)
+                if (m_config->optim.optimization_activate == false)
                 {
                     return false;
                 }
 
                 bool success = false;
-                optimized_ = false;
+                m_optimized = false;
 
                 double weight_multiplier = 1.0;
 
@@ -167,14 +168,13 @@ namespace rip
                 //                (which leads to better results in terms of x-y-t homotopy planning).
                 //                 however, we have not tested this mode intensively yet, so we keep
                 //                 the legacy fast mode as default until we finish our tests.
-                bool fast_mode = !cfg_->obstacles.include_dynamic_obstacles;
+                bool fast_mode = !m_config->obstacles.include_dynamic_obstacles;
 
                 for (int i = 0; i < iterations_outerloop; ++i)
                 {
-                    if (cfg_->trajectory.teb_autosize)
+                    if (m_config->trajectory.teb_autosize)
                     {
-                        //teb_.autoResize(cfg_->trajectory.dt_ref, cfg_->trajectory.dt_hysteresis, cfg_->trajectory.min_samples, cfg_->trajectory.max_samples);
-                        teb_.autoResize(cfg_->trajectory.dt_ref, cfg_->trajectory.dt_hysteresis, cfg_->trajectory.min_samples, cfg_->trajectory.max_samples, fast_mode);
+                        m_teb.autoResize(m_config->trajectory.dt_ref, m_config->trajectory.dt_hysteresis, m_config->trajectory.min_samples, m_config->trajectory.max_samples, fast_mode);
 
                     }
 
@@ -190,16 +190,16 @@ namespace rip
                         clearGraph();
                         return false;
                     }
-                    optimized_ = true;
+                    m_optimized = true;
 
-                    if (compute_cost_afterwards && i == iterations_outerloop - 1) // compute cost vec only in the last iteration
+                    if (compute_m_costafterwards && i == iterations_outerloop - 1) // compute cost vec only in the last iteration
                     {
-                        computeCurrentCost(obst_cost_scale, viapoint_cost_scale, alternative_time_cost);
+                        computeCurrentCost(obst_m_costscale, viapoint_m_costscale, alternative_time_cost);
                     }
 
                     clearGraph();
 
-                    weight_multiplier *= cfg_->optim.weight_adapt_factor;
+                    weight_multiplier *= m_config->optim.weight_adapt_factor;
                 }
 
                 return true;
@@ -207,39 +207,44 @@ namespace rip
 
             void TebOptimalPlanner::setVelocityStart(const fakeros::Twist& vel_start)
             {
-                vel_start_.first = true;
-                vel_start_.second.linear.x = vel_start.linear.x;
-                vel_start_.second.linear.y = vel_start.linear.y;
-                vel_start_.second.angular.z = vel_start.angular.z;
+                m_vel_start.first = true;
+                m_vel_start.second.linear.x = vel_start.linear.x;
+                m_vel_start.second.linear.y = vel_start.linear.y;
+                m_vel_start.second.angular.z = vel_start.angular.z;
             }
 
             void TebOptimalPlanner::setVelocityGoal(const fakeros::Twist& vel_goal)
             {
-                vel_goal_.first = true;
-                vel_goal_.second = vel_goal;
+                m_vel_goal.first = true;
+                m_vel_goal.second = vel_goal;
             }
 
             bool TebOptimalPlanner::plan(const std::vector<fakeros::PoseStamped>& initial_plan, const fakeros::Twist* start_vel, bool free_goal_vel)
             {
-                ROS_ASSERT_MSG(initialized_, "Call initialize() first.");
-                if (!teb_.isInit())
+                if (!m_initialized)
+                {
+                    misc::Logger::getInstance()->error("Call initialize() first.");
+                    assert(false);
+                }
+
+                if (!m_teb.isInit())
                 {
                     // init trajectory
-                    teb_.initTrajectoryToGoal(initial_plan, cfg_->robot.max_vel_x, cfg_->trajectory.global_plan_overwrite_orientation, cfg_->trajectory.min_samples, cfg_->trajectory.allow_init_with_backwards_motion);
+                    m_teb.initTrajectoryToGoal(initial_plan, m_config->robot.max_vel_x, m_config->trajectory.global_plan_overwrite_orientation, m_config->trajectory.min_samples, m_config->trajectory.allow_init_with_backwards_motion);
                 }
                 else // warm start
                 {
                     PoseSE2 start_(initial_plan.front().pose);
                     PoseSE2 goal_(initial_plan.back().pose);
-                    if (teb_.sizePoses() > 0 && (goal_.position() - teb_.BackPose().position()).norm() < cfg_->trajectory.force_reinit_new_goal_dist) // actual warm start!
+                    if (m_teb.sizePoses() > 0 && (goal_.position() - m_teb.backPose().position()).norm() < m_config->trajectory.force_reinit_new_goal_dist) // actual warm start!
                     {
-                        teb_.updateAndPruneTEB(start_, goal_, cfg_->trajectory.min_samples);    // update TEB
+                        m_teb.updateAndPruneTEB(&start_, &goal_, m_config->trajectory.min_samples);    // update TEB
                     }
                     else // goal too far away -> reinit
                     {
-                        Logger::getInstance()->debug("New goal: distance to existing goal is higher than the specified threshold. Reinitalizing trajectories.");
-                        teb_.clearTimedElasticBand();
-                        teb_.initTrajectoryToGoal(initial_plan, cfg_->robot.max_vel_x, true, cfg_->trajectory.min_samples, cfg_->trajectory.allow_init_with_backwards_motion);
+                        misc::Logger::getInstance()->debug("New goal: distance to existing goal is higher than the specified threshold. Reinitalizing trajectories.");
+                        m_teb.clearTimedElasticBand();
+                        m_teb.initTrajectoryToGoal(initial_plan, m_config->robot.max_vel_x, true, m_config->trajectory.min_samples, m_config->trajectory.allow_init_with_backwards_motion);
                     }
                 }
                 if (start_vel)
@@ -252,40 +257,37 @@ namespace rip
                 }
                 else
                 {
-                    vel_goal_.first = true;    // we just reactivate and use the previously set velocity (should be zero if nothing was modified)
+                    m_vel_goal.first = true;    // we just reactivate and use the previously set velocity (should be zero if nothing was modified)
                 }
 
                 // now optimize
-                return optimizeTEB(cfg_->optim.no_inner_iterations, cfg_->optim.no_outer_iterations);
-            }
-
-
-            bool TebOptimalPlanner::plan(const tf::Pose& start, const tf::Pose& goal, const fakeros::Twist* start_vel, bool free_goal_vel)
-            {
-                PoseSE2 start_(start);
-                PoseSE2 goal_(goal);
-                return plan(start_, goal_, start_vel);
+                return optimizeTEB(m_config->optim.no_inner_iterations, m_config->optim.no_outer_iterations);
             }
 
             bool TebOptimalPlanner::plan(const PoseSE2& start, const PoseSE2& goal, const fakeros::Twist* start_vel, bool free_goal_vel)
             {
-                ROS_ASSERT_MSG(initialized_, "Call initialize() first.");
-                if (!teb_.isInit())
+                if (!m_initialized)
+                {
+                    misc::Logger::getInstance()->error("Call initialize() first.");
+                    assert(false);
+                }
+
+                if (!m_teb.isInit())
                 {
                     // init trajectory
-                    teb_.initTrajectoryToGoal(start, goal, 0, cfg_->robot.max_vel_x, cfg_->trajectory.min_samples, cfg_->trajectory.allow_init_with_backwards_motion); // 0 intermediate samples, but dt=1 -> autoResize will add more samples before calling first optimization
+                    m_teb.initTrajectoryToGoal(start, goal, 0, m_config->robot.max_vel_x, m_config->trajectory.min_samples, m_config->trajectory.allow_init_with_backwards_motion); // 0 intermediate samples, but dt=1 -> autoResize will add more samples before calling first optimization
                 }
                 else // warm start
                 {
-                    if (teb_.sizePoses() > 0 && (goal.position() - teb_.BackPose().position()).norm() < cfg_->trajectory.force_reinit_new_goal_dist) // actual warm start!
+                    if (m_teb.sizePoses() > 0 && (goal.position() - m_teb.backPose().position()).norm() < m_config->trajectory.force_reinit_new_goal_dist) // actual warm start!
                     {
-                        teb_.updateAndPruneTEB(start, goal, cfg_->trajectory.min_samples);
+                        m_teb.updateAndPruneTEB(&start, &goal, m_config->trajectory.min_samples);
                     }
                     else // goal too far away -> reinit
                     {
-                        Logger::getInstance()->debug("New goal: distance to existing goal is higher than the specified threshold. Reinitalizing trajectories.");
-                        teb_.clearTimedElasticBand();
-                        teb_.initTrajectoryToGoal(start, goal, 0, cfg_->robot.max_vel_x, cfg_->trajectory.min_samples, cfg_->trajectory.allow_init_with_backwards_motion);
+                        misc::Logger::getInstance()->debug("New goal: distance to existing goal is higher than the specified threshold. Reinitalizing trajectories.");
+                        m_teb.clearTimedElasticBand();
+                        m_teb.initTrajectoryToGoal(start, goal, 0, m_config->robot.max_vel_x, m_config->trajectory.min_samples, m_config->trajectory.allow_init_with_backwards_motion);
                     }
                 }
                 if (start_vel)
@@ -298,19 +300,19 @@ namespace rip
                 }
                 else
                 {
-                    vel_goal_.first = true;    // we just reactivate and use the previously set velocity (should be zero if nothing was modified)
+                    m_vel_goal.first = true;    // we just reactivate and use the previously set velocity (should be zero if nothing was modified)
                 }
 
                 // now optimize
-                return optimizeTEB(cfg_->optim.no_inner_iterations, cfg_->optim.no_outer_iterations);
+                return optimizeTEB(m_config->optim.no_inner_iterations, m_config->optim.no_outer_iterations);
             }
 
 
             bool TebOptimalPlanner::buildGraph(double weight_multiplier)
             {
-                if (!optimizer_->edges().empty() || !optimizer_->vertices().empty())
+                if (!m_optimizer->edges().empty() || !m_optimizer->vertices().empty())
                 {
-                    Logger::getInstance()->warn("Cannot build graph, because it is not empty. Call graphClear()!");
+                    misc::Logger::getInstance()->warn("Cannot build graph, because it is not empty. Call graphClear()!");
                     return false;
                 }
 
@@ -318,7 +320,7 @@ namespace rip
                 AddTEBVertices();
 
                 // add Edges (local cost functions)
-                if (cfg_->obstacles.legacy_obstacle_association)
+                if (m_config->obstacles.legacy_obstacle_association)
                 {
                     AddEdgesObstaclesLegacy(weight_multiplier);
                 }
@@ -327,12 +329,12 @@ namespace rip
                     AddEdgesObstacles(weight_multiplier);
                 }
 
-                if (cfg_->obstacles.include_dynamic_obstacles)
+                if (m_config->obstacles.include_dynamic_obstacles)
                 {
                     AddEdgesDynamicObstacles();
                 }
 
-                AddEdgesViaPoints();
+                // AddEdgesViaPoints();
 
                 AddEdgesVelocity();
 
@@ -340,7 +342,7 @@ namespace rip
 
                 AddEdgesTimeOptimal();
 
-                if (cfg_->robot.min_turning_radius == 0 || cfg_->optim.weight_kinematics_turning_radius == 0)
+                if (m_config->robot.min_turning_radius == 0 || m_config->optim.weight_kinematics_turning_radius == 0)
                 {
                     AddEdgesKinematicsDiffDrive();    // we have a differential drive robot
                 }
@@ -350,39 +352,42 @@ namespace rip
                 }
 
 
-                AddEdgesPreferRotDir();
+                // AddEdgesPreferRotDir();
 
                 return true;
             }
 
             bool TebOptimalPlanner::optimizeGraph(int no_iterations, bool clear_after)
             {
-                if (cfg_->robot.max_vel_x < 0.01)
+                if (m_config->robot.max_vel_x < 0.01)
                 {
-                    Logger::getInstance()->warn("optimizeGraph(): Robot Max Velocity is smaller than 0.01m/s. Optimizing aborted...");
+                    misc::Logger::getInstance()->warn("optimizeGraph(): Robot Max Velocity is smaller than 0.01m/s. Optimizing aborted...");
+                    if (clear_after)
+                    {
+                        clearGraph();
+                    }
+                    return false;
+                }
+
+                if (!m_teb.isInit() || m_teb.sizePoses() < m_config->trajectory.min_samples)
+                {
+                    misc::Logger::getInstance()->warn("optimizeGraph(): TEB is empty or has too less elements. Skipping optimization.");
                     if (clear_after) { clearGraph(); }
                     return false;
                 }
 
-                if (!teb_.isInit() || teb_.sizePoses() < cfg_->trajectory.min_samples)
-                {
-                    Logger::getInstance()->warn("optimizeGraph(): TEB is empty or has too less elements. Skipping optimization.");
-                    if (clear_after) { clearGraph(); }
-                    return false;
-                }
+                m_optimizer->setVerbose(m_config->optim.optimization_verbose);
+                m_optimizer->initializeOptimization();
 
-                optimizer_->setVerbose(cfg_->optim.optimization_verbose);
-                optimizer_->initializeOptimization();
-
-                int iter = optimizer_->optimize(no_iterations);
+                int iter = m_optimizer->optimize(no_iterations);
 
                 // Save Hessian for visualization
-                //  g2o::OptimizationAlgorithmLevenberg* lm = dynamic_cast<g2o::OptimizationAlgorithmLevenberg*> (optimizer_->solver());
+                //  g2o::OptimizationAlgorithmLevenberg* lm = dynamic_cast<g2o::OptimizationAlgorithmLevenberg*> (m_optimizer->solver());
                 //  lm->solver()->saveHessian("~/MasterThesis/Matlab/Hessian.txt");
 
                 if (!iter)
                 {
-                    Logger::getInstance()->error("optimizeGraph(): Optimization failed! iter=%i", iter);
+                    misc::Logger::getInstance()->error("optimizeGraph(): Optimization failed! iter=%i", iter);
                     return false;
                 }
 
@@ -394,9 +399,8 @@ namespace rip
             void TebOptimalPlanner::clearGraph()
             {
                 // clear optimizer states
-                //optimizer.edges().clear(); // optimizer.clear deletes edges!!! Therefore do not run optimizer.edges().clear()
-                optimizer_->vertices().clear();  // neccessary, because optimizer->clear deletes pointer-targets (therefore it deletes TEB states!)
-                optimizer_->clear();
+                m_optimizer->vertices().clear();  // neccessary, because optimizer->clear deletes pointer-targets (therefore it deletes TEB states!)
+                m_optimizer->clear();
             }
 
 
@@ -404,16 +408,16 @@ namespace rip
             void TebOptimalPlanner::AddTEBVertices()
             {
                 // add vertices to graph
-                Logger::getInstance()->debug_COND(cfg_->optim.optimization_verbose, "Adding TEB vertices ...");
+                misc::Logger::getInstance()->debug_if(m_config->optim.optimization_verbose, "Adding TEB vertices ...");
                 unsigned int id_counter = 0; // used for vertices ids
-                for (int i = 0; i < teb_.sizePoses(); ++i)
+                for (int i = 0; i < m_teb.sizePoses(); ++i)
                 {
-                    teb_.PoseVertex(i)->setId(id_counter++);
-                    optimizer_->addVertex(teb_.PoseVertex(i));
-                    if (teb_.sizeTimeDiffs() != 0 && i < teb_.sizeTimeDiffs())
+                    m_teb.poseVertex(i)->setId(id_counter++);
+                    m_optimizer->addVertex(m_teb.poseVertex(i));
+                    if (m_teb.sizeTimeDiffs() != 0 && i < m_teb.sizeTimeDiffs())
                     {
-                        teb_.TimeDiffVertex(i)->setId(id_counter++);
-                        optimizer_->addVertex(teb_.TimeDiffVertex(i));
+                        m_teb.timeDiffVertex(i)->setId(id_counter++);
+                        m_optimizer->addVertex(m_teb.timeDiffVertex(i));
                     }
                 }
             }
@@ -421,55 +425,55 @@ namespace rip
 
             void TebOptimalPlanner::AddEdgesObstacles(double weight_multiplier)
             {
-                if (cfg_->optim.weight_obstacle == 0 || weight_multiplier == 0 || obstacles_ == nullptr )
+                if (m_config->optim.weight_obstacle == 0 || weight_multiplier == 0 || m_obstacles == nullptr )
                 {
                     return;    // if weight equals zero skip adding edges!
                 }
 
 
-                bool inflated = cfg_->obstacles.inflation_dist > cfg_->obstacles.min_obstacle_dist;
+                bool inflated = m_config->obstacles.inflation_dist > m_config->obstacles.min_obstacle_dist;
 
                 Eigen::Matrix<double, 1, 1> information;
-                information.fill(cfg_->optim.weight_obstacle * weight_multiplier);
+                information.fill(m_config->optim.weight_obstacle * weight_multiplier);
 
                 Eigen::Matrix<double, 2, 2> information_inflated;
-                information_inflated(0, 0) = cfg_->optim.weight_obstacle * weight_multiplier;
-                information_inflated(1, 1) = cfg_->optim.weight_inflation;
+                information_inflated(0, 0) = m_config->optim.weight_obstacle * weight_multiplier;
+                information_inflated(1, 1) = m_config->optim.weight_inflation;
                 information_inflated(0, 1) = information_inflated(1, 0) = 0;
 
                 // iterate all teb points (skip first and last)
-                for (int i = 1; i < teb_.sizePoses() - 1; ++i)
+                for (int i = 1; i < m_teb.sizePoses() - 1; ++i)
                 {
                     double left_min_dist = std::numeric_limits<double>::max();
                     double right_min_dist = std::numeric_limits<double>::max();
-                    Obstacle* left_obstacle = nullptr;
-                    Obstacle* right_obstacle = nullptr;
+                    std::shared_ptr<Obstacle> left_obstacle = nullptr;
+                    std::shared_ptr<Obstacle> right_obstacle = nullptr;
 
-                    std::vector<Obstacle*> relevant_obstacles;
+                    std::vector< std::shared_ptr<Obstacle> > relevant_obstacles;
 
-                    const Eigen::Vector2d pose_orient = teb_.Pose(i).orientationUnitVec();
+                    const Eigen::Vector2d pose_orient = m_teb.pose(i).orientationUnitVec();
 
                     // iterate obstacles
-                    for (const ObstaclePtr& obst : *obstacles_)
+                    for (const ObstaclePtr& obst : *m_obstacles)
                     {
                         // we handle dynamic obstacles differently below
-                        if (cfg_->obstacles.include_dynamic_obstacles && obst->isDynamic())
+                        if (m_config->obstacles.include_dynamic_obstacles && obst->isDynamic())
                         {
                             continue;
                         }
 
                         // calculate distance to current pose
                         // TODO we ignore the robot footprint here in the association stage
-                        double dist = obst->getMinimumDistance(teb_.Pose(i).position());
+                        double dist = obst->getMinimumDistance(m_teb.pose(i).position());
 
                         // force considering obstacle if really close to the current pose
-                        if (dist < cfg_->obstacles.min_obstacle_dist * cfg_->obstacles.obstacle_association_force_inclusion_factor)
+                        if (dist < m_config->obstacles.min_obstacle_dist * m_config->obstacles.obstacle_association_force_inclusion_factor)
                         {
-                            relevant_obstacles.push_back(obst.get());
+                            relevant_obstacles.push_back(obst);
                             continue;
                         }
                         // cut-off distance
-                        if (dist > cfg_->obstacles.min_obstacle_dist * cfg_->obstacles.obstacle_association_cutoff_factor)
+                        if (dist > m_config->obstacles.min_obstacle_dist * m_config->obstacles.obstacle_association_cutoff_factor)
                         {
                             continue;
                         }
@@ -480,7 +484,7 @@ namespace rip
                             if (dist < left_min_dist)
                             {
                                 left_min_dist = dist;
-                                left_obstacle = obst.get();
+                                left_obstacle = obst;
                             }
                         }
                         else
@@ -488,7 +492,7 @@ namespace rip
                             if (dist < right_min_dist)
                             {
                                 right_min_dist = dist;
-                                right_obstacle = obst.get();
+                                right_obstacle = obst;
                             }
                         }
                     }
@@ -499,18 +503,18 @@ namespace rip
                         if (inflated)
                         {
                             EdgeInflatedObstacle* dist_bandpt_obst = new EdgeInflatedObstacle;
-                            dist_bandpt_obst->setVertex(0, teb_.PoseVertex(i));
+                            dist_bandpt_obst->setVertex(0, m_teb.poseVertex(i));
                             dist_bandpt_obst->setInformation(information_inflated);
-                            dist_bandpt_obst->setParameters(*cfg_, robot_model_.get(), left_obstacle);
-                            optimizer_->addEdge(dist_bandpt_obst);
+                            dist_bandpt_obst->setParameters(m_config, m_robot_model, left_obstacle);
+                            m_optimizer->addEdge(dist_bandpt_obst);
                         }
                         else
                         {
                             EdgeObstacle* dist_bandpt_obst = new EdgeObstacle;
-                            dist_bandpt_obst->setVertex(0, teb_.PoseVertex(i));
+                            dist_bandpt_obst->setVertex(0, m_teb.poseVertex(i));
                             dist_bandpt_obst->setInformation(information);
-                            dist_bandpt_obst->setParameters(*cfg_, robot_model_.get(), left_obstacle);
-                            optimizer_->addEdge(dist_bandpt_obst);
+                            dist_bandpt_obst->setParameters(m_config, m_robot_model, left_obstacle);
+                            m_optimizer->addEdge(dist_bandpt_obst);
                         }
                     }
 
@@ -519,38 +523,38 @@ namespace rip
                         if (inflated)
                         {
                             EdgeInflatedObstacle* dist_bandpt_obst = new EdgeInflatedObstacle;
-                            dist_bandpt_obst->setVertex(0, teb_.PoseVertex(i));
+                            dist_bandpt_obst->setVertex(0, m_teb.poseVertex(i));
                             dist_bandpt_obst->setInformation(information_inflated);
-                            dist_bandpt_obst->setParameters(*cfg_, robot_model_.get(), right_obstacle);
-                            optimizer_->addEdge(dist_bandpt_obst);
+                            dist_bandpt_obst->setParameters(m_config, m_robot_model, right_obstacle);
+                            m_optimizer->addEdge(dist_bandpt_obst);
                         }
                         else
                         {
                             EdgeObstacle* dist_bandpt_obst = new EdgeObstacle;
-                            dist_bandpt_obst->setVertex(0, teb_.PoseVertex(i));
+                            dist_bandpt_obst->setVertex(0, m_teb.poseVertex(i));
                             dist_bandpt_obst->setInformation(information);
-                            dist_bandpt_obst->setParameters(*cfg_, robot_model_.get(), right_obstacle);
-                            optimizer_->addEdge(dist_bandpt_obst);
+                            dist_bandpt_obst->setParameters(m_config, m_robot_model, right_obstacle);
+                            m_optimizer->addEdge(dist_bandpt_obst);
                         }
                     }
 
-                    for (const Obstacle* obst : relevant_obstacles)
+                    for (std::shared_ptr<Obstacle> obst : relevant_obstacles)
                     {
                         if (inflated)
                         {
                             EdgeInflatedObstacle* dist_bandpt_obst = new EdgeInflatedObstacle;
-                            dist_bandpt_obst->setVertex(0, teb_.PoseVertex(i));
+                            dist_bandpt_obst->setVertex(0, m_teb.poseVertex(i));
                             dist_bandpt_obst->setInformation(information_inflated);
-                            dist_bandpt_obst->setParameters(*cfg_, robot_model_.get(), obst);
-                            optimizer_->addEdge(dist_bandpt_obst);
+                            dist_bandpt_obst->setParameters(m_config, m_robot_model, obst);
+                            m_optimizer->addEdge(dist_bandpt_obst);
                         }
                         else
                         {
                             EdgeObstacle* dist_bandpt_obst = new EdgeObstacle;
-                            dist_bandpt_obst->setVertex(0, teb_.PoseVertex(i));
+                            dist_bandpt_obst->setVertex(0, m_teb.poseVertex(i));
                             dist_bandpt_obst->setInformation(information);
-                            dist_bandpt_obst->setParameters(*cfg_, robot_model_.get(), obst);
-                            optimizer_->addEdge(dist_bandpt_obst);
+                            dist_bandpt_obst->setParameters(m_config, m_robot_model, obst);
+                            m_optimizer->addEdge(dist_bandpt_obst);
                         }
                     }
                 }
@@ -560,42 +564,42 @@ namespace rip
 
             void TebOptimalPlanner::AddEdgesObstaclesLegacy(double weight_multiplier)
             {
-                if (cfg_->optim.weight_obstacle == 0 || weight_multiplier == 0 || obstacles_ == nullptr)
+                if (m_config->optim.weight_obstacle == 0 || weight_multiplier == 0 || m_obstacles == nullptr)
                 {
                     return;    // if weight equals zero skip adding edges!
                 }
 
                 Eigen::Matrix<double, 1, 1> information;
-                information.fill(cfg_->optim.weight_obstacle * weight_multiplier);
+                information.fill(m_config->optim.weight_obstacle * weight_multiplier);
 
                 Eigen::Matrix<double, 2, 2> information_inflated;
-                information_inflated(0, 0) = cfg_->optim.weight_obstacle * weight_multiplier;
-                information_inflated(1, 1) = cfg_->optim.weight_inflation;
+                information_inflated(0, 0) = m_config->optim.weight_obstacle * weight_multiplier;
+                information_inflated(1, 1) = m_config->optim.weight_inflation;
                 information_inflated(0, 1) = information_inflated(1, 0) = 0;
 
-                bool inflated = cfg_->obstacles.inflation_dist > cfg_->obstacles.min_obstacle_dist;
+                bool inflated = m_config->obstacles.inflation_dist > m_config->obstacles.min_obstacle_dist;
 
-                for (ObstContainer::const_iterator obst = obstacles_->begin(); obst != obstacles_->end(); ++obst)
+                for (ObstacleContainer::const_iterator obst = m_obstacles->begin(); obst != m_obstacles->end(); ++obst)
                 {
-                    if (cfg_->obstacles.include_dynamic_obstacles && (*obst)->isDynamic()) // we handle dynamic obstacles differently below
+                    if (m_config->obstacles.include_dynamic_obstacles && (*obst)->isDynamic()) // we handle dynamic obstacles differently below
                     {
                         continue;
                     }
 
                     int index;
 
-                    if (cfg_->obstacles.obstacle_poses_affected >= teb_.sizePoses())
+                    if (m_config->obstacles.obstacle_poses_affected >= m_teb.sizePoses())
                     {
-                        index =  teb_.sizePoses() / 2;
+                        index =  m_teb.sizePoses() / 2;
                     }
                     else
                     {
-                        index = teb_.findClosestTrajectoryPose(*(obst->get()));
+                        index = m_teb.findClosestTrajectoryPose(*(obst->get()));
                     }
 
 
                     // check if obstacle is outside index-range between start and goal
-                    if ( (index <= 1) || (index > teb_.sizePoses() - 2) ) // start and goal are fixed and findNearestBandpoint finds first or last conf if intersection point is outside the range
+                    if ( (index <= 1) || (index > m_teb.sizePoses() - 2) ) // start and goal are fixed and findNearestBandpoint finds first or last conf if intersection point is outside the range
                     {
                         continue;
                     }
@@ -603,39 +607,39 @@ namespace rip
                     if (inflated)
                     {
                         EdgeInflatedObstacle* dist_bandpt_obst = new EdgeInflatedObstacle;
-                        dist_bandpt_obst->setVertex(0, teb_.PoseVertex(index));
+                        dist_bandpt_obst->setVertex(0, m_teb.poseVertex(index));
                         dist_bandpt_obst->setInformation(information_inflated);
-                        dist_bandpt_obst->setParameters(*cfg_, robot_model_.get(), obst->get());
-                        optimizer_->addEdge(dist_bandpt_obst);
+                        dist_bandpt_obst->setParameters(m_config, m_robot_model, *obst);
+                        m_optimizer->addEdge(dist_bandpt_obst);
                     }
                     else
                     {
                         EdgeObstacle* dist_bandpt_obst = new EdgeObstacle;
-                        dist_bandpt_obst->setVertex(0, teb_.PoseVertex(index));
+                        dist_bandpt_obst->setVertex(0, m_teb.poseVertex(index));
                         dist_bandpt_obst->setInformation(information);
-                        dist_bandpt_obst->setParameters(*cfg_, robot_model_.get(), obst->get());
-                        optimizer_->addEdge(dist_bandpt_obst);
+                        dist_bandpt_obst->setParameters(m_config, m_robot_model, *obst);
+                        m_optimizer->addEdge(dist_bandpt_obst);
                     }
 
-                    for (int neighbourIdx = 0; neighbourIdx < floor(cfg_->obstacles.obstacle_poses_affected / 2); neighbourIdx++)
+                    for (int neighbourIdx = 0; neighbourIdx < floor(m_config->obstacles.obstacle_poses_affected / 2); neighbourIdx++)
                     {
-                        if (index + neighbourIdx < teb_.sizePoses())
+                        if (index + neighbourIdx < m_teb.sizePoses())
                         {
                             if (inflated)
                             {
                                 EdgeInflatedObstacle* dist_bandpt_obst_n_r = new EdgeInflatedObstacle;
-                                dist_bandpt_obst_n_r->setVertex(0, teb_.PoseVertex(index + neighbourIdx));
+                                dist_bandpt_obst_n_r->setVertex(0, m_teb.poseVertex(index + neighbourIdx));
                                 dist_bandpt_obst_n_r->setInformation(information_inflated);
-                                dist_bandpt_obst_n_r->setParameters(*cfg_, robot_model_.get(), obst->get());
-                                optimizer_->addEdge(dist_bandpt_obst_n_r);
+                                dist_bandpt_obst_n_r->setParameters(m_config, m_robot_model, *obst);
+                                m_optimizer->addEdge(dist_bandpt_obst_n_r);
                             }
                             else
                             {
                                 EdgeObstacle* dist_bandpt_obst_n_r = new EdgeObstacle;
-                                dist_bandpt_obst_n_r->setVertex(0, teb_.PoseVertex(index + neighbourIdx));
+                                dist_bandpt_obst_n_r->setVertex(0, m_teb.poseVertex(index + neighbourIdx));
                                 dist_bandpt_obst_n_r->setInformation(information);
-                                dist_bandpt_obst_n_r->setParameters(*cfg_, robot_model_.get(), obst->get());
-                                optimizer_->addEdge(dist_bandpt_obst_n_r);
+                                dist_bandpt_obst_n_r->setParameters(m_config, m_robot_model, *obst);
+                                m_optimizer->addEdge(dist_bandpt_obst_n_r);
                             }
                         }
                         if ( index - neighbourIdx >= 0) // needs to be casted to int to allow negative values
@@ -643,18 +647,18 @@ namespace rip
                             if (inflated)
                             {
                                 EdgeInflatedObstacle* dist_bandpt_obst_n_l = new EdgeInflatedObstacle;
-                                dist_bandpt_obst_n_l->setVertex(0, teb_.PoseVertex(index - neighbourIdx));
+                                dist_bandpt_obst_n_l->setVertex(0, m_teb.poseVertex(index - neighbourIdx));
                                 dist_bandpt_obst_n_l->setInformation(information_inflated);
-                                dist_bandpt_obst_n_l->setParameters(*cfg_, robot_model_.get(), obst->get());
-                                optimizer_->addEdge(dist_bandpt_obst_n_l);
+                                dist_bandpt_obst_n_l->setParameters(m_config, m_robot_model, *obst);
+                                m_optimizer->addEdge(dist_bandpt_obst_n_l);
                             }
                             else
                             {
                                 EdgeObstacle* dist_bandpt_obst_n_l = new EdgeObstacle;
-                                dist_bandpt_obst_n_l->setVertex(0, teb_.PoseVertex(index - neighbourIdx));
+                                dist_bandpt_obst_n_l->setVertex(0, m_teb.poseVertex(index - neighbourIdx));
                                 dist_bandpt_obst_n_l->setInformation(information);
-                                dist_bandpt_obst_n_l->setParameters(*cfg_, robot_model_.get(), obst->get());
-                                optimizer_->addEdge(dist_bandpt_obst_n_l);
+                                dist_bandpt_obst_n_l->setParameters(m_config, m_robot_model, *obst);
+                                m_optimizer->addEdge(dist_bandpt_obst_n_l);
                             }
                         }
                     }
@@ -665,17 +669,17 @@ namespace rip
 
             void TebOptimalPlanner::AddEdgesDynamicObstacles(double weight_multiplier)
             {
-                if (cfg_->optim.weight_obstacle == 0 || weight_multiplier == 0 || obstacles_ == NULL )
+                if (m_config->optim.weight_obstacle == 0 || weight_multiplier == 0 || m_obstacles == nullptr )
                 {
                     return;    // if weight equals zero skip adding edges!
                 }
 
                 Eigen::Matrix<double, 2, 2> information;
-                information(0, 0) = cfg_->optim.weight_dynamic_obstacle * weight_multiplier;
-                information(1, 1) = cfg_->optim.weight_dynamic_obstacle_inflation;
+                information(0, 0) = m_config->optim.weight_dynamic_obstacle * weight_multiplier;
+                information(1, 1) = m_config->optim.weight_dynamic_obstacle_inflation;
                 information(0, 1) = information(1, 0) = 0;
 
-                for (ObstContainer::const_iterator obst = obstacles_->begin(); obst != obstacles_->end(); ++obst)
+                for (ObstacleContainer::const_iterator obst = m_obstacles->begin(); obst != m_obstacles->end(); ++obst)
                 {
                     if (!(*obst)->isDynamic())
                     {
@@ -683,29 +687,29 @@ namespace rip
                     }
 
                     // Skip first and last pose, as they are fixed
-                    double time = teb_.TimeDiff(0);
-                    for (int i = 1; i < teb_.sizePoses() - 1; ++i)
+                    double time = m_teb.timeDiff(0);
+                    for (int i = 1; i < m_teb.sizePoses() - 1; ++i)
                     {
-                        EdgeDynamicObstacle* dynobst_edge = new EdgeDynamicObstacle(teb_.getSumOfTimeDiffsUpToIdx(i));
-                        dynobst_edge->setVertex(0, teb_.PoseVertex(i));
+                        EdgeDynamicObstacle* dynobst_edge = new EdgeDynamicObstacle(m_teb.getSumOfTimeDiffsUpToIdx(i));
+                        dynobst_edge->setVertex(0, m_teb.poseVertex(i));
                         dynobst_edge->setInformation(information);
-                        dynobst_edge->setParameters(*cfg_, robot_model_.get(), obst->get());
-                        optimizer_->addEdge(dynobst_edge);
-                        time += teb_.TimeDiff(i); // we do not need to check the time diff bounds, since we iterate to "< sizePoses()-1".
+                        dynobst_edge->setParameters(m_config, m_robot_model, *obst);
+                        m_optimizer->addEdge(dynobst_edge);
+                        time += m_teb.timeDiff(i); // we do not need to check the time diff bounds, since we iterate to "< sizePoses()-1".
                     }
                 }
             }
-
+#if 0
             void TebOptimalPlanner::AddEdgesViaPoints()
             {
-                if (cfg_->optim.weight_viapoint == 0 || via_points_ == NULL || via_points_->empty() )
+                if (m_config->optim.weight_viapoint == 0 || via_points_ == nullptr || via_points_->empty() )
                 {
                     return;    // if weight equals zero skip adding edges!
                 }
 
                 int start_pose_idx = 0;
 
-                int n = teb_.sizePoses();
+                int n = m_teb.sizePoses();
                 if (n < 3) // we do not have any degrees of freedom for reaching via-points
                 {
                     return;
@@ -714,8 +718,8 @@ namespace rip
                 for (ViaPointContainer::const_iterator vp_it = via_points_->begin(); vp_it != via_points_->end(); ++vp_it)
                 {
 
-                    int index = teb_.findClosestTrajectoryPose(*vp_it, NULL, start_pose_idx);
-                    if (cfg_->trajectory.via_points_ordered)
+                    int index = m_teb.findClosestTrajectoryPose(*vp_it, NULL, start_pose_idx);
+                    if (m_config->trajectory.via_points_ordered)
                     {
                         start_pose_idx = index + 2;    // skip a point to have a DOF inbetween for further via-points
                     }
@@ -732,66 +736,66 @@ namespace rip
                     }
 
                     Eigen::Matrix<double, 1, 1> information;
-                    information.fill(cfg_->optim.weight_viapoint);
+                    information.fill(m_config->optim.weight_viapoint);
 
                     EdgeViaPoint* edge_viapoint = new EdgeViaPoint;
-                    edge_viapoint->setVertex(0, teb_.PoseVertex(index));
+                    edge_viapoint->setVertex(0, m_teb.PoseVertex(index));
                     edge_viapoint->setInformation(information);
-                    edge_viapoint->setParameters(*cfg_, &(*vp_it));
-                    optimizer_->addEdge(edge_viapoint);
+                    edge_viapoint->setParameters(m_config, &(*vp_it));
+                    m_optimizer->addEdge(edge_viapoint);
                 }
             }
-
+#endif
             void TebOptimalPlanner::AddEdgesVelocity()
             {
-                if (cfg_->robot.max_vel_y == 0) // non-holonomic robot
+                if (m_config->robot.max_vel_y == 0) // non-holonomic robot
                 {
-                    if ( cfg_->optim.weight_max_vel_x == 0 && cfg_->optim.weight_max_vel_theta == 0)
+                    if ( m_config->optim.weight_max_vel_x == 0 && m_config->optim.weight_max_vel_theta == 0)
                     {
                         return;    // if weight equals zero skip adding edges!
                     }
 
-                    int n = teb_.sizePoses();
+                    int n = m_teb.sizePoses();
                     Eigen::Matrix<double, 2, 2> information;
-                    information(0, 0) = cfg_->optim.weight_max_vel_x;
-                    information(1, 1) = cfg_->optim.weight_max_vel_theta;
+                    information(0, 0) = m_config->optim.weight_max_vel_x;
+                    information(1, 1) = m_config->optim.weight_max_vel_theta;
                     information(0, 1) = 0.0;
                     information(1, 0) = 0.0;
 
                     for (int i = 0; i < n - 1; ++i)
                     {
                         EdgeVelocity* velocity_edge = new EdgeVelocity;
-                        velocity_edge->setVertex(0, teb_.PoseVertex(i));
-                        velocity_edge->setVertex(1, teb_.PoseVertex(i + 1));
-                        velocity_edge->setVertex(2, teb_.TimeDiffVertex(i));
+                        velocity_edge->setVertex(0, m_teb.poseVertex(i));
+                        velocity_edge->setVertex(1, m_teb.poseVertex(i + 1));
+                        velocity_edge->setVertex(2, m_teb.timeDiffVertex(i));
                         velocity_edge->setInformation(information);
-                        velocity_edge->setTebConfig(*cfg_);
-                        optimizer_->addEdge(velocity_edge);
+                        velocity_edge->setTebConfig(m_config);
+                        m_optimizer->addEdge(velocity_edge);
                     }
                 }
                 else // holonomic-robot
                 {
-                    if ( cfg_->optim.weight_max_vel_x == 0 && cfg_->optim.weight_max_vel_y == 0 && cfg_->optim.weight_max_vel_theta == 0)
+                    if ( m_config->optim.weight_max_vel_x == 0 && m_config->optim.weight_max_vel_y == 0 && m_config->optim.weight_max_vel_theta == 0)
                     {
                         return;    // if weight equals zero skip adding edges!
                     }
 
-                    int n = teb_.sizePoses();
+                    int n = m_teb.sizePoses();
                     Eigen::Matrix<double, 3, 3> information;
                     information.fill(0);
-                    information(0, 0) = cfg_->optim.weight_max_vel_x;
-                    information(1, 1) = cfg_->optim.weight_max_vel_y;
-                    information(2, 2) = cfg_->optim.weight_max_vel_theta;
+                    information(0, 0) = m_config->optim.weight_max_vel_x;
+                    information(1, 1) = m_config->optim.weight_max_vel_y;
+                    information(2, 2) = m_config->optim.weight_max_vel_theta;
 
                     for (int i = 0; i < n - 1; ++i)
                     {
                         EdgeVelocityHolonomic* velocity_edge = new EdgeVelocityHolonomic;
-                        velocity_edge->setVertex(0, teb_.PoseVertex(i));
-                        velocity_edge->setVertex(1, teb_.PoseVertex(i + 1));
-                        velocity_edge->setVertex(2, teb_.TimeDiffVertex(i));
+                        velocity_edge->setVertex(0, m_teb.poseVertex(i));
+                        velocity_edge->setVertex(1, m_teb.poseVertex(i + 1));
+                        velocity_edge->setVertex(2, m_teb.timeDiffVertex(i));
                         velocity_edge->setInformation(information);
-                        velocity_edge->setTebConfig(*cfg_);
-                        optimizer_->addEdge(velocity_edge);
+                        velocity_edge->setTebConfig(m_config);
+                        m_optimizer->addEdge(velocity_edge);
                     }
 
                 }
@@ -799,106 +803,106 @@ namespace rip
 
             void TebOptimalPlanner::AddEdgesAcceleration()
             {
-                if (cfg_->optim.weight_acc_lim_x == 0  && cfg_->optim.weight_acc_lim_theta == 0)
+                if (m_config->optim.weight_acc_lim_x == 0  && m_config->optim.weight_acc_lim_theta == 0)
                 {
                     return;    // if weight equals zero skip adding edges!
                 }
 
-                int n = teb_.sizePoses();
+                int n = m_teb.sizePoses();
 
-                if (cfg_->robot.max_vel_y == 0 || cfg_->robot.acc_lim_y == 0) // non-holonomic robot
+                if (m_config->robot.max_vel_y == 0 || m_config->robot.acc_lim_y == 0) // non-holonomic robot
                 {
                     Eigen::Matrix<double, 2, 2> information;
                     information.fill(0);
-                    information(0, 0) = cfg_->optim.weight_acc_lim_x;
-                    information(1, 1) = cfg_->optim.weight_acc_lim_theta;
+                    information(0, 0) = m_config->optim.weight_acc_lim_x;
+                    information(1, 1) = m_config->optim.weight_acc_lim_theta;
 
                     // check if an initial velocity should be taken into accound
-                    if (vel_start_.first)
+                    if (m_vel_start.first)
                     {
                         EdgeAccelerationStart* acceleration_edge = new EdgeAccelerationStart;
-                        acceleration_edge->setVertex(0, teb_.PoseVertex(0));
-                        acceleration_edge->setVertex(1, teb_.PoseVertex(1));
-                        acceleration_edge->setVertex(2, teb_.TimeDiffVertex(0));
-                        acceleration_edge->setInitialVelocity(vel_start_.second);
+                        acceleration_edge->setVertex(0, m_teb.poseVertex(0));
+                        acceleration_edge->setVertex(1, m_teb.poseVertex(1));
+                        acceleration_edge->setVertex(2, m_teb.timeDiffVertex(0));
+                        acceleration_edge->setInitialVelocity(m_vel_start.second);
                         acceleration_edge->setInformation(information);
-                        acceleration_edge->setTebConfig(*cfg_);
-                        optimizer_->addEdge(acceleration_edge);
+                        acceleration_edge->setTebConfig(m_config);
+                        m_optimizer->addEdge(acceleration_edge);
                     }
 
                     // now add the usual acceleration edge for each tuple of three teb poses
                     for (int i = 0; i < n - 2; ++i)
                     {
                         EdgeAcceleration* acceleration_edge = new EdgeAcceleration;
-                        acceleration_edge->setVertex(0, teb_.PoseVertex(i));
-                        acceleration_edge->setVertex(1, teb_.PoseVertex(i + 1));
-                        acceleration_edge->setVertex(2, teb_.PoseVertex(i + 2));
-                        acceleration_edge->setVertex(3, teb_.TimeDiffVertex(i));
-                        acceleration_edge->setVertex(4, teb_.TimeDiffVertex(i + 1));
+                        acceleration_edge->setVertex(0, m_teb.poseVertex(i));
+                        acceleration_edge->setVertex(1, m_teb.poseVertex(i + 1));
+                        acceleration_edge->setVertex(2, m_teb.poseVertex(i + 2));
+                        acceleration_edge->setVertex(3, m_teb.timeDiffVertex(i));
+                        acceleration_edge->setVertex(4, m_teb.timeDiffVertex(i + 1));
                         acceleration_edge->setInformation(information);
-                        acceleration_edge->setTebConfig(*cfg_);
-                        optimizer_->addEdge(acceleration_edge);
+                        acceleration_edge->setTebConfig(m_config);
+                        m_optimizer->addEdge(acceleration_edge);
                     }
 
                     // check if a goal velocity should be taken into accound
-                    if (vel_goal_.first)
+                    if (m_vel_goal.first)
                     {
                         EdgeAccelerationGoal* acceleration_edge = new EdgeAccelerationGoal;
-                        acceleration_edge->setVertex(0, teb_.PoseVertex(n - 2));
-                        acceleration_edge->setVertex(1, teb_.PoseVertex(n - 1));
-                        acceleration_edge->setVertex(2, teb_.TimeDiffVertex( teb_.sizeTimeDiffs() - 1 ));
-                        acceleration_edge->setGoalVelocity(vel_goal_.second);
+                        acceleration_edge->setVertex(0, m_teb.poseVertex(n - 2));
+                        acceleration_edge->setVertex(1, m_teb.poseVertex(n - 1));
+                        acceleration_edge->setVertex(2, m_teb.timeDiffVertex( m_teb.sizeTimeDiffs() - 1 ));
+                        acceleration_edge->setGoalVelocity(m_vel_goal.second);
                         acceleration_edge->setInformation(information);
-                        acceleration_edge->setTebConfig(*cfg_);
-                        optimizer_->addEdge(acceleration_edge);
+                        acceleration_edge->setTebConfig(m_config);
+                        m_optimizer->addEdge(acceleration_edge);
                     }
                 }
                 else // holonomic robot
                 {
                     Eigen::Matrix<double, 3, 3> information;
                     information.fill(0);
-                    information(0, 0) = cfg_->optim.weight_acc_lim_x;
-                    information(1, 1) = cfg_->optim.weight_acc_lim_y;
-                    information(2, 2) = cfg_->optim.weight_acc_lim_theta;
+                    information(0, 0) = m_config->optim.weight_acc_lim_x;
+                    information(1, 1) = m_config->optim.weight_acc_lim_y;
+                    information(2, 2) = m_config->optim.weight_acc_lim_theta;
 
                     // check if an initial velocity should be taken into accound
-                    if (vel_start_.first)
+                    if (m_vel_start.first)
                     {
                         EdgeAccelerationHolonomicStart* acceleration_edge = new EdgeAccelerationHolonomicStart;
-                        acceleration_edge->setVertex(0, teb_.PoseVertex(0));
-                        acceleration_edge->setVertex(1, teb_.PoseVertex(1));
-                        acceleration_edge->setVertex(2, teb_.TimeDiffVertex(0));
-                        acceleration_edge->setInitialVelocity(vel_start_.second);
+                        acceleration_edge->setVertex(0, m_teb.poseVertex(0));
+                        acceleration_edge->setVertex(1, m_teb.poseVertex(1));
+                        acceleration_edge->setVertex(2, m_teb.timeDiffVertex(0));
+                        acceleration_edge->setInitialVelocity(m_vel_start.second);
                         acceleration_edge->setInformation(information);
-                        acceleration_edge->setTebConfig(*cfg_);
-                        optimizer_->addEdge(acceleration_edge);
+                        acceleration_edge->setTebConfig(m_config);
+                        m_optimizer->addEdge(acceleration_edge);
                     }
 
                     // now add the usual acceleration edge for each tuple of three teb poses
                     for (int i = 0; i < n - 2; ++i)
                     {
                         EdgeAccelerationHolonomic* acceleration_edge = new EdgeAccelerationHolonomic;
-                        acceleration_edge->setVertex(0, teb_.PoseVertex(i));
-                        acceleration_edge->setVertex(1, teb_.PoseVertex(i + 1));
-                        acceleration_edge->setVertex(2, teb_.PoseVertex(i + 2));
-                        acceleration_edge->setVertex(3, teb_.TimeDiffVertex(i));
-                        acceleration_edge->setVertex(4, teb_.TimeDiffVertex(i + 1));
+                        acceleration_edge->setVertex(0, m_teb.poseVertex(i));
+                        acceleration_edge->setVertex(1, m_teb.poseVertex(i + 1));
+                        acceleration_edge->setVertex(2, m_teb.poseVertex(i + 2));
+                        acceleration_edge->setVertex(3, m_teb.timeDiffVertex(i));
+                        acceleration_edge->setVertex(4, m_teb.timeDiffVertex(i + 1));
                         acceleration_edge->setInformation(information);
-                        acceleration_edge->setTebConfig(*cfg_);
-                        optimizer_->addEdge(acceleration_edge);
+                        acceleration_edge->setTebConfig(m_config);
+                        m_optimizer->addEdge(acceleration_edge);
                     }
 
                     // check if a goal velocity should be taken into accound
-                    if (vel_goal_.first)
+                    if (m_vel_goal.first)
                     {
                         EdgeAccelerationHolonomicGoal* acceleration_edge = new EdgeAccelerationHolonomicGoal;
-                        acceleration_edge->setVertex(0, teb_.PoseVertex(n - 2));
-                        acceleration_edge->setVertex(1, teb_.PoseVertex(n - 1));
-                        acceleration_edge->setVertex(2, teb_.TimeDiffVertex( teb_.sizeTimeDiffs() - 1 ));
-                        acceleration_edge->setGoalVelocity(vel_goal_.second);
+                        acceleration_edge->setVertex(0, m_teb.poseVertex(n - 2));
+                        acceleration_edge->setVertex(1, m_teb.poseVertex(n - 1));
+                        acceleration_edge->setVertex(2, m_teb.timeDiffVertex( m_teb.sizeTimeDiffs() - 1 ));
+                        acceleration_edge->setGoalVelocity(m_vel_goal.second);
                         acceleration_edge->setInformation(information);
-                        acceleration_edge->setTebConfig(*cfg_);
-                        optimizer_->addEdge(acceleration_edge);
+                        acceleration_edge->setTebConfig(m_config);
+                        m_optimizer->addEdge(acceleration_edge);
                     }
                 }
             }
@@ -907,21 +911,21 @@ namespace rip
 
             void TebOptimalPlanner::AddEdgesTimeOptimal()
             {
-                if (cfg_->optim.weight_optimaltime == 0)
+                if (m_config->optim.weight_optimaltime == 0)
                 {
                     return;    // if weight equals zero skip adding edges!
                 }
 
                 Eigen::Matrix<double, 1, 1> information;
-                information.fill(cfg_->optim.weight_optimaltime);
+                information.fill(m_config->optim.weight_optimaltime);
 
-                for (int i = 0; i < teb_.sizeTimeDiffs(); ++i)
+                for (int i = 0; i < m_teb.sizeTimeDiffs(); ++i)
                 {
                     EdgeTimeOptimal* timeoptimal_edge = new EdgeTimeOptimal;
-                    timeoptimal_edge->setVertex(0, teb_.TimeDiffVertex(i));
+                    timeoptimal_edge->setVertex(0, m_teb.timeDiffVertex(i));
                     timeoptimal_edge->setInformation(information);
-                    timeoptimal_edge->setTebConfig(*cfg_);
-                    optimizer_->addEdge(timeoptimal_edge);
+                    timeoptimal_edge->setTebConfig(m_config);
+                    m_optimizer->addEdge(timeoptimal_edge);
                 }
             }
 
@@ -929,7 +933,7 @@ namespace rip
 
             void TebOptimalPlanner::AddEdgesKinematicsDiffDrive()
             {
-                if (cfg_->optim.weight_kinematics_nh == 0 && cfg_->optim.weight_kinematics_forward_drive == 0)
+                if (m_config->optim.weight_kinematics_nh == 0 && m_config->optim.weight_kinematics_forward_drive == 0)
                 {
                     return;    // if weight equals zero skip adding edges!
                 }
@@ -937,23 +941,23 @@ namespace rip
                 // create edge for satisfiying kinematic constraints
                 Eigen::Matrix<double, 2, 2> information_kinematics;
                 information_kinematics.fill(0.0);
-                information_kinematics(0, 0) = cfg_->optim.weight_kinematics_nh;
-                information_kinematics(1, 1) = cfg_->optim.weight_kinematics_forward_drive;
+                information_kinematics(0, 0) = m_config->optim.weight_kinematics_nh;
+                information_kinematics(1, 1) = m_config->optim.weight_kinematics_forward_drive;
 
-                for (int i = 0; i < teb_.sizePoses() - 1; i++) // ignore twiced start only
+                for (int i = 0; i < m_teb.sizePoses() - 1; i++) // ignore twiced start only
                 {
                     EdgeKinematicsDiffDrive* kinematics_edge = new EdgeKinematicsDiffDrive;
-                    kinematics_edge->setVertex(0, teb_.PoseVertex(i));
-                    kinematics_edge->setVertex(1, teb_.PoseVertex(i + 1));
+                    kinematics_edge->setVertex(0, m_teb.poseVertex(i));
+                    kinematics_edge->setVertex(1, m_teb.poseVertex(i + 1));
                     kinematics_edge->setInformation(information_kinematics);
-                    kinematics_edge->setTebConfig(*cfg_);
-                    optimizer_->addEdge(kinematics_edge);
+                    kinematics_edge->setTebConfig(m_config);
+                    m_optimizer->addEdge(kinematics_edge);
                 }
             }
 
             void TebOptimalPlanner::AddEdgesKinematicsCarlike()
             {
-                if (cfg_->optim.weight_kinematics_nh == 0 && cfg_->optim.weight_kinematics_turning_radius)
+                if (m_config->optim.weight_kinematics_nh == 0 && m_config->optim.weight_kinematics_turning_radius)
                 {
                     return;    // if weight equals zero skip adding edges!
                 }
@@ -961,37 +965,37 @@ namespace rip
                 // create edge for satisfiying kinematic constraints
                 Eigen::Matrix<double, 2, 2> information_kinematics;
                 information_kinematics.fill(0.0);
-                information_kinematics(0, 0) = cfg_->optim.weight_kinematics_nh;
-                information_kinematics(1, 1) = cfg_->optim.weight_kinematics_turning_radius;
+                information_kinematics(0, 0) = m_config->optim.weight_kinematics_nh;
+                information_kinematics(1, 1) = m_config->optim.weight_kinematics_turning_radius;
 
-                for (int i = 0; i < teb_.sizePoses() - 1; i++) // ignore twiced start only
+                for (int i = 0; i < m_teb.sizePoses() - 1; i++) // ignore twiced start only
                 {
                     EdgeKinematicsCarlike* kinematics_edge = new EdgeKinematicsCarlike;
-                    kinematics_edge->setVertex(0, teb_.PoseVertex(i));
-                    kinematics_edge->setVertex(1, teb_.PoseVertex(i + 1));
+                    kinematics_edge->setVertex(0, m_teb.poseVertex(i));
+                    kinematics_edge->setVertex(1, m_teb.poseVertex(i + 1));
                     kinematics_edge->setInformation(information_kinematics);
-                    kinematics_edge->setTebConfig(*cfg_);
-                    optimizer_->addEdge(kinematics_edge);
+                    kinematics_edge->setTebConfig(m_config);
+                    m_optimizer->addEdge(kinematics_edge);
                 }
             }
 
-
+#if 0
             void TebOptimalPlanner::AddEdgesPreferRotDir()
             {
-                if (prefer_rotdir_ == RotType::none || cfg_->optim.weight_prefer_rotdir == 0)
+                if (prefer_rotdir_ == RotType::none || m_config->optim.weight_prefer_rotdir == 0)
                 {
                     return;    // if weight equals zero skip adding edges!
                 }
 
                 // create edge for satisfiying kinematic constraints
                 Eigen::Matrix<double, 1, 1> information_rotdir;
-                information_rotdir.fill(cfg_->optim.weight_prefer_rotdir);
+                information_rotdir.fill(m_config->optim.weight_prefer_rotdir);
 
-                for (int i = 0; i < teb_.sizePoses() - 1 && i < 3; ++i) // currently: apply to first 3 rotations
+                for (int i = 0; i < m_teb.sizePoses() - 1 && i < 3; ++i) // currently: apply to first 3 rotations
                 {
                     EdgePreferRotDir* rotdir_edge = new EdgePreferRotDir;
-                    rotdir_edge->setVertex(0, teb_.PoseVertex(i));
-                    rotdir_edge->setVertex(1, teb_.PoseVertex(i + 1));
+                    rotdir_edge->setVertex(0, m_teb.poseVertex(i));
+                    rotdir_edge->setVertex(1, m_teb.poseVertex(i + 1));
                     rotdir_edge->setInformation(information_rotdir);
 
                     if (prefer_rotdir_ == RotType::left)
@@ -1003,104 +1007,105 @@ namespace rip
                         rotdir_edge->preferRight();
                     }
 
-                    optimizer_->addEdge(rotdir_edge);
+                    m_optimizer->addEdge(rotdir_edge);
                 }
             }
-
-            void TebOptimalPlanner::computeCurrentCost(double obst_cost_scale, double viapoint_cost_scale, bool alternative_time_cost)
+#endif
+            void TebOptimalPlanner::computeCurrentCost(double obst_m_costscale, double viapoint_m_costscale, bool alternative_time_cost)
             {
                 // check if graph is empty/exist  -> important if function is called between buildGraph and optimizeGraph/clearGraph
                 bool graph_exist_flag(false);
-                if (optimizer_->edges().empty() && optimizer_->vertices().empty())
+                if (m_optimizer->edges().empty() && m_optimizer->vertices().empty())
                 {
                     // here the graph is build again, for time efficiency make sure to call this function
                     // between buildGraph and Optimize (deleted), but it depends on the application
                     buildGraph();
-                    optimizer_->initializeOptimization();
+                    m_optimizer->initializeOptimization();
                 }
                 else
                 {
                     graph_exist_flag = true;
                 }
 
-                optimizer_->computeInitialGuess();
+                m_optimizer->computeInitialGuess();
 
-                cost_ = 0;
+                m_cost = 0;
 
                 if (alternative_time_cost)
                 {
-                    cost_ += teb_.getSumOfAllTimeDiffs();
+                    m_cost += m_teb.getSumOfAllTimeDiffs();
                     // TEST we use SumOfAllTimeDiffs() here, because edge cost depends on number of samples, which is not always the same for similar TEBs,
                     // since we are using an AutoResize Function with hysteresis.
                 }
 
                 // now we need pointers to all edges -> calculate error for each edge-type
                 // since we aren't storing edge pointers, we need to check every edge
-                for (std::vector<g2o::OptimizableGraph::Edge*>::const_iterator it = optimizer_->activeEdges().begin(); it != optimizer_->activeEdges().end(); it++)
+                for (std::vector<g2o::OptimizableGraph::Edge*>::const_iterator it = m_optimizer->activeEdges().begin(); it != m_optimizer->activeEdges().end(); it++)
                 {
                     EdgeTimeOptimal* edge_time_optimal = dynamic_cast<EdgeTimeOptimal*>(*it);
-                    if (edge_time_optimal != NULL && !alternative_time_cost)
+                    if (edge_time_optimal != nullptr && !alternative_time_cost)
                     {
-                        cost_ += edge_time_optimal->getError().squaredNorm();
+                        m_cost += edge_time_optimal->getError().squaredNorm();
                         continue;
                     }
 
                     EdgeKinematicsDiffDrive* edge_kinematics_dd = dynamic_cast<EdgeKinematicsDiffDrive*>(*it);
-                    if (edge_kinematics_dd != NULL)
+                    if (edge_kinematics_dd != nullptr)
                     {
-                        cost_ += edge_kinematics_dd->getError().squaredNorm();
+                        m_cost += edge_kinematics_dd->getError().squaredNorm();
                         continue;
                     }
 
                     EdgeKinematicsCarlike* edge_kinematics_cl = dynamic_cast<EdgeKinematicsCarlike*>(*it);
-                    if (edge_kinematics_cl != NULL)
+                    if (edge_kinematics_cl != nullptr)
                     {
-                        cost_ += edge_kinematics_cl->getError().squaredNorm();
+                        m_cost += edge_kinematics_cl->getError().squaredNorm();
                         continue;
                     }
 
                     EdgeVelocity* edge_velocity = dynamic_cast<EdgeVelocity*>(*it);
-                    if (edge_velocity != NULL)
+                    if (edge_velocity != nullptr)
                     {
-                        cost_ += edge_velocity->getError().squaredNorm();
+                        m_cost += edge_velocity->getError().squaredNorm();
                         continue;
                     }
 
                     EdgeAcceleration* edge_acceleration = dynamic_cast<EdgeAcceleration*>(*it);
-                    if (edge_acceleration != NULL)
+                    if (edge_acceleration != nullptr)
                     {
-                        cost_ += edge_acceleration->getError().squaredNorm();
+                        m_cost += edge_acceleration->getError().squaredNorm();
                         continue;
                     }
 
                     EdgeObstacle* edge_obstacle = dynamic_cast<EdgeObstacle*>(*it);
-                    if (edge_obstacle != NULL)
+                    if (edge_obstacle != nullptr)
                     {
-                        cost_ += edge_obstacle->getError().squaredNorm() * obst_cost_scale;
+                        m_cost += edge_obstacle->getError().squaredNorm() * obst_m_costscale;
                         continue;
                     }
 
                     EdgeInflatedObstacle* edge_inflated_obstacle = dynamic_cast<EdgeInflatedObstacle*>(*it);
-                    if (edge_inflated_obstacle != NULL)
+                    if (edge_inflated_obstacle != nullptr)
                     {
-                        cost_ += std::sqrt(std::pow(edge_inflated_obstacle->getError()[0], 2) * obst_cost_scale
-                                 + std::pow(edge_inflated_obstacle->getError()[1], 2));
+                        m_cost += std::sqrt(std::pow(edge_inflated_obstacle->getError()[0], 2) * obst_m_costscale
+                                            + std::pow(edge_inflated_obstacle->getError()[1], 2));
                         continue;
                     }
 
                     EdgeDynamicObstacle* edge_dyn_obstacle = dynamic_cast<EdgeDynamicObstacle*>(*it);
-                    if (edge_dyn_obstacle != NULL)
+                    if (edge_dyn_obstacle != nullptr)
                     {
-                        cost_ += edge_dyn_obstacle->getError().squaredNorm() * obst_cost_scale;
+                        m_cost += edge_dyn_obstacle->getError().squaredNorm() * obst_m_costscale;
                         continue;
                     }
-
+#if 0
                     EdgeViaPoint* edge_viapoint = dynamic_cast<EdgeViaPoint*>(*it);
-                    if (edge_viapoint != NULL)
+                    if (edge_viapoint != nullptr)
                     {
-                        cost_ += edge_viapoint->getError().squaredNorm() * viapoint_cost_scale;
+                        m_cost += edge_viapoint->getError().squaredNorm() * viapoint_m_costscale;
                         continue;
                     }
+#endif
                 }
 
                 // delete temporary created graph
@@ -1123,7 +1128,7 @@ namespace rip
 
                 Eigen::Vector2d deltaS = pose2.position() - pose1.position();
 
-                if (cfg_->robot.max_vel_y == 0) // nonholonomic robot
+                if (m_config->robot.max_vel_y == 0) // nonholonomic robot
                 {
                     Eigen::Vector2d conf1dir( cos(pose1.theta()), sin(pose1.theta()) );
                     // translational velocity
@@ -1151,19 +1156,19 @@ namespace rip
 
             bool TebOptimalPlanner::getVelocityCommand(double& vx, double& vy, double& omega) const
             {
-                if (teb_.sizePoses() < 2)
+                if (m_teb.sizePoses() < 2)
                 {
-                    Logger::getInstance()->error("TebOptimalPlanner::getVelocityCommand(): The trajectory contains less than 2 poses. Make sure to init and optimize/plan the trajectory fist.");
+                    misc::Logger::getInstance()->error("TebOptimalPlanner::getVelocityCommand(): The trajectory contains less than 2 poses. Make sure to init and optimize/plan the trajectory fist.");
                     vx = 0;
                     vy = 0;
                     omega = 0;
                     return false;
                 }
 
-                double dt = teb_.TimeDiff(0);
+                double dt = m_teb.timeDiff(0);
                 if (dt <= 0)
                 {
-                    Logger::getInstance()->error("TebOptimalPlanner::getVelocityCommand() - timediff<=0 is invalid!");
+                    misc::Logger::getInstance()->error("TebOptimalPlanner::getVelocityCommand() - timediff<=0 is invalid!");
                     vx = 0;
                     vy = 0;
                     omega = 0;
@@ -1171,40 +1176,40 @@ namespace rip
                 }
 
                 // Get velocity from the first two configurations
-                extractVelocity(teb_.Pose(0), teb_.Pose(1), dt, vx, vy, omega);
+                extractVelocity(m_teb.pose(0), m_teb.pose(1), dt, vx, vy, omega);
                 return true;
             }
 
             void TebOptimalPlanner::getVelocityProfile(std::vector<fakeros::Twist>& velocity_profile) const
             {
-                int n = teb_.sizePoses();
+                int n = m_teb.sizePoses();
                 velocity_profile.resize( n + 1 );
 
                 // start velocity
                 velocity_profile.front().linear.z = 0;
                 velocity_profile.front().angular.x = velocity_profile.front().angular.y = 0;
-                velocity_profile.front().linear.x = vel_start_.second.linear.x;
-                velocity_profile.front().linear.y = vel_start_.second.linear.y;
-                velocity_profile.front().angular.z = vel_start_.second.angular.z;
+                velocity_profile.front().linear.x = m_vel_start.second.linear.x;
+                velocity_profile.front().linear.y = m_vel_start.second.linear.y;
+                velocity_profile.front().angular.z = m_vel_start.second.angular.z;
 
                 for (int i = 1; i < n; ++i)
                 {
                     velocity_profile[i].linear.z = 0;
                     velocity_profile[i].angular.x = velocity_profile[i].angular.y = 0;
-                    extractVelocity(teb_.Pose(i - 1), teb_.Pose(i), teb_.TimeDiff(i - 1), velocity_profile[i].linear.x, velocity_profile[i].linear.y, velocity_profile[i].angular.z);
+                    extractVelocity(m_teb.pose(i - 1), m_teb.pose(i), m_teb.timeDiff(i - 1), velocity_profile[i].linear.x, velocity_profile[i].linear.y, velocity_profile[i].angular.z);
                 }
 
                 // goal velocity
                 velocity_profile.back().linear.z = 0;
                 velocity_profile.back().angular.x = velocity_profile.back().angular.y = 0;
-                velocity_profile.back().linear.x = vel_goal_.second.linear.x;
-                velocity_profile.back().linear.y = vel_goal_.second.linear.y;
-                velocity_profile.back().angular.z = vel_goal_.second.angular.z;
+                velocity_profile.back().linear.x = m_vel_goal.second.linear.x;
+                velocity_profile.back().linear.y = m_vel_goal.second.linear.y;
+                velocity_profile.back().angular.z = m_vel_goal.second.angular.z;
             }
 
-            void TebOptimalPlanner::getFullTrajectory(std::vector<TrajectoryPointMsg>& trajectory) const
+            void TebOptimalPlanner::getFullTrajectory(std::vector<fakeros::TrajectoryPointMsg>& trajectory) const
             {
-                int n = teb_.sizePoses();
+                int n = m_teb.sizePoses();
 
                 trajectory.resize(n);
 
@@ -1216,49 +1221,52 @@ namespace rip
                 double curr_time = 0;
 
                 // start
-                TrajectoryPointMsg& start = trajectory.front();
-                teb_.Pose(0).toPoseMsg(start.pose);
+                fakeros::TrajectoryPointMsg& start = trajectory.front();
+                m_teb.pose(0).toPoseMsg(start.pose);
                 start.velocity.linear.z = 0;
                 start.velocity.angular.x = start.velocity.angular.y = 0;
-                start.velocity.linear.x = vel_start_.second.linear.x;
-                start.velocity.linear.y = vel_start_.second.linear.y;
-                start.velocity.angular.z = vel_start_.second.angular.z;
-                start.time_from_start.fromSec(curr_time);
+                start.velocity.linear.x = m_vel_start.second.linear.x;
+                start.velocity.linear.y = m_vel_start.second.linear.y;
+                start.velocity.angular.z = m_vel_start.second.angular.z;
+                start.time_from_start.sec = static_cast<int>(curr_time);
+                start.time_from_start.nsec = static_cast<int>((curr_time - start.time_from_start.sec) * 10E6);
 
-                curr_time += teb_.TimeDiff(0);
+                curr_time += m_teb.timeDiff(0);
 
                 // intermediate points
                 for (int i = 1; i < n - 1; ++i)
                 {
-                    TrajectoryPointMsg& point = trajectory[i];
-                    teb_.Pose(i).toPoseMsg(point.pose);
+                    fakeros::TrajectoryPointMsg& point = trajectory[i];
+                    m_teb.pose(i).toPoseMsg(point.pose);
                     point.velocity.linear.z = 0;
                     point.velocity.angular.x = point.velocity.angular.y = 0;
                     double vel1_x, vel1_y, vel2_x, vel2_y, omega1, omega2;
-                    extractVelocity(teb_.Pose(i - 1), teb_.Pose(i), teb_.TimeDiff(i - 1), vel1_x, vel1_y, omega1);
-                    extractVelocity(teb_.Pose(i), teb_.Pose(i + 1), teb_.TimeDiff(i), vel2_x, vel2_y, omega2);
+                    extractVelocity(m_teb.pose(i - 1), m_teb.pose(i), m_teb.timeDiff(i - 1), vel1_x, vel1_y, omega1);
+                    extractVelocity(m_teb.pose(i), m_teb.pose(i + 1), m_teb.timeDiff(i), vel2_x, vel2_y, omega2);
                     point.velocity.linear.x = 0.5 * (vel1_x + vel2_x);
                     point.velocity.linear.y = 0.5 * (vel1_y + vel2_y);
                     point.velocity.angular.z = 0.5 * (omega1 + omega2);
-                    point.time_from_start.fromSec(curr_time);
+                    point.time_from_start.sec = static_cast<int>(curr_time);
+                    point.time_from_start.nsec = static_cast<int>((curr_time - point.time_from_start.sec) * 10E6);
 
-                    curr_time += teb_.TimeDiff(i);
+                    curr_time += m_teb.timeDiff(i);
                 }
 
                 // goal
-                TrajectoryPointMsg& goal = trajectory.back();
-                teb_.BackPose().toPoseMsg(goal.pose);
+                fakeros::TrajectoryPointMsg& goal = trajectory.back();
+                m_teb.backPose().toPoseMsg(goal.pose);
                 goal.velocity.linear.z = 0;
                 goal.velocity.angular.x = goal.velocity.angular.y = 0;
-                goal.velocity.linear.x = vel_goal_.second.linear.x;
-                goal.velocity.linear.y = vel_goal_.second.linear.y;
-                goal.velocity.angular.z = vel_goal_.second.angular.z;
-                goal.time_from_start.fromSec(curr_time);
+                goal.velocity.linear.x = m_vel_goal.second.linear.x;
+                goal.velocity.linear.y = m_vel_goal.second.linear.y;
+                goal.velocity.angular.z = m_vel_goal.second.angular.z;
+                goal.time_from_start.sec = static_cast<int>(curr_time);
+                goal.time_from_start.nsec = static_cast<int>((curr_time - goal.time_from_start.sec) * 10E6);
             }
 
-
+#if 0
             bool TebOptimalPlanner::isTrajectoryFeasible(base_local_planner::CostmapModel* costmap_model, const std::vector<fakeros::Point>& footprint_spec,
-                                                         double inscribed_radius, double circumscribed_radius, int look_ahead_idx)
+                    double inscribed_radius, double circumscribed_radius, int look_ahead_idx)
             {
                 if (look_ahead_idx < 0 || look_ahead_idx >= teb().sizePoses())
                 {
@@ -1290,20 +1298,20 @@ namespace rip
                 }
                 return true;
             }
-
+#endif
 
             bool TebOptimalPlanner::isHorizonReductionAppropriate(const std::vector<fakeros::PoseStamped>& initial_plan) const
             {
-                if (teb_.sizePoses() < int( 1.5 * double(cfg_->trajectory.min_samples) ) ) // trajectory is short already
+                if (m_teb.sizePoses() < int( 1.5 * double(m_config->trajectory.min_samples) ) ) // trajectory is short already
                 {
                     return false;
                 }
 
                 // check if distance is at least 2m long // hardcoded for now
                 double dist = 0;
-                for (int i = 1; i < teb_.sizePoses(); ++i)
+                for (int i = 1; i < m_teb.sizePoses(); ++i)
                 {
-                    dist += ( teb_.Pose(i).position() - teb_.Pose(i - 1).position() ).norm();
+                    dist += ( m_teb.pose(i).position() - m_teb.pose(i - 1).position() ).norm();
                     if (dist > 2)
                     {
                         break;
@@ -1319,16 +1327,16 @@ namespace rip
                 // 1. wall following 2. 180° curve 3. following along the other side of the wall.
                 // If the trajectory is too long, the trajectory might intersect with the obstace and the optimizer does
                 // push the trajectory to the correct side.
-                if ( std::abs( g2o::normalize_theta( teb_.Pose(0).theta() - teb_.BackPose().theta() ) ) > M_PI / 2)
+                if ( std::abs( g2o::normalize_theta( m_teb.pose(0).theta() - m_teb.backPose().theta() ) ) > M_PI / 2)
                 {
-                    Logger::getInstance()->debug("TebOptimalPlanner::isHorizonReductionAppropriate(): Goal orientation - start orientation > 90° ");
+                    misc::Logger::getInstance()->debug("TebOptimalPlanner::isHorizonReductionAppropriate(): Goal orientation - start orientation > 90° ");
                     return true;
                 }
 
                 // check if goal heading deviates more than 90° w.r.t. start orienation
-                if (teb_.Pose(0).orientationUnitVec().dot(teb_.BackPose().position() - teb_.Pose(0).position()) < 0)
+                if (m_teb.pose(0).orientationUnitVec().dot(m_teb.backPose().position() - m_teb.pose(0).position()) < 0)
                 {
-                    Logger::getInstance()->debug("TebOptimalPlanner::isHorizonReductionAppropriate(): Goal heading - start orientation > 90° ");
+                    misc::Logger::getInstance()->debug("TebOptimalPlanner::isHorizonReductionAppropriate(): Goal heading - start orientation > 90° ");
                     return true;
                 }
 
@@ -1336,7 +1344,7 @@ namespace rip
                 int idx = 0; // first get point close to the robot (should be fast if the global path is already pruned!)
                 for (; idx < (int)initial_plan.size(); ++idx)
                 {
-                    if ( std::sqrt(std::pow(initial_plan[idx].pose.position.x - teb_.Pose(0).x(), 2) + std::pow(initial_plan[idx].pose.position.y - teb_.Pose(0).y(), 2)) )
+                    if ( std::sqrt(std::pow(initial_plan[idx].pose.position.x - m_teb.pose(0).x(), 2) + std::pow(initial_plan[idx].pose.position.y - m_teb.pose(0).y(), 2)) )
                     {
                         break;
                     }
@@ -1346,24 +1354,24 @@ namespace rip
                 for (; idx < int(initial_plan.size()) - 1; ++idx)
                 {
                     ref_path_length += std::sqrt(std::pow(initial_plan[idx + 1].pose.position.x - initial_plan[idx].pose.position.x, 2)
-                                       + std::pow(initial_plan[idx + 1].pose.position.y - initial_plan[idx].pose.position.y, 2) );
+                                                 + std::pow(initial_plan[idx + 1].pose.position.y - initial_plan[idx].pose.position.y, 2) );
                 }
 
                 // check distances along the teb trajectory (by the way, we also check if the distance between two poses is > obst_dist)
-                double teb_length = 0;
-                for (int i = 1; i < teb_.sizePoses(); ++i )
+                double m_teblength = 0;
+                for (int i = 1; i < m_teb.sizePoses(); ++i )
                 {
-                    double dist = (teb_.Pose(i).position() - teb_.Pose(i - 1).position()).norm();
-                    if (dist > 0.95 * cfg_->obstacles.min_obstacle_dist)
+                    double dist = (m_teb.pose(i).position() - m_teb.pose(i - 1).position()).norm();
+                    if (dist > 0.95 * m_config->obstacles.min_obstacle_dist)
                     {
-                        Logger::getInstance()->debug("TebOptimalPlanner::isHorizonReductionAppropriate(): Distance between consecutive poses > 0.9*min_obstacle_dist");
+                        misc::Logger::getInstance()->debug("TebOptimalPlanner::isHorizonReductionAppropriate(): Distance between consecutive poses > 0.9*min_obstacle_dist");
                         return true;
                     }
                     ref_path_length += dist;
                 }
-                if (ref_path_length > 0 && teb_length / ref_path_length < 0.7) // now check ratio
+                if (ref_path_length > 0 && m_teblength / ref_path_length < 0.7) // now check ratio
                 {
-                    Logger::getInstance()->debug("TebOptimalPlanner::isHorizonReductionAppropriate(): Planned trajectory is at least 30° shorter than the initial plan");
+                    misc::Logger::getInstance()->debug("TebOptimalPlanner::isHorizonReductionAppropriate(): Planned trajectory is at least 30° shorter than the initial plan");
                     return true;
                 }
 
@@ -1372,4 +1380,6 @@ namespace rip
                 return false;
             }
 
-        }}}
+        }
+    }
+}

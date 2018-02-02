@@ -46,6 +46,7 @@
 #include <eigen3/Eigen/Core>
 #include <eigen3/Eigen/StdVector>
 #include <mutex>
+#include <json.hpp>
 
 namespace rip
 {
@@ -330,9 +331,9 @@ namespace rip
                     recovery.oscillation_omega_eps = 0.1;
                     recovery.oscillation_recovery_min_duration = 10;
                     recovery.oscillation_filter_duration = 10;
-
-
                 }
+
+                TebConfig(const TebConfig& other) = default;
 
                 /**
                  * @brief Check parameters and print warnings in case of discrepancies
@@ -341,21 +342,10 @@ namespace rip
                  * about some improper uses.
                  */
                 void checkParameters() const;
-
-                /**
-                 * @brief Return the internal config mutex
-                 */
-                std::mutex& configMutex()
-                {
-                    return m_mutex;
-                }
-
-            private:
-                std::mutex m_mutex; //!< Mutex for config accesses and changes
-
             };
 
-            // todo: json
+            void to_json(nlohmann::json& j, const TebConfig& c);
+            void from_json(const nlohmann::json& j, TebConfig& c);
 
         }
     }

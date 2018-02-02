@@ -42,6 +42,8 @@
 
 #include <teb_planner/obstacles.hpp>
 
+#include <misc/logger.hpp>
+
 namespace rip
 {
     namespace navigation
@@ -66,7 +68,7 @@ namespace rip
                 if (m_vertices.empty())
                 {
                     m_centroid.setConstant(NAN);
-                    Logger::getInstance()->warn("PolygonObstacle::calcCentroid(): number of vertices is empty. the resulting centroid is a vector of NANs.");
+                    misc::Logger::getInstance()->warn("PolygonObstacle::calcCentroid(): number of vertices is empty. the resulting centroid is a vector of NANs.");
                     return;
                 }
 
@@ -179,7 +181,7 @@ namespace rip
                     }
                 }
 
-                Logger::getInstance()->error("PolygonObstacle::getClosestPoint() cannot find any closest point. Polygon ill-defined?");
+                misc::Logger::getInstance()->error("PolygonObstacle::getClosestPoint() cannot find any closest point. Polygon ill-defined?");
                 return Eigen::Vector2d::Zero(); // todo: maybe boost::optional?
             }
 

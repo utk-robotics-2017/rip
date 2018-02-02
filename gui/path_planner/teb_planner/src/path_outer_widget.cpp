@@ -56,7 +56,7 @@ namespace rip
             void PathOuterWidget::setRobot(const QString& text)
             {
                 std::string name = text.toStdString();
-                std::shared_ptr<navigation::PolygonRobotFootprintModel> robot = m_settings->robot(name);
+                std::shared_ptr<navigation::tebplanner::PolygonRobotFootprint> robot = m_settings->robot(name);
                 m_compute_thread->setRobot(robot);
             }
 
@@ -67,7 +67,7 @@ namespace rip
                 if (ok && !name.isEmpty())
                 {
                     m_obstacles_name = name.toStdString();
-                    std::shared_ptr< std::vector< std::shared_ptr<navigation::Obstacle> > > obstacles = m_settings->addObstacles(m_obstacles_name);
+                    std::shared_ptr< std::vector< std::shared_ptr<navigation::tebplanner::Obstacle> > > obstacles = m_settings->addObstacles(m_obstacles_name);
                     m_compute_thread->setObstacles(obstacles);
                     m_ui->widget->setObstacles(obstacles);
                     m_ui->obstacle_options->addItem(QString::fromStdString(m_obstacles_name));
@@ -77,7 +77,7 @@ namespace rip
             void PathOuterWidget::setObstacles(const QString& text)
             {
                 m_obstacles_name = text.toStdString();
-                std::shared_ptr< std::vector< std::shared_ptr<navigation::Obstacle> > > obstacles = m_settings->obstacles(m_obstacles_name);
+                std::shared_ptr< std::vector< std::shared_ptr<navigation::tebplanner::Obstacle> > > obstacles = m_settings->obstacles(m_obstacles_name);
                 m_compute_thread->setObstacles(obstacles);
                 m_ui->widget->setObstacles(obstacles);
             }
@@ -94,7 +94,7 @@ namespace rip
             void PathOuterWidget::setConfig(const QString& text)
             {
                 std::string name = text.toStdString();
-                std::shared_ptr< navigation::TebConfig > config = m_settings->config(name);
+                std::shared_ptr< navigation::tebplanner::TebConfig > config = m_settings->config(name);
                 m_compute_thread->setConfig(config);
             }
 

@@ -91,7 +91,7 @@ namespace rip
 
 
                 // Trajectory
-                setupMap(m_doubles, autosize);
+                setupMap(m_bools, autosize);
                 setupMap(m_times, dt_ref);
                 setupMap(m_times, dt_hysteresis);
                 setupMap(m_integers, min_samples);
@@ -218,39 +218,39 @@ namespace rip
                     std::string var_name = m_distances[line_edit];
                     if (var_name == "global_plan_waypoint_separation")
                     {
-                        m_current->trajectory.global_plan_waypoint_separation = dist;
+                        m_current->trajectory.global_plan_viapoint_sep = dist.to(units::m);
                     }
                     else if (var_name == "max_global_plan_lookahead_distance")
                     {
-                        m_current->trajectory.max_global_plan_lookahead_distance = dist;
+                        m_current->trajectory.max_global_plan_lookahead_dist = dist.to(units::m);
                     }
                     else if (var_name == "force_reinit_new_goal_distance")
                     {
-                        m_current->trajectory.force_reinit_new_goal_distance = dist;
+                        m_current->trajectory.force_reinit_new_goal_dist = dist.to(units::m);
                     }
                     else if (var_name == "min_turning_radius")
                     {
-                        m_current->robot.min_turning_radius = dist;
+                        m_current->robot.min_turning_radius = dist.to(units::m);
                     }
                     else if (var_name == "wheelbase")
                     {
-                        m_current->robot.wheelbase = dist;
+                        m_current->robot.wheelbase = dist.to(units::m);
                     }
                     else if (var_name == "xy_goal_tolerance")
                     {
-                        m_current->goal_tolerance.xy_goal_tolerance;
+                        m_current->goal_tolerance.xy_goal_tolerance = dist.to(units::m);
                     }
                     else if (var_name == "min_obstacle_distance")
                     {
-                        m_current->obstacles.min_obstacle_distance = dist;
+                        m_current->obstacles.min_obstacle_dist = dist.to(units::m);
                     }
                     else if (var_name == "inflation_distance")
                     {
-                        m_current->obstacles.inflation_distance = dist;
+                        m_current->obstacles.inflation_dist = dist.to(units::m);
                     }
                     else if (var_name == "dynamic_obstacle_inflation_distance")
                     {
-                        m_current->obstacles.dynamic_obstacle_inflation_distance = dist;
+                        m_current->obstacles.dynamic_obstacle_inflation_dist = dist.to(units::m);
                     }
                     else
                     {
@@ -277,11 +277,11 @@ namespace rip
                     std::string var_name = m_times[line_edit];
                     if (var_name == "dt_ref")
                     {
-                        m_current->trajectory.dt_ref = time;
+                        m_current->trajectory.dt_ref = time.to(units::s);
                     }
                     else if (var_name == "dt_hysteresis")
                     {
-                        m_current->trajectory.dt_hysteresis = time;
+                        m_current->trajectory.dt_hysteresis = time.to(units::s);
                     }
                     else
                     {
@@ -308,15 +308,15 @@ namespace rip
                     std::string var_name = m_velocities[line_edit];
                     if (var_name == "max_velocity_x")
                     {
-                        m_current->robot.max_velocity_x = vel;
+                        m_current->robot.max_vel_x = vel.to(units::m / units::s);
                     }
                     else if (var_name == "max_velocity_x_backwards")
                     {
-                        m_current->robot.max_velocity_x_backwards = vel;
+                        m_current->robot.max_vel_x_backwards = vel.to(units::m / units::s);;
                     }
                     else if (var_name == "max_velocity_y")
                     {
-                        m_current->robot.max_velocity_y = vel;
+                        m_current->robot.max_vel_y = vel.to(units::m / units::s);;
                     }
                     else
                     {
@@ -342,11 +342,11 @@ namespace rip
                     std::string var_name = m_accelerations[line_edit];
                     if (var_name == "acceleration_limit_x")
                     {
-                        m_current->robot.acceleration_limit_x = acc;
+                        m_current->robot.acc_lim_x = acc.to(units::m / units::s / units::s);;
                     }
                     else if (var_name == "acceleration_limit_y")
                     {
-                        m_current->robot.acceleration_limit_y = acc;
+                        m_current->robot.acc_lim_y = acc.to(units::m / units::s / units::s);;
                     }
                     else
                     {
@@ -372,7 +372,7 @@ namespace rip
                     std::string var_name = m_angles[line_edit];
                     if (var_name == "yaw_goal_tolerance")
                     {
-                        m_current->goal_tolerance.yaw_goal_tolerance = angle;
+                        m_current->goal_tolerance.yaw_goal_tolerance = angle.to(units::rad);
                     }
                     else
                     {
@@ -398,7 +398,7 @@ namespace rip
                     std::string var_name = m_angular_velocities[line_edit];
                     if (var_name == "max_velocity_theta")
                     {
-                        m_current->robot.max_velocity_theta = vel;
+                        m_current->robot.max_vel_theta = vel.to(units::rad / units::s);
                     }
                     else
                     {
@@ -424,7 +424,7 @@ namespace rip
                     std::string var_name = m_angular_accelerations[line_edit];
                     if (var_name == "acceleration_limits_theta")
                     {
-                        m_current->robot.acceleration_limit_theta = acc;
+                        m_current->robot.acc_lim_theta = acc.to(units::rad / units::s / units::s);
                     }
                     else
                     {
@@ -447,11 +447,7 @@ namespace rip
                 if (ok)
                 {
                     std::string var_name = m_doubles[line_edit];
-                    if (var_name == "autosize")
-                    {
-                        m_current->trajectory.autosize = value;
-                    }
-                    else if (var_name == "obstacle_association_force_inclusion_factor")
+                    if (var_name == "obstacle_association_force_inclusion_factor")
                     {
                         m_current->obstacles.obstacle_association_force_inclusion_factor = value;
                     }
@@ -461,71 +457,71 @@ namespace rip
                     }
                     else if (var_name == "penalty_epsilon")
                     {
-                        m_current->optimization.penalty_epsilon = value;
+                        m_current->optim.penalty_epsilon = value;
                     }
                     else if (var_name == "max_velocity_x_weight")
                     {
-                        m_current->optimization.max_velocity_x_weight = value;
+                        m_current->optim.weight_max_vel_x = value;
                     }
                     else if (var_name == "max_velocity_y_weight")
                     {
-                        m_current->optimization.max_velocity_y_weight = value;
+                        m_current->optim.weight_max_vel_y = value;
                     }
                     else if (var_name == "max_velocity_theta_weight")
                     {
-                        m_current->optimization.max_velocity_theta_weight = value;
+                        m_current->optim.weight_max_vel_theta = value;
                     }
                     else if (var_name == "acceleration_limit_x_weight")
                     {
-                        m_current->optimization.acceleration_limit_x_weight = value;
+                        m_current->optim.weight_acc_lim_x = value;
                     }
                     else if (var_name == "acceleration_limit_y_weight")
                     {
-                        m_current->optimization.acceleration_limit_y_weight = value;
+                        m_current->optim.weight_acc_lim_y = value;
                     }
                     else if (var_name == "acceleration_limit_theta_weight")
                     {
-                        m_current->optimization.acceleration_limit_theta_weight = value;
+                        m_current->optim.weight_acc_lim_theta = value;
                     }
                     else if (var_name == "kinematics_nh_weight")
                     {
-                        m_current->optimization.kinematics_nh_weight = value;
+                        m_current->optim.weight_kinematics_nh = value;
                     }
                     else if (var_name == "kinematics_forward_drive_weight")
                     {
-                        m_current->optimization.kinematics_forward_drive_weight = value;
+                        m_current->optim.weight_kinematics_forward_drive = value;
                     }
                     else if (var_name == "kinematics_turning_radius_weight")
                     {
-                        m_current->optimization.kinematics_turning_radius_weight = value;
+                        m_current->optim.weight_kinematics_turning_radius = value;
                     }
                     else if (var_name == "optimal_time_weight")
                     {
-                        m_current->optimization.optimal_time_weight = value;
+                        m_current->optim.weight_optimaltime = value;
                     }
                     else if (var_name == "obstacle_weight")
                     {
-                        m_current->optimization.obstacle_weight = value;
+                        m_current->optim.weight_obstacle = value;
                     }
                     else if (var_name == "inflation_weight")
                     {
-                        m_current->optimization.inflation_weight = value;
+                        m_current->optim.weight_inflation = value;
                     }
                     else if (var_name == "dynamic_obstacle_weight")
                     {
-                        m_current->optimization.dynamic_obstacle_weight = value;
+                        m_current->optim.weight_dynamic_obstacle = value;
                     }
                     else if (var_name == "dynamic_obstacle_inflation_weight")
                     {
-                        m_current->optimization.dynamic_obstacle_inflation_weight = value;
+                        m_current->optim.weight_dynamic_obstacle_inflation = value;
                     }
                     else if (var_name == "waypoint_weight")
                     {
-                        m_current->optimization.waypoint_weight = value;
+                        m_current->optim.weight_viapoint = value;
                     }
                     else if (var_name == "weight_adapt_factor")
                     {
-                        m_current->optimization.weight_adapt_factor = value;
+                        m_current->optim.weight_adapt_factor = value;
                     }
                     else
                     {
@@ -562,15 +558,15 @@ namespace rip
                     }
                     else if (var_name == "obstacles_poses_affected")
                     {
-                        m_current->obstacles.obstacles_poses_affected = value;
+                        m_current->obstacles.obstacle_poses_affected = value;
                     }
                     else if (var_name == "num_inner_iterations")
                     {
-                        m_current->optimization.num_inner_iterations = value;
+                        m_current->optim.no_inner_iterations = value;
                     }
                     else if (var_name == "num_outer_iterations")
                     {
-                        m_current->optimization.num_outer_iterations = value;
+                        m_current->optim.no_outer_iterations = value;
                     }
                     else
                     {
@@ -589,7 +585,11 @@ namespace rip
                 QCheckBox* check_box = static_cast<QCheckBox*>(sender());
                 bool value = check_box->isChecked();
                 std::string var_name = m_bools[check_box];
-                if (var_name == "global_plan_overwrite_orientation")
+                if(var_name == "autosize")
+                {
+                    m_current->trajectory.teb_autosize = value;
+                }
+                else if (var_name == "global_plan_overwrite_orientation")
                 {
                     m_current->trajectory.global_plan_overwrite_orientation = value;
                 }
@@ -599,7 +599,7 @@ namespace rip
                 }
                 else if (var_name == "waypoints_ordered")
                 {
-                    m_current->trajectory.waypoints_ordered = value;
+                    m_current->trajectory.via_points_ordered = value;
                 }
                 else if (var_name == "exact_arc_length")
                 {
@@ -607,7 +607,7 @@ namespace rip
                 }
                 else if (var_name == "free_goal_velocity")
                 {
-                    m_current->goal_tolerance.free_goal_velocity = value;
+                    m_current->goal_tolerance.free_goal_vel = value;
                 }
                 else if (var_name == "include_dynamic_obstacles")
                 {
@@ -703,65 +703,65 @@ namespace rip
                     // Set
 
                     // Trajectory
-                    m_ui->autosize->setText(QString::number(m_current->trajectory.autosize, 'f', 2));
-                    m_ui->dt_ref->setText(QString::number(m_current->trajectory.dt_ref.to(units::s), 'f', 2));
-                    m_ui->dt_hysteresis->setText(QString::number(m_current->trajectory.dt_hysteresis.to(units::s), 'f', 2));
+                    m_ui->autosize->setChecked(m_current->trajectory.teb_autosize);
+                    m_ui->dt_ref->setText(QString::number(m_current->trajectory.dt_ref, 'f', 2));
+                    m_ui->dt_hysteresis->setText(QString::number(m_current->trajectory.dt_hysteresis, 'f', 2));
                     m_ui->min_samples->setText(QString::number(m_current->trajectory.min_samples));
                     m_ui->max_samples->setText(QString::number(m_current->trajectory.max_samples));
                     m_ui->overwrite_global_plan->setChecked(m_current->trajectory.global_plan_overwrite_orientation);
                     m_ui->backwards_motion->setChecked(m_current->trajectory.allow_init_with_backwards_motion);
-                    m_ui->global_plan_waypoint_separation->setText(QString::number(m_current->trajectory.global_plan_waypoint_separation.to(units::in), 'f', 2));
-                    m_ui->waypoints_ordered->setChecked(m_current->trajectory.waypoints_ordered);
-                    m_ui->max_global_plan_lookahead_distance->setText(QString::number(m_current->trajectory.max_global_plan_lookahead_distance.to(units::in), 'f', 2));
+                    m_ui->global_plan_waypoint_separation->setText(QString::number((m_current->trajectory.global_plan_viapoint_sep * units::m).to(units::in), 'f', 2));
+                    m_ui->waypoints_ordered->setChecked(m_current->trajectory.via_points_ordered);
+                    m_ui->max_global_plan_lookahead_distance->setText(QString::number((m_current->trajectory.max_global_plan_lookahead_dist * units::m).to(units::in), 'f', 2));
                     m_ui->exact_arc_length->setChecked(m_current->trajectory.exact_arc_length);
-                    m_ui->force_new_goal_distance->setText(QString::number(m_current->trajectory.force_reinit_new_goal_distance.to(units::in), 'f', 2));
+                    m_ui->force_new_goal_distance->setText(QString::number((m_current->trajectory.force_reinit_new_goal_dist * units::m).to(units::in), 'f', 2));
                     m_ui->feasibility_check_num_poses->setText(QString::number(m_current->trajectory.feasibility_check_no_poses));
 
                     // Robot
-                    m_ui->max_velocity_x->setText(QString::number(m_current->robot.max_velocity_x.to(units::in / units::s), 'f', 2));
-                    m_ui->max_velocity_x_backwards->setText(QString::number(m_current->robot.max_velocity_x_backwards.to(units::in / units::s), 'f', 2));
-                    m_ui->max_velocity_y->setText(QString::number(m_current->robot.max_velocity_y.to(units::in / units::s), 'f', 2));
-                    m_ui->max_velocity_theta->setText(QString::number(m_current->robot.max_velocity_theta.to(units::deg / units::s), 'f', 2));
-                    m_ui->acceleration_limit_x->setText(QString::number(m_current->robot.acceleration_limit_x.to(units::in / units::s / units::s), 'f', 2));
-                    m_ui->acceleration_limit_y->setText(QString::number(m_current->robot.acceleration_limit_y.to(units::in / units::s / units::s), 'f', 2));
-                    m_ui->acceleration_limit_theta->setText(QString::number(m_current->robot.acceleration_limit_theta.to(units::deg / units::s / units::s), 'f', 2));
-                    m_ui->min_turning_radius->setText(QString::number(m_current->robot.min_turning_radius.to(units::in), 'f', 2));
-                    m_ui->wheelbase->setText(QString::number(m_current->robot.wheelbase.to(units::in), 'f', 2));
+                    m_ui->max_velocity_x->setText(QString::number((m_current->robot.max_vel_x * units::m / units::s).to(units::in / units::s), 'f', 2));
+                    m_ui->max_velocity_x_backwards->setText(QString::number((m_current->robot.max_vel_x_backwards * units::m / units::s).to(units::in / units::s), 'f', 2));
+                    m_ui->max_velocity_y->setText(QString::number((m_current->robot.max_vel_y * units::m / units::s).to(units::in / units::s), 'f', 2));
+                    m_ui->max_velocity_theta->setText(QString::number((m_current->robot.max_vel_theta * units::rad / units::s).to(units::deg / units::s), 'f', 2));
+                    m_ui->acceleration_limit_x->setText(QString::number((m_current->robot.acc_lim_x * units::m / units::s / units::s).to(units::in / units::s / units::s), 'f', 2));
+                    m_ui->acceleration_limit_y->setText(QString::number((m_current->robot.acc_lim_y * units::m / units::s / units::s).to(units::in / units::s / units::s), 'f', 2));
+                    m_ui->acceleration_limit_theta->setText(QString::number((m_current->robot.acc_lim_theta * units::rad / units::s / units::s).to(units::deg / units::s / units::s), 'f', 2));
+                    m_ui->min_turning_radius->setText(QString::number((m_current->robot.min_turning_radius * units::m).to(units::in), 'f', 2));
+                    m_ui->wheelbase->setText(QString::number((m_current->robot.wheelbase * units::m).to(units::in), 'f', 2));
 
                     // Goal Tolerance
-                    m_ui->yaw_goal_tolerance->setText(QString::number(m_current->goal_tolerance.yaw_goal_tolerance.to(units::deg), 'f', 2));
-                    m_ui->xy_goal_tolerance->setText(QString::number(m_current->goal_tolerance.xy_goal_tolerance.to(units::in), 'f', 2));
-                    m_ui->free_goal_velocity->setChecked(m_current->goal_tolerance.free_goal_velocity);
+                    m_ui->yaw_goal_tolerance->setText(QString::number((m_current->goal_tolerance.yaw_goal_tolerance * units::rad).to(units::deg), 'f', 2));
+                    m_ui->xy_goal_tolerance->setText(QString::number((m_current->goal_tolerance.xy_goal_tolerance * units::m).to(units::in), 'f', 2));
+                    m_ui->free_goal_velocity->setChecked(m_current->goal_tolerance.free_goal_vel);
 
                     // Obstacles
-                    m_ui->min_obstacle_distance->setText(QString::number(m_current->obstacles.min_obstacle_distance.to(units::in), 'f', 2));
-                    m_ui->inflation_distance->setText(QString::number(m_current->obstacles.inflation_distance.to(units::in), 'f', 2));
-                    m_ui->dynamic_obstacle_inflation_distance->setText(QString::number(m_current->obstacles.dynamic_obstacle_inflation_distance.to(units::in), 'f', 2));
+                    m_ui->min_obstacle_distance->setText(QString::number((m_current->obstacles.min_obstacle_dist * units::m).to(units::in), 'f', 2));
+                    m_ui->inflation_distance->setText(QString::number((m_current->obstacles.inflation_dist * units::m).to(units::in), 'f', 2));
+                    m_ui->dynamic_obstacle_inflation_distance->setText(QString::number((m_current->obstacles.dynamic_obstacle_inflation_dist * units::m).to(units::in), 'f', 2));
                     m_ui->include_dynamic_obstacles->setChecked(m_current->obstacles.include_dynamic_obstacles);
-                    m_ui->obstacles_poses_affected->setText(QString::number(m_current->obstacles.obstacles_poses_affected));
+                    m_ui->obstacles_poses_affected->setText(QString::number(m_current->obstacles.obstacle_poses_affected));
                     m_ui->obstacle_association_force_inclusion_factor->setText(QString::number(m_current->obstacles.obstacle_association_force_inclusion_factor, 'f', 2));
                     m_ui->obstacle_association_cutoff_factor->setText(QString::number(m_current->obstacles.obstacle_association_cutoff_factor, 'f', 2));
 
                     // Optimization
-                    m_ui->num_inner_iterations->setText(QString::number(m_current->optimization.num_inner_iterations));
-                    m_ui->num_outer_iterations->setText(QString::number(m_current->optimization.num_outer_iterations));
-                    m_ui->penalty_epsilon->setText(QString::number(m_current->optimization.penalty_epsilon, 'f', 2));
-                    m_ui->max_velocity_x_weight->setText(QString::number(m_current->optimization.max_velocity_x_weight, 'f', 2));
-                    m_ui->max_velocity_y_weight->setText(QString::number(m_current->optimization.max_velocity_y_weight, 'f', 2));
-                    m_ui->max_velocity_theta_weight->setText(QString::number(m_current->optimization.max_velocity_theta_weight, 'f', 2));
-                    m_ui->acceleration_limit_x_weight->setText(QString::number(m_current->optimization.acceleration_limit_x_weight, 'f', 2));
-                    m_ui->acceleration_limit_y_weight->setText(QString::number(m_current->optimization.acceleration_limit_y_weight, 'f', 2));
-                    m_ui->acceleration_limit_theta_weight->setText(QString::number(m_current->optimization.acceleration_limit_theta_weight, 'f', 2));
-                    m_ui->kinematics_nh_weight->setText(QString::number(m_current->optimization.kinematics_nh_weight, 'f', 2));
-                    m_ui->kinematics_forward_drive_weight->setText(QString::number(m_current->optimization.kinematics_forward_drive_weight, 'f', 2));
-                    m_ui->kinematics_turning_radius_weight->setText(QString::number(m_current->optimization.kinematics_turning_radius_weight, 'f', 2));
-                    m_ui->optimal_time_weight->setText(QString::number(m_current->optimization.optimal_time_weight, 'f', 2));
-                    m_ui->obstacle_weight->setText(QString::number(m_current->optimization.obstacle_weight, 'f', 2));
-                    m_ui->inflation_weight->setText(QString::number(m_current->optimization.inflation_weight, 'f', 2));
-                    m_ui->dynamic_obstacle_weight->setText(QString::number(m_current->optimization.dynamic_obstacle_weight, 'f', 2));
-                    m_ui->dynamic_obstacle_inflation_weight->setText(QString::number(m_current->optimization.dynamic_obstacle_inflation_weight, 'f', 2));
-                    m_ui->waypoint_weight->setText(QString::number(m_current->optimization.waypoint_weight, 'f', 2));
-                    m_ui->weight_adapt_factor->setText(QString::number(m_current->optimization.weight_adapt_factor, 'f', 2));
+                    m_ui->num_inner_iterations->setText(QString::number(m_current->optim.no_inner_iterations));
+                    m_ui->num_outer_iterations->setText(QString::number(m_current->optim.no_outer_iterations));
+                    m_ui->penalty_epsilon->setText(QString::number(m_current->optim.penalty_epsilon, 'f', 2));
+                    m_ui->max_velocity_x_weight->setText(QString::number(m_current->optim.weight_max_vel_x, 'f', 2));
+                    m_ui->max_velocity_y_weight->setText(QString::number(m_current->optim.weight_max_vel_y, 'f', 2));
+                    m_ui->max_velocity_theta_weight->setText(QString::number(m_current->optim.weight_max_vel_theta, 'f', 2));
+                    m_ui->acceleration_limit_x_weight->setText(QString::number(m_current->optim.weight_acc_lim_x, 'f', 2));
+                    m_ui->acceleration_limit_y_weight->setText(QString::number(m_current->optim.weight_acc_lim_y, 'f', 2));
+                    m_ui->acceleration_limit_theta_weight->setText(QString::number(m_current->optim.weight_acc_lim_theta, 'f', 2));
+                    m_ui->kinematics_nh_weight->setText(QString::number(m_current->optim.weight_kinematics_nh, 'f', 2));
+                    m_ui->kinematics_forward_drive_weight->setText(QString::number(m_current->optim.weight_kinematics_forward_drive, 'f', 2));
+                    m_ui->kinematics_turning_radius_weight->setText(QString::number(m_current->optim.weight_kinematics_turning_radius, 'f', 2));
+                    m_ui->optimal_time_weight->setText(QString::number(m_current->optim.weight_optimaltime, 'f', 2));
+                    m_ui->obstacle_weight->setText(QString::number(m_current->optim.weight_obstacle, 'f', 2));
+                    m_ui->inflation_weight->setText(QString::number(m_current->optim.weight_inflation, 'f', 2));
+                    m_ui->dynamic_obstacle_weight->setText(QString::number(m_current->optim.weight_dynamic_obstacle, 'f', 2));
+                    m_ui->dynamic_obstacle_inflation_weight->setText(QString::number(m_current->optim.weight_dynamic_obstacle_inflation, 'f', 2));
+                    m_ui->waypoint_weight->setText(QString::number(m_current->optim.weight_viapoint, 'f', 2));
+                    m_ui->weight_adapt_factor->setText(QString::number(m_current->optim.weight_adapt_factor, 'f', 2));
                 }
                 else
                 {

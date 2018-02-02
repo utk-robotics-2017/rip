@@ -80,7 +80,7 @@ namespace rip
                     measurement.omega /= omega_max;
                 }
 
-                m_buffer.push_back(measurement);
+                m_buffer.add(measurement);
 
                 // immediately compute new state
                 detect(v_eps, omega_eps);

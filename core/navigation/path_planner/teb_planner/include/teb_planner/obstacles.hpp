@@ -54,6 +54,10 @@
 #include <teb_planner/distance_calculations.hpp>
 #include <teb_planner/fake_ros_msgs.hpp>
 
+// RIP
+#include <geometry/point.hpp>
+#include <geometry/polygon.hpp>
+
 namespace rip
 {
     namespace navigation
@@ -304,6 +308,11 @@ namespace rip
                     , m_pos(Eigen::Vector2d(x, y))
                 {}
 
+                PointObstacle(const geometry::Point& p)
+                    : Obstacle()
+                    , m_pos(Eigen::Vector2d(p.x().to(units::m), p.y().to(units::m)))
+                {}
+
 
                 // implements checkCollision() of the base class
                 virtual bool checkCollision(const Eigen::Vector2d& point, double min_dist) const
@@ -379,6 +388,11 @@ namespace rip
                     position = m_pos + t * m_centroid_velocity;
                 }
 
+                geometry::Point getCentroidPoint() const
+                {
+                    return geometry::Point(x() * units::m, y()* units::m);
+                }
+
                 // implements getCentroid() of the base class
                 virtual const Eigen::Vector2d& getCentroid() const
                 {
@@ -389,6 +403,17 @@ namespace rip
                 virtual std::complex<double> getCentroidCplx() const
                 {
                     return std::complex<double>(m_pos[0], m_pos[1]);
+                }
+
+                void setPosition(const geometry::Point& p)
+                {
+                    x() = p.x().to(units::m);
+                    y() = p.y().to(units::m);
+                }
+
+                geometry::Point point() const
+                {
+                    return geometry::Point(x() * units::m, y() * units::m);
                 }
 
                 // Accessor methods
@@ -444,7 +469,8 @@ namespace rip
                 /**
                   * @brief Default constructor of the point obstacle class
                   */
-                LineObstacle() : Obstacle()
+                LineObstacle()
+                    : Obstacle()
                 {
                     m_start.setZero();
                     m_end.setZero();
@@ -469,7 +495,8 @@ namespace rip
                  * @param x2 x-coordinate of the end of the line
                  * @param y2 y-coordinate of the end of the line
                  */
-                LineObstacle(double x1, double y1, double x2, double y2) : Obstacle()
+                LineObstacle(double x1, double y1, double x2, double y2)
+                    : Obstacle()
                 {
                     m_start.x() = x1;
                     m_start.y() = y1;
@@ -477,6 +504,12 @@ namespace rip
                     m_end.y() = y2;
                     calcCentroid();
                 }
+
+                LineObstacle(const geometry::Point& start, const geometry::Point& end)
+                    : Obstacle()
+                    , m_start(start.x().to(units::m), start.y().to(units::m))
+                    , m_end(end.x().to(units::m), end.y().to(units::m))
+                {}
 
                 // implements checkCollision() of the base class
                 virtual bool checkCollision(const Eigen::Vector2d& point, double min_dist) const
@@ -541,10 +574,34 @@ namespace rip
                     return m_centroid;
                 }
 
+                geometry::Point getCentroidPoint() const
+                {
+                    return geometry::Point(m_centroid.coeffRef(0) * units::m, m_centroid.coeffRef(1) * units::m);
+                }
+
+                void setCentroid(const geometry::Point& p)
+                {
+                    geometry::Point diff = p - getCentroidPoint();
+                    m_start += Eigen::Vector2d(diff.x().to(units::m), diff.y().to(units::m));
+                    m_end += Eigen::Vector2d(diff.x().to(units::m), diff.y().to(units::m));
+                    calcCentroid();
+                }
+
                 // implements getCentroidCplx() of the base class
                 virtual std::complex<double> getCentroidCplx() const
                 {
                     return std::complex<double>(m_centroid.x(), m_centroid.y());
+                }
+
+                geometry::Point startPoint() const
+                {
+                    return geometry::Point(m_start.x() * units::m, m_start.y() * units::m);
+                }
+
+                void setStart(const geometry::Point& p)
+                {
+                    m_start = Eigen::Vector2d(p.x().to(units::m), p.y().to(units::m));
+                    calcCentroid();
                 }
 
                 // Access or modify line
@@ -556,6 +613,17 @@ namespace rip
                 void setStart(const Eigen::Ref<const Eigen::Vector2d>& start)
                 {
                     m_start = start;
+                    calcCentroid();
+                }
+
+                geometry::Point endPoint() const
+                {
+                    return geometry::Point(m_end.x() * units::m, m_end.y() * units::m);
+                }
+
+                void setEnd(const geometry::Point& p)
+                {
+                    m_end = Eigen::Vector2d(p.x().to(units::m), p.y().to(units::m));
                     calcCentroid();
                 }
 
@@ -611,8 +679,19 @@ namespace rip
                 /**
                  * @brief Construct polygon obstacle with a list of vertices
                  */
-                PolygonObstacle(const Point2dContainer& vertices) : Obstacle(), m_vertices(vertices)
+                PolygonObstacle(const Point2dContainer& vertices)
+                    : Obstacle(), m_vertices(vertices)
                 {
+                    finalizePolygon();
+                }
+
+                PolygonObstacle(const geometry::Polygon& polygon)
+                    : Obstacle()
+                {
+                    for (const geometry::Point& point : polygon)
+                    {
+                        m_vertices.emplace_back(point.x().to(units::m), point.y().to(units::m));
+                    }
                     finalizePolygon();
                 }
 
@@ -634,7 +713,7 @@ namespace rip
                     for (i = 0, j = noVertices() - 1; i < noVertices(); j = i++)
                     {
                         if ( ((m_vertices.at(i).y() > point.y()) != (m_vertices.at(j).y() > point.y())) &&
-                             (point.x() < (m_vertices.at(j).x() - m_vertices.at(i).x()) * (point.y() - m_vertices.at(i).y()) / (m_vertices.at(j).y() - m_vertices.at(i).y()) + m_vertices.at(i).x()) )
+                                (point.x() < (m_vertices.at(j).x() - m_vertices.at(i).x()) * (point.y() - m_vertices.at(i).y()) / (m_vertices.at(j).y() - m_vertices.at(i).y()) + m_vertices.at(i).x()) )
                         {
                             c = !c;
                         }
@@ -714,6 +793,22 @@ namespace rip
                     }
                 }
 
+                void setCentroid(const geometry::Point& p)
+                {
+                    geometry::Point diff = p - getCentroidPoint();
+                    Eigen::Vector2d eigen_diff(diff.x().to(units::m), diff.y().to(units::m));
+
+                    for (Eigen::Vector2d& point : m_vertices)
+                    {
+                        point += eigen_diff;
+                    }
+                }
+
+                geometry::Point getCentroidPoint() const
+                {
+                    return geometry::Point(m_centroid.x() * units::m, m_centroid.y() * units::m);
+                }
+
                 // implements getCentroid() of the base class
                 virtual const Eigen::Vector2d& getCentroid() const
                 {
@@ -731,6 +826,33 @@ namespace rip
 
                 /** @name Define the polygon */
                 ///@{
+
+                geometry::Polygon polygon() const
+                {
+                    geometry::Polygon poly;
+                    for (const Eigen::Vector2d& point : m_vertices)
+                    {
+                        poly.add(geometry::Point(point.x() * units::m, point.y() * units::m));
+                    }
+                    return poly;
+                }
+
+                void setPolygon(const geometry::Polygon& polygon)
+                {
+                    m_vertices.clear();
+                    for (const geometry::Point& point : polygon)
+                    {
+                        m_vertices.push_back(Eigen::Vector2d(point.x().to(units::m), point.y().to(units::m)));
+
+                    }
+                    finalizePolygon();
+                }
+
+                void setPoint(unsigned int index, const geometry::Point& p)
+                {
+                    assert(index < m_vertices.size());
+                    m_vertices[index] = Eigen::Vector2d(p.x().to(units::m), p.y().to(units::m));
+                }
 
                 // Access or modify polygon
                 const Point2dContainer& vertices() const

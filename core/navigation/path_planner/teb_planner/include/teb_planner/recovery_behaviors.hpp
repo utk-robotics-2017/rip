@@ -45,7 +45,7 @@
 
 
 #include <boost/circular_buffer.hpp>
-#include <fakeros/Twist.h>
+#include <teb_planner/fake_ros_msgs.hpp>
 
 namespace rip
 {
@@ -53,6 +53,108 @@ namespace rip
     {
         namespace tebplanner
         {
+            namespace circularbuffer
+            {
+                /*
+                   T must implement operator=, copy ctor
+                */
+
+                template<typename T> class CircBuf {
+                  std::vector<T> data;
+                  int front;
+                  int count;
+                public:
+                  CircBuf();
+                  CircBuf(int);
+                  ~CircBuf();
+
+                  void setCapacity(int n)
+                  {
+                      data.resize(n);
+                  }
+
+                  bool empty() const
+                  {
+                      return count == 0;
+                  }
+
+                  bool full() const
+                  {
+                      return count == data.size();
+                  }
+
+                  int capacity() const
+                  {
+                      return data.size();
+                  }
+
+                  int size() const
+                  {
+                      return count;
+                  }
+
+                  void clear()
+                  {
+                      data.clear();
+                  }
+
+                  bool add(const T&);
+                  bool remove(T*);
+
+                  T& operator [](int index);
+                };
+
+                template<typename T> CircBuf<T>::CircBuf(int sz)
+                {
+                  if (sz==0)
+                  {
+                      throw std::invalid_argument("size cannot be zero");
+                  }
+
+                  data.resize(sz);
+                  front = 0;
+                  count = 0;
+                }
+
+                // returns true if add was successful, false if the buffer is already full
+                template<typename T> bool CircBuf<T>::add(const T &t)
+                {
+                  if ( full() )
+                  {
+                    return false;
+                  }
+                  else
+                  {
+                    // find index where insert will occur
+                    int end = (front + count) % data.size();
+                    data[end] = t;
+                    count++;
+                    return true;
+                  }
+                }
+
+                // returns true if there is something to remove, false otherwise
+                template<typename T> bool CircBuf<T>::remove(T *t)
+                {
+                  if ( empty() )
+                  {
+                    return false;
+                  }
+                  else
+                  {
+                    *t = data[front];
+
+                    front = front == data.size() ? 0 : front + 1;
+                    count--;
+                    return true;
+                  }
+                }
+
+                template<typename T> T& CircBuf<T>::operator [](int index)
+                {
+                    return data[index];
+                }
+            }
 
             /**
              * @class FailureDetector
@@ -83,7 +185,7 @@ namespace rip
                  */
                 void setBufferLength(int length)
                 {
-                    m_buffer.set_capacity(length);
+                    m_buffer.setCapacity(length);
                 }
 
                 /**
@@ -134,7 +236,9 @@ namespace rip
 
             private:
 
-                std::circular_buffer<VelMeasurement> m_buffer; //!< Circular buffer to store the last measurements @see setBufferLength
+
+
+                circularbuffer::CircBuf<VelMeasurement> m_buffer; //!< Circular buffer to store the last measurements @see setBufferLength
                 bool m_oscillating = false; //!< Current state: true if robot is oscillating
 
             };

@@ -53,7 +53,7 @@
         <x>0</x>
         <y>0</y>
         <width>534</width>
-        <height>1693</height>
+        <height>1685</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -261,7 +261,11 @@
           <widget class="QLineEdit" name="min_samples"/>
          </item>
          <item row="0" column="1">
-          <widget class="QLineEdit" name="autosize"/>
+          <widget class="QCheckBox" name="autosize">
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
          </item>
         </layout>
        </item>

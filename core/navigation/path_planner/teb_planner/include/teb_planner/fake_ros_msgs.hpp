@@ -79,7 +79,7 @@ namespace rip
                 {
                     Pose pose;
                     Twist velocity;
-                    Twist Acceleration;
+                    Twist acceleration;
                     Duration time_from_start;
                 };
 

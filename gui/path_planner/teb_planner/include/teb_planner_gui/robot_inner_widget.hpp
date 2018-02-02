@@ -8,7 +8,7 @@
 #include <QPaintEvent>
 
 #include <geometry/polygon.hpp>
-#include <teb_planner/polygon_robot_footprint_model.hpp>
+#include <teb_planner/robot_footprint_model.hpp>
 
 #include "teb_planner_gui/settings.hpp"
 #include "teb_planner_gui/position_widget.hpp"
@@ -25,7 +25,7 @@ namespace rip
             public:
                 explicit RobotInnerWidget(QWidget* parent = nullptr);
 
-                void setRobot(std::shared_ptr<navigation::PolygonRobotFootprintModel> robot);
+                void setRobot(std::shared_ptr<navigation::tebplanner::PolygonRobotFootprint> robot);
 
             private slots:
                 /**
@@ -85,7 +85,7 @@ namespace rip
 
 
                 geometry::Rectangle m_bounding_box;
-                std::shared_ptr<navigation::PolygonRobotFootprintModel> m_robot;
+                std::shared_ptr<navigation::tebplanner::PolygonRobotFootprint> m_robot;
                 std::shared_ptr<Settings> m_settings;
 
                 bool m_selected;

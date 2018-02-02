@@ -62,7 +62,7 @@ namespace rip
 
                 std::shared_ptr<Settings> m_settings;
                 std::string m_name;
-                std::shared_ptr<navigation::TebConfig> m_current;
+                std::shared_ptr<navigation::tebplanner::TebConfig> m_current;
             };
         }
     }

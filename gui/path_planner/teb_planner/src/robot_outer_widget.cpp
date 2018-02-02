@@ -39,7 +39,7 @@ namespace rip
                 QString name = QInputDialog::getText(this, tr("Add Robot"), tr("Name:"), QLineEdit::Normal, "Default", &ok);
                 if (ok && !name.isEmpty())
                 {
-                    std::shared_ptr<navigation::PolygonRobotFootprintModel> robot = m_settings->addRobot(name.toStdString());
+                    std::shared_ptr<navigation::tebplanner::PolygonRobotFootprint> robot = m_settings->addRobot(name.toStdString());
 
                     std::vector< geometry::Point > points;
                     units::Angle step = 90 * units::deg;
@@ -59,7 +59,7 @@ namespace rip
             void RobotOuterWidget::setRobot(const QString& text)
             {
                 std::string name = text.toStdString();
-                std::shared_ptr<navigation::PolygonRobotFootprintModel> robot = m_settings->robot(name);
+                std::shared_ptr<navigation::tebplanner::PolygonRobotFootprint> robot = m_settings->robot(name);
                 m_ui->widget->setRobot(robot);
             }
 

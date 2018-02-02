@@ -24,7 +24,7 @@ namespace rip
 
             }
 
-            void RobotInnerWidget::setRobot(std::shared_ptr<navigation::PolygonRobotFootprintModel> robot)
+            void RobotInnerWidget::setRobot(std::shared_ptr<navigation::tebplanner::PolygonRobotFootprint> robot)
             {
                 m_robot = robot;
                 update();
@@ -118,7 +118,7 @@ namespace rip
 
                 m_position_widget->setX(rp.x());
                 m_position_widget->setY(rp.y());
-                m_robot->setPoint(m_selected_index, geometry::Point(rp.x(), rp.y()));
+                m_robot->setPoint(m_selected_index, rp);
                 m_position_widget->move(QPoint(pos.x() - 90, pos.y() + 17));
                 update();
 

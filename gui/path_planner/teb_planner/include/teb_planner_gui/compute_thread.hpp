@@ -10,9 +10,9 @@
 
 #include <json.hpp>
 
-#include <teb_planner/trajectory_point.hpp>
-#include <teb_planner/obstacle.hpp>
 #include <teb_planner/teb_planner.hpp>
+#include <teb_planner/robot_footprint_model.hpp>
+#include <teb_planner/obstacles.hpp>
 #include <teb_planner/teb_config.hpp>
 
 namespace rip
@@ -27,19 +27,19 @@ namespace rip
             public:
                 static std::shared_ptr<ComputeThread> getInstance();
 
-                void setRobot(std::shared_ptr< navigation::RobotFootprintModel > robot);
+                void setRobot(std::shared_ptr< navigation::tebplanner::BaseRobotFootprintModel > robot);
 
-                void setObstacles(std::shared_ptr< std::vector< std::shared_ptr< navigation::Obstacle > > > obstacles);
+                void setObstacles(std::shared_ptr< std::vector< std::shared_ptr< navigation::tebplanner::Obstacle > > > obstacles);
 
-                void setConfig(std::shared_ptr< navigation::TebConfig > config);
+                void setConfig(std::shared_ptr< navigation::tebplanner::TebConfig > config);
 
-                void setStart(std::shared_ptr< navigation::Pose > start);
+                void setStart(std::shared_ptr< navigation::tebplanner::Pose > start);
 
-                void setGoal(std::shared_ptr< navigation::Pose > goal);
+                void setGoal(std::shared_ptr< navigation::tebplanner::Pose > goal);
 
                 void stop();
 
-                std::vector< navigation::TrajectoryPoint > trajectory() const;
+                std::vector< navigation::tebplanner::TrajectoryPoint > trajectory() const;
 
             signals:
                 void trajectoryUpdated();
@@ -53,12 +53,12 @@ namespace rip
                 static std::shared_ptr< ComputeThread > m_singleton;
 
                 std::vector< geometry::Point > m_waypoints;
-                std::shared_ptr< navigation::RobotFootprintModel > m_robot;
-                std::shared_ptr< navigation::TebConfig > m_config;
-                std::shared_ptr< std::vector< std::shared_ptr< navigation::Obstacle > > > m_obstacles;
-                std::shared_ptr< navigation::Pose > m_start;
-                std::shared_ptr< navigation::Pose > m_goal;
-                std::unique_ptr< navigation::TebPlanner > m_planner;
+                std::shared_ptr< navigation::tebplanner::BaseRobotFootprintModel > m_robot;
+                std::shared_ptr< navigation::tebplanner::TebConfig > m_config;
+                std::shared_ptr< std::vector< std::shared_ptr< navigation::tebplanner::Obstacle > > > m_obstacles;
+                std::shared_ptr< navigation::tebplanner::Pose > m_start;
+                std::shared_ptr< navigation::tebplanner::Pose > m_goal;
+                std::unique_ptr< navigation::tebplanner::TebPlanner > m_planner;
             };
         }
     }

@@ -42,6 +42,7 @@
 
 #include <teb_planner/timed_elastic_band.hpp>
 
+#include <misc/logger.hpp>
 
 namespace rip
 {
@@ -56,7 +57,7 @@ namespace rip
 
             TimedElasticBand::~TimedElasticBand()
             {
-                Logger::getInstance()->debug("Destructor Timed_Elastic_Band...");
+                misc::Logger::getInstance()->debug("Destructor Timed_Elastic_Band...");
                 clearTimedElasticBand();
             }
 
@@ -64,28 +65,28 @@ namespace rip
             void TimedElasticBand::addPose(const PoseSE2& pose, bool fixed)
             {
                 VertexPose* pose_vertex = new VertexPose(pose, fixed);
-                pose_vec_.push_back( pose_vertex );
+                m_pose_sequence.push_back( pose_vertex );
                 return;
             }
 
             void TimedElasticBand::addPose(const Eigen::Ref<const Eigen::Vector2d>& position, double theta, bool fixed)
             {
                 VertexPose* pose_vertex = new VertexPose(position, theta, fixed);
-                pose_vec_.push_back( pose_vertex );
+                m_pose_sequence.push_back( pose_vertex );
                 return;
             }
 
             void TimedElasticBand::addPose(double x, double y, double theta, bool fixed)
             {
                 VertexPose* pose_vertex = new VertexPose(x, y, theta, fixed);
-                pose_vec_.push_back( pose_vertex );
+                m_pose_sequence.push_back( pose_vertex );
                 return;
             }
 
             void TimedElasticBand::addTimeDiff(double dt, bool fixed)
             {
                 VertexTimeDiff* timediff_vertex = new VertexTimeDiff(dt, fixed);
-                timediff_vec_.push_back( timediff_vertex );
+                m_time_diff_sequence.push_back( timediff_vertex );
                 return;
             }
 
@@ -99,7 +100,7 @@ namespace rip
                 }
                 else
                 {
-                    Logger::getInstance()->error("Method addPoseAndTimeDiff: Add one single Pose first. Timediff describes the time difference between last conf and given conf");
+                    misc::Logger::getInstance()->error("Method addPoseAndTimeDiff: Add one single Pose first. Timediff describes the time difference between last conf and given conf");
                 }
                 return;
             }
@@ -115,7 +116,7 @@ namespace rip
                 }
                 else
                 {
-                    Logger::getInstance()->error("Method addPoseAndTimeDiff: Add one single Pose first. Timediff describes the time difference between last conf and given conf");
+                    misc::Logger::getInstance()->error("Method addPoseAndTimeDiff: Add one single Pose first. Timediff describes the time difference between last conf and given conf");
                 }
                 return;
             }
@@ -129,7 +130,7 @@ namespace rip
                 }
                 else
                 {
-                    Logger::getInstance()->error("Method addPoseAndTimeDiff: Add one single Pose first. Timediff describes the time difference between last conf and given conf");
+                    misc::Logger::getInstance()->error("Method addPoseAndTimeDiff: Add one single Pose first. Timediff describes the time difference between last conf and given conf");
                 }
                 return;
             }
@@ -137,89 +138,89 @@ namespace rip
 
             void TimedElasticBand::deletePose(int index)
             {
-                ROS_ASSERT(index < pose_vec_.size());
-                delete pose_vec_.at(index);
-                pose_vec_.erase(pose_vec_.begin() + index);
+                assert(index < m_pose_sequence.size());
+                delete m_pose_sequence.at(index);
+                m_pose_sequence.erase(m_pose_sequence.begin() + index);
             }
 
             void TimedElasticBand::deletePoses(int index, int number)
             {
-                ROS_ASSERT(index + number <= (int)pose_vec_.size());
+                assert(index + number <= (int)m_pose_sequence.size());
                 for (int i = index; i < index + number; ++i)
                 {
-                    delete pose_vec_.at(i);
+                    delete m_pose_sequence.at(i);
                 }
-                pose_vec_.erase(pose_vec_.begin() + index, pose_vec_.begin() + index + number);
+                m_pose_sequence.erase(m_pose_sequence.begin() + index, m_pose_sequence.begin() + index + number);
             }
 
             void TimedElasticBand::deleteTimeDiff(int index)
             {
-                ROS_ASSERT(index < (int)timediff_vec_.size());
-                delete timediff_vec_.at(index);
-                timediff_vec_.erase(timediff_vec_.begin() + index);
+                assert(index < (int)m_time_diff_sequence.size());
+                delete m_time_diff_sequence.at(index);
+                m_time_diff_sequence.erase(m_time_diff_sequence.begin() + index);
             }
 
             void TimedElasticBand::deleteTimeDiffs(int index, int number)
             {
-                ROS_ASSERT(index + number <= timediff_vec_.size());
+                assert(index + number <= m_time_diff_sequence.size());
                 for (int i = index; i < index + number; ++i)
                 {
-                    delete timediff_vec_.at(i);
+                    delete m_time_diff_sequence.at(i);
                 }
-                timediff_vec_.erase(timediff_vec_.begin() + index, timediff_vec_.begin() + index + number);
+                m_time_diff_sequence.erase(m_time_diff_sequence.begin() + index, m_time_diff_sequence.begin() + index + number);
             }
 
             void TimedElasticBand::insertPose(int index, const PoseSE2& pose)
             {
                 VertexPose* pose_vertex = new VertexPose(pose);
-                pose_vec_.insert(pose_vec_.begin() + index, pose_vertex);
+                m_pose_sequence.insert(m_pose_sequence.begin() + index, pose_vertex);
             }
 
             void TimedElasticBand::insertPose(int index, const Eigen::Ref<const Eigen::Vector2d>& position, double theta)
             {
                 VertexPose* pose_vertex = new VertexPose(position, theta);
-                pose_vec_.insert(pose_vec_.begin() + index, pose_vertex);
+                m_pose_sequence.insert(m_pose_sequence.begin() + index, pose_vertex);
             }
 
             void TimedElasticBand::insertPose(int index, double x, double y, double theta)
             {
                 VertexPose* pose_vertex = new VertexPose(x, y, theta);
-                pose_vec_.insert(pose_vec_.begin() + index, pose_vertex);
+                m_pose_sequence.insert(m_pose_sequence.begin() + index, pose_vertex);
             }
 
             void TimedElasticBand::insertTimeDiff(int index, double dt)
             {
                 VertexTimeDiff* timediff_vertex = new VertexTimeDiff(dt);
-                timediff_vec_.insert(timediff_vec_.begin() + index, timediff_vertex);
+                m_time_diff_sequence.insert(m_time_diff_sequence.begin() + index, timediff_vertex);
             }
 
 
             void TimedElasticBand::clearTimedElasticBand()
             {
-                for (PoseSequence::iterator pose_it = pose_vec_.begin(); pose_it != pose_vec_.end(); ++pose_it)
+                for (PoseSequence::iterator pose_it = m_pose_sequence.begin(); pose_it != m_pose_sequence.end(); ++pose_it)
                 {
                     delete *pose_it;
                 }
-                pose_vec_.clear();
+                m_pose_sequence.clear();
 
-                for (TimeDiffSequence::iterator dt_it = timediff_vec_.begin(); dt_it != timediff_vec_.end(); ++dt_it)
+                for (TimeDiffSequence::iterator dt_it = m_time_diff_sequence.begin(); dt_it != m_time_diff_sequence.end(); ++dt_it)
                 {
                     delete *dt_it;
                 }
-                timediff_vec_.clear();
+                m_time_diff_sequence.clear();
             }
 
 
             void TimedElasticBand::setPoseVertexFixed(int index, bool status)
             {
-                ROS_ASSERT(index < sizePoses());
-                pose_vec_.at(index)->setFixed(status);
+                assert(index < sizePoses());
+                m_pose_sequence.at(index)->setFixed(status);
             }
 
             void TimedElasticBand::setTimeDiffVertexFixed(int index, bool status)
             {
-                ROS_ASSERT(index < sizeTimeDiffs());
-                timediff_vec_.at(index)->setFixed(status);
+                assert(index < sizeTimeDiffs());
+                m_time_diff_sequence.at(index)->setFixed(status);
             }
 
 
@@ -235,21 +236,21 @@ namespace rip
 
                     for (int i = 0; i < sizeTimeDiffs(); ++i) // TimeDiff connects Point(i) with Point(i+1)
                     {
-                        if (TimeDiff(i) > dt_ref + dt_hysteresis && sizeTimeDiffs() < max_samples)
+                        if (timeDiff(i) > dt_ref + dt_hysteresis && sizeTimeDiffs() < max_samples)
                         {
-                            double newtime = 0.5 * TimeDiff(i);
+                            double newtime = 0.5 * timeDiff(i);
 
-                            TimeDiff(i) = newtime;
-                            insertPose(i + 1, PoseSE2::average(Pose(i), Pose(i + 1)) );
+                            timeDiff(i) = newtime;
+                            insertPose(i + 1, PoseSE2::average(pose(i), pose(i + 1)) );
                             insertTimeDiff(i + 1, newtime);
 
                             modified = true;
                         }
-                        else if (TimeDiff(i) < dt_ref - dt_hysteresis && sizeTimeDiffs() > min_samples) // only remove samples if size is larger than min_samples.
+                        else if (timeDiff(i) < dt_ref - dt_hysteresis && sizeTimeDiffs() > min_samples) // only remove samples if size is larger than min_samples.
                         {
                             if (i < ((int)sizeTimeDiffs() - 1))
                             {
-                                TimeDiff(i + 1) = TimeDiff(i + 1) + TimeDiff(i);
+                                timeDiff(i + 1) = timeDiff(i + 1) + timeDiff(i);
                                 deleteTimeDiff(i);
                                 deletePose(i + 1);
                             }
@@ -266,7 +267,7 @@ namespace rip
             {
                 double time = 0;
 
-                for (TimeDiffSequence::const_iterator dt_it = timediff_vec_.begin(); dt_it != timediff_vec_.end(); ++dt_it)
+                for (TimeDiffSequence::const_iterator dt_it = m_time_diff_sequence.begin(); dt_it != m_time_diff_sequence.end(); ++dt_it)
                 {
                     time += (*dt_it)->dt();
                 }
@@ -275,13 +276,13 @@ namespace rip
 
             double TimedElasticBand::getSumOfTimeDiffsUpToIdx(int index) const
             {
-                ROS_ASSERT(index <= timediff_vec_.size());
+                assert(index <= m_time_diff_sequence.size());
 
                 double time = 0;
 
                 for (int i = 0; i < index; ++i)
                 {
-                    time += timediff_vec_.at(i)->dt();
+                    time += m_time_diff_sequence.at(i)->dt();
                 }
 
                 return time;
@@ -293,7 +294,7 @@ namespace rip
 
                 for (int i = 1; i < sizePoses(); ++i)
                 {
-                    dist += (Pose(i).position() - Pose(i - 1).position()).norm();
+                    dist += (pose(i).position() - pose(i - 1).position()).norm();
                 }
                 return dist;
             }
@@ -341,25 +342,31 @@ namespace rip
                     // if number of samples is not larger than min_samples, insert manually
                     if ( sizePoses() < min_samples - 1 )
                     {
-                        Logger::getInstance()->debug("initTEBtoGoal(): number of generated samples is less than specified by min_samples. Forcing the insertion of more samples...");
+                        misc::Logger::getInstance()->debug("initTEBtoGoal(): number of generated samples is less than specified by min_samples. Forcing the insertion of more samples...");
                         while (sizePoses() < min_samples - 1) // subtract goal point that will be added later
                         {
                             // simple strategy: interpolate between the current pose and the goal
-                            PoseSE2 intermediate_pose = PoseSE2::average(BackPose(), goal);
-                            if (max_vel_x > 0) { timestep = (intermediate_pose.position() - BackPose().position()).norm() / max_vel_x; }
+                            PoseSE2 intermediate_pose = PoseSE2::average(backPose(), goal);
+                            if (max_vel_x > 0)
+                            {
+                                timestep = (intermediate_pose.position() - backPose().position()).norm() / max_vel_x;
+                            }
                             addPoseAndTimeDiff( intermediate_pose, timestep ); // let the optimier correct the timestep (TODO: better initialization
                         }
                     }
 
                     // add goal
-                    if (max_vel_x > 0) { timestep = (goal.position() - BackPose().position()).norm() / max_vel_x; }
+                    if (max_vel_x > 0)
+                    {
+                        timestep = (goal.position() - backPose().position()).norm() / max_vel_x;
+                    }
                     addPoseAndTimeDiff(goal, timestep); // add goal point
                     setPoseVertexFixed(sizePoses() - 1, true); // GoalConf is a fixed constraint during optimization
                 }
                 else // size!=0
                 {
-                    Logger::getInstance()->warn("Cannot init TEB between given configuration and goal, because TEB vectors are not empty or TEB is already initialized (call this function before adding states yourself)!");
-                    Logger::getInstance()->warn("Number of TEB configurations: %d, Number of TEB timediffs: %d", (unsigned int) sizePoses(), (unsigned int) sizeTimeDiffs());
+                    misc::Logger::getInstance()->warn("Cannot init TEB between given configuration and goal, because TEB vectors are not empty or TEB is already initialized (call this function before adding states yourself)!");
+                    misc::Logger::getInstance()->warn("Number of TEB configurations: %d, Number of TEB timediffs: %d", (unsigned int) sizePoses(), (unsigned int) sizeTimeDiffs());
                     return false;
                 }
                 return true;
@@ -402,35 +409,44 @@ namespace rip
                         }
                         else
                         {
-                            yaw = tf::getYaw(plan[i].pose.orientation);
+                            yaw = asin(2 * plan[i].pose.orientation.x * plan[i].pose.orientation.y + 2 * plan[i].pose.orientation.z * plan[i].pose.orientation.w);
                         }
                         PoseSE2 intermediate_pose(plan[i].pose.position.x, plan[i].pose.position.y, yaw);
-                        if (max_vel_x > 0) { dt = (intermediate_pose.position() - BackPose().position()).norm() / max_vel_x; }
+                        if (max_vel_x > 0)
+                        {
+                            dt = (intermediate_pose.position() - backPose().position()).norm() / max_vel_x;
+                        }
                         addPoseAndTimeDiff(intermediate_pose, dt);
                     }
 
                     // if number of samples is not larger than min_samples, insert manually
                     if ( sizePoses() < min_samples - 1 )
                     {
-                        Logger::getInstance()->debug("initTEBtoGoal(): number of generated samples is less than specified by min_samples. Forcing the insertion of more samples...");
+                        misc::Logger::getInstance()->debug("initTEBtoGoal(): number of generated samples is less than specified by min_samples. Forcing the insertion of more samples...");
                         while (sizePoses() < min_samples - 1) // subtract goal point that will be added later
                         {
                             // simple strategy: interpolate between the current pose and the goal
-                            PoseSE2 intermediate_pose = PoseSE2::average(BackPose(), goal);
-                            if (max_vel_x > 0) { dt = (intermediate_pose.position() - BackPose().position()).norm() / max_vel_x; }
+                            PoseSE2 intermediate_pose = PoseSE2::average(backPose(), goal);
+                            if (max_vel_x > 0)
+                            {
+                                dt = (intermediate_pose.position() - backPose().position()).norm() / max_vel_x;
+                            }
                             addPoseAndTimeDiff( intermediate_pose, dt ); // let the optimier correct the timestep (TODO: better initialization
                         }
                     }
 
                     // Now add final state with given orientation
-                    if (max_vel_x > 0) { dt = (goal.position() - BackPose().position()).norm() / max_vel_x; }
+                    if (max_vel_x > 0)
+                    {
+                        dt = (goal.position() - backPose().position()).norm() / max_vel_x;
+                    }
                     addPoseAndTimeDiff(goal, dt);
                     setPoseVertexFixed(sizePoses() - 1, true); // GoalConf is a fixed constraint during optimization
                 }
                 else // size!=0
                 {
-                    Logger::getInstance()->warn("Cannot init TEB between given configuration and goal, because TEB vectors are not empty or TEB is already initialized (call this function before adding states yourself)!");
-                    Logger::getInstance()->warn("Number of TEB configurations: %d, Number of TEB timediffs: %d", sizePoses(), sizeTimeDiffs());
+                    misc::Logger::getInstance()->warn("Cannot init TEB between given configuration and goal, because TEB vectors are not empty or TEB is already initialized (call this function before adding states yourself)!");
+                    misc::Logger::getInstance()->warn("Number of TEB configurations: %d, Number of TEB timediffs: %d", sizePoses(), sizeTimeDiffs());
                     return false;
                 }
 
@@ -448,7 +464,7 @@ namespace rip
                 // calc distances
                 for (int i = begin_idx; i < n; i++)
                 {
-                    Eigen::Vector2d diff = ref_point - Pose(i).position();
+                    Eigen::Vector2d diff = ref_point - pose(i).position();
                     dist_vec.push_back(diff.norm());
                 }
 
@@ -487,7 +503,7 @@ namespace rip
                 // calc distances
                 for (int i = 0; i < n; i++)
                 {
-                    Eigen::Vector2d point = Pose(i).position();
+                    Eigen::Vector2d point = pose(i).position();
                     double diff = distance_point_to_segment_2d(point, ref_line_start, ref_line_end);
                     dist_vec.push_back(diff);
                 }
@@ -539,7 +555,7 @@ namespace rip
                 // calc distances
                 for (int i = 0; i < n; i++)
                 {
-                    Eigen::Vector2d point = Pose(i).position();
+                    Eigen::Vector2d point = pose(i).position();
                     double diff = HUGE_VAL;
                     for (int j = 0; j < (int) vertices.size() - 1; ++j)
                     {
@@ -601,23 +617,23 @@ namespace rip
             {
                 if (sizePoses() < 2) { return false; }
 
-                Eigen::Vector2d d_start_goal = BackPose().position() - Pose(0).position();
+                Eigen::Vector2d d_start_goal = backPose().position() - pose(0).position();
                 d_start_goal.normalize(); // using scalar_product without normalizing vectors first result in different threshold-effects
 
                 /// detect based on orientation
                 for (int i = 0; i < sizePoses(); ++i)
                 {
-                    Eigen::Vector2d orient_vector(cos( Pose(i).theta() ), sin( Pose(i).theta() ) );
+                    Eigen::Vector2d orient_vector(cos( pose(i).theta() ), sin( pose(i).theta() ) );
                     if (orient_vector.dot(d_start_goal) < threshold)
                     {
-                        Logger::getInstance()->debug("detectDetoursBackwards() - mark TEB for deletion: start-orientation vs startgoal-vec");
+                        misc::Logger::getInstance()->debug("detectDetoursBackwards() - mark TEB for deletion: start-orientation vs startgoal-vec");
                         return true; // backward direction found
                     }
                 }
                 return false;
             }
 
-            void TimedElasticBand::updateAndPruneTEB(boost::optional<const PoseSE2&> new_start, boost::optional<const PoseSE2&> new_goal, int min_samples)
+            void TimedElasticBand::updateAndPruneTEB(const PoseSE2* new_start, const PoseSE2* new_goal, int min_samples)
             {
                 // first and simple approach: change only start confs (and virtual start conf for inital velocity)
                 // TEST if optimizer can handle this "hard" placement
@@ -626,14 +642,14 @@ namespace rip
                 {
                     // find nearest state (using l2-norm) in order to prune the trajectory
                     // (remove already passed states)
-                    double dist_cache = (new_start->position() - Pose(0).position()).norm();
+                    double dist_cache = (new_start->position() - pose(0).position()).norm();
                     double dist;
                     int lookahead = std::min<int>( sizePoses() - min_samples, 10); // satisfy min_samples, otherwise max 10 samples
 
                     int nearest_idx = 0;
                     for (int i = 1; i <= lookahead; ++i)
                     {
-                        dist = (new_start->position() - Pose(i).position()).norm();
+                        dist = (new_start->position() - pose(i).position()).norm();
                         if (dist < dist_cache)
                         {
                             dist_cache = dist;
@@ -652,12 +668,12 @@ namespace rip
                     }
 
                     // update start
-                    Pose(0) = *new_start;
+                    pose(0) = *new_start;
                 }
 
                 if (new_goal && sizePoses() > 0)
                 {
-                    BackPose() = *new_goal;
+                    backPose() = *new_goal;
                 }
             }
 
@@ -671,23 +687,23 @@ namespace rip
 
                 double radius_sq = radius * radius;
                 double max_dist_behind_robot_sq = max_dist_behind_robot * max_dist_behind_robot;
-                Eigen::Vector2d robot_orient = Pose(0).orientationUnitVec();
+                Eigen::Vector2d robot_orient = pose(0).orientationUnitVec();
 
                 for (int i = 1; i < sizePoses(); i = i + skip_poses + 1)
                 {
-                    Eigen::Vector2d dist_vec = Pose(i).position() - Pose(0).position();
+                    Eigen::Vector2d dist_vec = pose(i).position() - pose(0).position();
                     double dist_sq = dist_vec.squaredNorm();
 
                     if (dist_sq > radius_sq)
                     {
-                        Logger::getInstance()->info("outside robot");
+                        misc::Logger::getInstance()->info("outside robot");
                         return false;
                     }
 
                     // check behind the robot with a different distance, if specified (or >=0)
                     if (max_dist_behind_robot >= 0 && dist_vec.dot(robot_orient) < 0 && dist_sq > max_dist_behind_robot_sq)
                     {
-                        Logger::getInstance()->info("outside robot behind");
+                        misc::Logger::getInstance()->info("outside robot behind");
                         return false;
                     }
 

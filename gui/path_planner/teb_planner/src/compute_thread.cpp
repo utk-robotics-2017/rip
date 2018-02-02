@@ -18,32 +18,32 @@ namespace rip
                 return m_singleton;
             }
 
-            void ComputeThread::setRobot(std::shared_ptr< navigation::RobotFootprintModel > robot)
+            void ComputeThread::setRobot(std::shared_ptr< navigation::tebplanner::BaseRobotFootprintModel > robot)
             {
                 m_robot = robot;
             }
 
-            void ComputeThread::setObstacles(std::shared_ptr < std::vector< std::shared_ptr< navigation::Obstacle > > > obstacles)
+            void ComputeThread::setObstacles(std::shared_ptr < std::vector< std::shared_ptr< navigation::tebplanner::Obstacle > > > obstacles)
             {
                 m_obstacles = obstacles;
             }
 
-            void ComputeThread::setConfig(std::shared_ptr<navigation::TebConfig> config)
+            void ComputeThread::setConfig(std::shared_ptr<navigation::tebplanner::TebConfig> config)
             {
                 m_config = config;
             }
 
-            void ComputeThread::setStart(std::shared_ptr< navigation::Pose > start)
+            void ComputeThread::setStart(std::shared_ptr< navigation::tebplanner::Pose > start)
             {
                 m_start = start;
             }
 
-            void ComputeThread::setGoal(std::shared_ptr< navigation::Pose > goal)
+            void ComputeThread::setGoal(std::shared_ptr< navigation::tebplanner::Pose > goal)
             {
                 m_goal = goal;
             }
 
-            std::vector<navigation::TrajectoryPoint> ComputeThread::trajectory() const
+            std::vector<navigation::tebplanner::TrajectoryPoint> ComputeThread::trajectory() const
             {
                 return m_planner->getTrajectory();
             }
@@ -52,7 +52,7 @@ namespace rip
             {
                 if(m_config && m_robot && m_obstacles && m_start && m_goal)
                 {
-                    m_planner.reset(new navigation::TebPlanner(m_config, *m_obstacles, m_robot, m_waypoints));
+                    m_planner.reset(new navigation::tebplanner::TebPlanner(m_config, *m_obstacles, m_robot));
                     m_planner->plan(*m_start, *m_goal);
                     emit trajectoryUpdated();
                 }

@@ -218,6 +218,22 @@ namespace rip
                 }
 
                 /**
+                   * @brief Convert PoseSE2 to a geometry_msgs::Pose
+                   * @param[out] pose Pose message
+                   */
+                void toPoseMsg(fakeros::Pose& pose) const
+                {
+                    pose.position.x = m_position.x();
+                    pose.position.y = m_position.y();
+                    pose.position.z = 0;
+
+                    pose.orientation.x = cos(m_theta / 2.0);
+                    pose.orientation.y = 0;
+                    pose.orientation.z = 0;
+                    pose.orientation.w = sin(m_theta / 2.0);
+                }
+
+                /**
                  * @brief Return the unit vector of the current orientation
                  * @returns [cos(theta), sin(theta))]^T
                  */

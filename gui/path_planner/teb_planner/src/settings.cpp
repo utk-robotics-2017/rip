@@ -3,10 +3,6 @@
 #include <QStandardPaths>
 #include <QDir>
 
-#include <teb_planner/point_obstacle.hpp>
-#include <teb_planner/line_obstacle.hpp>
-#include <teb_planner/polygon_obstacle.hpp>
-
 #include <teb_planner_gui/exceptions.hpp>
 #include <fmt/format.h>
 
@@ -54,7 +50,7 @@ namespace rip
                             if (f.open(QIODevice::ReadOnly))
                             {
                                 nlohmann::json j = nlohmann::json::parse(f.readAll());
-                                m_robots[j["name"]] = std::make_shared<navigation::PolygonRobotFootprintModel>(j["footprint"].get<geometry::Polygon>());
+                                m_robots[j["name"]] = std::make_shared<navigation::tebplanner::PolygonRobotFootprint>(j["footprint"].get<geometry::Polygon>());
                             }
                         }
                     }
@@ -78,21 +74,21 @@ namespace rip
                             {
                                 nlohmann::json j = nlohmann::json::parse(f.readAll());
 
-                                std::vector< std::shared_ptr< navigation::Obstacle > > obstacles;
+                                std::vector< std::shared_ptr< navigation::tebplanner::Obstacle > > obstacles;
 
                                 for(const nlohmann::json& v : j["obstacles"])
                                 {
                                     if(v.find("polygon") != v.end())
                                     {
-                                        obstacles.push_back(std::make_shared<navigation::PolygonObstacle>(v["polygon"].get<geometry::Polygon>()));
+                                        obstacles.push_back(std::make_shared<navigation::tebplanner::PolygonObstacle>(v["polygon"].get<geometry::Polygon>()));
                                     }
                                     else if(v.find("start") != v.end())
                                     {
-                                        obstacles.push_back(std::make_shared<navigation::LineObstacle>(v["start"].get<geometry::Point>(), v["end"].get<geometry::Point>()));
+                                        obstacles.push_back(std::make_shared<navigation::tebplanner::LineObstacle>(v["start"].get<geometry::Point>(), v["end"].get<geometry::Point>()));
                                     }
                                     else if(v.find("point") != v.end())
                                     {
-                                        obstacles.push_back(std::make_shared<navigation::PointObstacle>(v["point"].get<geometry::Point>()));
+                                        obstacles.push_back(std::make_shared<navigation::tebplanner::PointObstacle>(v["point"].get<geometry::Point>()));
                                     }
                                     else
                                     {
@@ -100,7 +96,7 @@ namespace rip
                                     }
                                 }
 
-                                m_obstacles[j["name"]] = std::make_shared< std::vector< std::shared_ptr<navigation::Obstacle> > >(obstacles);
+                                m_obstacles[j["name"]] = std::make_shared< std::vector< std::shared_ptr<navigation::tebplanner::Obstacle> > >(obstacles);
 
                             }
                         }
@@ -124,7 +120,7 @@ namespace rip
                             if(f.open(QIODevice::ReadOnly))
                             {
                                 nlohmann::json j = nlohmann::json::parse(f.readAll());
-                                m_config[j["name"]] = std::make_shared<navigation::TebConfig>(j["config"].get<navigation::TebConfig>());
+                                m_config[j["name"]] = std::make_shared<navigation::tebplanner::TebConfig>(j["config"].get<navigation::tebplanner::TebConfig>());
                             }
                         }
                     }
@@ -167,23 +163,23 @@ namespace rip
                         {
                             nlohmann::json j;
                             j["name"] = iter.first;
-                            for(std::shared_ptr<navigation::Obstacle> obstacle : *(iter.second))
+                            for(std::shared_ptr<navigation::tebplanner::Obstacle> obstacle : *(iter.second))
                             {
                                 nlohmann::json o;
-                                std::shared_ptr<navigation::PointObstacle> point = std::dynamic_pointer_cast<navigation::PointObstacle>(obstacle);
+                                std::shared_ptr<navigation::tebplanner::PointObstacle> point = std::dynamic_pointer_cast<navigation::tebplanner::PointObstacle>(obstacle);
                                 if(point)
                                 {
-                                    o["point"] = point->centroid();
+                                    o["point"] = point->getCentroidPoint();
                                 }
 
-                                std::shared_ptr<navigation::LineObstacle> line = std::dynamic_pointer_cast<navigation::LineObstacle>(obstacle);
+                                std::shared_ptr<navigation::tebplanner::LineObstacle> line = std::dynamic_pointer_cast<navigation::tebplanner::LineObstacle>(obstacle);
                                 if(line)
                                 {
-                                    o["start"] = line->start();
-                                    o["end"] = line->end();
+                                    o["start"] = line->startPoint();
+                                    o["end"] = line->endPoint();
                                 }
 
-                                std::shared_ptr<navigation::PolygonObstacle> polygon = std::dynamic_pointer_cast<navigation::PolygonObstacle>(obstacle);
+                                std::shared_ptr<navigation::tebplanner::PolygonObstacle> polygon = std::dynamic_pointer_cast<navigation::tebplanner::PolygonObstacle>(obstacle);
                                 if(polygon)
                                 {
                                     o["polygon"] = polygon->polygon();
@@ -214,9 +210,9 @@ namespace rip
                 }
             }
 
-            std::shared_ptr<navigation::PolygonRobotFootprintModel> Settings::addRobot(const std::string& name)
+            std::shared_ptr<navigation::tebplanner::PolygonRobotFootprint> Settings::addRobot(const std::string& name)
             {
-                m_robots[name] = std::make_shared<navigation::PolygonRobotFootprintModel>(geometry::Polygon());
+                m_robots[name] = std::make_shared<navigation::tebplanner::PolygonRobotFootprint>(geometry::Polygon());
                 return m_robots[name];
             }
 
@@ -228,7 +224,7 @@ namespace rip
                 }
             }
 
-            std::shared_ptr<navigation::PolygonRobotFootprintModel> Settings::robot(const std::string& name) const
+            std::shared_ptr<navigation::tebplanner::PolygonRobotFootprint> Settings::robot(const std::string& name) const
             {
                 if (m_robots.find(name) == m_robots.end())
                 {
@@ -267,14 +263,14 @@ namespace rip
                     if (f.open(QIODevice::ReadOnly))
                     {
                         nlohmann::json j = nlohmann::json::parse(f.readAll());
-                        m_robots[name] = std::make_shared<navigation::PolygonRobotFootprintModel>(j["footprint"].get<geometry::Polygon>());
+                        m_robots[name] = std::make_shared<navigation::tebplanner::PolygonRobotFootprint>(j["footprint"].get<geometry::Polygon>());
                     }
                 }
             }
 
-            std::shared_ptr< std::vector< std::shared_ptr<navigation::Obstacle> > > Settings::addObstacles(const std::string& name)
+            std::shared_ptr< std::vector< std::shared_ptr<navigation::tebplanner::Obstacle> > > Settings::addObstacles(const std::string& name)
             {
-                m_obstacles[name] = std::make_shared< std::vector< std::shared_ptr<navigation::Obstacle> > >();
+                m_obstacles[name] = std::make_shared< std::vector< std::shared_ptr<navigation::tebplanner::Obstacle> > >();
                 return m_obstacles[name];
             }
 
@@ -286,7 +282,7 @@ namespace rip
                 }
             }
 
-            std::shared_ptr< std::vector< std::shared_ptr<navigation::Obstacle> > > Settings::obstacles(const std::string& name)
+            std::shared_ptr< std::vector< std::shared_ptr<navigation::tebplanner::Obstacle> > > Settings::obstacles(const std::string& name)
             {
                 if (m_obstacles.find(name) == m_obstacles.end())
                 {
@@ -306,23 +302,23 @@ namespace rip
                     {
                         nlohmann::json j;
                         j["name"] = name;
-                        for(std::shared_ptr<navigation::Obstacle> obstacle : *(m_obstacles.at(name)))
+                        for(std::shared_ptr<navigation::tebplanner::Obstacle> obstacle : *(m_obstacles.at(name)))
                         {
                             nlohmann::json o;
-                            std::shared_ptr<navigation::PointObstacle> point = std::dynamic_pointer_cast<navigation::PointObstacle>(obstacle);
+                            std::shared_ptr<navigation::tebplanner::PointObstacle> point = std::dynamic_pointer_cast<navigation::tebplanner::PointObstacle>(obstacle);
                             if(point)
                             {
-                                o["point"] = point->centroid();
+                                o["point"] = point->getCentroidPoint();
                             }
 
-                            std::shared_ptr<navigation::LineObstacle> line = std::dynamic_pointer_cast<navigation::LineObstacle>(obstacle);
+                            std::shared_ptr<navigation::tebplanner::LineObstacle> line = std::dynamic_pointer_cast<navigation::tebplanner::LineObstacle>(obstacle);
                             if(line)
                             {
-                                o["start"] = line->start();
-                                o["end"] = line->end();
+                                o["start"] = line->startPoint();
+                                o["end"] = line->endPoint();
                             }
 
-                            std::shared_ptr<navigation::PolygonObstacle> polygon = std::dynamic_pointer_cast<navigation::PolygonObstacle>(obstacle);
+                            std::shared_ptr<navigation::tebplanner::PolygonObstacle> polygon = std::dynamic_pointer_cast<navigation::tebplanner::PolygonObstacle>(obstacle);
                             if(polygon)
                             {
                                 o["polygon"] = polygon->polygon();
@@ -349,20 +345,20 @@ namespace rip
                     {
                         nlohmann::json j = nlohmann::json::parse(f.readAll());
 
-                        std::vector< std::shared_ptr< navigation::Obstacle > > obstacles;
+                        std::vector< std::shared_ptr< navigation::tebplanner::Obstacle > > obstacles;
                         for(const nlohmann::json& v : j["obstacles"])
                         {
                             if(v.find("polygon") != v.end())
                             {
-                                obstacles.push_back(std::make_shared<navigation::PolygonObstacle>(v["polygon"].get<geometry::Polygon>()));
+                                obstacles.push_back(std::make_shared<navigation::tebplanner::PolygonObstacle>(v["polygon"].get<geometry::Polygon>()));
                             }
                             else if(v.find("start") != v.end())
                             {
-                                obstacles.push_back(std::make_shared<navigation::LineObstacle>(v["start"].get<geometry::Point>(), v["end"].get<geometry::Point>()));
+                                obstacles.push_back(std::make_shared<navigation::tebplanner::LineObstacle>(v["start"].get<geometry::Point>(), v["end"].get<geometry::Point>()));
                             }
                             else if(v.find("point") != v.end())
                             {
-                                obstacles.push_back(std::make_shared<navigation::PointObstacle>(v["point"].get<geometry::Point>()));
+                                obstacles.push_back(std::make_shared<navigation::tebplanner::PointObstacle>(v["point"].get<geometry::Point>()));
                             }
                             else
                             {
@@ -370,15 +366,15 @@ namespace rip
                             }
                         }
 
-                        m_obstacles[j["name"]] = std::make_shared< std::vector< std::shared_ptr<navigation::Obstacle> > >(obstacles);
+                        m_obstacles[j["name"]] = std::make_shared< std::vector< std::shared_ptr<navigation::tebplanner::Obstacle> > >(obstacles);
 
                     }
                 }
             }
 
-            std::shared_ptr<navigation::TebConfig> Settings::addConfig(const std::string& name)
+            std::shared_ptr<navigation::tebplanner::TebConfig> Settings::addConfig(const std::string& name)
             {
-                m_config[name] = std::make_shared<navigation::TebConfig>();
+                m_config[name] = std::make_shared<navigation::tebplanner::TebConfig>();
                 return m_config.at(name);
             }
 
@@ -390,7 +386,7 @@ namespace rip
                 }
             }
 
-            std::shared_ptr<navigation::TebConfig> Settings::config(const std::string& name) const
+            std::shared_ptr<navigation::tebplanner::TebConfig> Settings::config(const std::string& name) const
             {
                 if(m_config.find(name) == m_config.end())
                 {
@@ -430,7 +426,7 @@ namespace rip
                     if (f.open(QIODevice::ReadOnly))
                     {
                         nlohmann::json j = nlohmann::json::parse(f.readAll());
-                        m_config[name] = std::make_shared<navigation::TebConfig>(j.get<navigation::TebConfig>());
+                        m_config[name] = std::make_shared<navigation::tebplanner::TebConfig>(j.get<navigation::tebplanner::TebConfig>());
                     }
                 }
             }

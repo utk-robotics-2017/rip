@@ -10,9 +10,10 @@
 #include <QResizeEvent>
 #include <QTimer>
 
-#include "teb_planner/robot_footprint_model.hpp"
-#include "teb_planner/obstacle.hpp"
-#include "teb_planner/trajectory_point.hpp"
+#include <teb_planner/robot_footprint_model.hpp>
+#include <teb_planner/obstacles.hpp>
+#include <teb_planner/trajectory_point.hpp>
+#include <teb_planner/pose.hpp>
 
 #include "position_widget.hpp"
 #include "compute_thread.hpp"
@@ -41,19 +42,19 @@ namespace rip
                  */
                 void setAnimate(bool animate);
 
-                void setStart(const navigation::Pose& start);
+                void setStart(const navigation::tebplanner::Pose& start);
 
-                void setGoal(const navigation::Pose& goal);
+                void setGoal(const navigation::tebplanner::Pose& goal);
 
                 /**
                  * Set the robot footprint model
                  */
-                void setRobot(std::shared_ptr< navigation::RobotFootprintModel > robot);
+                void setRobot(std::shared_ptr< navigation::tebplanner::BaseRobotFootprintModel > robot);
 
                 /**
                  * Sets the obstacles
                  */
-                void setObstacles(std::shared_ptr< std::vector< std::shared_ptr<navigation::Obstacle > > > obstacles);
+                void setObstacles(std::shared_ptr< std::vector< std::shared_ptr<navigation::tebplanner::Obstacle > > > obstacles);
 
             private slots:
                 void updateSelectedPosition();
@@ -104,7 +105,7 @@ namespace rip
                  */
                 void drawStartAndGoal(QPainter& painter, double scale);
 
-                void drawPose(const navigation::Pose& pose, Qt::GlobalColor color, QPainter& painter, double scale);
+                void drawPose(const navigation::tebplanner::Pose& pose, Qt::GlobalColor color, QPainter& painter, double scale);
 
                 /**
                  * Draw the obstacles
@@ -166,11 +167,11 @@ namespace rip
 
 
                 geometry::Rectangle m_bounding_box;
-                std::shared_ptr< navigation::Pose > m_start;
-                std::shared_ptr< navigation::Pose > m_goal;
-                std::shared_ptr< std::vector< std::shared_ptr< navigation::Obstacle > > > m_obstacles;
-                std::shared_ptr< navigation::RobotFootprintModel > m_robot;
-                std::vector< navigation::TrajectoryPoint > m_trajectory;
+                std::shared_ptr< navigation::tebplanner::Pose > m_start;
+                std::shared_ptr< navigation::tebplanner::Pose > m_goal;
+                std::shared_ptr< std::vector< std::shared_ptr< navigation::tebplanner::Obstacle > > > m_obstacles;
+                std::shared_ptr< navigation::tebplanner::BaseRobotFootprintModel > m_robot;
+                std::vector< navigation::tebplanner::TrajectoryPoint > m_trajectory;
                 std::vector< geometry::Point > m_waypoints;
 
                 std::shared_ptr< ComputeThread > m_compute_thread;

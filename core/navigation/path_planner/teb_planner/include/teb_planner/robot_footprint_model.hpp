@@ -47,6 +47,7 @@
 #include <teb_planner/pose_se2.hpp>
 #include <teb_planner/obstacles.hpp>
 #include <teb_planner/fake_ros_msgs.hpp>
+#include <teb_planner/pose.hpp>
 
 namespace rip
 {
@@ -471,6 +472,11 @@ namespace rip
                     : m_vertices(vertices)
                 { }
 
+                PolygonRobotFootprint(const geometry::Polygon& poly)
+                {
+                    setPolygon(poly);
+                }
+
                 /**
                  * @brief Virtual destructor.
                  */
@@ -484,6 +490,48 @@ namespace rip
                 void setVertices(const Point2dContainer& vertices)
                 {
                     m_vertices = vertices;
+                }
+
+                geometry::Polygon polygon() const
+                {
+                    geometry::Polygon poly;
+                    for(const Eigen::Vector2d& point : m_vertices)
+                    {
+                        poly.add(geometry::Point(point.x() * units::m, point.y() * units::m));
+                    }
+                    return poly;
+                }
+
+                geometry::Polygon polygon(const Pose& pose) const
+                {
+                    Point2dContainer polygon_world(m_vertices.size());
+                    transformToWorld(pose, polygon_world);
+                    geometry::Polygon poly;
+                    for(const Eigen::Vector2d& point : polygon_world)
+                    {
+                        poly.add(geometry::Point(point.x() * units::m, point.y() * units::m));
+                    }
+                    return poly;
+                }
+
+                geometry::Polygon polygon(const geometry::Point& position, const units::Angle& rotation) const
+                {
+                    return polygon(Pose(position.x(), position.y(), rotation));
+                }
+
+                void setPolygon(const geometry::Polygon& poly)
+                {
+                    m_vertices.clear();
+                    for(const geometry::Point& point : poly)
+                    {
+                        m_vertices.emplace_back(point.x().to(units::m), point.y().to(units::m));
+                    }
+                }
+
+                void setPoint(unsigned int index, const geometry::Point& p)
+                {
+                    assert(index < m_vertices.size());
+                    m_vertices[index] = Eigen::Vector2d(p.x().to(units::m), p.y().to(units::m));
                 }
 
                 /**

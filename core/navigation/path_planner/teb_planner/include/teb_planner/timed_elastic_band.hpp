@@ -469,7 +469,7 @@ namespace rip
                  * @param new_goal New goal pose (optional)
                  * @param min_samples Specify the minimum number of samples that should at least remain in the trajectory
                  */
-                void updateAndPruneTEB(nonstd::optional<const PoseSE2&> new_start, nonstd::optional<const PoseSE2&> new_goal, int min_samples = 3);
+                void updateAndPruneTEB(const PoseSE2* new_start = nullptr, const PoseSE2* new_goal = nullptr, int min_samples = 3);
 
 
                 /**
