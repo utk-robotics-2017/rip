@@ -9,7 +9,7 @@
 
 namespace rip
 {
-    namespace utilties
+    namespace utilities
     {
         namespace units
         {
@@ -270,10 +270,11 @@ namespace rip
 
             // Typedefs for fundamental units
             typedef Units<1,0,0,0,0,0> Length;
+            typedef Length Distance;
             typedef Units<0,1,0,0,0,0> Time;
             typedef Units<0,0,1,0,0,0> Mass;
             typedef Units<0,0,0,1,0,0> Current;
-            typedef Units<0,0,0,0,1,0> Tempurature;
+            typedef Units<0,0,0,0,1,0> Temperature;
             typedef Units<0,0,0,0,0,1> Angle;
 
             // Typedefs for derived units
@@ -336,9 +337,9 @@ namespace rip
             const Current A = 1;
             const Voltage V = kg*m*m/(A*s*s*s);
             const Power W = A*V;
-            const Tempurature K = 1;
-            const Tempurature degC = 1 * K;
-            const Tempurature degF = 5/9 * K;
+            const Temperature K = 1;
+            const Temperature degC = 1 * K;
+            const Temperature degF = 5/9 * K;
             const Acceleration AccelerationOfGravity = 9.80665*m/(s*s);
             const Force N = 1;
             const Force lbf = 4.4482216*N;
@@ -347,6 +348,8 @@ namespace rip
             const Energy ft_lb = ft * lbf;
             const Pressure Pa = 1;
             const Pressure kPa = 1e3 * Pa;
+            const Pressure bar = Pa * 100000;
+            const Pressure millibar = 1e-3 * bar;
             const Pressure psi = lbf/(inch*inch);
             const Pressure atm = 101325 * Pa;
             const Unitless none = 1;
