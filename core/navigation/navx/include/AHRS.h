@@ -5,6 +5,7 @@
 #include "ITimestampedDataSubscriber.h"
 #include <memory>
 #include <string>
+#include <units.hpp>
 
 namespace rip
 {
@@ -123,79 +124,74 @@ namespace rip
 
                 AHRS(std::string serial_port_id, AHRS::SerialDataType data_type, uint8_t update_rate_hz);
 
-                float  GetPitch();
-                float  GetRoll();
-                float  GetYaw();
-                float  GetCompassHeading();
-                void   ZeroYaw();
-                bool   IsCalibrating();
-                bool   IsConnected();
-                double GetByteCount();
-                double GetUpdateCount();
-                long   GetLastSensorTimestamp();
-                float  GetWorldLinearAccelX();
-                float  GetWorldLinearAccelY();
-                float  GetWorldLinearAccelZ();
-                bool   IsMoving();
-                bool   IsRotating();
-                float  GetBarometricPressure();
-                float  GetAltitude();
-                bool   IsAltitudeValid();
-                float  GetFusedHeading();
-                bool   IsMagneticDisturbance();
-                bool   IsMagnetometerCalibrated();
-                float  GetQuaternionW();
-                float  GetQuaternionX();
-                float  GetQuaternionY();
-                float  GetQuaternionZ();
-                void   ResetDisplacement();
-                void   UpdateDisplacement( float accel_x_g, float accel_y_g,
+                units::Angle getPitch();
+                units::Angle getRoll();
+                units::Angle getYaw();
+                units::Angle getCompassHeading();
+                void   zeroYaw();
+                bool   isCalibrating();
+                bool   isConnected();
+                double getByteCount();
+                double getUpdateCount();
+                long   getLastSensorTimestamp();
+                units::Acceleration getWorldLinearAccelX();
+                units::Acceleration getWorldLinearAccelY();
+                units::Acceleration getWorldLinearAccelZ();
+                bool   isMoving();
+                bool   isRotating();
+                units::Pressure getBarometricPressure();
+                units::Distance getAltitude();
+                bool   isAltitudeValid();
+                float  getFusedHeading();
+                bool   isMagneticDisturbance();
+                bool   isMagnetometerCalibrated();
+                float  getQuaternionW();
+                float  getQuaternionX();
+                float  getQuaternionY();
+                float  getQuaternionZ();
+                void   resetDisplacement();
+                void   updateDisplacement( float accel_x_g, float accel_y_g,
                                            int update_rate_hz, bool is_moving );
-                float  GetVelocityX();
-                float  GetVelocityY();
-                float  GetVelocityZ();
-                float  GetDisplacementX();
-                float  GetDisplacementY();
-                float  GetDisplacementZ();
-                double GetAngle();
-                double GetRate();
-                void   Reset();
-                float  GetRawGyroX();
-                float  GetRawGyroY();
-                float  GetRawGyroZ();
-                float  GetRawAccelX();
-                float  GetRawAccelY();
-                float  GetRawAccelZ();
-                float  GetRawMagX();
-                float  GetRawMagY();
-                float  GetRawMagZ();
-                float  GetPressure();
-                float  GetTempC();
-                AHRS::BoardYawAxis GetBoardYawAxis();
-                std::string GetFirmwareVersion();
+                float  getVelocityX();
+                float  getVelocityY();
+                float  getVelocityZ();
+                float  getDisplacementX();
+                float  getDisplacementY();
+                float  getDisplacementZ();
+                double getAngle();
+                double getRate();
+                void   reset();
+                float  getRawGyroX();
+                float  getRawGyroY();
+                float  getRawGyroZ();
+                float  getRawAccelX();
+                float  getRawAccelY();
+                float  getRawAccelZ();
+                float  getRawMagX();
+                float  getRawMagY();
+                float  getRawMagZ();
+                float  getPressure();
+                float  getTempC();
+                AHRS::BoardYawAxis getBoardYawAxis();
+                std::string getFirmwareVersion();
 
-                bool RegisterCallback( ITimestampedDataSubscriber *callback, void *callback_context);
-                bool DeregisterCallback( ITimestampedDataSubscriber *callback );
+                bool registerCallback( ITimestampedDataSubscriber *callback, void *callback_context);
+                bool deregisterCallback( ITimestampedDataSubscriber *callback );
 
-                int GetActualUpdateRate();
-                int GetRequestedUpdateRate();
+                int getActualUpdateRate();
+                int getRequestedUpdateRate();
 
-                void Close();
+                void close();
 
             private:
-                void SerialInit(std::string serial_port_id, AHRS::SerialDataType data_type, uint8_t update_rate_hz);
+                void serialInit(std::string serial_port_id, AHRS::SerialDataType data_type, uint8_t update_rate_hz);
                 void commonInit( uint8_t update_rate_hz );
-                static void *ThreadFunc(void *threadarg);
-
-                /* LiveWindowSendable implementation */
-                std::string GetSmartDashboardType() const;
-                void StartLiveWindowMode();
-                void StopLiveWindowMode();
+                static void *threadFunc(void *threadarg);
 
                 /* PIDSource implementation */
                 double PIDGet();
 
-                uint8_t GetActualUpdateRateInternal(uint8_t update_rate);
+                uint8_t getActualUpdateRateInternal(uint8_t update_rate);
             };
         } // navx
     } // navigation
