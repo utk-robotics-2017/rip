@@ -28,7 +28,8 @@ namespace rip
     {
         namespace navx
         {
-			class ITimestampedDataSubscriber {
+			class ITimestampedDataSubscriber
+            {
 			public:
 				virtual ~ITimestampedDataSubscriber(){}
 			    virtual void timestampedDataReceived( long system_timestamp, long sensor_timestamp, AHRSProtocol::AHRSUpdateBase& sensor_data, void * context ) = 0;

@@ -126,14 +126,16 @@ namespace rip
             {
             public:
 
-                struct YPRUpdate {
+                struct YPRUpdate
+                {
                     float yaw;
                     float pitch;
                     float roll;
                     float compass_heading;
                 };
 
-                struct GyroUpdate {
+                struct GyroUpdate
+                {
                     int16_t gyro_x;
                     int16_t gyro_y;
                     int16_t gyro_z;
@@ -146,7 +148,8 @@ namespace rip
                     float   temp_c;
                 };
 
-                struct QuaternionUpdate {
+                struct QuaternionUpdate
+                {
                     int16_t q1;
                     int16_t q2;
                     int16_t q3;
@@ -160,7 +163,8 @@ namespace rip
                     float   temp_c;
                 };
 
-                struct StreamResponse {
+                struct StreamResponse
+                {
                     uint8_t stream_type;
                     int16_t gyro_fsr_dps;
                     int16_t accel_fsr_g;
@@ -429,7 +433,8 @@ namespace rip
                     int temp1 = abs((int)((f - (int)f) * 100));
                     if ( f < 0 ) buff[0] = '-'; else buff[0] = ' ';
                     sprintf(work_buffer,"%03d.%02d", abs((int)f), temp1);
-                    for ( i = 0; i < (PROTOCOL_FLOAT_LENGTH-1); i++ ) {
+                    for ( i = 0; i < (PROTOCOL_FLOAT_LENGTH-1); i++ )
+                    {
                         buff[1 + i] = work_buffer[i];
                     }
                 }
@@ -453,12 +458,14 @@ namespace rip
                 }
 
                 /* 0 to 655.35 */
-                static inline float decodeProtocolUnsignedHundredthsFloat( char *uint8_unsigned_hundredths_float ) {
+                static inline float decodeProtocolUnsignedHundredthsFloat( char *uint8_unsigned_hundredths_float )
+                {
                     float unsigned_float = (float)decodeProtocolUint16(uint8_unsigned_hundredths_float);
                     unsigned_float /= 100;
                     return unsigned_float;
                 }
-                static inline void encodeProtocolUnsignedHundredthsFloat( float input, char *uint8_unsigned_hundredths_float) {
+                static inline void encodeProtocolUnsignedHundredthsFloat( float input, char *uint8_unsigned_hundredths_float)
+                {
                     uint16_t input_as_uint = (uint16_t)(input * 100.0f);
                     encodeProtocolUint16(input_as_uint,uint8_unsigned_hundredths_float);
                 }

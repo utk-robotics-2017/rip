@@ -288,7 +288,8 @@ namespace rip
             {
             public:
 
-            	struct AHRSUpdateBase {
+            	struct AHRSUpdateBase
+                {
                     float yaw;
                     float pitch;
                     float roll;
@@ -311,7 +312,8 @@ namespace rip
                     uint8_t  selftest_status;
             	};
 
-                struct AHRSUpdate : public AHRSUpdateBase {
+                struct AHRSUpdate : public AHRSUpdateBase
+                {
                     short   cal_mag_x;
                     short   cal_mag_y;
                     short   cal_mag_z;
@@ -322,7 +324,8 @@ namespace rip
                     short   raw_mag_z;
                 };
 
-                struct AHRSPosUpdate : public AHRSUpdateBase {
+                struct AHRSPosUpdate : public AHRSUpdateBase
+                {
                     float   vel_x;
                     float   vel_y;
                     float   vel_z;
@@ -331,7 +334,8 @@ namespace rip
                     float   disp_z;
                 };
 
-                struct AHRSPosTSUpdate : public AHRSPosUpdate {
+                struct AHRSPosTSUpdate : public AHRSPosUpdate
+                {
                     uint32_t timestamp;
                 };
 
@@ -410,7 +414,7 @@ namespace rip
                             ( buffer[3] == MSGID_INTEGRATION_CONTROL_RESP ) )
                     {
                         if ( !verifyChecksum( buffer, INTEGRATION_CONTROL_RESP_MESSAGE_CHECKSUM_INDEX ) ) return 0;
-
+                        //RIP TODO: ADD exception handling BEHN
                         // Data
                         rsp.action = (uint8_t)buffer[INTEGRATION_CONTROL_RESP_ACTION_INDEX];
                         rsp.parameter = IMURegisters::decodeProtocolInt32(&buffer[INTEGRATION_CONTROL_RESP_PARAMETER_INDEX]);
@@ -513,7 +517,8 @@ namespace rip
                     if ( ( buffer[0] == PACKET_START_CHAR ) &&
                             ( buffer[1] == BINARY_PACKET_INDICATOR_CHAR ) &&
                             ( buffer[2] == AHRS_UPDATE_MESSAGE_LENGTH - 2) &&
-                            ( buffer[3] == MSGID_AHRS_UPDATE ) ) {
+                            ( buffer[3] == MSGID_AHRS_UPDATE ) )
+                    {
 
                         if ( !verifyChecksum( buffer, AHRS_UPDATE_MESSAGE_CHECKSUM_INDEX ) ) return 0;
 
@@ -605,7 +610,8 @@ namespace rip
                     if ( ( buffer[0] == PACKET_START_CHAR ) &&
                             ( buffer[1] == BINARY_PACKET_INDICATOR_CHAR ) &&
                             ( buffer[2] == AHRSPOS_UPDATE_MESSAGE_LENGTH - 2) &&
-                            ( buffer[3] == MSGID_AHRSPOS_UPDATE ) ) {
+                            ( buffer[3] == MSGID_AHRSPOS_UPDATE ) )
+                        {
 
                         if ( !verifyChecksum( buffer, AHRSPOS_UPDATE_MESSAGE_CHECKSUM_INDEX ) ) return 0;
 
@@ -697,7 +703,8 @@ namespace rip
                     if ( ( buffer[0] == PACKET_START_CHAR ) &&
                             ( buffer[1] == BINARY_PACKET_INDICATOR_CHAR ) &&
                             ( buffer[2] == AHRSPOS_TS_UPDATE_MESSAGE_LENGTH - 2) &&
-                            ( buffer[3] == MSGID_AHRSPOS_TS_UPDATE ) ) {
+                            ( buffer[3] == MSGID_AHRSPOS_TS_UPDATE ) )
+                    {
 
                         if ( !verifyChecksum( buffer, AHRSPOS_TS_UPDATE_MESSAGE_CHECKSUM_INDEX ) ) return 0;
 
@@ -742,11 +749,13 @@ namespace rip
 
                     // Data
                     protocol_buffer[MAG_CAL_DATA_ACTION_VALUE_INDEX] = action;
-                    for ( int i = 0; i < 3; i++ ) {
+                    for ( int i = 0; i < 3; i++ )
+                    {
                         IMURegisters::encodeProtocolInt16(	bias[i],
                                 &protocol_buffer[MAG_X_BIAS_VALUE_INDEX + (i * sizeof(int16_t))]);
                     }
-                    for ( int i = 0; i < 9; i++ ) {
+                    for ( int i = 0; i < 9; i++ )
+                    {
                         IMURegisters::encodeProtocol1616Float( matrix[i], &protocol_buffer[MAG_XFORM_1_1_VALUE_INDEX + (i * sizeof(s_1616_float))]);
                     }
                     IMURegisters::encodeProtocol1616Float( earth_mag_field_norm, &protocol_buffer[MAG_CAL_EARTH_MAG_FIELD_NORM_VALUE_INDEX]);
@@ -765,15 +774,18 @@ namespace rip
                     if ( ( buffer[0] == PACKET_START_CHAR ) &&
                             ( buffer[1] == BINARY_PACKET_INDICATOR_CHAR ) &&
                             ( buffer[2] == MAG_CAL_CMD_MESSAGE_LENGTH - 2) &&
-                            ( buffer[3] == MSGID_MAG_CAL_CMD ) ) {
+                            ( buffer[3] == MSGID_MAG_CAL_CMD ) )
+                    {
 
                         if ( !verifyChecksum( buffer, MAG_CAL_CMD_MESSAGE_CHECKSUM_INDEX ) ) return 0;
 
                         action = (AHRS_DATA_ACTION)buffer[MAG_CAL_DATA_ACTION_VALUE_INDEX];
-                        for ( int i = 0; i < 3; i++ ) {
+                        for ( int i = 0; i < 3; i++ )
+                        {
                             bias[i] = IMURegisters::decodeProtocolInt16(&buffer[MAG_X_BIAS_VALUE_INDEX + (i * sizeof(int16_t))]);
                         }
-                        for ( int i = 0; i < 9; i++ ) {
+                        for ( int i = 0; i < 9; i++ )
+                        {
                             matrix[i] = IMURegisters::decodeProtocol1616Float(&buffer[MAG_XFORM_1_1_VALUE_INDEX + (i * sizeof(s_1616_float))]);
                         }
                         earth_mag_field_norm = IMURegisters::decodeProtocol1616Float(&buffer[MAG_CAL_EARTH_MAG_FIELD_NORM_VALUE_INDEX]);
@@ -804,7 +816,8 @@ namespace rip
                     if ( ( buffer[0] == PACKET_START_CHAR ) &&
                             ( buffer[1] == BINARY_PACKET_INDICATOR_CHAR ) &&
                             ( buffer[2] == DATA_SET_RESPONSE_MESSAGE_LENGTH - 2) &&
-                            ( buffer[3] == MSGID_DATA_SET_RESPONSE ) ) {
+                            ( buffer[3] == MSGID_DATA_SET_RESPONSE ) )
+                    {
 
                         if ( !verifyChecksum( buffer, DATA_SET_RESPONSE_MESSAGE_CHECKSUM_INDEX ) ) return 0;
 
@@ -837,7 +850,8 @@ namespace rip
                     if ( ( buffer[0] == PACKET_START_CHAR ) &&
                             ( buffer[1] == BINARY_PACKET_INDICATOR_CHAR ) &&
                             ( buffer[2] == DATA_REQUEST_MESSAGE_LENGTH - 2) &&
-                            ( buffer[3] == MSGID_DATA_REQUEST ) ) {
+                            ( buffer[3] == MSGID_DATA_REQUEST ) )
+                    {
 
                         if ( !verifyChecksum( buffer, DATA_REQUEST_CHECKSUM_INDEX ) ) return 0;
 
@@ -864,7 +878,8 @@ namespace rip
                     protocol_buffer[BOARD_IDENTITY_FW_VER_MAJOR] = fw_ver_major;
                     protocol_buffer[BOARD_IDENTITY_FW_VER_MINOR] = fw_ver_minor;
                     IMURegisters::encodeProtocolUint16(fw_revision,&protocol_buffer[BOARD_IDENTITY_FW_VER_REVISION_VALUE_INDEX]);
-                    for ( int i = 0; i < 12; i++ ) {
+                    for ( int i = 0; i < 12; i++ )
+                    {
                         protocol_buffer[BOARD_IDENTITY_UNIQUE_ID_0 + i] = unique_id[i];
                     }
                     // Footer
@@ -878,7 +893,8 @@ namespace rip
                     if ( ( buffer[0] == PACKET_START_CHAR ) &&
                             ( buffer[1] == BINARY_PACKET_INDICATOR_CHAR ) &&
                             ( buffer[2] == BOARD_IDENTITY_RESPONSE_MESSAGE_LENGTH - 2) &&
-                            ( buffer[3] == MSGID_BOARD_IDENTITY_RESPONSE ) ) {
+                            ( buffer[3] == MSGID_BOARD_IDENTITY_RESPONSE ) )
+                    {
                         if ( !verifyChecksum( buffer, BOARD_IDENTITY_RESPONSE_CHECKSUM_INDEX ) ) return 0;
 
                         update.type = buffer[BOARD_IDENTITY_BOARDTYPE_VALUE_INDEX];
@@ -886,7 +902,8 @@ namespace rip
                         update.fw_ver_major = buffer[BOARD_IDENTITY_FW_VER_MAJOR];
                         update.fw_ver_minor = buffer[BOARD_IDENTITY_FW_VER_MINOR];
                         update.fw_revision = IMURegisters::decodeProtocolUint16(&buffer[BOARD_IDENTITY_FW_VER_REVISION_VALUE_INDEX]);
-                        for ( int i = 0; i < 12; i++ ) {
+                        for ( int i = 0; i < 12; i++ )
+                        {
                             update.unique_id[i] = buffer[BOARD_IDENTITY_UNIQUE_ID_0 + i];
                         }
                         return BOARD_IDENTITY_RESPONSE_MESSAGE_LENGTH;

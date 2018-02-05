@@ -17,9 +17,8 @@ namespace rip
     {
         namespace navx
         {
-            class SerialIO : public IIOProvider {
-
-
+            class SerialIO : public IIOProvider
+            {
                 std::string serial_port_id;
                 SerialPort *serial_port;
                 uint8_t next_integration_control_action;
@@ -47,21 +46,20 @@ namespace rip
                           bool processed_data,
                           IIOCompleteNotification *notify_sink,
                           IBoardCapabilities *board_capabilities );
-                bool IsConnected();
-                double GetByteCount();
-                double GetUpdateCount();
-                void SetUpdateRateHz(uint8_t update_rate);
-                void ZeroYaw();
-                void ZeroDisplacement();
-                void Run();
-                void Stop();
+                bool isConnected();
+                double getByteCount();
+                double getUpdateCount();
+                void setUpdateRateHz(uint8_t update_rate);
+                void zeroYaw();
+                void zeroDisplacement();
+                void run();
+                void stop();
             private:
-
-                SerialPort *ResetSerialPort();
-                SerialPort *GetMaybeCreateSerialPort();
-                void EnqueueIntegrationControlMessage(uint8_t action);
-                void DispatchStreamResponse(IMUProtocol::StreamResponse& response);
-                int DecodePacketHandler(char * received_data, int bytes_remaining);
+                SerialPort *resetSerialPort();
+                SerialPort *getMaybeCreateSerialPort();
+                void enqueueIntegrationControlMessage(uint8_t action);
+                void dispatchStreamResponse(IMUProtocol::StreamResponse& response);
+                int decodePacketHandler(char * received_data, int bytes_remaining);
             };
         }
     }

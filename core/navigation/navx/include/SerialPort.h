@@ -18,11 +18,11 @@ namespace rip
     {
         namespace navx
         {
-            class SerialPort {
-
-
+            //TODO: replace with periphery
+            class SerialPort
+            {
                 private:
-                    int ReadBufferSize;
+                    int readBufferSize;
                     int timeout;
                     char terminationChar;
                     bool termination;
@@ -36,15 +36,17 @@ namespace rip
 
                 SerialPort(int baudRate, std::string id)
                 {
-                    Init(baudRate, id);
+                    init(baudRate, id);
                 }
 
-                void Init(int baudRate, std::string id) {
+                void init(int baudRate, std::string id)
+                {
 
 
                     int USB = open(id.c_str(), O_RDWR| O_NOCTTY);
                     if (USB < 0)
                     {
+                        //TODO: RIP exception handling
                         std::cerr << "Could not open " << id.c_str() << " as a TTY:";
                         perror("");
             			throw std::runtime_error("");
@@ -74,35 +76,41 @@ namespace rip
                     cfmakeraw(&tty);
                     this->fd = USB;
                     tcflush(this->fd, TCIOFLUSH);
+                    //TODO: exception. handling.
                     if(tcsetattr(USB,TCSANOW,&tty) != 0) std::cout << "Failed to initialize serial." << std::endl;
 
                 }
 
-                void SetReadBufferSize(int size) {
+                void setReadBufferSize(int size)
+                {
                     this->ReadBufferSize = size;
                 }
 
-                void SetTimeout(int timeout) {
+                void setTimeout(int timeout)
+                {
                     this->timeout = timeout;
                     tty.c_cc[VTIME] = timeout*10;
                     cfmakeraw(&tty);
+                    //TODO: exception handling
                     if(tcsetattr(this->fd,TCSANOW,&tty) != 0) std::cout << "Failed to initialize serial in SetTimeout." << std::endl;;
                 }
 
-
-                void EnableTermination(char c) {
+                void enableTermination(char c)
+                {
                     this->termination = true;
                     this->terminationChar = c;
                 }
 
-
-                void Flush() {
+                void flush()
+                {
                     tcflush(this->fd, TCOFLUSH);
                 }
 
-                void Write(char *data, int length) {
+                void write(char *data, int length)
+                {
                     int n_written = 0, spot = 0;
-                    do {
+                    do
+                    {
 
                         n_written = write( this->fd, &data[spot], length );
                         if (n_written > 0)
@@ -110,57 +118,59 @@ namespace rip
                     } while (data[spot-1] != terminationChar);
                 }
 
-                int GetBytesReceived() {
+                int getBytesReceived()
+                {
                     int bytes_avail;
                     ioctl(this->fd, FIONREAD, &bytes_avail);
                     return bytes_avail;
                 }
 
-                int Read(char *data, int size) {
+                int read(char *data, int size)
+                {
                     int n = 0, loc = 0;
                     char buf = '\0';
                     memset(data, '\0', size);
-            	err = 0;
+            	    err = 0;
 
-                    do {
+                    do
+                    {
                         n = read(this->fd, &buf, 1);
                         sprintf( &data[loc], "%c", buf );
                         loc += n;
 
-            	    if(n == 0) err++;
+                	    if(n == 0) err++;
 
-            	    if(err > 100)
-            	    {
-            		err = 0;
-            		Reset();
-            		Close();
-            	        std::this_thread::sleep_for(std::chrono::milliseconds(30000));
-            		Init(this->baudRate, this->id);
-            		SetTimeout(this->timeout);
-            		SetReadBufferSize(this->ReadBufferSize);
-            		EnableTermination(this->terminationChar);
-            		Reset();
-            		break;
-
-            	    }
-
-
-
+                	    if(err > 100)
+                	    {
+                    		err = 0;
+                    		reset();
+                    		close();
+                    	    std::this_thread::sleep_for(std::chrono::milliseconds(30000));
+                    		init(this->baudRate, this->id);
+                    		setTimeout(this->timeout);
+                    	    setReadBufferSize(this->ReadBufferSize);
+                    	    enableTermination(this->terminationChar);
+                    		reset();
+                    		break;
+                	    }
                     } while( buf != terminationChar && loc < size);
 
-                    if (n < 0) {
+                    if (n < 0)
+                    {
+                        //TODO: replace this garbage serial library
                         std::cout << "Error reading: " << strerror(errno) << std::endl;
                     }
                     else if (n == 0) {
                         std::cout << "Read nothing!" << std::endl;
                     }
-                    else {
+                    else
+                    {
                         //std::cout << "Response: " << data  << std::endl;
                     }
                     return loc;
                 }
 
-                void WaitForData()
+                void waitForData()
                 {
             		fd_set readfds;
             		struct timeval tv;
@@ -171,14 +181,15 @@ namespace rip
             		select(this->fd + 1, &readfds, NULL, NULL, &tv);
                 }
 
-                void Reset() {
+                void reset()
+                {
                     tcflush(this->fd, TCIOFLUSH);
                 }
 
-                void Close() {
+                void close()
+                {
                     close(this->fd);
                 }
-
             };
         }
     }

@@ -8,7 +8,8 @@ namespace rip
         namespace navx
         {
 
-            class OffsetTracker {
+            class OffsetTracker
+            {
                 float *value_history;
                 int next_value_history_index;
                 int history_len;
@@ -16,13 +17,13 @@ namespace rip
 
             public:
                 OffsetTracker(int history_length);
-                void UpdateHistory(float curr_value);
-                void SetOffset();
-                double ApplyOffset( double value );
+                void updateHistory(float curr_value);
+                void setOffset();
+                double applyOffset( double value );
 
             private:
-                double GetAverageFromHistory();
-                double GetOffset();
+                double getAverageFromHistory();
+                double getOffset();
             };
         }//navx
     }//navigation

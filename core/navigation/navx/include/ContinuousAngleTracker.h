@@ -7,18 +7,24 @@ namespace rip
     {
         namespace navx
         {
-
-
-            class ContinuousAngleTracker {
+            /* Calculate delta angle, adjusting appropriately
+             * if the current sample crossed the -180/180
+             * point.
+             * If the first received sample is negative,
+             * ensure that the zero crossing count is
+             * decremented.
+             */
+            class ContinuousAngleTracker
+            {
                 float last_angle;
                 double last_rate;
                 int zero_crossing_count;
                 bool first_sample;
             public:
                 ContinuousAngleTracker();
-                void NextAngle( float newAngle );
-                double GetAngle();
-                double GetRate();
+                void nextAngle( float newAngle );
+                double getAngle();
+                double getRate();
             };
         }
     }

@@ -7,13 +7,13 @@ namespace rip
     {
         namespace navx
         {
-            class IBoardCapabilities {
-            public:
+            struct IBoardCapabilities
+            {
                 IBoardCapabilities() {}
-                virtual bool IsOmniMountSupported() = 0;
-                virtual bool IsBoardYawResetSupported() = 0;
-                virtual bool IsDisplacementSupported() = 0;
-                virtual bool IsAHRSPosTimestampSupported() = 0;
+                virtual bool isOmniMountSupported() = 0;
+                virtual bool isBoardYawResetSupported() = 0;
+                virtual bool isDisplacementSupported() = 0;
+                virtual bool isAHRSPosTimestampSupported() = 0;
             };
         }
     }
