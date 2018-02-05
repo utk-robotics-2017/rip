@@ -41,11 +41,11 @@ namespace rip
                 double last_valid_packet_time;
 
             public:
-                SerialIO( std::string port_id,
+                SerialIO(std::string port_id,
                           uint8_t update_rate_hz,
                           bool processed_data,
                           IIOCompleteNotification *notify_sink,
-                          IBoardCapabilities *board_capabilities );
+                          IBoardCapabilities *board_capabilities);
                 bool isConnected();
                 double getByteCount();
                 double getUpdateCount();

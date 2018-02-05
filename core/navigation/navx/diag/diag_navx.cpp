@@ -29,7 +29,7 @@ int main(int argc, char *argv[]) {
 
     std::cout << "Pitch  |  Roll  |  Yaw  |  X-Accel  | Y-Accel  |  Z-Accel  |  Time  |" << std::endl;
 
-    while( 1 == 1){
+    while(1 == 1){
         std::cout << std::fixed << std::setprecision(2) << com.GetPitch() << "      " << com.GetRoll() << "   " << com.GetYaw() << "     " <<com.GetWorldLinearAccelX() << "     " << com.GetWorldLinearAccelY() << "       " << com.GetWorldLinearAccelZ() << "      " << com.GetLastSensorTimestamp() << "      " << '\r' << std::flush;
         std::this_thread::sleep_for(std::chrono::milliseconds(125));
         if(sflag){

@@ -19,7 +19,7 @@ namespace rip
                 OffsetTracker(int history_length);
                 void updateHistory(float curr_value);
                 void setOffset();
-                double applyOffset( double value );
+                double applyOffset(double value);
 
             private:
                 double getAverageFromHistory();

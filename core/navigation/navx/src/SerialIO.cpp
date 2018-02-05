@@ -52,7 +52,7 @@ namespace rip
                     {
                         delete serial_port;
                     }
-                    catch (std::exception  ex)
+                    catch(std::exception  ex)
                     {
                         // This has been seen to happen before....
                         //^top notch exception handling as usual
@@ -75,7 +75,7 @@ namespace rip
                         serial_port->enableTermination('\n');
                         serial_port->reset();
                     }
-                    catch (std::exception ex)
+                    catch(std::exception ex)
                     {
                         //TODO: nuke serialIO this in milestone 0.2
                         printf("ERROR Opening Serial Port!\n");
@@ -92,13 +92,13 @@ namespace rip
             }
 
             void SerialIO::dispatchStreamResponse(IMUProtocol::StreamResponse& response) {
-                board_state.cal_status = (uint8_t) (response.flags & NAV6_FLAG_MASK_CALIBRATION_STATE);
-                board_state.capability_flags = (int16_t) (response.flags & ~NAV6_FLAG_MASK_CALIBRATION_STATE);
+                board_state.cal_status =(uint8_t)(response.flags & NAV6_FLAG_MASK_CALIBRATION_STATE);
+                board_state.capability_flags =(int16_t)(response.flags & ~NAV6_FLAG_MASK_CALIBRATION_STATE);
                 board_state.op_status = 0x04; /* TODO:  Create a symbol for this */
                 board_state.selftest_status = 0x07; /* TODO:  Create a symbol for this */
                 board_state.accel_fsr_g = response.accel_fsr_g;
                 board_state.gyro_fsr_dps = response.gyro_fsr_dps;
-                board_state.update_rate_hz = (uint8_t) response.update_rate_hz;
+                board_state.update_rate_hz =(uint8_t) response.update_rate_hz;
                 notify_sink->setBoardState(board_state);
                 /* If AHRSPOS_TS is update type is requested, but board doesn't support it, */
                 /* retransmit the stream config, falling back to AHRSPos update mode, if   */
@@ -190,7 +190,7 @@ namespace rip
                     serial_port->flush();
                     serial_port->reset();
                 }
-                catch (std::exception ex)
+                catch(std::exception ex)
                 {
                     printf("SerialPort Run() Port Initialization Exception:  %s\n", ex.what());
                 }
@@ -213,7 +213,7 @@ namespace rip
                     port_reset_count++;
                     last_stream_command_sent_timestamp = time(0);
                 }
-                catch (std::exception ex)
+                catch(std::exception ex)
                 {
                     printf("SerialPort Run() Port Send Encode Stream Command Exception:  %s\n", ex.what());
                 }
@@ -225,7 +225,7 @@ namespace rip
 
                 int updater = 0;
 
-                while (!stop)
+                while(!stop)
                 {
                     try
                     {
@@ -252,14 +252,14 @@ namespace rip
             		            //DEBUG-TODO: Determine ifthis is needed
                                 //serial_port->Write(integration_control_command, cmd_packet_length);
                             }
-                            catch (std::exception ex)
+                            catch(std::exception ex)
                             {
                                 printf("SerialPort Run() IntegrationControl Send Exception:  %s\n", ex.what());
                             }
                         }
 
 
-                        if(!stop && (remainder_bytes == 0) && (serial_port->getBytesReceived() < 1))
+                        if(!stop &&(remainder_bytes == 0) &&(serial_port->getBytesReceived() < 1))
                         {
                             //usleep(1000000/update_rate_hz);
             		        serial_port->waitForData();
@@ -285,7 +285,7 @@ namespace rip
                             last_data_received_timestamp = time(0);
                             int i = 0;
                             // Scan the buffer looking for valid packets
-                            while (i < bytes_read)
+                            while(i < bytes_read)
                             {
                                 // Attempt to decode a packet
                                 int bytes_remaining = bytes_read - i;
@@ -300,12 +300,12 @@ namespace rip
                                 else
                                 {
                                     if((bytes_remaining > 2) &&
-                                            (received_data[i+1] == BINARY_PACKET_INDICATOR_CHAR))
+                                           (received_data[i+1] == BINARY_PACKET_INDICATOR_CHAR))
                                     {
                                         /* Binary packet received; next byte is packet length-2 */
                                         uint8_t total_expected_binary_data_bytes = received_data[i+2];
                                         total_expected_binary_data_bytes += 2;
-                                        while (bytes_remaining < total_expected_binary_data_bytes)
+                                        while(bytes_remaining < total_expected_binary_data_bytes)
                                         {
                                             /* This binary packet contains an embedded     */
                                             /* end-of-line character.  Continue to receive */
@@ -374,7 +374,7 @@ namespace rip
                                             /* Scan to the beginning of the next packet,               */
                                             bool next_packet_start_found = false;
                                             int x;
-                                            for (x = 0; x < bytes_remaining; x++)
+                                            for(x = 0; x < bytes_remaining; x++)
                                             {
                                                 if(received_data[i + x] != PACKET_START_CHAR)
                                                 {
@@ -410,7 +410,7 @@ namespace rip
                                                     /* This occurs when packets are received that are not decoded.   */
                                                     /* Bump over this packet and prepare for the next.               */
                                                     if((bytes_remaining > 2) &&
-                                                            (received_data[i+1] == BINARY_PACKET_INDICATOR_CHAR))
+                                                           (received_data[i+1] == BINARY_PACKET_INDICATOR_CHAR))
                                                     {
                                                         /* Binary packet received; next byte is packet length-2 */
                                                         int pkt_len = received_data[i+2];
@@ -433,12 +433,12 @@ namespace rip
                                                         /* Ascii packet received. */
                                                         /* Scan up to and including next end-of-packet character       */
                                                         /* sequence, or the beginning of a new packet.                 */
-                                                        for (x = 0; x < bytes_remaining; x++)
+                                                        for(x = 0; x < bytes_remaining; x++)
                                                         {
                                                             if(received_data[i+x] == '\r')
                                                             {
                                                                 i += x+1;
-                                                                bytes_remaining -= (x+1);
+                                                                bytes_remaining -=(x+1);
                                                                 discarded_bytes_count += x+1;
                                                                 if((bytes_remaining > 0) &&  received_data[i] == '\n')
                                                                 {
@@ -488,7 +488,7 @@ namespace rip
                                             }
                                             if(partial_packet)
                                             {
-                                                if(bytes_remaining > (int)sizeof(remainder_data))
+                                                if(bytes_remaining >(int)sizeof(remainder_data))
                                                 {
                                                     memcpy(remainder_data, received_data + i - sizeof(remainder_data), sizeof(remainder_data));
                                                     remainder_bytes = sizeof(remainder_data);
@@ -505,7 +505,7 @@ namespace rip
                                 }
                             }
 
-                            if((packets_received == 0) && (bytes_read == 256))
+                            if((packets_received == 0) &&(bytes_read == 256))
                             {
                                 // Workaround for issue found in SerialPort implementation:
                                 // No packets received and 256 bytes received; this
@@ -524,13 +524,13 @@ namespace rip
                             }
 
                             // If a stream configuration response has not been received within three seconds
-                            // of operation, (re)send a stream configuration request
+                            // of operation,(re)send a stream configuration request
 
-                            //std::cout << "Config: " << retransmit_stream_config << " Time: " << (time(0) - last_stream_command_sent_timestamp) << " " << last_stream_command_sent_timestamp << std::endl;
+                            //std::cout << "Config: " << retransmit_stream_config << " Time: " <<(time(0) - last_stream_command_sent_timestamp) << " " << last_stream_command_sent_timestamp << std::endl;
 
             		//DEBUG-TODO: Enable this ifwe really need it
-                            if(false && (retransmit_stream_config ||
-                                    (!stream_response_received && ((time(0) - last_stream_command_sent_timestamp) > 3.0))))
+                            if(false &&(retransmit_stream_config ||
+                                   (!stream_response_received &&((time(0) - last_stream_command_sent_timestamp) > 3.0))))
                             {
                                 cmd_packet_length = IMUProtocol::encodeStreamCommand(stream_command, update_type, update_rate_hz);
                                 try
@@ -543,7 +543,7 @@ namespace rip
                                     serial_port->write(stream_command, cmd_packet_length);
                                     serial_port->flush();
                                 }
-                                catch (std::exception ex2)
+                                catch(std::exception ex2)
                                 {
                                     printf("SerialPort Run() Re-transmit Encode Stream Command Exception:  %s\n", ex2.what());
                                 }
@@ -551,7 +551,7 @@ namespace rip
                             else
                             {
                                 // If no bytes remain in the buffer, and not awaiting a response, sleep a bit
-                                if(stream_response_received && (serial_port->getBytesReceived() == 0))
+                                if(stream_response_received &&(serial_port->getBytesReceived() == 0))
                                 {
             		                serial_port->waitForData();
                                 }
@@ -577,7 +577,7 @@ namespace rip
                             }
                         }
                     }
-                    catch (std::exception ex)
+                    catch(std::exception ex)
                     {
                         // This exception typically indicates a Timeout, but can also be a buffer overrun error.
                         stream_response_received = false;

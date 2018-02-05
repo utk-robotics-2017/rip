@@ -12,7 +12,7 @@ namespace rip
             {
                 history_len = history_length;
                 value_history = new float[history_len];
-                for ( int i = 0; i < history_len; i++ )
+                for(int i = 0; i < history_len; i++)
                 {
                     value_history[i] = 0.0f;
                 }
@@ -22,7 +22,7 @@ namespace rip
 
             void OffsetTracker::updateHistory(float curr_value)
             {
-                if (next_value_history_index >= history_len)
+                if(next_value_history_index >= history_len)
                 {
                     next_value_history_index = 0;
                 }
@@ -33,7 +33,7 @@ namespace rip
             double OffsetTracker::getAverageFromHistory()
             {
                 double value_history_sum = 0.0;
-                for (int i = 0; i < history_len; i++)
+                for(int i = 0; i < history_len; i++)
                 {
                     value_history_sum += value_history[i];
                 }
@@ -51,14 +51,14 @@ namespace rip
                 return value_offset;
             }
 
-            double OffsetTracker::applyOffset( double value ) 
+            double OffsetTracker::applyOffset(double value) 
             {
-                float offseted_value = (float) (value - value_offset);
-                if (offseted_value < -180)
+                float offseted_value =(float)(value - value_offset);
+                if(offseted_value < -180)
                 {
                     offseted_value += 360;
                 }
-                if (offseted_value > 180)
+                if(offseted_value > 180)
                 {
                     offseted_value -= 360;
                 }

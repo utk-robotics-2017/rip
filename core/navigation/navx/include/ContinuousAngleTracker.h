@@ -22,7 +22,7 @@ namespace rip
                 bool first_sample;
             public:
                 ContinuousAngleTracker();
-                void nextAngle( float newAngle );
+                void nextAngle(float newAngle);
                 double getAngle();
                 double getRate();
             };

@@ -22,11 +22,11 @@ namespace rip
             /**
              * The AHRS class provides an interface to AHRS capabilities
              * of the KauaiLabs navX Robotics Navigation Sensor via SPI, I2C and
-             * Serial (TTL UART and USB) communications interfaces on RIP.
+             * Serial(TTL UART and USB) communications interfaces on RIP.
              *
              * The AHRS class enables access to basic connectivity and state information,
-             * as well as key 6-axis and 9-axis orientation information (yaw, pitch, roll,
-             * compass heading, fused (9-axis) heading and magnetic disturbance detection.
+             * as well as key 6-axis and 9-axis orientation information(yaw, pitch, roll,
+             * compass heading, fused(9-axis) heading and magnetic disturbance detection.
              *
              * Additionally, the ARHS class also provides access to extended information
              * including linear acceleration, motion detection, rotation detection and sensor
@@ -52,14 +52,14 @@ namespace rip
                 {
                     /* Identifies one of the board axes */
                     boardAxis board_axis;
-                    /* true if axis is pointing up (with respect to gravity); false if pointing down. */
+                    /* true if axis is pointing up(with respect to gravity); false if pointing down. */
                     bool up;
                 };
 
                 enum serialDataType
                 {
                 /**
-                 * (default):  6 and 9-axis processed data
+                 *(default):  6 and 9-axis processed data
                  */
                 kProcessedData = 0,
                 /**
@@ -144,7 +144,7 @@ namespace rip
 
                  /**
                   * Constructs the AHRS class using serial communication and the default update rate,
-                  * and returning processed (rather than raw) data.
+                  * and returning processed(rather than raw) data.
                   *<p>
                   * This constructor should be used if communicating via either
                   * TTL UART or USB Serial interface.
@@ -163,55 +163,55 @@ namespace rip
                  * Note that the serial interfaces can communicate either
                  * processed data, or raw data, but not both simultaneously.
                  * If simultaneous processed and raw data are needed, use
-                 * one of the register-based interfaces (SPI or I2C).
+                 * one of the register-based interfaces(SPI or I2C).
                  *<p>
                  * Note that increasing the update rate may increase the
                  * CPU utilization.
                  *<p>
                  * @param serial_port_id SerialPort to use
                  * @param data_type either kProcessedData or kRawData
-                 * @param update_rate_hz Custom Update Rate (Hz)
+                 * @param update_rate_hz Custom Update Rate(Hz)
                  */
                 AHRS(std::string serial_port_id, AHRS::serialDataType data_type, uint8_t update_rate_hz);
 
                 /**
-                 * Returns the current pitch value (in degrees, from -180 to 180)
+                 * Returns the current pitch value(in degrees, from -180 to 180)
                  * reported by the sensor.  Pitch is a measure of rotation around
                  * the X Axis.
-                 * @return The current pitch value in degrees (-180 to 180).
+                 * @return The current pitch value in degrees(-180 to 180).
                  */
                 units::Angle getPitch();
                 /**
-                 * Returns the current roll value (in degrees, from -180 to 180)
+                 * Returns the current roll value(in degrees, from -180 to 180)
                  * reported by the sensor.  Roll is a measure of rotation around
                  * the X Axis.
-                 * @return The current roll value in degrees (-180 to 180).
+                 * @return The current roll value in degrees(-180 to 180).
                  */
                 units::Angle getRoll();
                 /**
-                 * Returns the current yaw value (in degrees, from -180 to 180)
+                 * Returns the current yaw value(in degrees, from -180 to 180)
                  * reported by the sensor.  Yaw is a measure of rotation around
-                 * the Z Axis (which is perpendicular to the earth).
+                 * the Z Axis(which is perpendicular to the earth).
                  *<p>
                  * Note that the returned yaw value will be offset by a user-specified
                  * offset value; this user-specified offset value is set by
                  * invoking the zeroYaw() method.
-                 * @return The current yaw value in degrees (-180 to 180).
+                 * @return The current yaw value in degrees(-180 to 180).
                  */
                 units::Angle getYaw();
                 /**
                  * Returns the current tilt-compensated compass heading
-                 * value (in degrees, from 0 to 360) reported by the sensor.
+                 * value(in degrees, from 0 to 360) reported by the sensor.
                  *<p>
                  * Note that this value is sensed by a magnetometer,
-                 * which can be affected by nearby magnetic fields (e.g., the
+                 * which can be affected by nearby magnetic fields(e.g., the
                  * magnetic fields generated by nearby motors).
                  *<p>
-                 * Before using this value, ensure that (a) the magnetometer
-                 * has been calibrated and (b) that a magnetic disturbance is
+                 * Before using this value, ensure that(a) the magnetometer
+                 * has been calibrated and(b) that a magnetic disturbance is
                  * not taking place at the instant when the compass heading
                  * was generated.
-                 * @return The current tilt-compensated compass heading, in degrees (0-360).
+                 * @return The current tilt-compensated compass heading, in degrees(0-360).
                  */
                 units::Angle getCompassHeading();
                 /**
@@ -228,7 +228,7 @@ namespace rip
                  * gyro/accelerometer calibration.  Automatic calibration occurs
                  * when the sensor is initially powered on, during which time the
                  * sensor should be held still, with the Z-axis pointing up
-                 * (perpendicular to the earth).
+                 *(perpendicular to the earth).
                  *<p>
                  * NOTE:  During this automatic calibration, the yaw, pitch and roll
                  * values returned may not be accurate.
@@ -255,7 +255,7 @@ namespace rip
                  * connectivity issues.
                  *<p>
                  * If the byte count is increasing, but the update count
-                 * (see getUpdateCount()) is not, this indicates a software
+                 *(see getUpdateCount()) is not, this indicates a software
                  * misconfiguration.
                  * @return The number of bytes received from the sensor.
                  */
@@ -271,46 +271,46 @@ namespace rip
                  * Returns the sensor timestamp corresponding to the
                  * last sample retrieved from the sensor.  Note that this
                  * sensor timestamp is only provided when the Register-based
-                 * IO methods (SPI, I2C) are used; sensor timestamps are not
-                 * provided when Serial-based IO methods (TTL UART, USB)
+                 * IO methods(SPI, I2C) are used; sensor timestamps are not
+                 * provided when Serial-based IO methods(TTL UART, USB)
                  * are used.
                  * @return The sensor timestamp corresponding to the current AHRS sensor data.
                  */
                 long   getLastSensorTimestamp();
                 /**
-                 * Returns the current linear acceleration in the X-axis (in G).
+                 * Returns the current linear acceleration in the X-axis(in G).
                  *<p>
                  * World linear acceleration refers to raw acceleration data, which
                  * has had the gravity component removed, and which has been rotated to
                  * the same reference frame as the current yaw value.  The resulting
                  * value represents the current acceleration in the x-axis of the
-                 * body (e.g., the robot) on which the sensor is mounted.
+                 * body(e.g., the robot) on which the sensor is mounted.
                  *<p>
-                 * @return Current world linear acceleration in the X-axis (in G).
+                 * @return Current world linear acceleration in the X-axis(in G).
                  */
                 units::Acceleration getWorldLinearAccelX();
                 /**
-                 * Returns the current linear acceleration in the Y-axis (in G).
+                 * Returns the current linear acceleration in the Y-axis(in G).
                  *<p>
                  * World linear acceleration refers to raw acceleration data, which
                  * has had the gravity component removed, and which has been rotated to
                  * the same reference frame as the current yaw value.  The resulting
                  * value represents the current acceleration in the Y-axis of the
-                 * body (e.g., the robot) on which the sensor is mounted.
+                 * body(e.g., the robot) on which the sensor is mounted.
                  *<p>
-                 * @return Current world linear acceleration in the Y-axis (in G).
+                 * @return Current world linear acceleration in the Y-axis(in G).
                  */
                 units::Acceleration getWorldLinearAccelY();
                 /**
-                 * Returns the current linear acceleration in the Z-axis (in G).
+                 * Returns the current linear acceleration in the Z-axis(in G).
                  *<p>
                  * World linear acceleration refers to raw acceleration data, which
                  * has had the gravity component removed, and which has been rotated to
                  * the same reference frame as the current yaw value.  The resulting
                  * value represents the current acceleration in the Z-axis of the
-                 * body (e.g., the robot) on which the sensor is mounted.
+                 * body(e.g., the robot) on which the sensor is mounted.
                  *<p>
-                 * @return Current world linear acceleration in the Z-axis (in G).
+                 * @return Current world linear acceleration in the Z-axis(in G).
                  */
                 units::Acceleration getWorldLinearAccelZ();
                 /**
@@ -340,7 +340,7 @@ namespace rip
                  *<p>
                  * NOTE:  This value is only valid for a navX Aero.  To determine
                  * whether this value is valid, see isAltitudeValid().
-                 * @return Returns current barometric pressure (navX Aero only).
+                 * @return Returns current barometric pressure(navX Aero only).
                  */
                 units::Pressure getBarometricPressure();
                 /**
@@ -352,12 +352,12 @@ namespace rip
                  * sensor.  To determine whether this value is valid, see
                  * isAltitudeValid().
                  *<p>
-                 * @return Returns current altitude in meters (as long as the sensor includes
+                 * @return Returns current altitude in meters(as long as the sensor includes
                  * an installed on-board pressure sensor).
                  */
                 units::Distance getAltitude();
                 /**
-                 * Indicates whether the current altitude (and barometric pressure) data is
+                 * Indicates whether the current altitude(and barometric pressure) data is
                  * valid. This value will only be true for a sensor with an onboard
                  * pressure sensor installed.
                  *<p>
@@ -368,7 +368,7 @@ namespace rip
                  */
                 bool   isAltitudeValid();
                 /**
-                 * Returns the "fused" (9-axis) heading.
+                 * Returns the "fused"(9-axis) heading.
                  *<p>
                  * The 9-axis heading is the fusion of the yaw angle, the tilt-corrected
                  * compass heading, and magnetic disturbance detection.  Note that the
@@ -379,8 +379,8 @@ namespace rip
                  * based upon the last known valid Compass Angle, and updated by the change in the
                  * Yaw Angle since the last known valid Compass Angle.  The last known valid Compass
                  * Angle is updated whenever a Calibrated Compass Angle is read and the sensor
-                 * has recently rotated less than the Compass Noise Bandwidth (~2 degrees).
-                 * @return Fused Heading in Degrees (range 0-360)
+                 * has recently rotated less than the Compass Noise Bandwidth(~2 degrees).
+                 * @return Fused Heading in Degrees(range 0-360)
                  */
                 float  getFusedHeading();
                 /**
@@ -390,7 +390,7 @@ namespace rip
                  *<p>
                  * This function will always return false if the sensor's magnetometer has
                  * not yet been calibrated; see isMagnetometerCalibrated().
-                 * @return true if a magnetic disturbance is detected (or the magnetometer is uncalibrated).
+                 * @return true if a magnetic disturbance is detected(or the magnetometer is uncalibrated).
                  */
                 bool   isMagneticDisturbance();
                 /**
@@ -408,61 +408,61 @@ namespace rip
                 /* Unit Quaternions */
 
                 /**
-                 * Returns the imaginary portion (W) of the Orientation Quaternion which
+                 * Returns the imaginary portion(W) of the Orientation Quaternion which
                  * fully describes the current sensor orientation with respect to the
                  * reference angle defined as the angle at which the yaw was last "zeroed".
                  *<p>
-                 * Each quaternion value (W,X,Y,Z) is expressed as a value ranging from -2
-                 * to 2.  This total range (4) can be associated with a unit circle, since
+                 * Each quaternion value(W,X,Y,Z) is expressed as a value ranging from -2
+                 * to 2.  This total range(4) can be associated with a unit circle, since
                  * each circle is comprised of 4 PI Radians.
                  * <p>
                  * For more information on Quaternions and their use, please see this <a href=https://en.wikipedia.org/wiki/Quaternions_and_spatial_rotation>definition</a>.
-                 * @return Returns the imaginary portion (W) of the quaternion.
+                 * @return Returns the imaginary portion(W) of the quaternion.
                  */
                 float  getQuaternionW();
                 /**
-                 * Returns the real portion (X axis) of the Orientation Quaternion which
+                 * Returns the real portion(X axis) of the Orientation Quaternion which
                  * fully describes the current sensor orientation with respect to the
                  * reference angle defined as the angle at which the yaw was last "zeroed".
                  * <p>
-                 * Each quaternion value (W,X,Y,Z) is expressed as a value ranging from -2
-                 * to 2.  This total range (4) can be associated with a unit circle, since
+                 * Each quaternion value(W,X,Y,Z) is expressed as a value ranging from -2
+                 * to 2.  This total range(4) can be associated with a unit circle, since
                  * each circle is comprised of 4 PI Radians.
                  * <p>
                  * For more information on Quaternions and their use, please see this <a href=https://en.wikipedia.org/wiki/Quaternions_and_spatial_rotation>description</a>.
-                 * @return Returns the real portion (X) of the quaternion.
+                 * @return Returns the real portion(X) of the quaternion.
                  */
                 float  getQuaternionX();
                 /**
-                 * Returns the real portion (X axis) of the Orientation Quaternion which
+                 * Returns the real portion(X axis) of the Orientation Quaternion which
                  * fully describes the current sensor orientation with respect to the
                  * reference angle defined as the angle at which the yaw was last "zeroed".
                  *
-                 * Each quaternion value (W,X,Y,Z) is expressed as a value ranging from -2
-                 * to 2.  This total range (4) can be associated with a unit circle, since
+                 * Each quaternion value(W,X,Y,Z) is expressed as a value ranging from -2
+                 * to 2.  This total range(4) can be associated with a unit circle, since
                  * each circle is comprised of 4 PI Radians.
                  *
                  * For more information on Quaternions and their use, please see:
                  *
                  *   https://en.wikipedia.org/wiki/Quaternions_and_spatial_rotation
                  *
-                 * @return Returns the real portion (X) of the quaternion.
+                 * @return Returns the real portion(X) of the quaternion.
                  */
                 float  getQuaternionY();
                 /**
-                 * Returns the real portion (X axis) of the Orientation Quaternion which
+                 * Returns the real portion(X axis) of the Orientation Quaternion which
                  * fully describes the current sensor orientation with respect to the
                  * reference angle defined as the angle at which the yaw was last "zeroed".
                  *
-                 * Each quaternion value (W,X,Y,Z) is expressed as a value ranging from -2
-                 * to 2.  This total range (4) can be associated with a unit circle, since
+                 * Each quaternion value(W,X,Y,Z) is expressed as a value ranging from -2
+                 * to 2.  This total range(4) can be associated with a unit circle, since
                  * each circle is comprised of 4 PI Radians.
                  *
                  * For more information on Quaternions and their use, please see:
                  *
                  *   https://en.wikipedia.org/wiki/Quaternions_and_spatial_rotation
                  *
-                 * @return Returns the real portion (X) of the quaternion.
+                 * @return Returns the real portion(X) of the quaternion.
                  */
                 float  getQuaternionZ();
                 /**
@@ -473,74 +473,74 @@ namespace rip
                 /**
                  * Each time new linear acceleration samples are received, this function should be invoked.
                  * This function transforms acceleration in G to meters/sec^2, then converts this value to
-                 * Velocity in meters/sec (based upon velocity in the previous sample).  Finally, this value
+                 * Velocity in meters/sec(based upon velocity in the previous sample).  Finally, this value
                  * is converted to displacement in meters, and integrated.
                  * @return none.
                  */
-                void   updateDisplacement( float accel_x_g, float accel_y_g,
-                                           int update_rate_hz, bool is_moving );
+                void   updateDisplacement(float accel_x_g, float accel_y_g,
+                                           int update_rate_hz, bool is_moving);
                /**
-                * Returns the velocity (in meters/sec) of the X axis [Experimental].
+                * Returns the velocity(in meters/sec) of the X axis [Experimental].
                 *
                 * NOTE:  This feature is experimental.  Velocity measures rely on integration
                 * of acceleration values from MEMS accelerometers which yield "noisy" values.  The
                 * resulting velocities are not known to be very accurate.
-                * @return Current Velocity (in meters/squared).
+                * @return Current Velocity(in meters/squared).
                 */
                 units::Velocity getVelocityX();
                 /**
-                 * Returns the velocity (in meters/sec) of the Y axis [Experimental].
+                 * Returns the velocity(in meters/sec) of the Y axis [Experimental].
                  *
                  * NOTE:  This feature is experimental.  Velocity measures rely on integration
                  * of acceleration values from MEMS accelerometers which yield "noisy" values.  The
                  * resulting velocities are not known to be very accurate.
-                 * @return Current Velocity (in meters/squared).
+                 * @return Current Velocity(in meters/squared).
                  */
                 units::Velocity getVelocityY();
                 /**
-                 * Returns the velocity (in meters/sec) of the Z axis [Experimental].
+                 * Returns the velocity(in meters/sec) of the Z axis [Experimental].
                  *
                  * NOTE:  This feature is experimental.  Velocity measures rely on integration
                  * of acceleration values from MEMS accelerometers which yield "noisy" values.  The
                  * resulting velocities are not known to be very accurate.
-                 * @return Current Velocity (in meters/squared).
+                 * @return Current Velocity(in meters/squared).
                  */
                 units::Velocity getVelocityZ();
                 /**
-                 * Returns the displacement (in meters) of the X axis since resetDisplacement()
+                 * Returns the displacement(in meters) of the X axis since resetDisplacement()
                  * was last invoked [Experimental].
                  *
                  * NOTE:  This feature is experimental.  Displacement measures rely on double-integration
                  * of acceleration values from MEMS accelerometers which yield "noisy" values.  The
                  * resulting displacement are not known to be very accurate, and the amount of error
                  * increases quickly as time progresses.
-                 * @return Displacement since last reset (in meters).
+                 * @return Displacement since last reset(in meters).
                  */
                 units::Distance getDisplacementX();
                 /**
-                 * Returns the displacement (in meters) of the Y axis since resetDisplacement()
+                 * Returns the displacement(in meters) of the Y axis since resetDisplacement()
                  * was last invoked [Experimental].
                  *
                  * NOTE:  This feature is experimental.  Displacement measures rely on double-integration
                  * of acceleration values from MEMS accelerometers which yield "noisy" values.  The
                  * resulting displacement are not known to be very accurate, and the amount of error
                  * increases quickly as time progresses.
-                 * @return Displacement since last reset (in meters).
+                 * @return Displacement since last reset(in meters).
                  */
                 units::Distance getDisplacementY();
                 /**
-                 * Returns the displacement (in meters) of the Z axis since resetDisplacement()
+                 * Returns the displacement(in meters) of the Z axis since resetDisplacement()
                  * was last invoked [Experimental].
                  *
                  * NOTE:  This feature is experimental.  Displacement measures rely on double-integration
                  * of acceleration values from MEMS accelerometers which yield "noisy" values.  The
                  * resulting displacement are not known to be very accurate, and the amount of error
                  * increases quickly as time progresses.
-                 * @return Displacement since last reset (in meters).
+                 * @return Displacement since last reset(in meters).
                  */
                 units::Distance getDisplacementZ();
                 /**
-                 * Returns the total accumulated yaw angle (Z Axis, in degrees)
+                 * Returns the total accumulated yaw angle(Z Axis, in degrees)
                  * reported by the sensor.
                  *<p>
                  * NOTE: The angle is continuous, meaning it's range is beyond 360 degrees.
@@ -551,128 +551,128 @@ namespace rip
                  * offset value; this user-specified offset value is set by
                  * invoking the zeroYaw() method.
                  *<p>
-                 * @return The current total accumulated yaw angle (Z axis) of the robot
+                 * @return The current total accumulated yaw angle(Z axis) of the robot
                  * in degrees. This heading is based on integration of the returned rate
-                 * from the Z-axis (yaw) gyro.
+                 * from the Z-axis(yaw) gyro.
                  */
                 units::Angle getAngle();
                 /**
-                 * Return the rate of rotation of the yaw (Z-axis) gyro, in degrees per second.
+                 * Return the rate of rotation of the yaw(Z-axis) gyro, in degrees per second.
                  *<p>
                  * The rate is based on the most recent reading of the yaw gyro angle.
                  *<p>
-                 * @return The current rate of change in yaw angle (in degrees per second)
+                 * @return The current rate of change in yaw angle(in degrees per second)
                  */
 
                 units::AngularVelocity getRate();
                 /**
                  * Reset the Yaw gyro.
                  *<p>
-                 * Resets the Gyro Z (Yaw) axis to a heading of zero. This can be used if
+                 * Resets the Gyro Z(Yaw) axis to a heading of zero. This can be used if
                  * there is significant drift in the gyro and it needs to be recalibrated
                  * after it has been running.
                  */
                 void   reset();
                 /**
-                 * Returns the current raw (unprocessed) X-axis gyro rotation rate (in degrees/sec).  NOTE:  this
+                 * Returns the current raw(unprocessed) X-axis gyro rotation rate(in degrees/sec).  NOTE:  this
                  * value is un-processed, and should only be accessed by advanced users.
                  * Typically, rotation about the X Axis is referred to as "Pitch".  Calibrated
                  * and Integrated Pitch data is accessible via the {@link #GetPitch()} method.
                  *<p>
-                 * @return Returns the current rotation rate (in degrees/sec).
+                 * @return Returns the current rotation rate(in degrees/sec).
                  */
                 float  getRawGyroX();
                 /**
-                 * Returns the current raw (unprocessed) Y-axis gyro rotation rate (in degrees/sec).  NOTE:  this
+                 * Returns the current raw(unprocessed) Y-axis gyro rotation rate(in degrees/sec).  NOTE:  this
                  * value is un-processed, and should only be accessed by advanced users.
                  * Typically, rotation about the T Axis is referred to as "Roll".  Calibrated
                  * and Integrated Pitch data is accessible via the {@link #GetRoll()} method.
                  *<p>
-                 * @return Returns the current rotation rate (in degrees/sec).
+                 * @return Returns the current rotation rate(in degrees/sec).
                  */
                 float  getRawGyroY();
                 /**
-                 * Returns the current raw (unprocessed) Z-axis gyro rotation rate (in degrees/sec).  NOTE:  this
+                 * Returns the current raw(unprocessed) Z-axis gyro rotation rate(in degrees/sec).  NOTE:  this
                  * value is un-processed, and should only be accessed by advanced users.
                  * Typically, rotation about the T Axis is referred to as "Yaw".  Calibrated
                  * and Integrated Pitch data is accessible via the {@link #GetYaw()} method.
                  *<p>
-                 * @return Returns the current rotation rate (in degrees/sec).
+                 * @return Returns the current rotation rate(in degrees/sec).
                  */
                 float  getRawGyroZ();
                 /**
-                 * Returns the current raw (unprocessed) X-axis acceleration rate (in G).  NOTE:  this
+                 * Returns the current raw(unprocessed) X-axis acceleration rate(in G).  NOTE:  this
                  * value is unprocessed, and should only be accessed by advanced users.  This raw value
                  * has not had acceleration due to gravity removed from it, and has not been rotated to
                  * the world reference frame.  Gravity-corrected, world reference frame-corrected
                  * X axis acceleration data is accessible via the {@link #GetWorldLinearAccelX()} method.
                  *<p>
-                 * @return Returns the current acceleration rate (in G).
+                 * @return Returns the current acceleration rate(in G).
                  */
                 float  getRawAccelX();
                 /**
-                 * Returns the current raw (unprocessed) Y-axis acceleration rate (in G).  NOTE:  this
+                 * Returns the current raw(unprocessed) Y-axis acceleration rate(in G).  NOTE:  this
                  * value is unprocessed, and should only be accessed by advanced users.  This raw value
                  * has not had acceleration due to gravity removed from it, and has not been rotated to
                  * the world reference frame.  Gravity-corrected, world reference frame-corrected
                  * Y axis acceleration data is accessible via the {@link #GetWorldLinearAccelY()} method.
                  *<p>
-                 * @return Returns the current acceleration rate (in G).
+                 * @return Returns the current acceleration rate(in G).
                  */
                 float  getRawAccelY();
                 /**
-                 * Returns the current raw (unprocessed) Z-axis acceleration rate (in G).  NOTE:  this
+                 * Returns the current raw(unprocessed) Z-axis acceleration rate(in G).  NOTE:  this
                  * value is unprocessed, and should only be accessed by advanced users.  This raw value
                  * has not had acceleration due to gravity removed from it, and has not been rotated to
                  * the world reference frame.  Gravity-corrected, world reference frame-corrected
                  * Z axis acceleration data is accessible via the {@link #GetWorldLinearAccelZ()} method.
                  *<p>
-                 * @return Returns the current acceleration rate (in G).
+                 * @return Returns the current acceleration rate(in G).
                  */
                 float  getRawAccelZ();
                 /**
-                 * Returns the current raw (unprocessed) X-axis magnetometer reading (in uTesla).  NOTE:
+                 * Returns the current raw(unprocessed) X-axis magnetometer reading(in uTesla).  NOTE:
                  * this value is unprocessed, and should only be accessed by advanced users.  This raw value
                  * has not been tilt-corrected, and has not been combined with the other magnetometer axis
                  * data to yield a compass heading.  Tilt-corrected compass heading data is accessible
                  * via the {@link #GetCompassHeading()} method.
                  *<p>
-                 * @return Returns the mag field strength (in uTesla).
+                 * @return Returns the mag field strength(in uTesla).
                  */
                 float  getRawMagX();
                 /**
-                 * Returns the current raw (unprocessed) Y-axis magnetometer reading (in uTesla).  NOTE:
+                 * Returns the current raw(unprocessed) Y-axis magnetometer reading(in uTesla).  NOTE:
                  * this value is unprocessed, and should only be accessed by advanced users.  This raw value
                  * has not been tilt-corrected, and has not been combined with the other magnetometer axis
                  * data to yield a compass heading.  Tilt-corrected compass heading data is accessible
                  * via the {@link #GetCompassHeading()} method.
                  *<p>
-                 * @return Returns the mag field strength (in uTesla).
+                 * @return Returns the mag field strength(in uTesla).
                  */
                 float  getRawMagY();
                 /**
-                 * Returns the current raw (unprocessed) Z-axis magnetometer reading (in uTesla).  NOTE:
+                 * Returns the current raw(unprocessed) Z-axis magnetometer reading(in uTesla).  NOTE:
                  * this value is unprocessed, and should only be accessed by advanced users.  This raw value
                  * has not been tilt-corrected, and has not been combined with the other magnetometer axis
                  * data to yield a compass heading.  Tilt-corrected compass heading data is accessible
                  * via the {@link #GetCompassHeading()} method.
                  *<p>
-                 * @return Returns the mag field strength (in uTesla).
+                 * @return Returns the mag field strength(in uTesla).
                  */
                 float  getRawMagZ();
                 /**
-                 * Returns the current temperature (in degrees centigrade) reported by
+                 * Returns the current temperature(in degrees centigrade) reported by
                  * the sensor's gyro/accelerometer circuit.
                  *<p>
                  * This value may be useful in order to perform advanced temperature-
                  * correction of raw gyroscope and accelerometer values.
                  *<p>
-                 * @return The current temperature (in degrees centigrade).
+                 * @return The current temperature(in degrees centigrade).
                  */
                 units::Temperature getTempC();
                 /**
-                 * Returns information regarding which sensor board axis (X,Y or Z) and
-                 * direction (up/down) is currently configured to report Yaw (Z) angle
+                 * Returns information regarding which sensor board axis(X,Y or Z) and
+                 * direction(up/down) is currently configured to report Yaw(Z) angle
                  * values.   NOTE:  If the board firmware supports Omnimount, the board yaw
                  * axis/direction are configurable.
                  *<p>
@@ -703,7 +703,7 @@ namespace rip
                  * device IO thread, which is not the same thread context the
                  * caller typically executes in.
                  */
-                bool registerCallback( ITimestampedDataSubscriber *callback, void *callback_context);
+                bool registerCallback(ITimestampedDataSubscriber *callback, void *callback_context);
                 /**
                  * Deregisters a previously registered callback interface.
                  *
@@ -712,22 +712,22 @@ namespace rip
                  * implementing the callback interface does not continue
                  * to be accessed when no longer necessary.
                  */
-                bool deregisterCallback( ITimestampedDataSubscriber *callback );
+                bool deregisterCallback(ITimestampedDataSubscriber *callback);
                 /**
                  * Returns the navX-Model device's currently configured update
                  * rate.  Note that the update rate that can actually be realized
                  * is a value evenly divisible by the navX-Model device's internal
-                 * motion processor sample clock (200Hz).  Therefore, the rate that
+                 * motion processor sample clock(200Hz).  Therefore, the rate that
                  * is returned may be lower than the requested sample rate.
                  *
                  * The actual sample rate is rounded down to the nearest integer
                  * that is divisible by the number of Digital Motion Processor clock
                  * ticks.  For instance, a request for 58 Hertz will result in
-                 * an actual rate of 66Hz (200 / (200 / 58), using integer
+                 * an actual rate of 66Hz(200 /(200 / 58), using integer
                  * math.
                  *
                  * @return Returns the current actual update rate in Hz
-                 * (cycles per second).
+                 *(cycles per second).
                  */
 
                 int getActualUpdateRate();
@@ -735,13 +735,13 @@ namespace rip
                  * Returns the currently requested update rate.
                  * rate.  Note that not every update rate can actually be realized,
                  * since the actual update rate must be a value evenly divisible by
-                 * the navX-Model device's internal motion processor sample clock (200Hz).
+                 * the navX-Model device's internal motion processor sample clock(200Hz).
                  *
                  * To determine the actual update rate, use the
                  * {@link #getActualUpdateRate()} method.
                  *
                  * @return Returns the requested update rate in Hz
-                 * (cycles per second).
+                 *(cycles per second).
                  */
 
                 int getRequestedUpdateRate();
@@ -750,7 +750,7 @@ namespace rip
 
             private:
                 void serialInit(std::string serial_port_id, AHRS::serialDataType data_type, uint8_t update_rate_hz);
-                void commonInit( uint8_t update_rate_hz );
+                void commonInit(uint8_t update_rate_hz);
                 static void *threadFunc(void *threadarg);
 
                 uint8_t getActualUpdateRateInternal(uint8_t update_rate);

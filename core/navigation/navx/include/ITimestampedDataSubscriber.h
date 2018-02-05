@@ -15,7 +15,7 @@
  *  device.
  *
  *  Thus, in general sensor timestamps are preferred, as they are generated
- *  by the navX-Model device motion processor and has a greater accuracy (+/- 1ms) than the
+ *  by the navX-Model device motion processor and has a greater accuracy(+/- 1ms) than the
  *  system timestamp which is vulnerable to latencies introduced by the
  *  host operating system.
  *
@@ -32,7 +32,7 @@ namespace rip
             {
 			public:
 				virtual ~ITimestampedDataSubscriber(){}
-			    virtual void timestampedDataReceived( long system_timestamp, long sensor_timestamp, AHRSProtocol::AHRSUpdateBase& sensor_data, void * context ) = 0;
+			    virtual void timestampedDataReceived(long system_timestamp, long sensor_timestamp, AHRSProtocol::AHRSUpdateBase& sensor_data, void * context) = 0;
 			};
         }
     }

@@ -14,8 +14,8 @@ namespace rip
 
             public:
                 InertialDataIntegrator();
-                void updateDisplacement( float accel_x_g, float accel_y_g,
-                                         int update_rate_hz, bool is_moving );
+                void updateDisplacement(float accel_x_g, float accel_y_g,
+                                         int update_rate_hz, bool is_moving);
                 void resetDisplacement();
                 float getVelocityX();
                 float getVelocityY();

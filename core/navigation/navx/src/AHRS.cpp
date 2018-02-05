@@ -69,7 +69,7 @@ namespace rip
                     // 9-axis data
                     ahrs->fused_heading          = ahrs_update.fused_heading;
 
-                    // Gravity-corrected linear acceleration (world-frame)
+                    // Gravity-corrected linear acceleration(world-frame)
                     ahrs->world_linear_accel_x   = ahrs_update.linear_accel_x;
                     ahrs->world_linear_accel_y   = ahrs_update.linear_accel_y;
                     ahrs->world_linear_accel_z   = ahrs_update.linear_accel_z;
@@ -83,23 +83,23 @@ namespace rip
 
                     // Status/Motion Detection
                     ahrs->is_moving              =
-                            (((ahrs_update.sensor_status &
+                           (((ahrs_update.sensor_status &
                                     NAVX_SENSOR_STATUS_MOVING) != 0)
                                     ? true : false);
                     ahrs->is_rotating                =
-                            (((ahrs_update.sensor_status &
+                           (((ahrs_update.sensor_status &
                                     NAVX_SENSOR_STATUS_YAW_STABLE) != 0)
                                     ? false : true);
                     ahrs->altitude_valid             =
-                            (((ahrs_update.sensor_status &
+                           (((ahrs_update.sensor_status &
                                     NAVX_SENSOR_STATUS_ALTITUDE_VALID) != 0)
                                     ? true : false);
                     ahrs->is_magnetometer_calibrated =
-                            (((ahrs_update.cal_status &
+                           (((ahrs_update.cal_status &
                                     NAVX_CAL_STATUS_MAG_CAL_COMPLETE) != 0)
                                     ? true : false);
                     ahrs->magnetic_disturbance       =
-                            (((ahrs_update.sensor_status &
+                           (((ahrs_update.sensor_status &
                                     NAVX_SENSOR_STATUS_MAG_DISTURBANCE) != 0)
                                     ? true : false);
 
@@ -111,12 +111,12 @@ namespace rip
                     ahrs->last_sensor_timestamp	= sensor_timestamp;
 
                     /* Notify external data arrival subscribers, if any. */
-                    for (int i = 0; i < MAX_NUM_CALLBACKS; i++)
+                    for(int i = 0; i < MAX_NUM_CALLBACKS; i++)
                     {
                         ITimestampedDataSubscriber *callback = ahrs->callbacks[i];
-                        if (callback != NULL)
+                        if(callback != NULL)
                         {
-                        	long system_timestamp = (long)(std::time(nullptr) * 1000);
+                        	long system_timestamp =(long)(std::time(nullptr) * 1000);
                             callback->timestampedDataReceived(system_timestamp,
                             		sensor_timestamp,
                             		ahrs_update,
@@ -165,7 +165,7 @@ namespace rip
                     // 9-axis data
                     ahrs->fused_heading          = ahrs_update.fused_heading;
 
-                    // Gravity-corrected linear acceleration (world-frame)
+                    // Gravity-corrected linear acceleration(world-frame)
                     ahrs->world_linear_accel_x   = ahrs_update.linear_accel_x;
                     ahrs->world_linear_accel_y   = ahrs_update.linear_accel_y;
                     ahrs->world_linear_accel_z   = ahrs_update.linear_accel_z;
@@ -184,23 +184,23 @@ namespace rip
 
                     // Status/Motion Detection
                     ahrs->is_moving              =
-                            (((ahrs_update.sensor_status &
+                           (((ahrs_update.sensor_status &
                                     NAVX_SENSOR_STATUS_MOVING) != 0)
                                     ? true : false);
                     ahrs->is_rotating                =
-                            (((ahrs_update.sensor_status &
+                           (((ahrs_update.sensor_status &
                                     NAVX_SENSOR_STATUS_YAW_STABLE) != 0)
                                     ? false : true);
                     ahrs->altitude_valid             =
-                            (((ahrs_update.sensor_status &
+                           (((ahrs_update.sensor_status &
                                     NAVX_SENSOR_STATUS_ALTITUDE_VALID) != 0)
                                     ? true : false);
                     ahrs->is_magnetometer_calibrated =
-                            (((ahrs_update.cal_status &
+                           (((ahrs_update.cal_status &
                                     NAVX_CAL_STATUS_MAG_CAL_COMPLETE) != 0)
                                     ? true : false);
                     ahrs->magnetic_disturbance       =
-                            (((ahrs_update.sensor_status &
+                           (((ahrs_update.sensor_status &
                                     NAVX_SENSOR_STATUS_MAG_DISTURBANCE) != 0)
                                     ? true : false);
 
@@ -212,12 +212,12 @@ namespace rip
                     ahrs->last_sensor_timestamp	= sensor_timestamp;
 
                     /* Notify external data arrival subscribers, if any. */
-                    for (int i = 0; i < MAX_NUM_CALLBACKS; i++)
+                    for(int i = 0; i < MAX_NUM_CALLBACKS; i++)
                     {
                         ITimestampedDataSubscriber *callback = ahrs->callbacks[i];
-                        if (callback != NULL)
+                        if(callback != NULL)
                         {
-                        	long system_timestamp = (long)(std::time(nullptr) * 1000);
+                        	long system_timestamp =(long)(std::time(nullptr) * 1000);
                             callback->timestampedDataReceived(system_timestamp,
                             		sensor_timestamp,
                             		ahrs_update,
@@ -225,7 +225,7 @@ namespace rip
                         }
                     }
 
-                    ahrs->updateDisplacement( ahrs->world_linear_accel_x,
+                    ahrs->updateDisplacement(ahrs->world_linear_accel_x,
                             ahrs->world_linear_accel_y,
                             ahrs->update_rate_hz,
                             ahrs->is_moving);
@@ -258,22 +258,22 @@ namespace rip
                 /***********************************************************/
                 bool isOmniMountSupported()
                 {
-                   return (((ahrs->capability_flags & NAVX_CAPABILITY_FLAG_OMNIMOUNT) !=0) ? true : false);
+                   return(((ahrs->capability_flags & NAVX_CAPABILITY_FLAG_OMNIMOUNT) !=0) ? true : false);
                 }
 
                 bool isBoardYawResetSupported()
                 {
-                    return (((ahrs->capability_flags & NAVX_CAPABILITY_FLAG_YAW_RESET) != 0) ? true : false);
+                    return(((ahrs->capability_flags & NAVX_CAPABILITY_FLAG_YAW_RESET) != 0) ? true : false);
                 }
 
                 bool isDisplacementSupported()
                 {
-                    return (((ahrs->capability_flags & NAVX_CAPABILITY_FLAG_VEL_AND_DISP) != 0) ? true : false);
+                    return(((ahrs->capability_flags & NAVX_CAPABILITY_FLAG_VEL_AND_DISP) != 0) ? true : false);
                 }
 
                 bool isAHRSPosTimestampSupported()
                 {
-                	return (((ahrs->capability_flags & NAVX_CAPABILITY_FLAG_AHRSPOS_TS) != 0) ? true : false);
+                	return(((ahrs->capability_flags & NAVX_CAPABILITY_FLAG_AHRSPOS_TS) != 0) ? true : false);
                 }
             };
 
@@ -299,13 +299,13 @@ namespace rip
 
             units::Angle AHRS::getYaw()
             {
-                if ( ahrs_internal->isBoardYawResetSupported() )
+                if(ahrs_internal->isBoardYawResetSupported())
                 {
-                    return (this->yaw)*units::degrees;
+                    return(this->yaw)*units::degrees;
                 }
                 else
                 {
-                    return ((float) yaw_offset_tracker->applyOffset(this->yaw))*units::degrees;
+                    return((float) yaw_offset_tracker->applyOffset(this->yaw))*units::degrees;
                 }
             }
 
@@ -316,7 +316,7 @@ namespace rip
 
             void AHRS::zeroYaw()
             {
-                if ( ahrs_internal->isBoardYawResetSupported() )
+                if(ahrs_internal->isBoardYawResetSupported())
                 {
                     io->zeroYaw();
                 }
@@ -430,7 +430,7 @@ namespace rip
 
             void AHRS::resetDisplacement()
             {
-                if (ahrs_internal->isDisplacementSupported() )
+                if(ahrs_internal->isDisplacementSupported())
                 {
                     io->zeroDisplacement();
                 }
@@ -440,8 +440,8 @@ namespace rip
                 }
             }
 
-            void AHRS::updateDisplacement( float accel_x_g, float accel_y_g,
-                                                int update_rate_hz, bool is_moving )
+            void AHRS::updateDisplacement(float accel_x_g, float accel_y_g,
+                                                int update_rate_hz, bool is_moving)
             {
                 integrator->updateDisplacement(accel_x_g, accel_y_g, update_rate_hz, is_moving);
             }
@@ -449,35 +449,35 @@ namespace rip
 
             units::Velocity AHRS::getVelocityX()
             {
-                return units::m / units::s * (ahrs_internal->isDisplacementSupported() ? velocity[0] : integrator->getVelocityX());
+                return units::m / units::s *(ahrs_internal->isDisplacementSupported() ? velocity[0] : integrator->getVelocityX());
             }
 
 
             units::Velocity AHRS::getVelocityY()
             {
-                return units::m / units::s * (ahrs_internal->isDisplacementSupported() ? velocity[1] : integrator->getVelocityY());
+                return units::m / units::s *(ahrs_internal->isDisplacementSupported() ? velocity[1] : integrator->getVelocityY());
             }
 
 
             units::Velocity AHRS::getVelocityZ()
             {
-                return units::m / units::s * (ahrs_internal->isDisplacementSupported() ? velocity[2] : 0.f);
+                return units::m / units::s *(ahrs_internal->isDisplacementSupported() ? velocity[2] : 0.f);
             }
 
 
             units::Distance AHRS::getDisplacementX()
             {
-                return units::m * (ahrs_internal->isDisplacementSupported() ? displacement[0] : integrator->getVelocityX());
+                return units::m *(ahrs_internal->isDisplacementSupported() ? displacement[0] : integrator->getVelocityX());
             }
 
             units::Distance AHRS::getDisplacementY()
             {
-                return units::m * (ahrs_internal->isDisplacementSupported() ? displacement[1] : integrator->getVelocityY());
+                return units::m *(ahrs_internal->isDisplacementSupported() ? displacement[1] : integrator->getVelocityY());
             }
 
             units::Distance AHRS::getDisplacementZ()
             {
-                return units::m * (ahrs_internal->isDisplacementSupported() ? displacement[2] : 0.f);
+                return units::m *(ahrs_internal->isDisplacementSupported() ? displacement[2] : 0.f);
             }
 
             #define NAVX_IO_THREAD_NAME "navXIOThread"
@@ -486,13 +486,14 @@ namespace rip
             void AHRS::serialInit(std::string serial_port_id, AHRS::serialDataType data_type, uint8_t update_rate_hz)
             {
                 commonInit(update_rate_hz);
-                bool processed_data = (data_type == serialDataType::kProcessedData);
+                bool processed_data =(data_type == serialDataType::kProcessedData);
                 io = new serialIO(serial_port_id, update_rate_hz, processed_data, ahrs_internal, ahrs_internal);
                 ::pthread_t trd;
                 ::pthread_create(&trd, NULL, AHRS::ThreadFunc, io);
             }
 
-            void AHRS::commonInit( uint8_t update_rate_hz ) {
+            void AHRS::commonInit(uint8_t update_rate_hz)
+            {
 
                 ahrs_internal = new AHRSInternal(this);
                 this->update_rate_hz = update_rate_hz;
@@ -527,7 +528,8 @@ namespace rip
 
                 /* Integrated Data */
 
-                for ( int i = 0; i < 3; i++ ) {
+                for(int i = 0; i < 3; i++)
+                {
                     velocity[i] = 0.0f;
                     displacement[i] = 0.0f;
                 }
@@ -563,7 +565,8 @@ namespace rip
 
                 io = 0;
 
-                for ( int i = 0; i < MAX_NUM_CALLBACKS; i++) {
+                for(int i = 0; i < MAX_NUM_CALLBACKS; i++)
+                {
                 	callbacks[i] = NULL;
                 	callback_contexts[i] = NULL;
                 }
@@ -589,35 +592,35 @@ namespace rip
 
             float AHRS::getRawGyroX()
             {
-                return this->raw_gyro_x / (DEV_UNITS_MAX / (float)gyro_fsr_dps);
+                return this->raw_gyro_x /(DEV_UNITS_MAX /(float)gyro_fsr_dps);
             }
 
             float AHRS::getRawGyroY()
             {
-                return this->raw_gyro_y / (DEV_UNITS_MAX / (float)gyro_fsr_dps);
+                return this->raw_gyro_y /(DEV_UNITS_MAX /(float)gyro_fsr_dps);
             }
 
             float AHRS::getRawGyroZ()
             {
-                return this->raw_gyro_z / (DEV_UNITS_MAX / (float)gyro_fsr_dps);
+                return this->raw_gyro_z /(DEV_UNITS_MAX /(float)gyro_fsr_dps);
             }
 
 
             float AHRS::getRawAccelX()
             {
-                return this->raw_accel_x / (DEV_UNITS_MAX / (float)accel_fsr_g);
+                return this->raw_accel_x /(DEV_UNITS_MAX /(float)accel_fsr_g);
             }
 
 
             float AHRS::getRawAccelY()
             {
-                return this->raw_accel_y / (DEV_UNITS_MAX / (float)accel_fsr_g);
+                return this->raw_accel_y /(DEV_UNITS_MAX /(float)accel_fsr_g);
             }
 
 
             float AHRS::getRawAccelZ()
             {
-                return this->raw_accel_z / (DEV_UNITS_MAX / (float)accel_fsr_g);
+                return this->raw_accel_z /(DEV_UNITS_MAX /(float)accel_fsr_g);
             }
 
             static const float UTESLA_PER_DEV_UNIT = 0.15f;
@@ -649,28 +652,28 @@ namespace rip
             AHRS::BoardYawAxis AHRS::getBoardYawAxis()
             {
                 BoardYawAxis yaw_axis;
-                short yaw_axis_info = (short)(capability_flags >> 3);
+                short yaw_axis_info =(short)(capability_flags >> 3);
                 yaw_axis_info &= 7;
-                if ( yaw_axis_info == OMNIMOUNT_DEFAULT)
+                if(yaw_axis_info == OMNIMOUNT_DEFAULT)
                 {
                     yaw_axis.up = true;
-                    yaw_axis.board_axis = BoardAxis::kBoardAxisZ;
+                    yaw_axis.board_axis = boardAxis::kBoardAxisZ;
                 }
                 else
                 {
-                    yaw_axis.up = (((yaw_axis_info & 0x01) != 0) ? true : false);
+                    yaw_axis.up =(((yaw_axis_info & 0x01) != 0) ? true : false);
                     yaw_axis_info >>= 1;
-                    switch ( yaw_axis_info )
+                    switch(yaw_axis_info)
                     {
                     case 0:
-                        yaw_axis.board_axis = BoardAxis::kBoardAxisX;
+                        yaw_axis.board_axis = boardAxis::kBoardAxisX;
                         break;
                     case 1:
-                        yaw_axis.board_axis = BoardAxis::kBoardAxisY;
+                        yaw_axis.board_axis = boardAxis::kBoardAxisY;
                         break;
                     case 2:
                     default:
-                        yaw_axis.board_axis = BoardAxis::kBoardAxisZ;
+                        yaw_axis.board_axis = boardAxis::kBoardAxisZ;
                         break;
                     }
                 }
@@ -678,24 +681,29 @@ namespace rip
             }
 
 
-            std::string AHRS::getFirmwareVersion() {
+            std::string AHRS::getFirmwareVersion()
+            {
                 std::ostringstream os;
-                os << (int)fw_ver_major << "." << (int)fw_ver_minor;
+                os <<(int)fw_ver_major << "." <<(int)fw_ver_minor;
                 std::string fw_version = os.str();
                 return fw_version;
             }
 
-            void *AHRS::threadFunc(void *threadarg) {
-                IIOProvider *io_provider = (IIOProvider*)threadarg;
+            void *AHRS::threadFunc(void *threadarg)
+            {
+                IIOProvider *io_provider =(IIOProvider*)threadarg;
                 io_provider->run();
             	return NULL;
             }
 
 
-            bool AHRS::registerCallback( ITimestampedDataSubscriber *callback, void *callback_context) {
+            bool AHRS::registerCallback(ITimestampedDataSubscriber *callback, void *callback_context)
+            {
                 bool registered = false;
-                for ( int i = 0; i < MAX_NUM_CALLBACKS; i++ ) {
-                    if (callbacks[i] == NULL) {
+                for(int i = 0; i < MAX_NUM_CALLBACKS; i++)
+                {
+                    if(callbacks[i] == NULL)
+                    {
                         callbacks[i] = callback;
                         callback_contexts[i] = callback_context;
                         registered = true;
@@ -706,10 +714,13 @@ namespace rip
             }
 
 
-            bool AHRS::deregisterCallback( ITimestampedDataSubscriber *callback ) {
+            bool AHRS::deregisterCallback(ITimestampedDataSubscriber *callback)
+            {
                 bool deregistered = false;
-                for ( int i = 0; i < MAX_NUM_CALLBACKS; i++ ) {
-                    if (callbacks[i] == callback) {
+                for(int i = 0; i < MAX_NUM_CALLBACKS; i++)
+                {
+                    if(callbacks[i] == callback)
+                    {
                         callbacks[i] = NULL;
                         deregistered = true;
                         break;
@@ -718,25 +729,29 @@ namespace rip
                 return deregistered;
             }
 
-            int AHRS::getActualUpdateRate() {
+            int AHRS::getActualUpdateRate()
+            {
                 uint8_t actual_update_rate = getActualUpdateRateInternal(getRequestedUpdateRate());
-                return (int)actual_update_rate;
+                return(int)actual_update_rate;
             }
 
-            uint8_t AHRS::getActualUpdateRateInternal(uint8_t update_rate) {
+            uint8_t AHRS::getActualUpdateRateInternal(uint8_t update_rate)
+            {
             #define NAVX_MOTION_PROCESSOR_UPDATE_RATE_HZ 200
-                int integer_update_rate = (int)update_rate;
+                int integer_update_rate =(int)update_rate;
                 int realized_update_rate = NAVX_MOTION_PROCESSOR_UPDATE_RATE_HZ /
-                        (NAVX_MOTION_PROCESSOR_UPDATE_RATE_HZ / integer_update_rate);
-                return (uint8_t)realized_update_rate;
+                       (NAVX_MOTION_PROCESSOR_UPDATE_RATE_HZ / integer_update_rate);
+                return(uint8_t)realized_update_rate;
             }
 
 
-            int AHRS::getRequestedUpdateRate() {
-                return (int)update_rate_hz;
+            int AHRS::getRequestedUpdateRate()
+            {
+                return(int)update_rate_hz;
             }
 
-            void AHRS::close() {
+            void AHRS::close()
+            {
                 io->stop();
             }
         }

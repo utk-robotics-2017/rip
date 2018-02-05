@@ -32,7 +32,7 @@ namespace rip
                 virtual void setAHRSPosData(AHRSProtocol::AHRSPosUpdate& ahrs_update, long sensor_timestamp) = 0;
                 virtual void setRawData(IMUProtocol::GyroUpdate& raw_data_update, long sensor_timestamp) = 0;
                 virtual void setBoardID(AHRSProtocol::BoardID& board_id) = 0;
-                virtual void setBoardState( BoardState& board_state) = 0;
+                virtual void setBoardState(BoardState& board_state) = 0;
             };
         }
     }

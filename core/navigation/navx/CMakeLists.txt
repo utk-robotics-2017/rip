@@ -36,7 +36,7 @@ if(ENABLE_TESTING)
             DEPENDS ${TestDataFile}
             COMMENT "Copying ${name}"
             VERBATIM
-            )
+           )
         list(APPEND copiedTestData ${CMAKE_CURRENT_BINARY_DIR}/${name})
     endforeach()
 

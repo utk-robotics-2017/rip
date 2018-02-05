@@ -44,7 +44,7 @@ namespace rip
 
 
                     int USB = open(id.c_str(), O_RDWR| O_NOCTTY);
-                    if (USB < 0)
+                    if(USB < 0)
                     {
                         //TODO: RIP exception handling
                         std::cerr << "Could not open " << id.c_str() << " as a TTY:";
@@ -57,8 +57,8 @@ namespace rip
                     this->id = id;
 
 
-                    cfsetospeed(&tty, (speed_t)baudRate);
-                    cfsetispeed(&tty, (speed_t)baudRate);
+                    cfsetospeed(&tty,(speed_t)baudRate);
+                    cfsetispeed(&tty,(speed_t)baudRate);
 
                     tty.c_cflag &= ~PARENB;
                     tty.c_cflag &= ~CSTOPB;
@@ -112,10 +112,10 @@ namespace rip
                     do
                     {
 
-                        n_written = write( this->fd, &data[spot], length );
-                        if (n_written > 0)
+                        n_written = write(this->fd, &data[spot], length);
+                        if(n_written > 0)
                             spot += n_written;
-                    } while (data[spot-1] != terminationChar);
+                    } while(data[spot-1] != terminationChar);
                 }
 
                 int getBytesReceived()
@@ -135,7 +135,7 @@ namespace rip
                     do
                     {
                         n = read(this->fd, &buf, 1);
-                        sprintf( &data[loc], "%c", buf );
+                        sprintf(&data[loc], "%c", buf);
                         loc += n;
 
                 	    if(n == 0) err++;
@@ -153,14 +153,14 @@ namespace rip
                     		reset();
                     		break;
                 	    }
-                    } while( buf != terminationChar && loc < size);
+                    } while(buf != terminationChar && loc < size);
 
-                    if (n < 0)
+                    if(n < 0)
                     {
                         //TODO: replace this garbage serial library
                         std::cout << "Error reading: " << strerror(errno) << std::endl;
                     }
-                    else if (n == 0) {
+                    else if(n == 0) {
                         std::cout << "Read nothing!" << std::endl;
                     }
                     else
