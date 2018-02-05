@@ -26,19 +26,22 @@ int main(int argc, char *argv[]) {
 
     std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
-
     std::cout << "Pitch  |  Roll  |  Yaw  |  X-Accel  | Y-Accel  |  Z-Accel  |  Time  |" << std::endl;
 
-    while(1 == 1){
-        std::cout << std::fixed << std::setprecision(2) << com.GetPitch() << "      " << com.GetRoll() << "   " << com.GetYaw() << "     " <<com.GetWorldLinearAccelX() << "     " << com.GetWorldLinearAccelY() << "       " << com.GetWorldLinearAccelZ() << "      " << com.GetLastSensorTimestamp() << "      " << '\r' << std::flush;
+    while(true)
+    {
+        std::cout << std::fixed << std::setprecision(2) << com.getPitch() << "      " << com.getRoll();
+        std::cout << "   " << com.getYaw() << "     " <<com.getWorldLinearAccelX() << "     ";
+        std::cout << com.getWorldLinearAccelY() << "       " << com.getWorldLinearAccelZ() << "      ";
+        std::cout << com.getLastSensorTimestamp() << "      " << '\r' << std::flush;
         std::this_thread::sleep_for(std::chrono::milliseconds(125));
-        if(sflag){
+        if(sflag)
+        {
             sflag = 0;
-            com.Close();
+            com.close();
             std::this_thread::sleep_for(std::chrono::milliseconds(1000));
             break;
         }
-
     }
     printf("\nExit Caught... Closing device.\n");
 
