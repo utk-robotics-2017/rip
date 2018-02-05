@@ -62,7 +62,7 @@ namespace rip
                     ahrs->pitch                  = ahrs_update.pitch;
                     ahrs->roll                   = ahrs_update.roll;
                     ahrs->compass_heading        = ahrs_update.compass_heading;
-                    ahrs->yaw_offset_tracker->UpdateHistory(ahrs_update.yaw);
+                    ahrs->yaw_offset_tracker->updateHistory(ahrs_update.yaw);
 
                     /* Update AHRS class variables */
 
@@ -131,7 +131,7 @@ namespace rip
                     ahrs->displacement[1] = ahrs_update.disp_y;
                     ahrs->displacement[2] = ahrs_update.disp_z;
 
-                    ahrs->yaw_angle_tracker->NextAngle(ahrs->getYaw());
+                    ahrs->yaw_angle_tracker->nextAngle((ahrs->getYaw())());
                     ahrs->last_sensor_timestamp = sensor_timestamp;
                 }
 
@@ -158,7 +158,7 @@ namespace rip
                     ahrs->pitch                  = ahrs_update.pitch;
                     ahrs->roll                   = ahrs_update.roll;
                     ahrs->compass_heading        = ahrs_update.compass_heading;
-                    ahrs->yaw_offset_tracker->UpdateHistory(ahrs_update.yaw);
+                    ahrs->yaw_offset_tracker->updateHistory(ahrs_update.yaw);
 
                     /* Update AHRS class variables */
 
@@ -230,7 +230,7 @@ namespace rip
                             ahrs->update_rate_hz,
                             ahrs->is_moving);
 
-                    ahrs->yaw_angle_tracker->nextAngle(ahrs->getYaw());
+                    ahrs->yaw_angle_tracker->nextAngle((ahrs->getYaw())());
                 }
 
                 void setBoardID(AHRSProtocol::BoardID& board_id)
@@ -487,9 +487,9 @@ namespace rip
             {
                 commonInit(update_rate_hz);
                 bool processed_data =(data_type == serialDataType::kProcessedData);
-                io = new serialIO(serial_port_id, update_rate_hz, processed_data, ahrs_internal, ahrs_internal);
+                io = new SerialIO(serial_port_id, update_rate_hz, processed_data, ahrs_internal, ahrs_internal);
                 ::pthread_t trd;
-                ::pthread_create(&trd, NULL, AHRS::ThreadFunc, io);
+                ::pthread_create(&trd, NULL, AHRS::threadFunc, io);
             }
 
             void AHRS::commonInit(uint8_t update_rate_hz)
@@ -500,9 +500,9 @@ namespace rip
 
                 /* Processed Data */
 
-                yaw_offset_tracker = new offsetTracker(YAW_HISTORY_LENGTH);
-                integrator = new inertialDataIntegrator();
-                yaw_angle_tracker = new continuousAngleTracker();
+                yaw_offset_tracker = new OffsetTracker(YAW_HISTORY_LENGTH);
+                integrator = new InertialDataIntegrator();
+                yaw_angle_tracker = new ContinuousAngleTracker();
 
                 yaw =
                         pitch =
@@ -579,7 +579,7 @@ namespace rip
 
             units::AngularVelocity AHRS::getRate()
             {
-                return yaw_angle_tracker->getRate() * units::AngularVelocity;
+                return yaw_angle_tracker->getRate() * units::degrees / units::s;
             }
 
             void AHRS::reset()
@@ -588,7 +588,6 @@ namespace rip
             }
 
             static const float DEV_UNITS_MAX = 32768.0f;
-
 
             float AHRS::getRawGyroX()
             {
@@ -605,12 +604,10 @@ namespace rip
                 return this->raw_gyro_z /(DEV_UNITS_MAX /(float)gyro_fsr_dps);
             }
 
-
             float AHRS::getRawAccelX()
             {
                 return this->raw_accel_x /(DEV_UNITS_MAX /(float)accel_fsr_g);
             }
-
 
             float AHRS::getRawAccelY()
             {
@@ -625,29 +622,25 @@ namespace rip
 
             static const float UTESLA_PER_DEV_UNIT = 0.15f;
 
-
             float AHRS::getRawMagX()
             {
                 return this->cal_mag_x / UTESLA_PER_DEV_UNIT;
             }
-
 
             float AHRS::getRawMagY()
             {
                 return this->cal_mag_y / UTESLA_PER_DEV_UNIT;
             }
 
-
             float AHRS::getRawMagZ()
             {
                 return this->cal_mag_z / UTESLA_PER_DEV_UNIT;
-             }
+            }
 
             units::Temperature AHRS::getTempC()
             {
                 return this->mpu_temp_c * units::degC;
             }
-
 
             AHRS::BoardYawAxis AHRS::getBoardYawAxis()
             {
@@ -680,7 +673,6 @@ namespace rip
                 return yaw_axis;
             }
 
-
             std::string AHRS::getFirmwareVersion()
             {
                 std::ostringstream os;
@@ -695,7 +687,6 @@ namespace rip
                 io_provider->run();
                 return NULL;
             }
-
 
             bool AHRS::registerCallback(ITimestampedDataSubscriber *callback, void *callback_context)
             {
@@ -712,7 +703,6 @@ namespace rip
                 }
                 return registered;
             }
-
 
             bool AHRS::deregisterCallback(ITimestampedDataSubscriber *callback)
             {
@@ -743,7 +733,6 @@ namespace rip
                        (NAVX_MOTION_PROCESSOR_UPDATE_RATE_HZ / integer_update_rate);
                 return(uint8_t)realized_update_rate;
             }
-
 
             int AHRS::getRequestedUpdateRate()
             {

@@ -24,7 +24,7 @@ namespace rip
                 uint8_t next_integration_control_action;
                 bool signal_transmit_integration_control;
                 bool signal_retransmit_stream_config;
-                bool stop;
+                bool bstop;
                 uint8_t update_type; //IMUProtocol.MSGID_XXX
                 uint8_t update_rate_hz;
                 int byte_count;

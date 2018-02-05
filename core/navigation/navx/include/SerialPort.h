@@ -81,7 +81,7 @@ namespace rip
 
                 void setReadBufferSize(int size)
                 {
-                    this->ReadBufferSize = size;
+                    this->readBufferSize = size;
                 }
 
                 void setTimeout(int timeout)
@@ -110,7 +110,7 @@ namespace rip
                     do
                     {
 
-                        n_written = write(this->fd, &data[spot], length);
+                        n_written = ::write(this->fd, &data[spot], length);
                         if(n_written > 0)
                             spot += n_written;
                     } while(data[spot-1] != terminationChar);
@@ -132,7 +132,7 @@ namespace rip
 
                     do
                     {
-                        n = read(this->fd, &buf, 1);
+                        n = ::read(this->fd, &buf, 1);
                         sprintf(&data[loc], "%c", buf);
                         loc += n;
 
@@ -146,7 +146,7 @@ namespace rip
                             std::this_thread::sleep_for(std::chrono::milliseconds(30000));
                             init(this->baudRate, this->id);
                             setTimeout(this->timeout);
-                            setReadBufferSize(this->ReadBufferSize);
+                            setReadBufferSize(this->readBufferSize);
                             enableTermination(this->terminationChar);
                             reset();
                             break;
@@ -186,7 +186,7 @@ namespace rip
 
                 void close()
                 {
-                    close(this->fd);
+                    ::close(this->fd);
                 }
             };
         }

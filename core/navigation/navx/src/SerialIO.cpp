@@ -1,4 +1,3 @@
-get
 //replace me with periphery?
 #include <SerialIO.h>
 #include <time.h>
@@ -168,7 +167,7 @@ namespace rip
                 {
                     return;
                 }
-                stop = false;
+                bstop = false;
                 bool stream_response_received = false;
                 double last_stream_command_sent_timestamp = 0.0;
                 double last_data_received_timestamp = 0;
@@ -225,7 +224,7 @@ namespace rip
 
                 int updater = 0;
 
-                while(!stop)
+                while(!bstop)
                 {
                     try
                     {
@@ -259,7 +258,7 @@ namespace rip
                         }
 
 
-                        if(!stop &&(remainder_bytes == 0) &&(serial_port->getBytesReceived() < 1))
+                        if(!bstop &&(remainder_bytes == 0) &&(serial_port->getBytesReceived() < 1))
                         {
                             //usleep(1000000/update_rate_hz);
                             serial_port->waitForData();
@@ -612,19 +611,19 @@ namespace rip
 
             void SerialIO::zeroYaw()
             {
-                EnqueueIntegrationControlMessage(NAVX_INTEGRATION_CTL_RESET_YAW);
+                enqueueIntegrationControlMessage(NAVX_INTEGRATION_CTL_RESET_YAW);
             }
 
             void SerialIO::zeroDisplacement()
             {
-                EnqueueIntegrationControlMessage(NAVX_INTEGRATION_CTL_RESET_DISP_X |
+                enqueueIntegrationControlMessage(NAVX_INTEGRATION_CTL_RESET_DISP_X |
                                                   NAVX_INTEGRATION_CTL_RESET_DISP_Y |
                                                   NAVX_INTEGRATION_CTL_RESET_DISP_Z);
             }
 
             void SerialIO::stop()
             {
-                stop = true;
+                bstop = true;
             }
         }
     }
