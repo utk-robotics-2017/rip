@@ -37,7 +37,7 @@ THE SOFTWARE.
 /*        unsigned byte:           0   - 255   (8 bits)           */
 /*        unsigned short:          0   - 65535 (16 bits)          */
 /*        signed short:        -32768  - 32767 (16 bits)          */
-/*        signed hundredeths:  -327.68 - 327.67(16 bits)		   */
+/*        signed hundredeths:  -327.68 - 327.67(16 bits)           */
 /*        unsigned hundredths:    0.0  - 655.35(16 bits)          */
 /*        signed thousandths:  -32.768 - 32.767(16 bits)          */
 /*        signed short ratio: -1/16384 - 1/16384(16 bits)         */
@@ -45,8 +45,8 @@ THE SOFTWARE.
 /*        unsigned long:             0 - 4294967295(32 bits)      */
 /*******************************************************************/
 
-typedef int16_t		s_short_hundred_float;
-typedef uint16_t	u_short_hundred_float;
+typedef int16_t     s_short_hundred_float;
+typedef uint16_t    u_short_hundred_float;
 typedef int16_t     s_short_thousand_float;
 typedef int16_t     s_short_ratio_float;
 typedef int32_t     s_1616_float;
@@ -263,7 +263,7 @@ typedef int32_t     s_1616_float;
 /* NAVX_OP_STATUS */
 
 #define NAVX_OP_STATUS_INITIALIZING                 0x00
-#define NAVX_OP_STATUS_SELFTEST_IN_PROGRESS       	0x01
+#define NAVX_OP_STATUS_SELFTEST_IN_PROGRESS         0x01
 #define NAVX_OP_STATUS_ERROR                        0x02 /* E.g., Self-test fail, I2C error */
 #define NAVX_OP_STATUS_IMU_AUTOCAL_IN_PROGRESS      0x03
 #define NAVX_OP_STATUS_NORMAL                       0x04
@@ -283,7 +283,7 @@ typedef int32_t     s_1616_float;
 #define NAVX_CAPABILITY_FLAG_OMNIMOUNT_CONFIG_MASK  0x0038
 #define NAVX_CAPABILITY_FLAG_VEL_AND_DISP           0x0040
 #define NAVX_CAPABILITY_FLAG_YAW_RESET              0x0080
-#define NAVX_CAPABILITY_FLAG_AHRSPOS_TS				0x0100
+#define NAVX_CAPABILITY_FLAG_AHRSPOS_TS             0x0100
 
 /* NAVX_OMNIMOUNT_CONFIG */
 

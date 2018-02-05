@@ -105,19 +105,19 @@ namespace rip
                 /* the board supports it, otherwise fall all the way back to AHRS Update mode. */
                 if(this->update_type == MSGID_AHRSPOS_TS_UPDATE)
                 {
-                	if(board_capabilities->isAHRSPosTimestampSupported())
+                    if(board_capabilities->isAHRSPosTimestampSupported())
                     {
-                		this->update_type = MSGID_AHRSPOS_TS_UPDATE;
-                	}
-                	else if(board_capabilities->isDisplacementSupported())
+                        this->update_type = MSGID_AHRSPOS_TS_UPDATE;
+                    }
+                    else if(board_capabilities->isDisplacementSupported())
                     {
                         this->update_type = MSGID_AHRSPOS_UPDATE;
                     }
-                	else
+                    else
                     {
-                		this->update_type = MSGID_AHRS_UPDATE;
-                	}
-            		signal_retransmit_stream_config = true;
+                        this->update_type = MSGID_AHRS_UPDATE;
+                    }
+                    signal_retransmit_stream_config = true;
                 }
             }
 
@@ -164,9 +164,9 @@ namespace rip
 
             void SerialIO::run()
             {
-            	if(!serial_port)
+                if(!serial_port)
                 {
-            		return;
+                    return;
                 }
                 stop = false;
                 bool stream_response_received = false;
@@ -229,13 +229,13 @@ namespace rip
                 {
                     try
                     {
-                	    if(updater == 100)
-                	    {
-                	        int cmd_packet_length = IMUProtocol::encodeStreamCommand(stream_command, update_type, update_rate_hz);
+                        if(updater == 100)
+                        {
+                            int cmd_packet_length = IMUProtocol::encodeStreamCommand(stream_command, update_type, update_rate_hz);
                             serial_port->write(stream_command, cmd_packet_length);
                             updater = 0;
-            	        }
-            	        updater++;
+                        }
+                        updater++;
 
                         // Wait, with delays to conserve CPU resources, until
                         // bytes have arrived.
@@ -249,7 +249,7 @@ namespace rip
                             try
                             {
                                 //std::cout << "No idea where this write is..." << std::endl;
-            		            //DEBUG-TODO: Determine ifthis is needed
+                                //DEBUG-TODO: Determine ifthis is needed
                                 //serial_port->Write(integration_control_command, cmd_packet_length);
                             }
                             catch(std::exception ex)
@@ -262,7 +262,7 @@ namespace rip
                         if(!stop &&(remainder_bytes == 0) &&(serial_port->getBytesReceived() < 1))
                         {
                             //usleep(1000000/update_rate_hz);
-            		        serial_port->waitForData();
+                            serial_port->waitForData();
                         }
 
                         int packets_received = 0;
@@ -528,7 +528,7 @@ namespace rip
 
                             //std::cout << "Config: " << retransmit_stream_config << " Time: " <<(time(0) - last_stream_command_sent_timestamp) << " " << last_stream_command_sent_timestamp << std::endl;
 
-            		//DEBUG-TODO: Enable this ifwe really need it
+                    //DEBUG-TODO: Enable this ifwe really need it
                             if(false &&(retransmit_stream_config ||
                                    (!stream_response_received &&((time(0) - last_stream_command_sent_timestamp) > 3.0))))
                             {
@@ -553,7 +553,7 @@ namespace rip
                                 // If no bytes remain in the buffer, and not awaiting a response, sleep a bit
                                 if(stream_response_received &&(serial_port->getBytesReceived() == 0))
                                 {
-            		                serial_port->waitForData();
+                                    serial_port->waitForData();
                                 }
                             }
 

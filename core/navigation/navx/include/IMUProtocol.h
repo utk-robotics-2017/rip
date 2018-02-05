@@ -102,8 +102,8 @@ THE SOFTWARE.
 #define STREAM_RESPONSE_QUAT2_OFFSET                26  /* Deprecated */
 #define STREAM_RESPONSE_QUAT3_OFFSET                30  /* Deprecated */
 #define STREAM_RESPONSE_QUAT4_OFFSET                34  /* Deprecated */
-#define STREAM_RESPONSE_FLAGS 		                38
-#define STREAM_RESPONSE_CHECKSUM_INDEX 	            42
+#define STREAM_RESPONSE_FLAGS                       38
+#define STREAM_RESPONSE_CHECKSUM_INDEX              42
 #define STREAM_RESPONSE_TERMINATOR_INDEX            44
 #define STREAM_RESPONSE_MESSAGE_LENGTH              46
 

@@ -28,7 +28,7 @@ namespace rip
             static const uint32_t   MIN_SPI_BITRATE                     = 100000;
             static const uint32_t   DEFAULT_SPI_BITRATE                 = 500000;
             static const uint8_t    NAVX_MXP_I2C_ADDRESS                = 0x32;
-            static const float  	QUATERNION_HISTORY_SECONDS			= 5.0f;
+            static const float      QUATERNION_HISTORY_SECONDS          = 5.0f;
 
             class AHRSInternal : public IIOCompleteNotification, public IBoardCapabilities
             {
@@ -46,11 +46,11 @@ namespace rip
                 void setYawPitchRoll(IMUProtocol::YPRUpdate& ypr_update, long sensor_timestamp)
                 {
                     //printf("Setting pitch value to %f", ypr_update.pitch);
-                    ahrs->yaw               	= ypr_update.yaw;
-                    ahrs->pitch             	= ypr_update.pitch;
-                    ahrs->roll              	= ypr_update.roll;
-                    ahrs->compass_heading   	= ypr_update.compass_heading;
-                    ahrs->last_sensor_timestamp	= sensor_timestamp;
+                    ahrs->yaw                   = ypr_update.yaw;
+                    ahrs->pitch                 = ypr_update.pitch;
+                    ahrs->roll                  = ypr_update.roll;
+                    ahrs->compass_heading       = ypr_update.compass_heading;
+                    ahrs->last_sensor_timestamp = sensor_timestamp;
                 }
 
                 void setAHRSPosData(AHRSProtocol::AHRSPosUpdate& ahrs_update, long sensor_timestamp)
@@ -108,7 +108,7 @@ namespace rip
                     ahrs->quaternionY                = ahrs_update.quat_y;
                     ahrs->quaternionZ                = ahrs_update.quat_z;
 
-                    ahrs->last_sensor_timestamp	= sensor_timestamp;
+                    ahrs->last_sensor_timestamp = sensor_timestamp;
 
                     /* Notify external data arrival subscribers, if any. */
                     for(int i = 0; i < MAX_NUM_CALLBACKS; i++)
@@ -116,11 +116,11 @@ namespace rip
                         ITimestampedDataSubscriber *callback = ahrs->callbacks[i];
                         if(callback != NULL)
                         {
-                        	long system_timestamp =(long)(std::time(nullptr) * 1000);
+                            long system_timestamp =(long)(std::time(nullptr) * 1000);
                             callback->timestampedDataReceived(system_timestamp,
-                            		sensor_timestamp,
-                            		ahrs_update,
-                            		ahrs->callback_contexts[i]);
+                                    sensor_timestamp,
+                                    ahrs_update,
+                                    ahrs->callback_contexts[i]);
                         }
                     }
 
@@ -132,7 +132,7 @@ namespace rip
                     ahrs->displacement[2] = ahrs_update.disp_z;
 
                     ahrs->yaw_angle_tracker->NextAngle(ahrs->getYaw());
-                    ahrs->last_sensor_timestamp	= sensor_timestamp;
+                    ahrs->last_sensor_timestamp = sensor_timestamp;
                 }
 
                 void setRawData(AHRSProtocol::GyroUpdate& raw_data_update, long sensor_timestamp)
@@ -147,7 +147,7 @@ namespace rip
                     ahrs->cal_mag_y      = raw_data_update.mag_y;
                     ahrs->cal_mag_z      = raw_data_update.mag_z;
                     ahrs->mpu_temp_c     = raw_data_update.temp_c;
-                    ahrs->last_sensor_timestamp	= sensor_timestamp;
+                    ahrs->last_sensor_timestamp = sensor_timestamp;
                 }
 
                 void setAHRSData(AHRSProtocol::AHRSUpdate& ahrs_update, long sensor_timestamp)
@@ -209,7 +209,7 @@ namespace rip
                     ahrs->quaternionY                = ahrs_update.quat_y;
                     ahrs->quaternionZ                = ahrs_update.quat_z;
 
-                    ahrs->last_sensor_timestamp	= sensor_timestamp;
+                    ahrs->last_sensor_timestamp = sensor_timestamp;
 
                     /* Notify external data arrival subscribers, if any. */
                     for(int i = 0; i < MAX_NUM_CALLBACKS; i++)
@@ -217,11 +217,11 @@ namespace rip
                         ITimestampedDataSubscriber *callback = ahrs->callbacks[i];
                         if(callback != NULL)
                         {
-                        	long system_timestamp =(long)(std::time(nullptr) * 1000);
+                            long system_timestamp =(long)(std::time(nullptr) * 1000);
                             callback->timestampedDataReceived(system_timestamp,
-                            		sensor_timestamp,
-                            		ahrs_update,
-                            		ahrs->callback_contexts[i]);
+                                    sensor_timestamp,
+                                    ahrs_update,
+                                    ahrs->callback_contexts[i]);
                         }
                     }
 
@@ -273,7 +273,7 @@ namespace rip
 
                 bool isAHRSPosTimestampSupported()
                 {
-                	return(((ahrs->capability_flags & NAVX_CAPABILITY_FLAG_AHRSPOS_TS) != 0) ? true : false);
+                    return(((ahrs->capability_flags & NAVX_CAPABILITY_FLAG_AHRSPOS_TS) != 0) ? true : false);
                 }
             };
 
@@ -350,7 +350,7 @@ namespace rip
 
             long AHRS::getLastSensorTimestamp()
             {
-            	return this->last_sensor_timestamp;
+                return this->last_sensor_timestamp;
             }
 
             units::Acceleration AHRS::getWorldLinearAccelX()
@@ -567,8 +567,8 @@ namespace rip
 
                 for(int i = 0; i < MAX_NUM_CALLBACKS; i++)
                 {
-                	callbacks[i] = NULL;
-                	callback_contexts[i] = NULL;
+                    callbacks[i] = NULL;
+                    callback_contexts[i] = NULL;
                 }
             }
 
@@ -693,7 +693,7 @@ namespace rip
             {
                 IIOProvider *io_provider =(IIOProvider*)threadarg;
                 io_provider->run();
-            	return NULL;
+                return NULL;
             }
 
 

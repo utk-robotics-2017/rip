@@ -30,7 +30,7 @@ namespace rip
                     int baudRate;
                     int fd;
                     struct termios tty;
-            	int err;
+                int err;
 
                 public:
 
@@ -41,15 +41,13 @@ namespace rip
 
                 void init(int baudRate, std::string id)
                 {
-
-
                     int USB = open(id.c_str(), O_RDWR| O_NOCTTY);
                     if(USB < 0)
                     {
                         //TODO: RIP exception handling
                         std::cerr << "Could not open " << id.c_str() << " as a TTY:";
                         perror("");
-            			throw std::runtime_error("");
+                        throw std::runtime_error("");
                     }
 
                     memset(&tty, 0, sizeof(tty));
@@ -130,7 +128,7 @@ namespace rip
                     int n = 0, loc = 0;
                     char buf = '\0';
                     memset(data, '\0', size);
-            	    err = 0;
+                    err = 0;
 
                     do
                     {
@@ -138,21 +136,21 @@ namespace rip
                         sprintf(&data[loc], "%c", buf);
                         loc += n;
 
-                	    if(n == 0) err++;
+                        if(n == 0) err++;
 
-                	    if(err > 100)
-                	    {
-                    		err = 0;
-                    		reset();
-                    		close();
-                    	    std::this_thread::sleep_for(std::chrono::milliseconds(30000));
-                    		init(this->baudRate, this->id);
-                    		setTimeout(this->timeout);
-                    	    setReadBufferSize(this->ReadBufferSize);
-                    	    enableTermination(this->terminationChar);
-                    		reset();
-                    		break;
-                	    }
+                        if(err > 100)
+                        {
+                            err = 0;
+                            reset();
+                            close();
+                            std::this_thread::sleep_for(std::chrono::milliseconds(30000));
+                            init(this->baudRate, this->id);
+                            setTimeout(this->timeout);
+                            setReadBufferSize(this->ReadBufferSize);
+                            enableTermination(this->terminationChar);
+                            reset();
+                            break;
+                        }
                     } while(buf != terminationChar && loc < size);
 
                     if(n < 0)
@@ -172,13 +170,13 @@ namespace rip
 
                 void waitForData()
                 {
-            		fd_set readfds;
-            		struct timeval tv;
-            		FD_ZERO(&readfds);
-            		FD_SET(this->fd, &readfds);
-            		tv.tv_sec = 0;
-            		tv.tv_usec = 100000;
-            		select(this->fd + 1, &readfds, NULL, NULL, &tv);
+                    fd_set readfds;
+                    struct timeval tv;
+                    FD_ZERO(&readfds);
+                    FD_SET(this->fd, &readfds);
+                    tv.tv_sec = 0;
+                    tv.tv_usec = 100000;
+                    select(this->fd + 1, &readfds, NULL, NULL, &tv);
                 }
 
                 void reset()

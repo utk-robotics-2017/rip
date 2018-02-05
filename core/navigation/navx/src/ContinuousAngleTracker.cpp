@@ -16,37 +16,37 @@ namespace rip
 
             void ContinuousAngleTracker::nextAngle(float newAngle)
             {
-            	/* If the first received sample is negative,
-            	 * ensure that the zero crossing count is
-            	 * decremented.
-            	 */
+                /* If the first received sample is negative,
+                 * ensure that the zero crossing count is
+                 * decremented.
+                 */
 
-            	if(this->first_sample)
+                if(this->first_sample)
                 {
-            		this->first_sample = false;
-            		if(newAngle < 0.0f)
+                    this->first_sample = false;
+                    if(newAngle < 0.0f)
                     {
-            			this->zero_crossing_count--;
-            		}
-            	}
+                        this->zero_crossing_count--;
+                    }
+                }
 
-            	/* Calculate delta angle, adjusting appropriately
-            	 * if the current sample crossed the -180/180
-            	 * point.
-            	 */
+                /* Calculate delta angle, adjusting appropriately
+                 * if the current sample crossed the -180/180
+                 * point.
+                 */
 
-            	bool bottom_crossing = false;
-            	float delta_angle = newAngle - this->last_angle;
+                bool bottom_crossing = false;
+                float delta_angle = newAngle - this->last_angle;
                 /* Adjust for wraparound at -180/+180 point */
                 if(delta_angle >= 180.0f)
                 {
-                	delta_angle = 360.0f - delta_angle;
-                	bottom_crossing = true;
+                    delta_angle = 360.0f - delta_angle;
+                    bottom_crossing = true;
                 }
                 else if(delta_angle <= -180.0f)
                 {
-                	delta_angle = 360.0f + delta_angle;
-                	bottom_crossing = true;
+                    delta_angle = 360.0f + delta_angle;
+                    bottom_crossing = true;
                 }
                 this->last_rate = delta_angle;
 
@@ -57,17 +57,17 @@ namespace rip
                 {
                     if(delta_angle < 0.0f)
                     {
-                    	if((newAngle < 0.0f) &&(this->last_angle >= 0.0f))
+                        if((newAngle < 0.0f) &&(this->last_angle >= 0.0f))
                         {
-                    		this->zero_crossing_count--;
-                    	}
+                            this->zero_crossing_count--;
+                        }
                     }
                     else if(delta_angle >= 0.0f)
                     {
-                    	if((newAngle >= 0.0f) &&(last_angle < 0.0f))
+                        if((newAngle >= 0.0f) &&(last_angle < 0.0f))
                         {
-                    		this->zero_crossing_count++;
-                    	}
+                            this->zero_crossing_count++;
+                        }
                     }
                 }
                 this->last_angle = newAngle;
