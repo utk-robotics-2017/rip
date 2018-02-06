@@ -50,6 +50,21 @@ namespace rip
              * @brief Unknown combination of motor dynamic parameters
              */
             NEW_EX(UnknownDType);
+            /**
+             * Json passed to Roboclaw constructor is null or has bad data.
+             */
+            NEW_EX(BadJson);
+
+            /**
+             * @class SerialOpenFail
+             * @brief Exception thrown if serial device fails to open
+             */
+            NEW_EX(SerialOpenFail);
+            /**
+             * @class InvalidCommMode
+             * @brief Exception thrown if invalid comm mode is in use
+             */
+            NEW_EX(InvalidCommMode);
         }
     }
 }

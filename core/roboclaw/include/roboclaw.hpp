@@ -24,15 +24,18 @@
 #include <array>
 #include <vector>
 #include <tuple>
-
 #include <json.hpp>
-#include <serial/serial.h>
+
 #include <units.hpp>
 
 #include "exceptions.hpp"
 #include "motor_dynamics.hpp"
 #include "pid_parameters.hpp"
 #include "config.hpp"
+extern "C"
+{
+  #include "serial.h"
+}
 
 namespace rip
 {
@@ -47,7 +50,7 @@ namespace rip
              * @link http://www.ionmc.com/
              * @link https://www.pololu.com/category/124/roboclaw-motor-controllers
              */
-            class Roboclaw : serial::Serial
+            class Roboclaw
             {
             public:
                 enum class Motor
@@ -157,8 +160,19 @@ namespace rip
                  * @brief Constructor
                  * @param json config
                  */
-                Roboclaw(nlohmann::json config);
 
+                Roboclaw(nlohmann::json config, bool test=1);
+                /**
+                 * @brief Destructor
+                 *
+                 */
+
+                ~Roboclaw();
+                /**
+                * @brief validates json config passed to roboclaw
+                *
+                */
+                void validateConfig(nlohmann::json testcfg);
 //////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////// PWM /////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////
@@ -183,6 +197,7 @@ namespace rip
                  * @exception CommandFailure Thrown if the command fails
                  * @exception OutOfRange Thrown if the voltage is out of range
                  */
+
                 void drive(Motor motor, int16_t speed);
 
                 /**
@@ -295,7 +310,7 @@ namespace rip
                  *
                  * @returns The encoder count in ticks
                  */
-                long readEncoderRaw(Motor motor);
+                int64_t readEncoderRaw(Motor motor);
 
                 /**
                  * @brief Read the encoder count in ticks for both encoders
@@ -304,7 +319,7 @@ namespace rip
                  * @note Uses 2 sequential reads in order to get direction (which isn't
                  *       provided by the command for requesting both)
                  */
-                std::array<long, 2> readEncodersRaw();
+                std::array<int32_t, 2> readEncodersRaw();
 
                 /**
                  * @brief Read the encoder value (as a distance) for a single encoder
@@ -348,7 +363,7 @@ namespace rip
                  *
                  * @returns The encoder velocity in ticks per second for a single encoder
                  */
-                long readEncoderVelocityRaw(Motor motor);
+                int32_t readEncoderVelocityRaw(Motor motor);
 
                 /**
                  * @brief Returns the encoder velocity (as a distance)
@@ -364,7 +379,7 @@ namespace rip
                  *
                  * @returns The encoder velocities in ticks per second for both encoders
                  */
-                std::array<long, 2> readEncodersVelocityRaw();
+                std::array<int32_t, 2> readEncodersVelocityRaw();
 
                 /**
                  * @brief Returns the encoder velocities (using actual units) for both encoders
@@ -454,6 +469,7 @@ namespace rip
                  */
                 void setDynamics(const MotorDynamics& dynamics, bool respectBuffer = true);
 
+
 //////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////// Misc //////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////
@@ -508,6 +524,25 @@ namespace rip
                  * @returns The temperature of the board
                  */
                 units::Temperature readTemperature();
+
+                /*
+                @brief: reads the number of commands in the buffer for
+                both motors.
+                Send: [Address, 47]
+                Receive: [BufferM1, BufferM2, CRC(2 bytes)]
+
+                @returns Buffer length for motors 1 and 2
+                */
+                std::vector<uint8_t> readBufferLens();
+                /*
+                @brief: reads the number of commands in the buffer for
+                both motors, returns the buffer for just the specified motor.
+                Send: [Address, 47]
+                Receive: [BufferM1, BufferM2, CRC(2 bytes)]
+
+                @returns Buffer length for motors 1 or 2
+                */
+                uint8_t readBufferLen(Motor motor);
 
                 enum class S3Modes
                 {
@@ -580,14 +615,29 @@ namespace rip
                 };
 
                 /**
-                 * @brief Returns the roboclaw status
+                 * @brief Returns the complete roboclaw status as an array of bools
+                 * corresponding to each status in order.
+                 * Send: [Address, 90]
+                 * Receive: [Status, CRC(2 bytes)]
+                 *
+                 * @return
+                 */
+                std::array<bool,17> readStatus();
+                /**
+                 * @brief Returns the status of a specific status as a bool
                  *
                  * Send: [Address, 90]
                  * Receive: [Status, CRC(2 bytes)]
                  *
                  * @return
                  */
-                Status readStatus();
+                bool readStatus(Status s);
+
+                /*
+                Returns 0xFF for crc check. Overrided when using mock to bypass CRC check.
+                */
+                virtual uint8_t returnFF();
+
 
                 /**
                  * @brief Set the config for the roboclaw
@@ -610,7 +660,7 @@ namespace rip
                 Config getConfig();
 
             private:
-                static const uint8_t kMaxRetries = 3;
+                static const uint8_t kMaxRetries = 10;
 
                 /**
                  * @brief Clear the checksum
@@ -623,8 +673,28 @@ namespace rip
                  * @param data Data to update the checksum with
                  */
                 void crcUpdate (uint8_t data);
-
+                /*
+                Updates CRC
+                */
                 uint16_t crcGet();
+//////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////// Serial /////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////
+                /* Wrappers for some of periphery's C serial methods.
+                These are probably going to be phased out when we find a better
+                home for them, but they can stay here for now <3 */
+                virtual void write(serial_t *serial, std::vector<uint8_t> command, size_t len);
+
+                virtual uint8_t read(serial_t *serial, units::Time timeout_ms);
+
+                void open(serial_t *serial, std::string device, uint32_t baudrate);
+
+                void open(serial_t *serial, std::string device,
+                uint32_t baudrate, unsigned int databits,
+                serial_parity_t parity, unsigned int stopbits,
+                bool xonxoff, bool rtscts);
+
+                void close(serial_t *serial);
 
                 /**
                  * @brief Sends N bytes to the roboclaw
@@ -640,7 +710,7 @@ namespace rip
                 {
                     std::vector<uint8_t> command = {m_address};
                     argsToVector<0, Args...>(command, std::make_tuple(args...));
-
+                    uint8_t data;
                     for (int try_ = 0; try_ < kMaxRetries; try_++)
                     {
                         crcClear();
@@ -651,8 +721,10 @@ namespace rip
                         uint16_t crc = crcGet();
                         command.push_back(static_cast<uint8_t>(crc >> 8));
                         command.push_back(static_cast<uint8_t>(crc));
-                        write(command);
-                        if (static_cast<uint8_t>(read()[0]) == 0xFF)
+
+                        write(&m_serial, command, command.size());
+                        data = read(&m_serial, m_timeout);
+                        if(data == returnFF())
                         {
                             return;
                         }
@@ -703,13 +775,22 @@ namespace rip
                  *
                  * @return N byte response
                  */
-                std::vector<uint8_t> readN(uint8_t n, Command cmd);
-
+                virtual std::vector<uint8_t> readN(uint8_t n, Command cmd);
                 uint16_t m_crc;
                 units::Time m_timeout;
                 uint8_t m_address;
                 double m_ticks_per_rev;
                 units::Distance m_wheel_radius;
+                //serial members
+                const char* m_device;
+                uint32_t m_baudrate;
+                serial_t m_serial;
+                //advanced
+                unsigned int m_databits, m_stopbits;
+                bool m_xonxoff, m_rtscts;
+                serial_parity_t m_parity;
+                //TODO: support advanced serial opening
+
             }; // class Roboclaw
 
             inline uint8_t operator >>(const Roboclaw::Command& cmd, size_t shift)
