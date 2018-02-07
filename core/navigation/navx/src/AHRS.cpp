@@ -289,19 +289,19 @@ namespace rip
 
             units::Angle AHRS::getPitch()
             {
-                return pitch*units::deg;
+                return static_cast<float>(pitch)*units::deg;
             }
 
             units::Angle AHRS::getRoll()
             {
-                return roll*units::degrees;
+                return static_cast<float>(roll)*units::degrees;
             }
 
             units::Angle AHRS::getYaw()
             {
                 if(ahrs_internal->isBoardYawResetSupported())
                 {
-                    return(this->yaw)*units::degrees;
+                    return static_cast<float>((this->yaw))*units::degrees;
                 }
                 else
                 {
@@ -311,7 +311,7 @@ namespace rip
 
             units::Angle AHRS::getCompassHeading()
             {
-                return compass_heading*units::degrees;
+                return static_cast<float>(compass_heading)*units::degrees;
             }
 
             void AHRS::zeroYaw()
@@ -355,17 +355,17 @@ namespace rip
 
             units::Acceleration AHRS::getWorldLinearAccelX()
             {
-                return this->world_linear_accel_x * units::AccelerationOfGravity;
+                return static_cast<float>(this->world_linear_accel_x) * units::AccelerationOfGravity;
             }
 
             units::Acceleration AHRS::getWorldLinearAccelY()
             {
-                return this->world_linear_accel_y * units::AccelerationOfGravity;
+                return static_cast<float>(this->world_linear_accel_y) * units::AccelerationOfGravity;
             }
 
             units::Acceleration AHRS::getWorldLinearAccelZ()
             {
-                return this->world_linear_accel_z * units::AccelerationOfGravity;
+                return static_cast<float>(this->world_linear_accel_z) * units::AccelerationOfGravity;
             }
 
             bool AHRS::isMoving()
@@ -380,12 +380,12 @@ namespace rip
 
             units::Pressure AHRS::getBarometricPressure()
             {
-                return baro_pressure * units::millibar;
+                return static_cast<float>(baro_pressure) * units::millibar;
             }
 
             units::Distance AHRS::getAltitude()
             {
-                return altitude * units::m;
+                return static_cast<float>(altitude) * units::m;
             }
 
             bool AHRS::isAltitudeValid()
@@ -639,7 +639,7 @@ namespace rip
 
             units::Temperature AHRS::getTempC()
             {
-                return this->mpu_temp_c * units::degC;
+                return static_cast<float>(this->mpu_temp_c) * units::degC;
             }
 
             AHRS::BoardYawAxis AHRS::getBoardYawAxis()
