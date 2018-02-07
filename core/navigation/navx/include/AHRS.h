@@ -36,7 +36,7 @@ namespace rip
              * altitude, barometric pressure and pressure sensor temperature data
              * @author Scott & UTK IEEE Robotics.
              */
-             using namespace rip::utilities;
+             using namespace rip;
             class AHRS
             {
             public:
