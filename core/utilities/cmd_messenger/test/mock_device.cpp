@@ -9,7 +9,8 @@ namespace rip
             namespace mocks
             {
                 MockDevice::MockDevice()
-                    : Device("")
+                    : Device(""),
+                      m_correctly_acknowledge(true)
                 {
                     setSeparators();
                 }

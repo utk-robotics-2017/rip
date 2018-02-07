@@ -1,6 +1,6 @@
-#include <cmd_messenger.hpp>
-#include <command.hpp>
-#include <exceptions.hpp>
+#include "cmd_messenger/cmd_messenger.hpp"
+#include "cmd_messenger/command.hpp"
+#include "cmd_messenger/exceptions.hpp"
 
 #include <memory>
 
@@ -8,6 +8,7 @@
 
 #include "mock_device.hpp"
 
+using MockDevice = rip::utilities::cmdmessenger::mocks::MockDevice;
 
 namespace rip
 {
@@ -15,13 +16,11 @@ namespace rip
     {
         namespace cmdmessenger
         {
-            using Device = mocks::MockDevice;
-
             namespace tests
             {
-                TEST(CmdMessenger, EmptySend)
+                TEST(CmdMessenger_send, Empty)
                 {
-                    std::shared_ptr<Device> device = std::make_shared<Device>();
+                    std::shared_ptr<MockDevice> device = std::make_shared<MockDevice>();
 
                     std::string argument_types = ArduinoCmdMessenger::makeArgumentString();
 
@@ -31,11 +30,11 @@ namespace rip
                     ASSERT_NO_THROW(cmd_messenger.send(device, command));
                 }
 
-                TEST(CmdMessenger, IntSend)
+                TEST(CmdMessenger_send, Int)
                 {
-                    std::shared_ptr<Device> device = std::make_shared<Device>();
+                    std::shared_ptr<MockDevice> device = std::make_shared<MockDevice>();
 
-                    std::string argument_types = ArduinoCmdMessenger::makeArgumentString<int>();
+                    std::string argument_types = ArduinoCmdMessenger::makeArgumentString<ArduinoCmdMessenger::IntegerType>();
 
                     std::shared_ptr<Command> command = std::make_shared<Command>("kCommand", 7, argument_types);
 
@@ -50,11 +49,11 @@ namespace rip
                     ASSERT_EQ(device->fromBytes<int16_t>(sent), 1);
                 }
 
-                TEST(CmdMessenger, UnsignedIntSend)
+                TEST(CmdMessenger_send, UnsignedInt)
                 {
-                    std::shared_ptr<Device> device = std::make_shared<Device>();
+                    std::shared_ptr<MockDevice> device = std::make_shared<MockDevice>();
 
-                    std::string argument_types = ArduinoCmdMessenger::makeArgumentString<unsigned int>();
+                    std::string argument_types = ArduinoCmdMessenger::makeArgumentString<ArduinoCmdMessenger::UnsignedIntegerType>();
 
                     std::shared_ptr<Command> command = std::make_shared<Command>("kCommand", 7, argument_types);
 
@@ -69,11 +68,11 @@ namespace rip
                     ASSERT_EQ(device->fromBytes<uint16_t>(sent), 1);
                 }
 
-                TEST(CmdMessenger, LongSend)
+                TEST(CmdMessenger_send, Long)
                 {
-                    std::shared_ptr<Device> device = std::make_shared<Device>();
+                    std::shared_ptr<MockDevice> device = std::make_shared<MockDevice>();
 
-                    std::string argument_types = ArduinoCmdMessenger::makeArgumentString<long>();
+                    std::string argument_types = ArduinoCmdMessenger::makeArgumentString<ArduinoCmdMessenger::LongType>();
 
                     std::shared_ptr<Command> command = std::make_shared<Command>("kCommand", 7, argument_types);
 
@@ -88,11 +87,11 @@ namespace rip
                     ASSERT_EQ(device->fromBytes<int32_t>(sent), 1);
                 }
 
-                TEST(CmdMessenger, UnsignedLongSend)
+                TEST(CmdMessenger_send, UnsignedLong)
                 {
-                    std::shared_ptr<Device> device = std::make_shared<Device>();
+                    std::shared_ptr<MockDevice> device = std::make_shared<MockDevice>();
 
-                    std::string argument_types = ArduinoCmdMessenger::makeArgumentString<unsigned long>();
+                    std::string argument_types = ArduinoCmdMessenger::makeArgumentString<ArduinoCmdMessenger::UnsignedLongType>();
 
                     std::shared_ptr<Command> command = std::make_shared<Command>("kCommand", 7, argument_types);
 
@@ -107,11 +106,11 @@ namespace rip
                     ASSERT_EQ(device->fromBytes<uint32_t>(sent), 123);
                 }
 
-                TEST(CmdMessenger, FloatSend)
+                TEST(CmdMessenger_send, Float)
                 {
-                    std::shared_ptr<Device> device = std::make_shared<Device>();
+                    std::shared_ptr<MockDevice> device = std::make_shared<MockDevice>();
 
-                    std::string argument_types = ArduinoCmdMessenger::makeArgumentString<float>();
+                    std::string argument_types = ArduinoCmdMessenger::makeArgumentString<ArduinoCmdMessenger::FloatType>();
 
                     std::shared_ptr<Command> command = std::make_shared<Command>("kCommand", 7, argument_types);
 
@@ -126,11 +125,11 @@ namespace rip
                     ASSERT_FLOAT_EQ(device->fromBytes<float>(sent), 2.0);
                 }
 
-                TEST(CmdMessenger, DoubleSend)
+                TEST(CmdMessenger_send, Double)
                 {
-                    std::shared_ptr<Device> device = std::make_shared<Device>();
+                    std::shared_ptr<MockDevice> device = std::make_shared<MockDevice>();
 
-                    std::string argument_types = ArduinoCmdMessenger::makeArgumentString<double>();
+                    std::string argument_types = ArduinoCmdMessenger::makeArgumentString<ArduinoCmdMessenger::DoubleType>();
 
                     std::shared_ptr<Command> command = std::make_shared<Command>("kCommand", 7, argument_types);
 
@@ -145,11 +144,11 @@ namespace rip
                     ASSERT_FLOAT_EQ(device->fromBytes<float>(sent), 2.5);
                 }
 
-                TEST(CmdMessenger, CharSend)
+                TEST(CmdMessenger_send, Char)
                 {
-                    std::shared_ptr<Device> device = std::make_shared<Device>();
+                    std::shared_ptr<MockDevice> device = std::make_shared<MockDevice>();
 
-                    std::string argument_types = ArduinoCmdMessenger::makeArgumentString<char>();
+                    std::string argument_types = ArduinoCmdMessenger::makeArgumentString<ArduinoCmdMessenger::CharType>();
 
                     std::shared_ptr<Command> command = std::make_shared<Command>("kCommand", 7, argument_types);
 
@@ -164,11 +163,11 @@ namespace rip
                     ASSERT_EQ(device->fromBytes<char>(sent), 'c');
                 }
 
-                TEST(CmdMessenger, StringSend)
+                TEST(CmdMessenger_send, String)
                 {
-                    std::shared_ptr<Device> device = std::make_shared<Device>();
+                    std::shared_ptr<MockDevice> device = std::make_shared<MockDevice>();
 
-                    std::string argument_types = ArduinoCmdMessenger::makeArgumentString<std::string>();
+                    std::string argument_types = ArduinoCmdMessenger::makeArgumentString<ArduinoCmdMessenger::StringType>();
 
                     std::shared_ptr<Command> command = std::make_shared<Command>("kCommand", 7, argument_types);
 
@@ -183,11 +182,11 @@ namespace rip
                     ASSERT_EQ(device->fromBytes<std::string>(sent), "Hello World");
                 }
 
-                TEST(CmdMessenger, BooleanSend)
+                TEST(CmdMessenger_send, Boolean)
                 {
-                    std::shared_ptr<Device> device = std::make_shared<Device>();
+                    std::shared_ptr<MockDevice> device = std::make_shared<MockDevice>();
 
-                    std::string argument_types = ArduinoCmdMessenger::makeArgumentString<bool>();
+                    std::string argument_types = ArduinoCmdMessenger::makeArgumentString<ArduinoCmdMessenger::BooleanType>();
 
                     std::shared_ptr<Command> command = std::make_shared<Command>("kCommand", 7, argument_types);
 
@@ -202,11 +201,11 @@ namespace rip
                     ASSERT_EQ(device->fromBytes<char>(sent), false);
                 }
 
-                TEST(CmdMessenger, MultiIntSend)
+                TEST(CmdMessenger_send, MultiInt)
                 {
-                    std::shared_ptr<Device> device = std::make_shared<Device>();
+                    std::shared_ptr<MockDevice> device = std::make_shared<MockDevice>();
 
-                    std::string argument_types = ArduinoCmdMessenger::makeArgumentString<int, int>();
+                    std::string argument_types = ArduinoCmdMessenger::makeArgumentString<ArduinoCmdMessenger::IntegerType, ArduinoCmdMessenger::IntegerType>();
 
                     std::shared_ptr<Command> command = std::make_shared<Command>("kCommand", 7, argument_types);
 
@@ -223,11 +222,11 @@ namespace rip
                     ASSERT_EQ(device->fromBytes<uint16_t>(sent), 2);
                 }
 
-                TEST(CmdMessenger, MultiIntFloatSend)
+                TEST(CmdMessenger_send, MultiIntFloat)
                 {
-                    std::shared_ptr<Device> device = std::make_shared<Device>();
+                    std::shared_ptr<MockDevice> device = std::make_shared<MockDevice>();
 
-                    std::string argument_types = ArduinoCmdMessenger::makeArgumentString<int, float>();
+                    std::string argument_types = ArduinoCmdMessenger::makeArgumentString<ArduinoCmdMessenger::IntegerType, ArduinoCmdMessenger::FloatType>();
 
                     std::shared_ptr<Command> command = std::make_shared<Command>("kCommand", 7, argument_types);
 
@@ -244,11 +243,11 @@ namespace rip
                     ASSERT_FLOAT_EQ(device->fromBytes<float>(sent), 2.0);
                 }
 
-                TEST(CmdMesenger, FailedAcknowledgementSend)
+                TEST(CmdMessenger_send, FailedAcknowledgement)
                 {
-                    std::shared_ptr<Device> device = std::make_shared<Device>();
+                    std::shared_ptr<MockDevice> device = std::make_shared<MockDevice>();
 
-                    std::string argument_types = ArduinoCmdMessenger::makeArgumentString<int, float>();
+                    std::string argument_types = ArduinoCmdMessenger::makeArgumentString<ArduinoCmdMessenger::IntegerType, ArduinoCmdMessenger::FloatType>();
 
                     device->setAcknowledgeCorrectly(false);
 
@@ -258,32 +257,32 @@ namespace rip
                     ASSERT_THROW(cmd_messenger.send(device, command, 1, 2.0), cmdmessenger::IncorrectAcknowledgementCommand);
                 }
 
-                TEST(CmdMessenger, IntResponse)
+                TEST(CmdMessenger_response, Int)
                 {
-                    std::shared_ptr<Device> device = std::make_shared<Device>();
+                    std::shared_ptr<MockDevice> device = std::make_shared<MockDevice>();
                     ArduinoCmdMessenger cmd_messenger;
 
-                    std::string send_argument_types = ArduinoCmdMessenger::makeArgumentString<int>();
+                    std::string send_argument_types = ArduinoCmdMessenger::makeArgumentString<ArduinoCmdMessenger::IntegerType>();
                     std::shared_ptr<Command> send_command = std::make_shared<Command>("kCommand", 7, send_argument_types);
                     cmd_messenger.
                     send(device, send_command, 1);
 
 
-                    std::string arguments_types = ArduinoCmdMessenger::makeArgumentString<int>();
+                    std::string arguments_types = ArduinoCmdMessenger::makeArgumentString<ArduinoCmdMessenger::IntegerType>();
                     std::shared_ptr<Command> command = std::make_shared<Command>("kCommandResult", 8, arguments_types);
 
                     std::string set_response = device->toBytes<uint16_t>(8) + ',' + device->toBytes<int16_t>(16) + ';';
                     device->
                     setResponse(set_response);
 
-                    std::tuple<int> response_tuple;
-                    ASSERT_NO_THROW(response_tuple = cmd_messenger.receive<int>(command));
+                    std::tuple<ArduinoCmdMessenger::IntegerType> response_tuple;
+                    ASSERT_NO_THROW(response_tuple = cmd_messenger.receive<ArduinoCmdMessenger::IntegerType>(command));
                     ASSERT_EQ(std::get<0>(response_tuple), 16);
                 }
 
-                TEST(CmdMessenger, UnsignedIntResponse)
+                TEST(CmdMessenger_response, UnsignedInt)
                 {
-                    std::shared_ptr<Device> device = std::make_shared<Device>();
+                    std::shared_ptr<MockDevice> device = std::make_shared<MockDevice>();
                     ArduinoCmdMessenger cmd_messenger;
 
 
@@ -292,21 +291,20 @@ namespace rip
                     cmd_messenger.send(device, send_command);
 
 
-                    std::string arguments_types = ArduinoCmdMessenger::makeArgumentString<unsigned int>();
+                    std::string arguments_types = ArduinoCmdMessenger::makeArgumentString<ArduinoCmdMessenger::UnsignedIntegerType>();
                     std::shared_ptr<Command> command = std::make_shared<Command>("kCommandResult", 8, arguments_types);
 
                     std::string set_response = device->toBytes<uint16_t>(8) + ',' + device->toBytes<uint16_t>(16) + ';';
                     device->setResponse(set_response);
 
-                    std::tuple<unsigned int> response_tuple;
-                    ASSERT_NO_THROW(response_tuple = cmd_messenger.receive<unsigned int>(command));
+                    std::tuple<ArduinoCmdMessenger::UnsignedIntegerType> response_tuple;
+                    ASSERT_NO_THROW(response_tuple = cmd_messenger.receive<ArduinoCmdMessenger::UnsignedIntegerType>(command));
                     ASSERT_EQ(std::get<0>(response_tuple), 16);
                 }
 
-                TEST(CmdMessenger, LongResponse
-                    )
+                TEST(CmdMessenger_response, Long)
                 {
-                    std::shared_ptr<Device> device = std::make_shared<Device>();
+                    std::shared_ptr<MockDevice> device = std::make_shared<MockDevice>();
                     ArduinoCmdMessenger cmd_messenger;
 
 
@@ -315,20 +313,20 @@ namespace rip
                     cmd_messenger.send(device, send_command);
 
 
-                    std::string arguments_types = ArduinoCmdMessenger::makeArgumentString<long>();
+                    std::string arguments_types = ArduinoCmdMessenger::makeArgumentString<ArduinoCmdMessenger::LongType>();
                     std::shared_ptr<Command> command = std::make_shared<Command>("kCommandResult", 8, arguments_types);
 
                     std::string set_response = device->toBytes<uint16_t>(8) + ',' + device->toBytes<int32_t>(16) + ';';
                     device->setResponse(set_response);
 
-                    std::tuple<long> response_tuple;
-                    ASSERT_NO_THROW(response_tuple = cmd_messenger.receive<long>(command));
+                    std::tuple<ArduinoCmdMessenger::LongType> response_tuple;
+                    ASSERT_NO_THROW(response_tuple = cmd_messenger.receive<ArduinoCmdMessenger::LongType>(command));
                     ASSERT_EQ(std::get<0>(response_tuple), 16);
                 }
 
-                TEST(CmdMessenger, UnsignedLongResponse)
+                TEST(CmdMessenger_response, UnsignedLong)
                 {
-                    std::shared_ptr<Device> device = std::make_shared<Device>();
+                    std::shared_ptr<MockDevice> device = std::make_shared<MockDevice>();
                     ArduinoCmdMessenger cmd_messenger;
 
 
@@ -337,120 +335,120 @@ namespace rip
                     cmd_messenger.send(device, send_command);
 
 
-                    std::string arguments_types = ArduinoCmdMessenger::makeArgumentString<unsigned long>();
+                    std::string arguments_types = ArduinoCmdMessenger::makeArgumentString<ArduinoCmdMessenger::UnsignedLongType>();
                     std::shared_ptr<Command> command = std::make_shared<Command>("kCommandResult", 8, arguments_types);
 
                     std::string set_response = device->toBytes<uint16_t>(8) + ',' + device->toBytes<uint32_t>(16) + ';';
                     device->setResponse(set_response);
 
-                    std::tuple<unsigned long> response_tuple;
-                    ASSERT_NO_THROW(response_tuple = cmd_messenger.receive<unsigned long>(command));
+                    std::tuple<ArduinoCmdMessenger::UnsignedLongType> response_tuple;
+                    ASSERT_NO_THROW(response_tuple = cmd_messenger.receive<ArduinoCmdMessenger::UnsignedLongType>(command));
                     ASSERT_EQ(std::get<0>(response_tuple), 16);
                 }
 
-                TEST(CmdMessenger, FloatResponse)
+                TEST(CmdMessenger_response, Float)
                 {
-                    std::shared_ptr<Device> device = std::make_shared<Device>();
+                    std::shared_ptr<MockDevice> device = std::make_shared<MockDevice>();
                     ArduinoCmdMessenger cmd_messenger;
 
                     std::string send_argument_types = ArduinoCmdMessenger::makeArgumentString();
                     std::shared_ptr<Command> send_command = std::make_shared<Command>("kCommand", 7, send_argument_types);
                     cmd_messenger.send(device, send_command);
 
-                    std::string arguments_types = ArduinoCmdMessenger::makeArgumentString<float>();
+                    std::string arguments_types = ArduinoCmdMessenger::makeArgumentString<ArduinoCmdMessenger::FloatType>();
                     std::shared_ptr<Command> command = std::make_shared<Command>("kCommandResult", 8, arguments_types);
 
                     std::string set_response = device->toBytes<uint16_t>(8) + ',' + device->toBytes<float>(2.5) + ';';
                     device->setResponse(set_response);
 
-                    std::tuple<float> response_tuple;
-                    ASSERT_NO_THROW(response_tuple = cmd_messenger.receive<float>(command));
+                    std::tuple<ArduinoCmdMessenger::FloatType> response_tuple;
+                    ASSERT_NO_THROW(response_tuple = cmd_messenger.receive<ArduinoCmdMessenger::FloatType>(command));
                     ASSERT_FLOAT_EQ(std::get<0>(response_tuple), 2.5);
                 }
 
-                TEST(CmdMessenger, DoubleResponse)
+                TEST(CmdMessenger_response, Double)
                 {
-                    std::shared_ptr<Device> device = std::make_shared<Device>();
+                    std::shared_ptr<MockDevice> device = std::make_shared<MockDevice>();
                     ArduinoCmdMessenger cmd_messenger;
 
                     std::string send_argument_types = ArduinoCmdMessenger::makeArgumentString();
                     std::shared_ptr<Command> send_command = std::make_shared<Command>("kCommand", 7, send_argument_types);
                     cmd_messenger.send(device, send_command);
 
-                    std::string arguments_types = ArduinoCmdMessenger::makeArgumentString<float>();
+                    std::string arguments_types = ArduinoCmdMessenger::makeArgumentString<ArduinoCmdMessenger::FloatType>();
                     std::shared_ptr<Command> command = std::make_shared<Command>("kCommandResult", 8, arguments_types);
 
                     std::string set_response = device->toBytes<uint16_t>(8) + ',' + device->toBytes<float>(2.5) + ';';
                     device->setResponse(set_response);
 
-                    std::tuple<double> response_tuple;
-                    ASSERT_NO_THROW(response_tuple = cmd_messenger.receive<double>(command));
+                    std::tuple<ArduinoCmdMessenger::DoubleType> response_tuple;
+                    ASSERT_NO_THROW(response_tuple = cmd_messenger.receive<ArduinoCmdMessenger::DoubleType>(command));
                     ASSERT_FLOAT_EQ(std::get<0>(response_tuple), 2.5);
                 }
 
-                TEST(CmdMessenger, CharResponse)
+                TEST(CmdMessenger_response, Char)
                 {
-                    std::shared_ptr<Device> device = std::make_shared<Device>();
+                    std::shared_ptr<MockDevice> device = std::make_shared<MockDevice>();
                     ArduinoCmdMessenger cmd_messenger;
 
                     std::string send_argument_types = ArduinoCmdMessenger::makeArgumentString();
                     std::shared_ptr<Command> send_command = std::make_shared<Command>("kCommand", 7, send_argument_types);
                     cmd_messenger.send(device, send_command);
 
-                    std::string arguments_types = ArduinoCmdMessenger::makeArgumentString<char>();
+                    std::string arguments_types = ArduinoCmdMessenger::makeArgumentString<ArduinoCmdMessenger::CharType>();
                     std::shared_ptr<Command> command = std::make_shared<Command>("kCommandResult", 8, arguments_types);
 
                     std::string set_response = device->toBytes<uint16_t>(8) + ',' + device->toBytes<char>('c') + ';';
                     device->setResponse(set_response);
 
-                    std::tuple<char> response_tuple;
-                    ASSERT_NO_THROW(response_tuple = cmd_messenger.receive<char>(command));
+                    std::tuple<ArduinoCmdMessenger::CharType> response_tuple;
+                    ASSERT_NO_THROW(response_tuple = cmd_messenger.receive<ArduinoCmdMessenger::CharType>(command));
                     ASSERT_EQ(std::get<0>(response_tuple), 'c');
                 }
 
-                TEST(CmdMessenger, BooleanResponse)
+                TEST(CmdMessenger_response, Boolean)
                 {
-                    std::shared_ptr<Device> device = std::make_shared<Device>();
+                    std::shared_ptr<MockDevice> device = std::make_shared<MockDevice>();
                     ArduinoCmdMessenger cmd_messenger;
 
                     std::string send_argument_types = ArduinoCmdMessenger::makeArgumentString();
                     std::shared_ptr<Command> send_command = std::make_shared<Command>("kCommand", 7, send_argument_types);
                     cmd_messenger.send(device, send_command);
 
-                    std::string arguments_types = ArduinoCmdMessenger::makeArgumentString<bool>();
+                    std::string arguments_types = ArduinoCmdMessenger::makeArgumentString<ArduinoCmdMessenger::BooleanType>();
                     std::shared_ptr<Command> command = std::make_shared<Command>("kCommandResult", 8, arguments_types);
 
                     std::string set_response = device->toBytes<uint16_t>(8) + ',' + device->toBytes<bool>(true) + ';';
                     device->setResponse(set_response);
 
-                    std::tuple<bool> response_tuple;
-                    ASSERT_NO_THROW(response_tuple = cmd_messenger.receive<bool>(command));
+                    std::tuple<ArduinoCmdMessenger::BooleanType> response_tuple;
+                    ASSERT_NO_THROW(response_tuple = cmd_messenger.receive<ArduinoCmdMessenger::BooleanType>(command));
                     ASSERT_EQ(std::get<0>(response_tuple), true);
                 }
 
-                TEST(CmdMessenger, StringResponse)
+                TEST(CmdMessenger_response, String)
                 {
-                    std::shared_ptr<Device> device = std::make_shared<Device>();
+                    std::shared_ptr<MockDevice> device = std::make_shared<MockDevice>();
                     ArduinoCmdMessenger cmd_messenger;
 
                     std::string send_argument_types = ArduinoCmdMessenger::makeArgumentString();
                     std::shared_ptr<Command> send_command = std::make_shared<Command>("kCommand", 7, send_argument_types);
                     cmd_messenger.send(device, send_command);
 
-                    std::string arguments_types = ArduinoCmdMessenger::makeArgumentString<std::string>();
+                    std::string arguments_types = ArduinoCmdMessenger::makeArgumentString<ArduinoCmdMessenger::StringType>();
                     std::shared_ptr<Command> command = std::make_shared<Command>("kCommandResult", 8, arguments_types);
 
                     std::string set_response = device->toBytes<uint16_t>(8) + ',' + "Hello World" + ';';
                     device->setResponse(set_response);
 
-                    std::tuple<std::string> response_tuple;
-                    ASSERT_NO_THROW(response_tuple = cmd_messenger.receive<std::string>(command));
+                    std::tuple<ArduinoCmdMessenger::StringType> response_tuple;
+                    ASSERT_NO_THROW(response_tuple = cmd_messenger.receive<ArduinoCmdMessenger::StringType>(command));
                     ASSERT_EQ(std::get<0>(response_tuple), "Hello World");
                 }
 
-                TEST(CmdMessenger, IntIntResponse)
+                TEST(CmdMessenger_response, IntInt)
                 {
-                    std::shared_ptr<Device> device = std::make_shared<Device>();
+                    std::shared_ptr<MockDevice> device = std::make_shared<MockDevice>();
                     ArduinoCmdMessenger cmd_messenger;
 
 
@@ -459,35 +457,35 @@ namespace rip
                     cmd_messenger.send(device, send_command);
 
 
-                    std::string arguments_types = ArduinoCmdMessenger::makeArgumentString<int, int>();
+                    std::string arguments_types = ArduinoCmdMessenger::makeArgumentString<ArduinoCmdMessenger::IntegerType, ArduinoCmdMessenger::IntegerType>();
                     std::shared_ptr<Command> command = std::make_shared<Command>("kCommandResult", 8, arguments_types);
 
                     std::string set_response = device->toBytes<uint16_t>(8) + ',' + device->toBytes<int16_t>(12) + ',' + device->toBytes<int16_t>(14) + ';';
                     device->setResponse(set_response);
 
-                    std::tuple<int, int> response_tuple;
-                    response_tuple = cmd_messenger.receive<int, int>(command);
+                    std::tuple<ArduinoCmdMessenger::IntegerType, ArduinoCmdMessenger::IntegerType> response_tuple;
+                    response_tuple = cmd_messenger.receive<ArduinoCmdMessenger::IntegerType, ArduinoCmdMessenger::IntegerType>(command);
                     ASSERT_EQ(std::get<0>(response_tuple), 12);
                     ASSERT_EQ(std::get<1>(response_tuple), 14);
                 }
 
-                TEST(CmdMessenger, IntFloatResponse)
+                TEST(CmdMessenger_response, IntFloat)
                 {
-                    std::shared_ptr<Device> device = std::make_shared<Device>();
+                    std::shared_ptr<MockDevice> device = std::make_shared<MockDevice>();
                     ArduinoCmdMessenger cmd_messenger;
 
                     std::string send_argument_types = ArduinoCmdMessenger::makeArgumentString();
                     std::shared_ptr<Command> send_command = std::make_shared<Command>("kCommand", 7, send_argument_types);
                     cmd_messenger.send(device, send_command);
 
-                    std::string arguments_types = ArduinoCmdMessenger::makeArgumentString<int, float>();
+                    std::string arguments_types = ArduinoCmdMessenger::makeArgumentString<ArduinoCmdMessenger::IntegerType, ArduinoCmdMessenger::FloatType>();
                     std::shared_ptr<Command> command = std::make_shared<Command>("kCommandResult", 8, arguments_types);
 
                     std::string set_response = device->toBytes<uint16_t>(8) + ',' + device->toBytes<int16_t>(12) + ',' + device->toBytes<float>(3.6) + ';';
                     device->setResponse(set_response);
 
-                    std::tuple<int, float> response_tuple;
-                    response_tuple = cmd_messenger.receive<int, float>(command);
+                    std::tuple<ArduinoCmdMessenger::IntegerType, ArduinoCmdMessenger::FloatType> response_tuple;
+                    response_tuple = cmd_messenger.receive<ArduinoCmdMessenger::IntegerType, ArduinoCmdMessenger::FloatType>(command);
                     ASSERT_EQ(std::get<0>(response_tuple), 12);
                     ASSERT_FLOAT_EQ(std::get<1>(response_tuple), 3.6);
                 }

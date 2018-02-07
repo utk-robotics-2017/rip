@@ -1,50 +1,92 @@
-#include "argument.hpp"
+#include "arduino_gen/argument.hpp"
 
 #include <tinyxml2.h>
 #include <fmt/format.h>
 
-#include "appendage.hpp"
-#include "exceptions.hpp"
+#include "arduino_gen/appendage.hpp"
+#include "arduino_gen/exceptions.hpp"
 
 namespace rip
 {
     namespace arduinogen
     {
-        Argument::Argument(tinyxml2::XMLElement* xml)
+        Argument::Argument() = default;
+        Argument::~Argument() = default;
+
+        Argument::Argument(const tinyxml2::XMLElement* xml) : XmlElement(xml)
         {
-            const char* name = xml->Attribute("name");
-            if (!name)
-            {
-                throw AttributeException(fmt::format("Constructor argument name missing on line number {}",
-                                                     xml->GetLineNum()));
-            }
-            m_name = name;
+            m_name = getAttribute("name")->Value();
+            m_type = getAttribute("type")->Value();
 
-            const char* type = xml->Attribute("type");
-            if (!type)
+            try
             {
-                throw AttributeException(fmt::format("Constructor argument type missing on line number {}",
-                                                     xml->GetLineNum()));
+                m_value = getAttribute("value")->Value();
             }
-            m_type = type;
+            catch (AttributeException)
+            {
+                m_value = "";
+            }
 
-            if (m_type != "float" &&
-                    m_type != "int" &&
-                    m_type != "bool" &&
-                    m_type != "string")
+            if(m_type != "float" &&
+               m_type != "int" &&
+               m_type != "bool" &&
+               m_type != "string")
             {
                 throw AttributeException(fmt::format("Constructor argument unknown type on line number {}",
                                                      xml->GetLineNum()));
+            }
+
+            // If there are any extra attributes, throw an exception
+            if (!isAttributesEmpty())
+            {
+                throw AttributeException(fmt::format("Extra attribute for Argument on line number {}",
+                                                     xml->GetLineNum()));
+            }
+
+            // If there are any extra elements, throw an exception
+            if (!isElementsEmpty())
+            {
+                throw ElementException(fmt::format("Extra element for Argument on line number {}",
+                                                   xml->GetLineNum()));
             }
         }
 
         std::string Argument::toString(std::shared_ptr<Appendage> appendage) const
         {
-            if (!appendage->isType(m_name, m_type))
+            if (appendage->has(m_name))
             {
-                // TODO(Andrew): throw exception
+                if(!appendage->isType(m_name, m_type))
+                {
+                    // TODO(Andrew): throw exception
+                }
+                return appendage->getString(m_name);
             }
-            return fmt::format("{}, ", appendage->getString(m_name));
+            else
+            {
+                if (m_value.size() != 0)
+                {
+                    return m_value;
+                }
+                else
+                {
+                    // TODO(Anthony): throw exception
+                }
+            }
+        }
+
+        const std::string& Argument::getName() const
+        {
+            return m_name;
+        }
+
+        const std::string& Argument::getType() const
+        {
+            return m_type;
+        }
+
+        const std::string& Argument::getValue() const
+        {
+            return m_value;
         }
     } // arduinogen
 }

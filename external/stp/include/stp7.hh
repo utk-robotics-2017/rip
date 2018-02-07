@@ -1,5 +1,8 @@
 #pragma once
-#include "stp.hh"
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated"
+#include "stp_base.hh"
 #include <iostream>
 
 namespace stp
@@ -191,3 +194,4 @@ namespace stp
         void planProfileStretchDoubleDec(double newDuration, double dir, double da) throw(std::logic_error);
     };
 }
+#pragma GCC diagnostic pop

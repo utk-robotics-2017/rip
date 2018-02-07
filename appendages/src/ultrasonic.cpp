@@ -1,10 +1,12 @@
-#include "ultrasonic.hpp"
+#include "appendages/ultrasonic.hpp"
 
 #include <utility>
 #include <tuple>
 #include <memory>
 
-#include <cmd_messenger.hpp>
+#include <cmd_messenger/cmd_messenger.hpp>
+
+using namespace rip::utilities;
 
 namespace rip
 {

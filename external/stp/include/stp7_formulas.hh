@@ -1,6 +1,8 @@
 #ifndef _STP7FORMULAS_H
 #define _STP7FORMULAS_H
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated"
 #include <iostream>
 #include <string>
 #include <stdexcept>
@@ -229,5 +231,7 @@ namespace stp
                 double stretchToTime);
     };
 }
+
+#pragma GCC diagnostic pop
 
 #endif /* _STP7FORMULAS_H */

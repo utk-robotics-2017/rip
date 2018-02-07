@@ -1,10 +1,12 @@
-#include "ultrasonic.hpp"
+#include "appendages/servo.hpp"
 
 #include <utility>
 #include <tuple>
 #include <memory>
 
-#include <cmd_messenger.hpp>
+#include <cmd_messenger/cmd_messenger.hpp>
+
+using namespace rip::utilities;
 
 namespace rip
 {
@@ -12,14 +14,14 @@ namespace rip
     {
         Servo::Servo(const nlohmann::json& config, const std::map<std::string, int>& command_map, std::shared_ptr<cmdmessenger::Device> device)
             : Appendage(config, device)
-            , m_read(createCommand("kServoWrite", command_map, cmdmessenger::ArduinoCmdMessenger::makeArgumentString<cmdmessenger::ArduinoCmdMessenger::IntegerType, cmdmessenger::ArduinoCmdMessenger::IntegerType>()))
+            , m_write(createCommand("kServoWrite", command_map, cmdmessenger::ArduinoCmdMessenger::makeArgumentString<typename utilities::cmdmessenger::ArduinoCmdMessenger::IntegerType, typename utilities::cmdmessenger::ArduinoCmdMessenger::IntegerType>()))
         {
         }
 
         void Servo::write(int value)
         {
             cmdmessenger::ArduinoCmdMessenger messenger;
-            messenger.send<int>(m_device, m_read, m_id, value);
+            messenger.send<int>(m_device, m_write, m_id, value);
         }
 
         void Servo::stop()

@@ -1,38 +1,50 @@
 #!/usr/bin/env bash
+set -e
+
+pushd build
+
 # Checks if it compiles
 make -j4
 
 if [[ $2 ]]; then
-	BRANCH = $1
+    BRANCH=$1
 else
-	BRANCH = $3
+    BRANCH=$3
 fi
 
-# Runs cpp check
-if [[ $BRANCH == "arduino_gen/"* ]]; then
-	./arduino_gen_test
-	cd ../arduino_gen
-else if [[ $BRANCH == "pathfinder/"* ]]; then
-	./pathfinder_test
-	cd ../core/navigation/pathfinder
-else if [[ $BRANCH == "roboclaw/"* ]]; then
-	./roboclaw_test
-	cd ../utilities/roboclaw
-else if [[ $BRANCH == "cmd_messenger/"* ]]; then
-	./cmd_messenger_test
-	cd ../utilities/cmd_messenger
-else if [[ $BRANCH == "pathman/"* ]]; then
-	./pathman_test
-	cd ../utilities/pathman
-else if [[ $BRANCH == "navx/"* ]]; then
-	./navx_test
-	cd ../core/navigation/navx
-else if [[ $BRANCH == "communication/"* ]]; then
-	./communication_test
-	cd ../core/communication
-else if [[ $BRANCH == "appendages/"* ]]; then
-	./appendages_test
-	cd ../appendages
-fi
+function test_arduino_gen() {
+    pushd arduino_gen
+    ./arduino_gen_test
+    popd
+}
 
-cppcheck src/*.cpp include/*.hpp
+function test_roboclaw() {
+    pushd core/roboclaw
+    ./roboclaw_test
+    popd
+}
+
+function test_cmd_messenger() {
+    pushd core/utilities/cmd_messenger
+    ./cmd_messenger_test
+    popd
+}
+
+case $BRANCH in
+  arduino_gen*)
+    test_arduino_gen
+    ;;
+  roboclaw*)
+    test_roboclaw
+    ;;
+  cmd_messenger*)
+    test_cmd_messenger
+    ;;
+  *)
+    test_arduino_gen
+    test_cmd_messenger
+    ;;
+esac
+
+### Done with tests
+popd

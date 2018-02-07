@@ -1,0 +1,13 @@
+[
+    {
+        "type": "Ultrasonic",
+        "label": "Ultrasonic1",
+        "triggerPin": 1,
+        "echoPin": 2
+    },
+    {
+        "type": "Servo",
+        "label": "Servo1",
+        "pin": 3
+    }
+]

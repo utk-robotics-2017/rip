@@ -1,28 +1,15 @@
 #!/usr/bin/env bash
-cd build
-lcov --directory . --capture --output-file coverage.info # capture coverage info
-lcov --remove coverage.info '/usr/*' --output-file coverage.info # filter out system
-
+set -e
 
 if [[ $2 ]]; then
-	BRANCH = $1
+    BRANCH=$1
 else
-	BRANCH = $3
+    BRANCH=$3
 fi
 
-if [[ $BRANCH == "arduino_gen/"* ]]; then
-	lcov --remove coverage.info '/utilities/*' --output-file coverage.info # filter out utils
-else if [[ $BRANCH == "pathfinder/"* ]]; then
-	lcov --remove coverage.info '/utilities/*' --output-file coverage.info # filter out utils
-else if [[ $BRANCH == "roboclaw/"* ]]; then
-else if [[ $BRANCH == "cmd_messenger/"* ]]; then
-else if [[ $BRANCH == "pathman/"* ]]; then
-else if [[ $BRANCH == "navx/"* ]]; then
-	lcov --remove coverage.info '/utilities/*' --output-file coverage.info # filter out utils
-else if [[ $BRANCH == "communication/"* ]]; then
-	lcov --remove coverage.info '/utilities/*' --output-file coverage.info # filter out utils
-else if [[ $BRANCH == "appendages/"* ]]; then
-	lcov --remove coverage.info '/utilities/*' --output-file coverage.info # filter out utils
-fi
+# Might not be neccessary
+#for filename in `find . -name '*.cpp'`; do
+#    gcov -n -o . $filename >/dev/null
+#done
 
-lcov --list coverage.info #debug info
+bash <(curl -s https://codecov.io/bash) -t 233dc217-113d-4ab4-9db7-cfd9f85e41c7 -x gcov-4.9 || echo "Codecov did not collect coverage reports"

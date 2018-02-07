@@ -1,0 +1,8 @@
+<command id="ThreeDog" name="Night" index-num="true">
+    <return-value type="int" name="TheLoneliestNumber" />
+    <return-value type="int" name="NotAsBadAsOne" />
+    <code>
+        TheLoneliestNumber = 1;
+        NotAsBadAsOne = 2;
+    </code>
+</command>

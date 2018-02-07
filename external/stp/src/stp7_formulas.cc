@@ -1,3 +1,5 @@
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated"
 #include <stdlib.h>
 #include <stdio.h>
 #include <iostream>
@@ -1826,3 +1828,4 @@ namespace stp
         t[7] = amax / jmax;
     }
 }
+#pragma GCC diagnostic pop

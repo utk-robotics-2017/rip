@@ -1,0 +1,10 @@
+<command id="kDivide" name="Divide" index-num="true">
+    <parameter type="int" name="a" />
+    <parameter type="int" name="b" />
+    <return-value type="int" name="quotient" />
+    <return-value type="int" name="remainder" />
+    <code>
+        quotient = a / b;
+        remainder = a % b;
+    </code>
+</command>

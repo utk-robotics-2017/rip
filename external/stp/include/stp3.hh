@@ -1,6 +1,8 @@
-
 #pragma once
-#include "stp.hh"
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated"
+#include "stp_base.hh"
 #include <iostream>
 
 namespace stp
@@ -108,3 +110,4 @@ namespace stp
         void planProfile();
     };
 }
+#pragma GCC diagnostic pop

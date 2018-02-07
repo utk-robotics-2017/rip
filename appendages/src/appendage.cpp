@@ -1,7 +1,9 @@
-#include "appendage.hpp"
+#include "appendages/appendage.hpp"
 
 #include <fmt/format.h>
-#include "appendages_exceptions.hpp"
+#include "appendages/exceptions.hpp"
+
+using namespace rip::utilities;
 
 namespace rip
 {
@@ -27,16 +29,16 @@ namespace rip
             assert(false);
         }
 
-        cmdmessenger::Command Appendage::createCommand(const std::string& command_key, const std::map<std::string, int>& command_map, const std::string& parameter_string)
+        std::shared_ptr<cmdmessenger::Command> Appendage::createCommand(const std::string& command_key, const std::map<std::string, int>& command_map, const std::string& parameter_string)
         {
             if (command_map.find(command_key) == command_map.end())
             {
                 throw CommandNotFound(fmt::format("Cannot find {} for appendage of type {}", command_key, m_type));
             }
-            return cmdmessenger::Command(command_key, command_map.find(command_key)->second, parameter_string);
+            return std::make_shared<cmdmessenger::Command>(command_key, command_map.find(command_key)->second, parameter_string);
         }
 
-        Appendage::Appendage(const nlohmann::json& config, std::shared_ptr<cmdmessenger::Device> device)
+        Appendage::Appendage(const nlohmann::json& config, std::shared_ptr<utilities::cmdmessenger::Device> device)
             : m_device(device)
         {
 

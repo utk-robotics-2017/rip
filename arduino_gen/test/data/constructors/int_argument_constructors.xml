@@ -1,0 +1,3 @@
+<constructors type="Type" variable="type">
+    <argument name="something" type="int"/>
+</constructors>
