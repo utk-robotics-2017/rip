@@ -19,7 +19,6 @@
  */
 
 #include "roboclaw.hpp"
-#include <fmt/format.h>
 
 namespace rip
 {
@@ -544,7 +543,7 @@ namespace rip
                         }
                         speed = static_cast<int32_t>((*dynamics.getSpeed() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
                         dist = static_cast<uint32_t>((*dynamics.getDistance() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
-                        std::cout << "Debugging: dist raw value " << dist << std::endl;
+                        // std::cout << "Debugging: dist raw value " << dist << std::endl;
                         writeN(cmd, speed, dist, static_cast<uint8_t>(respectBuffer));
                         break;
                     case MotorDynamics::DType::kSpeedAccelDist:
@@ -600,9 +599,9 @@ namespace rip
                         // Send: [Address, 37, Speed(4 Bytes), CRC(2 bytes)]
                         // Receive: [0xFF]
                         cmd = Command::kMixedSpeed;
-						
+
                         speed = static_cast<int32_t>((*dynamics.getSpeed() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
-						std::cout << "debugging: " << speed << std::endl;
+						// std::cout << "debugging: " << speed << std::endl;
                         writeN(cmd, speed, speed);
                         return;
                     case MotorDynamics::DType::kSpeedAccel:
@@ -619,7 +618,7 @@ namespace rip
                         cmd = Command::kMixedSpeedDist;
                         speed = static_cast<int32_t>((*dynamics.getSpeed() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
                         dist = static_cast<uint32_t>((*dynamics.getDistance() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
-                        std::cout << "Debugging: dist raw value " << dist << std::endl;
+                        // std::cout << "Debugging: dist raw value " << dist << std::endl;
                         writeN(cmd, speed, dist, speed, dist, static_cast<uint8_t>(respectBuffer));
                         break;
                     case MotorDynamics::DType::kSpeedAccelDist:

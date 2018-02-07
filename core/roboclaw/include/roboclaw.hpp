@@ -25,6 +25,7 @@
 #include <vector>
 #include <tuple>
 #include <json.hpp>
+#include <fmt/format.h>
 
 #include <units.hpp>
 

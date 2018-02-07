@@ -4,11 +4,5 @@ project(core)
 
 add_subdirectory(utilities)
 add_subdirectory(framework)
-
-if(NAVIGATION OR NAVX OR PATH_PLANNER)
-    add_subdirectory(navigation)
-else()
-    # Not worth building right now.
-    # add_subdirectory(communication)
-    add_subdirectory(navigation)
-endif()
+add_subdirectory(roboclaw)
+add_subdirectory(navigation)

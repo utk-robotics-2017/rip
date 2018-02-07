@@ -55,12 +55,12 @@ namespace rip
                 {
                   if(m_last_cmd.size() == 0)
                   {
-                    std::cout << "vector empty" << std::endl;
+                    // std::cout << "vector empty" << std::endl;
                     return;
                   }
                   for (std::vector<uint8_t>::const_iterator i = m_last_cmd.begin(); i != m_last_cmd.end(); i++)
                   {
-                    std::cout << std::hex << static_cast<int>(*i) << ' ';
+                    // std::cout << std::hex << static_cast<int>(*i) << ' ';
                   }
                 }
 

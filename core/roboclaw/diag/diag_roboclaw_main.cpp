@@ -15,9 +15,14 @@ Killing this program will not save you from the malice of motors.
 int main(int argc, char **argv)
 {
     //make serial stuff
-    nlohmann::json config1={{"address", 0x80},{"timeout", 1000},
-    {"ticks_per_rev", 3591.84},{"wheel_radius", (2.875/2.0) * rip::utilities::units::in}, {"device", "/dev/ttyAMA0"},
-    {"baudrate", 115200}};
+    nlohmann::json config1={
+        {"address", 0x80},
+        {"timeout", 1000},
+        {"ticks_per_rev", 3591.84},
+        {"wheel_radius", (2.875/2.0) * rip::units::in},
+        {"device", "/dev/ttyAMA0"},
+        {"baudrate", 115200}
+    };
     nlohmann::json config2 = config1;
     config2["address"]=0x81;
 
