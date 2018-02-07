@@ -7,6 +7,7 @@
 
 #include <QDir>
 #include <QString>
+#include <QObject>
 
 #include <misc/settings_base.hpp>
 
@@ -19,8 +20,9 @@ namespace rip
     {
         namespace tebplanner
         {
-            class Settings
+            class Settings : public QObject
             {
+                Q_OBJECT
             public:
                 static std::shared_ptr<Settings> getInstance();
 
@@ -65,6 +67,14 @@ namespace rip
                 std::vector<std::string> getObstaclesNames() const;
 
                 std::vector<std::string> getConfigNames() const;
+
+            signals:
+                void robotAdded(const QString& name);
+                void robotRemoved(const QString& name);
+                void configAdded(const QString& name);
+                void configRemoved(const QString& name);
+                void obstaclesAdded(const QString& name);
+                void obstaclesRemoved(const QString& name);
 
             private:
                 Settings() = default;

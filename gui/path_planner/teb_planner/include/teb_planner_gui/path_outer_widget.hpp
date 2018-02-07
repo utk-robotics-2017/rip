@@ -29,12 +29,19 @@ namespace rip
 
                 void setOptions();
 
+                void saveTrajectory(const std::string& filepath);
+
             private slots:
                 void setRobot(const QString& text);
 
                 void addObstacles();
                 void setObstacles(const QString& text);
                 void removeObstacles();
+
+                void robotAdded(const QString& name);
+                void robotRemoved(const QString& name);
+                void configAdded(const QString& name);
+                void configRemoved(const QString& name);
 
                 void setConfig(const QString& text);
 

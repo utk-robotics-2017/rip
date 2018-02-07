@@ -2,6 +2,7 @@
 #include "ui_path_outer_widget.h"
 
 #include <QInputDialog>
+#include <QFile>
 
 namespace rip
 {
@@ -27,6 +28,11 @@ namespace rip
                 connect(m_ui->config_options, SIGNAL(currentIndexChanged(QString)), this, SLOT(setConfig(QString)));
 
                 connect(m_ui->run, SIGNAL(clicked(bool)), this, SLOT(run()));
+
+                connect(m_settings.get(), SIGNAL(robotAdded(QString)), this, SLOT(robotAdded(QString)));
+                connect(m_settings.get(), SIGNAL(robotRemoved(QString)), this, SLOT(robotRemoved(QString)));
+                connect(m_settings.get(), SIGNAL(configAdded(QString)), this, SLOT(configAdded(QString)));
+                connect(m_settings.get(), SIGNAL(configRemoved(QString)), this, SLOT(configRemoved(QString)));
             }
 
             void PathOuterWidget::setOptions()
@@ -51,6 +57,17 @@ namespace rip
                     names << name.c_str();
                 }
                 m_ui->obstacle_options->addItems(names);
+            }
+
+            void PathOuterWidget::saveTrajectory(const std::string& filepath)
+            {
+                std::vector< navigation::tebplanner::TrajectoryPoint > trajectory = m_compute_thread->trajectory();
+                nlohmann::json j = trajectory;
+                QFile f(QString::fromStdString(filepath));
+                if(f.open(QIODevice::WriteOnly))
+                {
+                    f.write(j.dump(4).c_str());
+                }
             }
 
             void PathOuterWidget::setRobot(const QString& text)
@@ -97,6 +114,34 @@ namespace rip
                 m_compute_thread->setObstacles(nullptr);
                 m_ui->widget->setObstacles(nullptr);
                 m_ui->obstacle_options->removeItem(m_ui->obstacle_options->currentIndex());
+            }
+
+            void PathOuterWidget::robotAdded(const QString& name)
+            {
+                m_ui->robot_options->addItem(name);
+            }
+
+            void PathOuterWidget::robotRemoved(const QString& name)
+            {
+                int index = m_ui->robot_options->findText(name);
+                if(index > -1)
+                {
+                    m_ui->robot_options->removeItem(index);
+                }
+            }
+
+            void PathOuterWidget::configAdded(const QString& name)
+            {
+                m_ui->config_options->addItem(name);
+            }
+
+            void PathOuterWidget::configRemoved(const QString& name)
+            {
+                int index = m_ui->config_options->findText(name);
+                if(index > -1)
+                {
+                    m_ui->config_options->removeItem(index);
+                }
             }
 
             void PathOuterWidget::setConfig(const QString& text)

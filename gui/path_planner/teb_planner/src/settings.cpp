@@ -213,6 +213,7 @@ namespace rip
             std::shared_ptr<navigation::tebplanner::PolygonRobotFootprint> Settings::addRobot(const std::string& name)
             {
                 m_robots[name] = std::make_shared<navigation::tebplanner::PolygonRobotFootprint>(geometry::Polygon());
+                robotAdded(QString::fromStdString(name));
                 return m_robots[name];
             }
 
@@ -221,6 +222,7 @@ namespace rip
                 if (m_robots.find(name) != m_robots.end())
                 {
                     m_robots.erase(name);
+                    robotRemoved(QString::fromStdString(name));
                 }
             }
 
@@ -271,6 +273,7 @@ namespace rip
             std::shared_ptr< std::vector< std::shared_ptr<navigation::tebplanner::Obstacle> > > Settings::addObstacles(const std::string& name)
             {
                 m_obstacles[name] = std::make_shared< std::vector< std::shared_ptr<navigation::tebplanner::Obstacle> > >();
+                obstaclesAdded(QString::fromStdString(name));
                 return m_obstacles[name];
             }
 
@@ -279,6 +282,7 @@ namespace rip
                 if (m_obstacles.find(name) != m_obstacles.end())
                 {
                     m_obstacles.erase(name);
+                    obstaclesRemoved(QString::fromStdString(name));
                 }
             }
 
@@ -375,6 +379,7 @@ namespace rip
             std::shared_ptr<navigation::tebplanner::TebConfig> Settings::addConfig(const std::string& name)
             {
                 m_config[name] = std::make_shared<navigation::tebplanner::TebConfig>();
+                configAdded(QString::fromStdString(name));
                 return m_config.at(name);
             }
 
@@ -383,6 +388,7 @@ namespace rip
                 if(m_config.find(name) != m_config.end())
                 {
                     m_config.erase(name);
+                    configRemoved(QString::fromStdString(name));
                 }
             }
 

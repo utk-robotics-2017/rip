@@ -2,6 +2,9 @@
 #define TRAJECTORY_POINT_HPP
 
 #include <teb_planner/fake_ros_msgs.hpp>
+#include <units/units.hpp>
+#include <geometry/point.hpp>
+#include <json.hpp>
 
 namespace rip
 {
@@ -12,144 +15,59 @@ namespace rip
             class TrajectoryPoint
             {
             public:
-                TrajectoryPoint()
-                {}
+                TrajectoryPoint();
 
-                TrajectoryPoint(const fakeros::TrajectoryPointMsg& msg)
-                {
-                    m_t = msg.time_from_start.sec * units::s + msg.time_from_start.nsec * units::nano * units::s;
-                    m_x = msg.pose.position.x * units::m;
-                    m_y = msg.pose.position.y * units::m;
-                    m_theta = msg.pose.orientation.z * units::rad;
-                    m_dx = msg.velocity.linear.x * units::m / units::s;
-                    m_dy = msg.velocity.linear.y  * units::m / units::s;
-                    m_omega = msg.velocity.angular.z * units::rad / units::s;
-                    m_ddx = msg.acceleration.linear.x * units::m / units::s / units::s;
-                    m_ddy = msg.acceleration.linear.y * units::m / units::s / units::s;
-                    m_alpha = msg.acceleration.angular.z * units::rad / units::s / units::s;
-                }
+                TrajectoryPoint(const fakeros::TrajectoryPointMsg& msg);
 
-                units::Time t() const
-                {
-                    return m_t;
-                }
+                units::Time t() const;
 
-                units::Distance x() const
-                {
-                    return m_x;
-                }
+                void setT(const units::Time& t);
 
-                void setX(const units::Distance& x)
-                {
-                    m_x = x;
-                }
+                units::Distance x() const;
 
-                units::Distance y() const
-                {
-                    return m_y;
-                }
+                void setX(const units::Distance& x);
 
-                void setY(const units::Distance& y)
-                {
-                    m_y = y;
-                }
+                units::Distance y() const;
 
-                geometry::Point position() const
-                {
-                    return geometry::Point(m_x, m_y);
-                }
+                void setY(const units::Distance& y);
 
-                void setPosition(const units::Distance& x, const units::Distance& y)
-                {
-                    m_x = x;
-                    m_y = y;
-                }
+                geometry::Point position() const;
 
-                void setPosition(const geometry::Point& p)
-                {
-                    m_x = p.x();
-                    m_y = p.y();
-                }
+                void setPosition(const units::Distance& x, const units::Distance& y);
 
-                units::Angle theta() const
-                {
-                    return m_theta;
-                }
+                void setPosition(const geometry::Point& p);
 
-                void setTheta(const units::Angle& theta)
-                {
-                    m_theta = theta;
-                }
+                units::Angle theta() const;
 
-                units::Angle orientation() const
-                {
-                    return m_theta;
-                }
+                void setTheta(const units::Angle& theta);
 
-                void setOrientation(const units::Angle& theta)
-                {
-                    m_theta = theta;
-                }
+                units::Angle orientation() const;
 
-                units::Velocity dx() const
-                {
-                    return m_dx;
-                }
+                void setOrientation(const units::Angle& theta);
 
-                void setDx(const units::Velocity& dx)
-                {
-                    m_dx = dx;
-                }
+                units::Velocity dx() const;
 
-                units::Velocity dy() const
-                {
-                    return m_dy;
-                }
+                void setDx(const units::Velocity& dx);
 
-                void setDy(const units::Velocity& dy)
-                {
-                    m_dy = dy;
-                }
+                units::Velocity dy() const;
 
-                units::AngularVelocity omega() const
-                {
-                    return m_omega;
-                }
+                void setDy(const units::Velocity& dy);
 
-                void setOmega(const units::AngularVelocity& omega)
-                {
-                    m_omega = omega;
-                }
+                units::AngularVelocity omega() const;
 
-                units::Acceleration ddx() const
-                {
-                    return m_ddx;
-                }
+                void setOmega(const units::AngularVelocity& omega);
 
-                void setDdx(const units::Acceleration& ddx)
-                {
-                    m_ddx = ddx;
-                }
+                units::Acceleration ddx() const;
 
-                units::Acceleration ddy() const
-                {
-                    return m_ddy;
-                }
+                void setDdx(const units::Acceleration& ddx);
 
-                void setDdy(const units::Acceleration& ddy)
-                {
-                    m_ddy = ddy;
-                }
+                units::Acceleration ddy() const;
 
-                units::AngularAcceleration alpha() const
-                {
-                    return m_alpha;
-                }
+                void setDdy(const units::Acceleration& ddy);
 
-                void setAlpha(const units::AngularAcceleration& alpha)
-                {
-                    m_alpha = alpha;
-                }
+                units::AngularAcceleration alpha() const;
+
+                void setAlpha(const units::AngularAcceleration& alpha);
 
             private:
                 units::Time m_t;
@@ -160,6 +78,9 @@ namespace rip
                 units::Acceleration m_ddx, m_ddy;
                 units::AngularAcceleration m_alpha;
             };
+
+            void to_json(nlohmann::json& j, const TrajectoryPoint& t);
+            void from_json(const nlohmann::json& j, TrajectoryPoint& t);
         }
     }
 }
