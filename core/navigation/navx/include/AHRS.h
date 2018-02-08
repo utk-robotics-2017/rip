@@ -382,7 +382,7 @@ namespace rip
                  * has recently rotated less than the Compass Noise Bandwidth(~2 degrees).
                  * @return Fused Heading in Degrees(range 0-360)
                  */
-                float  getFusedHeading();
+                units::Angle  getFusedHeading();
                 /**
                  * Indicates whether the current magnetic field strength diverges from the
                  * calibrated value for the earth's magnetic field by more than the currently-

@@ -355,17 +355,17 @@ namespace rip
 
             units::Acceleration AHRS::getWorldLinearAccelX()
             {
-                return static_cast<float>(this->world_linear_accel_x) * units::AccelerationOfGravity;
+                return static_cast<double>(this->world_linear_accel_x) * units::AccelerationOfGravity;
             }
 
             units::Acceleration AHRS::getWorldLinearAccelY()
             {
-                return static_cast<float>(this->world_linear_accel_y) * units::AccelerationOfGravity;
+                return static_cast<double>(this->world_linear_accel_y) * units::AccelerationOfGravity;
             }
 
             units::Acceleration AHRS::getWorldLinearAccelZ()
             {
-                return static_cast<float>(this->world_linear_accel_z) * units::AccelerationOfGravity;
+                return static_cast<double>(this->world_linear_accel_z) * units::AccelerationOfGravity;
             }
 
             bool AHRS::isMoving()
@@ -393,9 +393,9 @@ namespace rip
                 return this->altitude_valid;
             }
 
-            float AHRS::getFusedHeading()
+            units::Angle AHRS::getFusedHeading()
             {
-                return fused_heading;
+                return static_cast<float>(fused_heading) * units::degrees;
             }
 
             bool AHRS::isMagneticDisturbance()

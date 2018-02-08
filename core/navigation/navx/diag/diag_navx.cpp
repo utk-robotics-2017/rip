@@ -31,8 +31,8 @@ int main(int argc, char *argv[]) {
     while(true)
     {
         std::cout << std::fixed << std::setprecision(2) << com.getPitch() << "      " << com.getRoll();
-        std::cout << "   " << com.getYaw() << "     " <<com.getWorldLinearAccelX() << "     ";
-        std::cout << com.getWorldLinearAccelY() << "       " << com.getWorldLinearAccelZ() << "      ";
+        std::cout << "   " << com.getYaw() << "     " <<com.getWorldLinearAccelX().to(units::AccelerationOfGravity) << "     ";
+        std::cout << com.getWorldLinearAccelY().to(units::AccelerationOfGravity) << "       " << com.getWorldLinearAccelZ().to(units::AccelerationOfGravity) << "      ";
         std::cout << com.getLastSensorTimestamp() << "      " << '\r' << std::flush;
         std::this_thread::sleep_for(std::chrono::milliseconds(125));
         if(sflag)
