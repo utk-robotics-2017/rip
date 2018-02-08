@@ -125,8 +125,7 @@ namespace rip
                 fmt::arg("loop", getLoop()),
                 fmt::arg("command_enums", getCommandEnums()),
                 fmt::arg("command_attaches", getCommandAttaches()),
-                fmt::arg("command_callbacks", getCommandCallbacks()),
-                fmt::arg("extra", getExtras())
+                fmt::arg("command_callbacks", getCommandCallbacks())
             );
         }
 
@@ -191,6 +190,12 @@ namespace rip
             {
                 rv += fmt::format("#include {}\n", include);
             }
+
+            if (rv.size() > 0)
+            {
+                rv.pop_back();
+            }
+
             return rv;
         }
 
@@ -198,6 +203,7 @@ namespace rip
         std::string ArduinoGen::getConstructors()
         {
             std::string rv = "";
+
             for(const AppendageTemplate& at : m_appendage_templates)
             {
                 std::shared_ptr<Constructors> constructors = at.GetConstructors();
@@ -206,6 +212,13 @@ namespace rip
                     rv += constructors->toString(at.GetAppendages()) + "\n";
                 }
             }
+
+            if (rv.size() > 0)
+            {
+                rv.pop_back();
+                rv.pop_back();
+            }
+
             return rv;
         }
 
@@ -220,6 +233,13 @@ namespace rip
                     rv += setup->toString(at.GetAppendages()) + "\n";
                 }
             }
+
+            if (rv.size() > 0)
+            {
+                rv.pop_back();
+                rv.pop_back();
+            }
+
             return rv;
         }
 
@@ -234,6 +254,13 @@ namespace rip
                     rv += loop->toString(at.GetAppendages()) + "\n";
                 }
             }
+
+            if (rv.size() > 0)
+            {
+                rv.pop_back();
+                rv.pop_back();
+            }
+
             return rv;
         }
 
@@ -283,6 +310,12 @@ namespace rip
                     rv += fmt::format("\tcmdMessenger.attach({}, {});\n", cmd->getId(), cmd->getName());
                 }
             }
+
+            if (rv.size() > 0)
+            {
+                rv.pop_back();
+            }
+
             return rv;
         }
 
@@ -296,19 +329,13 @@ namespace rip
                     rv += command->callback(at.GetAppendages().size()) + "\n";
                 }
             }
-            return rv;
-        }
 
-        std::string ArduinoGen::getExtras()
-        {
-
-            std::string rv = "";
-            /*
-            for(const AppendageTemplate& at : m_appendage_templates)
+            if (rv.size() > 0)
             {
-                rv += at.extra + "\n";
+                rv.pop_back();
+                rv.pop_back();
             }
-            */
+
             return rv;
         }
 

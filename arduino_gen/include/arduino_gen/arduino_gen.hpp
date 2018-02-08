@@ -102,12 +102,6 @@ namespace rip
             std::string getCommandCallbacks();
 
             /**
-             * @brief Returns the code for all the extra functions
-             * @returns The code for all the extra functions
-             */
-            std::string getExtras();
-
-            /**
              * TODO: Properly comment
              */
             std::string getCoreConfig();

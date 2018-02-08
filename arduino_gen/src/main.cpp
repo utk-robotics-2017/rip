@@ -7,6 +7,7 @@ int main(int argc, char* argv[])
     if (argc != 2)
     {
         std::cerr << "usage: ./arduino_gen <config_file>" << std::endl;
+        return EXIT_FAILURE;
     }
 
     std::unique_ptr<rip::arduinogen::ArduinoGen> ag = std::unique_ptr<rip::arduinogen::ArduinoGen>(new rip::arduinogen::ArduinoGen("mega", "/", "test/data/arduino_gen", true));
@@ -14,4 +15,6 @@ int main(int argc, char* argv[])
     ag->readConfig(argv[1], false);
 
     std::cout << ag->getArduinoCode() << std::endl;
+
+    return EXIT_SUCCESS;
 }

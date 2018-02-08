@@ -52,7 +52,7 @@ namespace rip
             RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/one_appendage.json", false));
 
             ASSERT_EQ(ag->getIncludes(),
-                "#include <NewPing.h>\n"
+                "#include <NewPing.h>"
             );
         }
 
@@ -63,7 +63,7 @@ namespace rip
             RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/two_appendages_same.json", false));
 
             ASSERT_EQ(ag->getIncludes(),
-                "#include <NewPing.h>\n"
+                "#include <NewPing.h>"
             );
         }
 
@@ -75,7 +75,7 @@ namespace rip
 
             ASSERT_EQ(ag->getIncludes(),
                 "#include \"Servo.h\"\n"
-                "#include <NewPing.h>\n"
+                "#include <NewPing.h>"
             );
         }
 
@@ -110,7 +110,7 @@ namespace rip
             ASSERT_EQ(ag->getConstructors(),
                 "NewPing sonar [1] = {\n"
                 "\tNewPing(1, 2, 200)\n"
-                "};\n\n"
+                "};"
             );
         }
 
@@ -124,7 +124,7 @@ namespace rip
                 "NewPing sonar [2] = {\n"
                 "\tNewPing(1, 2, 200),\n"
                 "\tNewPing(3, 4, 200)\n"
-                "};\n\n"
+                "};"
             );
         }
 
@@ -138,9 +138,12 @@ namespace rip
                 "Servo servos [1] = {\n"
                 "\tServo()\n"
                 "};\n\n"
+                "unsigned char servo_pins [1] = {\n"
+                "\t3\n"
+                "};\n\n"
                 "NewPing sonar [1] = {\n"
                 "\tNewPing(1, 2, 200)\n"
-                "};\n\n"
+                "};"
             );
         }
 
@@ -173,7 +176,7 @@ namespace rip
             RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/one_appendage.json", false));
 
             ASSERT_EQ(ag->getSetup(),
-                "\t// Ultrasonic triggerPin: 1\n\n"
+                "\t// Ultrasonic triggerPin: 1"
             );
         }
 
@@ -185,7 +188,7 @@ namespace rip
 
             ASSERT_EQ(ag->getSetup(),
                 "\t// Ultrasonic triggerPin: 1\n\n"
-                "\t// Ultrasonic triggerPin: 3\n\n"
+                "\t// Ultrasonic triggerPin: 3"
             );
         }
 
@@ -197,7 +200,7 @@ namespace rip
 
             ASSERT_EQ(ag->getSetup(),
                 "\tservos[0].attach(3);\n\n"
-                "\t// Ultrasonic triggerPin: 1\n\n"
+                "\t// Ultrasonic triggerPin: 1"
             );
         }
 
@@ -230,7 +233,7 @@ namespace rip
             RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/one_appendage.json", false));
 
             ASSERT_EQ(ag->getLoop(),
-                "\t// Ultrasonic echoPin: 2\n\n"
+                "\t// Ultrasonic echoPin: 2"
             );
         }
 
@@ -242,7 +245,7 @@ namespace rip
 
             ASSERT_EQ(ag->getLoop(),
                 "\t// Ultrasonic echoPin: 2\n\n"
-                "\t// Ultrasonic echoPin: 4\n\n"
+                "\t// Ultrasonic echoPin: 4"
             );
         }
 
@@ -254,7 +257,7 @@ namespace rip
 
             ASSERT_EQ(ag->getLoop(),
                 "\t// Servo pin: 3\n\n"
-                "\t// Ultrasonic echoPin: 2\n\n"
+                "\t// Ultrasonic echoPin: 2"
             );
         }
 
@@ -346,7 +349,7 @@ namespace rip
             RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/one_appendage.json", false));
 
             ASSERT_EQ(ag->getCommandAttaches(),
-                "\tcmdMessenger.attach(kReadUltrasonic, readUltraSonic);\n"
+                "\tcmdMessenger.attach(kReadUltrasonic, readUltraSonic);"
             );
         }
 
@@ -357,7 +360,7 @@ namespace rip
             RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/two_appendages_same.json", false));
 
             ASSERT_EQ(ag->getCommandAttaches(),
-                "\tcmdMessenger.attach(kReadUltrasonic, readUltraSonic);\n"
+                "\tcmdMessenger.attach(kReadUltrasonic, readUltraSonic);"
             );
         }
 
@@ -369,7 +372,7 @@ namespace rip
 
             ASSERT_EQ(ag->getCommandAttaches(),
                 "\tcmdMessenger.attach(kSetServo, setServo);\n"
-                "\tcmdMessenger.attach(kReadUltrasonic, readUltraSonic);\n"
+                "\tcmdMessenger.attach(kReadUltrasonic, readUltraSonic);"
             );
         }
 
@@ -414,8 +417,7 @@ namespace rip
                 "\tcmdMessenger.sendCmdStart(kReadUltrasonicResult);\n"
                 "\tcmdMessenger.sendCmdBinArg(rv);\n"
                 "\tcmdMessenger.sendCmdEnd();\n"
-                "}\n"
-                "\n"
+                "}"
             );
         }
 
@@ -438,8 +440,7 @@ namespace rip
                 "\tcmdMessenger.sendCmdStart(kReadUltrasonicResult);\n"
                 "\tcmdMessenger.sendCmdBinArg(rv);\n"
                 "\tcmdMessenger.sendCmdEnd();\n"
-                "}\n"
-                "\n"
+                "}"
             );
         }
 
@@ -480,8 +481,7 @@ namespace rip
                 "\tcmdMessenger.sendCmdStart(kReadUltrasonicResult);\n"
                 "\tcmdMessenger.sendCmdBinArg(rv);\n"
                 "\tcmdMessenger.sendCmdEnd();\n"
-                "}\n"
-                "\n"
+                "}"
             );
         }
 
@@ -576,8 +576,6 @@ namespace rip
                 "\tdigitalWrite(LED, ledState);\n"
                 "\tcmdMessenger.sendBinCmd(kAcknowledge, kSetLed);\n"
                 "}\n"
-                "\n"
-                "\n"
                 "\n"
                 "\n"
             );
@@ -676,8 +674,6 @@ namespace rip
                 "}\n"
                 "\n"
                 "\n"
-                "\n"
-                "\n"
             );
         }
 
@@ -691,7 +687,7 @@ namespace rip
                 "// Auto-generated by ArduinoGen\n"
                 "\n"
                 "#include \"CmdMessenger.h\"\n"
-                "#include <NewPing.h>\n\n"
+                "#include <NewPing.h>\n"
                 "\n"
                 "// Attach a new CmdMessenger object to the default Serial port\n"
                 "CmdMessenger cmdMessenger = CmdMessenger(Serial);\n"
@@ -700,7 +696,7 @@ namespace rip
                 "\n"
                 "NewPing sonar [1] = {\n"
                 "\tNewPing(1, 2, 200)\n"
-                "};\n\n\n"
+                "};\n"
                 "\n"
                 "enum\n"
                 "{\n"
@@ -725,7 +721,7 @@ namespace rip
                 "\n"
                 "\tattachCommandCallbacks();\n"
                 "\n"
-                "\t// Ultrasonic triggerPin: 1\n\n\n"
+                "\t// Ultrasonic triggerPin: 1\n"
                 "\n"
                 "\t// Flash led 3 times at the end of setup\n"
                 "\tfor(int i = 0; i < 3; i++)\n"
@@ -742,7 +738,7 @@ namespace rip
                 "\t// Process incoming serial data, and perform callbacks\n"
                 "\tcmdMessenger.feedinSerialData();\n"
                 "\n"
-                "\t// Ultrasonic echoPin: 2\n\n\n"
+                "\t// Ultrasonic echoPin: 2\n"
                 "}\n"
                 "\n"
                 "//Callbacks define on which received commands we take action\n"
@@ -751,7 +747,7 @@ namespace rip
                 "\tcmdMessenger.attach(unknownCommand);\n"
                 "\tcmdMessenger.attach(kPing, ping);\n"
                 "\tcmdMessenger.attach(kSetLed, setLed);\n"
-                "\tcmdMessenger.attach(kReadUltrasonic, readUltraSonic);\n\n"
+                "\tcmdMessenger.attach(kReadUltrasonic, readUltraSonic);\n"
                 "}\n"
                 "\n"
                 "// Called when a received command has no attached function\n"
@@ -789,9 +785,6 @@ namespace rip
                 "\tcmdMessenger.sendCmdBinArg(rv);\n"
                 "\tcmdMessenger.sendCmdEnd();\n"
                 "}\n"
-                "\n\n"
-                "\n"
-                "\n"
             );
         }
 
@@ -805,7 +798,7 @@ namespace rip
                 "// Auto-generated by ArduinoGen\n"
                 "\n"
                 "#include \"CmdMessenger.h\"\n"
-                "#include <NewPing.h>\n\n"
+                "#include <NewPing.h>\n"
                 "\n"
                 "// Attach a new CmdMessenger object to the default Serial port\n"
                 "CmdMessenger cmdMessenger = CmdMessenger(Serial);\n"
@@ -815,7 +808,7 @@ namespace rip
                 "NewPing sonar [2] = {\n"
                 "\tNewPing(1, 2, 200),\n"
                 "\tNewPing(3, 4, 200)\n"
-                "};\n\n\n"
+                "};\n"
                 "\n"
                 "enum\n"
                 "{\n"
@@ -841,7 +834,7 @@ namespace rip
                 "\tattachCommandCallbacks();\n"
                 "\n"
                 "\t// Ultrasonic triggerPin: 1\n\n"
-                "\t// Ultrasonic triggerPin: 3\n\n\n"
+                "\t// Ultrasonic triggerPin: 3\n"
                 "\n"
                 "\t// Flash led 3 times at the end of setup\n"
                 "\tfor(int i = 0; i < 3; i++)\n"
@@ -859,7 +852,7 @@ namespace rip
                 "\tcmdMessenger.feedinSerialData();\n"
                 "\n"
                 "\t// Ultrasonic echoPin: 2\n\n"
-                "\t// Ultrasonic echoPin: 4\n\n\n"
+                "\t// Ultrasonic echoPin: 4\n"
                 "}\n"
                 "\n"
                 "//Callbacks define on which received commands we take action\n"
@@ -868,7 +861,7 @@ namespace rip
                 "\tcmdMessenger.attach(unknownCommand);\n"
                 "\tcmdMessenger.attach(kPing, ping);\n"
                 "\tcmdMessenger.attach(kSetLed, setLed);\n"
-                "\tcmdMessenger.attach(kReadUltrasonic, readUltraSonic);\n\n"
+                "\tcmdMessenger.attach(kReadUltrasonic, readUltraSonic);\n"
                 "}\n"
                 "\n"
                 "// Called when a received command has no attached function\n"
@@ -906,9 +899,6 @@ namespace rip
                 "\tcmdMessenger.sendCmdBinArg(rv);\n"
                 "\tcmdMessenger.sendCmdEnd();\n"
                 "}\n"
-                "\n\n"
-                "\n"
-                "\n"
             );
         }
 
@@ -923,7 +913,7 @@ namespace rip
                 "\n"
                 "#include \"CmdMessenger.h\"\n"
                 "#include \"Servo.h\"\n"
-                "#include <NewPing.h>\n\n"
+                "#include <NewPing.h>\n"
                 "\n"
                 "// Attach a new CmdMessenger object to the default Serial port\n"
                 "CmdMessenger cmdMessenger = CmdMessenger(Serial);\n"
@@ -933,9 +923,12 @@ namespace rip
                 "Servo servos [1] = {\n"
                 "\tServo()\n"
                 "};\n\n"
+                "unsigned char servo_pins [1] = {\n"
+                "\t3\n"
+                "};\n\n"
                 "NewPing sonar [1] = {\n"
                 "\tNewPing(1, 2, 200)\n"
-                "};\n\n\n"
+                "};\n"
                 "\n"
                 "enum\n"
                 "{\n"
@@ -962,7 +955,7 @@ namespace rip
                 "\tattachCommandCallbacks();\n"
                 "\n"
                 "\tservos[0].attach(3);\n\n"
-                "\t// Ultrasonic triggerPin: 1\n\n\n"
+                "\t// Ultrasonic triggerPin: 1\n"
                 "\n"
                 "\t// Flash led 3 times at the end of setup\n"
                 "\tfor(int i = 0; i < 3; i++)\n"
@@ -980,7 +973,7 @@ namespace rip
                 "\tcmdMessenger.feedinSerialData();\n"
                 "\n"
                 "\t// Servo pin: 3\n\n"
-                "\t// Ultrasonic echoPin: 2\n\n\n"
+                "\t// Ultrasonic echoPin: 2\n"
                 "}\n"
                 "\n"
                 "//Callbacks define on which received commands we take action\n"
@@ -990,7 +983,7 @@ namespace rip
                 "\tcmdMessenger.attach(kPing, ping);\n"
                 "\tcmdMessenger.attach(kSetLed, setLed);\n"
                 "\tcmdMessenger.attach(kSetServo, setServo);\n"
-                "\tcmdMessenger.attach(kReadUltrasonic, readUltraSonic);\n\n"
+                "\tcmdMessenger.attach(kReadUltrasonic, readUltraSonic);\n"
                 "}\n"
                 "\n"
                 "// Called when a received command has no attached function\n"
@@ -1046,9 +1039,6 @@ namespace rip
                 "\tcmdMessenger.sendCmdBinArg(rv);\n"
                 "\tcmdMessenger.sendCmdEnd();\n"
                 "}\n"
-                "\n\n"
-                "\n"
-                "\n"
             );
         }
     }
