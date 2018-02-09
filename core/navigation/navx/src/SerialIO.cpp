@@ -53,6 +53,7 @@ namespace rip
                     }
                     catch(std::exception  ex)
                     {
+                        throw SerialReset("Failed to reset navx serialPort")
                         // This has been seen to happen before....
                         //^top notch exception handling as usual
                     }
@@ -77,8 +78,8 @@ namespace rip
                     catch(std::exception ex)
                     {
                         //TODO: nuke serialIO this in milestone 0.2
-                        printf("ERROR Opening Serial Port!\n");
                         serial_port = 0;
+                        throw SerialOpen("ERROR Opening Serial Port!");
                     }
                 }
                 return serial_port;
@@ -165,6 +166,7 @@ namespace rip
             {
                 if(!serial_port)
                 {
+                    throw SerialNotOpen("Navx Serial port not open");
                     return;
                 }
                 bstop = false;
@@ -191,7 +193,7 @@ namespace rip
                 }
                 catch(std::exception ex)
                 {
-                    printf("SerialPort Run() Port Initialization Exception:  %s\n", ex.what());
+                    throw SerialFail("SerialPort Run() Port Initialization Exception: ", ex.what());
                 }
 
                 char stream_command[256];
@@ -214,7 +216,7 @@ namespace rip
                 }
                 catch(std::exception ex)
                 {
-                    printf("SerialPort Run() Port Send Encode Stream Command Exception:  %s\n", ex.what());
+                    throw SerialEncoding("SerialPort Run() Port Send Encode Stream Command Exception: ", ex.what());
                 }
 
                 int remainder_bytes = 0;
@@ -253,7 +255,7 @@ namespace rip
                             }
                             catch(std::exception ex)
                             {
-                                printf("SerialPort Run() IntegrationControl Send Exception:  %s\n", ex.what());
+                                throw SerialIntegrationControl("SerialPort Run() IntegrationControl Send Exception:  %s\n", ex.what());
                             }
                         }
 
@@ -544,7 +546,7 @@ namespace rip
                                 }
                                 catch(std::exception ex2)
                                 {
-                                    printf("SerialPort Run() Re-transmit Encode Stream Command Exception:  %s\n", ex2.what());
+                                    throw SerialEncoding("SerialPort Run() Re-transmit Encode Stream Command Exception:  %s\n", ex2.what());
                                 }
                             }
                             else
