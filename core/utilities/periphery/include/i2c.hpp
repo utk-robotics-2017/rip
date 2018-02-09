@@ -14,30 +14,25 @@ namespace rip
     namespace periphery
     {
 
-        namespace i2c
+        class i2c 
         {
+            public:
 
-            class i2c 
-            {
-                public:
+                void open(const std::string path);
 
-                    void open(const std::string path);
+                void transfer(std::vector< vector<uint8_t> > msg_data, std::vector<int> flags, size_t count);
 
-                    void transfer(std::vector< vector<uint8_t> > msg_data, std::vector<int> flags, size_t count);
+                void close();
 
-                    void close();
+                int fd();
 
-                    int fd();
+                std::string tostring(size_t len);
 
-                    std::string tostring(size_t len);
+            private:
 
-                private:
+                i2c_t i2c;
 
-                    i2c_t i2c;
-
-            };
-
-        }
+        };
 
     }
 
