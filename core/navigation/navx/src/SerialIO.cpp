@@ -3,6 +3,7 @@
 #include <time.h>
 #include <unistd.h>
 #include <string>
+#include <exceptions.h>
 namespace rip
 {
     namespace navigation

@@ -6,6 +6,7 @@
 #include <memory>
 #include <string>
 #include <units.hpp>
+#include <spdlog/spdlog.h>
 
 namespace rip
 {
@@ -69,6 +70,7 @@ namespace rip
                 };
 
             private:
+                std::shared_ptr<spdlog::logger> console = spdlog::stdout_color_mt("console");
                 friend class AHRSInternal;
                 AHRSInternal *      ahrs_internal;
 
