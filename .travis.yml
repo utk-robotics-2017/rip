@@ -29,6 +29,7 @@ addons:
 
 before_script:
     - ./travis/before_script.sh $TRAVIS_BRANCH $TRAVIS_PULL_REQUEST $TRAVIS_PULL_REQUEST_BRANCH
+    - ./travis/compile_g2o.sh
 
 script:
     - ./travis/script.sh $TRAVIS_BRANCH $TRAVIS_PULL_REQUEST $TRAVIS_PULL_REQUEST_BRANCH
