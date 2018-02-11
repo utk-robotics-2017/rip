@@ -7,7 +7,7 @@
 #include "IIOProvider.h"
 #include <stdint.h>
 #include <string.h>
-#include "AHRSProtocol.h"
+#include "navx_protocol.h"
 #include "IMUProtocol.h"
 #include "IIOCompleteNotification.h"
 #include "IBoardCapabilities.h"
@@ -31,10 +31,10 @@ namespace rip
                 int update_count;
                 IMUProtocol::YPRUpdate ypr_update_data;
                 IMUProtocol::GyroUpdate gyro_update_data;
-                AHRSProtocol::AHRSUpdate ahrs_update_data;
-                AHRSProtocol::AHRSPosUpdate ahrspos_update_data;
-                AHRSProtocol::AHRSPosTSUpdate ahrspos_ts_update_data;
-                AHRSProtocol::BoardID board_id;
+                NavXProtocol::NavXUpdate navx_update_data;
+                NavXProtocol::NavXPosUpdate navxpos_update_data;
+                NavXProtocol::NavXPosTSUpdate navxpos_ts_update_data;
+                NavXProtocol::BoardID board_id;
                 IIOCompleteNotification *notify_sink;
                 IIOCompleteNotification::BoardState board_state;
                 IBoardCapabilities *board_capabilities;

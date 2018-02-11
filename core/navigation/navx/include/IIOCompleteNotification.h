@@ -5,7 +5,7 @@
 #define SRC_IIOCOMPLETENOTIFICATION_H_
 
 #include "IMUProtocol.h"
-#include "AHRSProtocol.h"
+#include "navx_protocol.h"
 namespace rip
 {
     namespace navigation
@@ -28,10 +28,10 @@ namespace rip
                     int16_t gyro_fsr_dps;
                 };
                 virtual void setYawPitchRoll(IMUProtocol::YPRUpdate& ypr_update, long sensor_timestamp) = 0;
-                virtual void setAHRSData(AHRSProtocol::AHRSUpdate& ahrs_update, long sensor_timestamp) = 0;
-                virtual void setAHRSPosData(AHRSProtocol::AHRSPosUpdate& ahrs_update, long sensor_timestamp) = 0;
+                virtual void setNavXData(NavXProtocol::NavXUpdate& navx_update, long sensor_timestamp) = 0;
+                virtual void setNavXPosData(NavXProtocol::NavXPosUpdate& navx_update, long sensor_timestamp) = 0;
                 virtual void setRawData(IMUProtocol::GyroUpdate& raw_data_update, long sensor_timestamp) = 0;
-                virtual void setBoardID(AHRSProtocol::BoardID& board_id) = 0;
+                virtual void setBoardID(NavXProtocol::BoardID& board_id) = 0;
                 virtual void setBoardState(BoardState& board_state) = 0;
             };
         }

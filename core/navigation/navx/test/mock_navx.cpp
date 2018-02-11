@@ -1,6 +1,6 @@
 
 #include "mock_navx.hpp"
-#include <AHRS.h>
+#include <NAVX.h>
 
 namespace rip
 {

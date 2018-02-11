@@ -54,6 +54,7 @@ typedef int32_t     s_1616_float;
 /**********************************************/
 /* Device Identification Registers            */
 /**********************************************/
+#define CRC7_POLY 0x91
 
 #define NAVX_REG_WHOAMI             0x00 /* IMU_MODEL_XXX */
 #define NAVX_REG_HW_REV             0x01
@@ -283,7 +284,7 @@ typedef int32_t     s_1616_float;
 #define NAVX_CAPABILITY_FLAG_OMNIMOUNT_CONFIG_MASK  0x0038
 #define NAVX_CAPABILITY_FLAG_VEL_AND_DISP           0x0040
 #define NAVX_CAPABILITY_FLAG_YAW_RESET              0x0080
-#define NAVX_CAPABILITY_FLAG_AHRSPOS_TS             0x0100
+#define NAVX_CAPABILITY_FLAG_NAVXPOS_TS             0x0100
 
 /* NAVX_OMNIMOUNT_CONFIG */
 
@@ -440,8 +441,6 @@ namespace rip
                     int32_t packed_float =(int32_t)val;
                     encodeProtocolInt32(packed_float, uint8_16_16_bytes);
                 }
-
-            #define CRC7_POLY 0x91
 
                 static void buildCRCLookupTable(uint8_t* table, size_t length)
                 {

@@ -13,7 +13,7 @@ namespace rip
                 virtual bool isOmniMountSupported() = 0;
                 virtual bool isBoardYawResetSupported() = 0;
                 virtual bool isDisplacementSupported() = 0;
-                virtual bool isAHRSPosTimestampSupported() = 0;
+                virtual bool isNavXPosTimestampSupported() = 0;
             };
         }
     }
