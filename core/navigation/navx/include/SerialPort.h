@@ -131,7 +131,8 @@ namespace rip
                         loc += n;
 
                         if(n == 0) err++;
-                        //if read fails over 10 times
+                        //if read fails over 10 times, reset the serial interface and abandons this attempt at reading
+                        //throw will be caught by read, and read will be re-attempted
                         if(err > 10)
                         {
                             err = 0;
@@ -141,7 +142,6 @@ namespace rip
                             setTimeout(this->timeout);
                             setReadBufferSize(this->readBufferSize);
                             enableTermination(this->terminationChar);
-                            reset();
                             break;
                         }
                     } while(buf != terminationChar && loc < size);
