@@ -23,6 +23,8 @@ addons:
             - cmake
             - lcov
             - libssh2-1-dev
+            - suitesparse
+            - libeigen3-dev
 
 
 before_script:
