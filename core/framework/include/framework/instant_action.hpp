@@ -17,33 +17,50 @@
  *  \$$    $$   | $$   | $$  \$$\      | $$  | $$|   $$ \| $$
  *   \$$$$$$     \$$    \$$   \$$       \$$   \$$ \$$$$$$ \$$
  */
-#ifndef SUBSYSTEM_HPP
-#define SUBSYSTEM_HPP
+#ifndef RUN_ONCE_ACTION_HPP
+#define RUN_ONCE_ACTION_HPP
 
-#include <string>
+#include "action.hpp"
 
 namespace rip
 {
     namespace framework
     {
-        class Subsystem
+        /**
+         * Base action for something that only needs to be done
+         * once
+         */
+        class InstantAction : public Action
         {
         public:
-            Subsystem(const std::string& name)
-                : m_name(name)
-            {}
+            /**
+             * Returns whether the action is finished
+             *
+             * @note Is always true
+             */
+            virtual bool isFinished() override;
 
-            std::string name() const
-            {
-                return m_name;
-            }
+            /**
+             * Action has already happened, so nothing
+             */
+            virtual void update(nlohmann::json& state) override;
 
-            virtual bool diagnostic() = 0;
-            virtual void stop() = 0;
-        private:
-            std::string m_name;
+            /**
+             * Where the action actually does stuff
+             */
+            virtual void setup(nlohmann::json& state) override;
+
+            /**
+             * Never happens
+             */
+            virtual void teardown(nlohmann::json& state) override;
+
+            /**
+             * This is where the magic happens for this action
+             */
+            virtual void runOnce() = 0;
         };
     }
 }
 
-#endif // SUBSYSTEM_HPP
+#endif // RUN_ONCE_ACTION_HPP

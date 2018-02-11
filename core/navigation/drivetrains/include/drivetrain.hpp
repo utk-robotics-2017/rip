@@ -48,6 +48,13 @@ namespace rip
              */
             virtual void drive(const NavCommand& front_left, const NavCommand& front_right, const NavCommand& back_left, const NavCommand& back_right) = 0;
 
+            /**
+             * Stop
+             *
+             * @param brake whether to actively hold position or just cut power
+             */
+            virtual void stop(bool brake) = 0;
+
             virtual bool diagnostic() override;
         };
     }

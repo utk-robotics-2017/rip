@@ -29,58 +29,45 @@
 
 namespace rip
 {
-    namespace core
+    namespace framework
     {
-        namespace framework
+        /**
+         * Action to wait for a given amount of time
+         */
+        class WaitAction : public Action
         {
+        public:
             /**
-             * Action to wait for a given amount of time
+             * Constructor
+             *
+             * @param wait_time The amount of time for this action to wait
              */
-            class WaitAction : public Action
-            {
-            public:
-                /**
-                 * Constructor
-                 *
-                 * @param wait_time The amount of time for this action to wait
-                 */
-                WaitAction(const units::Time& wait_time);
+            WaitAction(const units::Time& wait_time);
 
-                /**
-                 * Finishes when the elapsed time is more than the wait time
-                 */
-                virtual bool isFinished() override;
+            /**
+             * Finishes when the elapsed time is more than the wait time
+             */
+            virtual bool isFinished() override;
 
-                /**
-                 * [setup description]
-                 */
-                virtual void setup() override;
+            /**
+             * [setup description]
+             */
+            virtual void setup(nlohmann::json& state) override;
 
-                /**
-                 * [update description]
-                 */
-                virtual void update() override;
+            /**
+             * [update description]
+             */
+            virtual void update(nlohmann::json& state) override;
 
-                /**
-                 * [teardown description]
-                 */
-                virtual void teardown() override;
+            /**
+             * [teardown description]
+             */
+            virtual void teardown(nlohmann::json& state) override;
 
-                /**
-                 * Saves the elapsed time
-                 */
-                virtual nlohmann::json save() const override;
-
-                /**
-                 * Restores the action
-                 */
-                virtual void restore(const nlohmann::json& state) override;
-
-            private:
-                units::Time m_wait_time;
-                std::chrono::time_point<std::chrono::system_clock> m_start_time;
-            };
-        }
+        private:
+            units::Time m_wait_time;
+            std::chrono::time_point<std::chrono::system_clock> m_start_time;
+        };
     }
 }
 
