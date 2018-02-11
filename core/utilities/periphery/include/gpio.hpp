@@ -22,7 +22,7 @@ namespace rip
 
                 void write(bool value);
 
-                void poll(int timeout_ms);
+                int poll(int timeout_ms);
 
                 void close();
 
@@ -44,7 +44,7 @@ namespace rip
 
             private:
 
-                gpio_handle gpio;
+                gpio_t gpio;
         };
 
     }
