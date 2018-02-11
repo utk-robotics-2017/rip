@@ -311,7 +311,7 @@ namespace rip
                  *
                  * @returns The encoder count in ticks
                  */
-                int64_t readEncoderRaw(Motor motor);
+                int32_t readEncoderRaw(Motor motor);
 
                 /**
                  * @brief Read the encoder count in ticks for both encoders

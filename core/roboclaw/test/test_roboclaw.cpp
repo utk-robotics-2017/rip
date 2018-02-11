@@ -229,7 +229,7 @@ namespace rip
                     testClaw->setcResponse(response);
                     //initial voltage should be set to minimum voltage
                     v = testClaw->readLogicBatteryVoltage();
-                    EXPECT_DOUBLE_EQ(v(), 8.0);
+                    EXPECT_DOUBLE_EQ(v.to(units::V), 8.0);
                     //verify proper command transmission
                     testClaw->setMainVoltages(8*units::V, 24*units::V);
                     ASSERT_EQ(testClaw->getLastCmd()[0],0x80);
@@ -240,8 +240,8 @@ namespace rip
                     response={0,80,0,240};
                     testClaw->setcResponse(response);
                     rv=testClaw->readMinMaxMainVoltages();
-                    EXPECT_DOUBLE_EQ(rv[0](), 8.0);
-                    EXPECT_DOUBLE_EQ(rv[1](), 24.0);
+                    EXPECT_DOUBLE_EQ(rv[0].to(units::V), 8.0);
+                    EXPECT_DOUBLE_EQ(rv[1].to(units::V), 24.0);
                     v=testClaw->readMainBatteryVoltage();
 
                     //readCurrent returns diff. than actual
@@ -304,7 +304,8 @@ namespace rip
                     std::vector<uint8_t> response;
                     units::Velocity v;
                     units::Distance d;
-                    double ticks_per_rev = 360.0, wheel_radius=.04;//base unit meter
+                    double ticks_per_rev = 360.0;
+                    units::Length wheel_radius(units::m * 0.04);
                     testClaw->setBytes(0);
 
                     //distance tests
@@ -323,22 +324,30 @@ namespace rip
 
                     EXPECT_DOUBLE_EQ(testClaw->readEncoderRaw(Roboclaw::Motor::kM1), 0.0);
                     d=testClaw->readEncoder(Roboclaw::Motor::kM1);
-                    EXPECT_DOUBLE_EQ(d(), 0.0);
+                    EXPECT_DOUBLE_EQ(d.to(units::cm), 0.0);
 
                         //forward test
-                    response = {0xDE, 0xAD, 0xBE, 0xEF, 0x0};
+                    response = {0x00, 0x00, 0xDE, 0xAD, 0x0};
                     testClaw->setcResponse(response);
 
-                    EXPECT_DOUBLE_EQ(testClaw->readEncoderRaw(Roboclaw::Motor::kM1), 0xDEADBEEF);
+                    EXPECT_DOUBLE_EQ(testClaw->readEncoderRaw(Roboclaw::Motor::kM1), (int32_t) 0x0000DEAD);
                     d=testClaw->readEncoder(Roboclaw::Motor::kM1);
-                    EXPECT_DOUBLE_EQ(d(), static_cast<double>(0xDEADBEEF) / ticks_per_rev * wheel_radius * (units::pi * 2));
+                    EXPECT_NEAR(
+                        d.to(units::cm),
+                        (((1.0 * (int32_t)0x0000DEAD) / ticks_per_rev) * (wheel_radius.to(units::cm) * units::pi * 2)),
+                        0.01 // absolute error allowed
+                    );
                         //backwards/negative
 
-                    response ={0xDE, 0xAD, 0xBE, 0xEF, 2};
+                    response ={0x00, 0x00, 0xBE, 0xEF, 2};
                     testClaw->setcResponse(response);
-                    EXPECT_DOUBLE_EQ(testClaw->readEncoderRaw(Roboclaw::Motor::kM1), -3735928559);
+                    EXPECT_DOUBLE_EQ(testClaw->readEncoderRaw(Roboclaw::Motor::kM1), (int32_t) 0x0000BEEF);
                     d=testClaw->readEncoder(Roboclaw::Motor::kM1);
-                    EXPECT_DOUBLE_EQ(d(), static_cast<double>(-3735928559) / ticks_per_rev * wheel_radius * (units::pi * 2));
+                    EXPECT_NEAR(
+                        d.to(units::cm),
+                        (((1.0 * (int32_t)0x0000BEEF) / ticks_per_rev) * (wheel_radius.to(units::cm) * units::pi * 2)),
+                        0.01 // absolute error allowed
+                    );
 
                 }
 
@@ -347,7 +356,8 @@ namespace rip
                     std::shared_ptr<Roboclaw> testClaw(new Roboclaw);
                     std::vector<uint8_t> response;
                     units::Distance d;
-                    double ticks_per_rev = 360.0, wheel_radius=.04;//base unit meter
+                    double ticks_per_rev = 360.0;
+                    units::Length wheel_radius(units::m * 0.04);
                     testClaw->setBytes(0);
 
                       //motor 2
@@ -365,22 +375,30 @@ namespace rip
 
                     EXPECT_DOUBLE_EQ(testClaw->readEncoderRaw(Roboclaw::Motor::kM2), 0.0);
                     d=testClaw->readEncoder(Roboclaw::Motor::kM2);
-                    EXPECT_DOUBLE_EQ(d(), 0.0);
+                    EXPECT_DOUBLE_EQ(d.to(units::cm), 0.0);
 
                         //forward test
-                    response = {0xFE, 0xEB, 0xDA, 0xED, 0x0};
+                    response = {0x00, 0x00, 0xF0, 0x0D, 0x0};
                     testClaw->setcResponse(response);
 
-                    EXPECT_DOUBLE_EQ(testClaw->readEncoderRaw(Roboclaw::Motor::kM2), 0xFEEBDAED);
+                    EXPECT_DOUBLE_EQ(testClaw->readEncoderRaw(Roboclaw::Motor::kM2), (int32_t)0x0000F00D);
                     d=testClaw->readEncoder(Roboclaw::Motor::kM2);
-                    EXPECT_DOUBLE_EQ(d(), static_cast<double>(0xFEEBDAED) / ticks_per_rev * wheel_radius * (units::pi * 2));
+                    EXPECT_NEAR(
+                        d.to(units::cm),
+                        (static_cast<double>(0x0000F00D) / ticks_per_rev) * wheel_radius.to(units::cm) * (units::pi * 2),
+                        0.01 // absolute error allowed
+                    );
                         //backwards/negative
 
-                    response ={0xDE, 0xAD, 0xBE, 0xEF, 2};
+                    response ={0x00, 0x00, 0xC0, 0x01, 2};
                     testClaw->setcResponse(response);
-                    EXPECT_DOUBLE_EQ(testClaw->readEncoderRaw(Roboclaw::Motor::kM2), -3735928559);
+                    EXPECT_DOUBLE_EQ(testClaw->readEncoderRaw(Roboclaw::Motor::kM2), (int32_t)0x0000C001);
                     d=testClaw->readEncoder(Roboclaw::Motor::kM2);
-                    EXPECT_DOUBLE_EQ(d(), static_cast<double>(-3735928559) / ticks_per_rev * wheel_radius * (units::pi * 2));
+                    EXPECT_NEAR(
+                        d.to(units::cm),
+                        (static_cast<double>(0x0000C001) / ticks_per_rev) * wheel_radius.to(units::cm) * (units::pi * 2),
+                        0.01 // absolute error allowed
+                    );
 
                 }
 

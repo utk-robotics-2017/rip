@@ -106,22 +106,22 @@ namespace rip
 
             void Roboclaw::setMainVoltages(units::Voltage min, units::Voltage max)
             {
-                if (min() < 6 || min() > 34)
+                if (min.to(units::V) < 6 || min.to(units::V) > 34)
                 {
-                    throw OutOfRange(fmt::format("Minimum main battery voltage of {} is out of the 6V-34V range", min()));
+                    throw OutOfRange(fmt::format("Minimum main battery voltage of {} is out of the 6V-34V range", min.to(units::V)));
                 }
 
-                if (max() < 6 || max() > 34)
+                if (max.to(units::V) < 6 || max.to(units::V) > 34)
                 {
-                    throw OutOfRange(fmt::format("Maximum main battery voltage of {} is out of the 6V-34V range", max()));
+                    throw OutOfRange(fmt::format("Maximum main battery voltage of {} is out of the 6V-34V range", max.to(units::V)));
                 }
                 if(min()>=max())
                 {
-                    throw OutOfRange(fmt::format("Minimum main battery voltage of {} should be less than the maximum main battery voltage of {}.", min(), max()));
+                    throw OutOfRange(fmt::format("Minimum main battery voltage of {} should be less than the maximum main battery voltage of {}.", min.to(units::V), max.to(units::V)));
                 }
 
-                uint16_t min_v = min() * 10;
-                uint16_t max_v = max() * 10;
+                uint16_t min_v = min.to(units::V) * 10;
+                uint16_t max_v = max.to(units::V) * 10;
                 writeN(Command::kSetMainVoltages, min_v, max_v);
             }
 
@@ -152,21 +152,21 @@ namespace rip
 
             void Roboclaw::setLogicVoltages(units::Voltage min, units::Voltage max)
             {
-                if (min() < 6 || min() > 34)
+                if (min.to(units::V) < 6 || min.to(units::V) > 34)
                 {
-                    throw OutOfRange(fmt::format("Minimum logic battery voltage of {} is out of the 6V-34V range", min()));
+                    throw OutOfRange(fmt::format("Minimum logic battery voltage of {} is out of the 6V-34V range", min.to(units::V)));
                 }
 
-                if (max() < 6 || max() > 34)
+                if (max.to(units::V) < 6 || max.to(units::V) > 34)
                 {
-                    throw OutOfRange(fmt::format("Maximum logic battery voltage of {} is out of the 6V-34V range", max()));
+                    // throw OutOfRange(fmt::format("Maximum logic battery voltage of {} is out of the 6V-34V range", max.to(units::V)));
                 }
                 if(min()>=max())
                 {
-                    throw OutOfRange(fmt::format("Minimum logic battery voltage of {} should be less than the maximum logic battery voltage of {}.", min(), max()));
+                    throw OutOfRange(fmt::format("Minimum logic battery voltage of {} should be less than the maximum logic battery voltage of {}.", min.to(units::V), max.to(units::V)));
                 }
-                uint16_t min_v = min() * 10;
-                uint16_t max_v = max() * 10;
+                uint16_t min_v = min.to(units::V) * 10;
+                uint16_t max_v = max.to(units::V) * 10;
                 writeN(Command::kSetLogicVoltages, min_v, max_v);
             }
 
@@ -195,7 +195,7 @@ namespace rip
       //////////////////////////////////////// Encoders ////////////////////////////////////////////
       //////////////////////////////////////////////////////////////////////////////////////////////
 
-            int64_t Roboclaw::readEncoderRaw(Motor motor)
+            int32_t Roboclaw::readEncoderRaw(Motor motor)
             {
                 Command cmd;
                 switch (motor)
@@ -510,7 +510,7 @@ namespace rip
                                 cmd = Command::kM2Speed; //!< 36
                                 break;
                         }
-                        speed = static_cast<int32_t>((*dynamics.getSpeed() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
+                        speed = static_cast<int32_t>((*dynamics.getSpeed() / (m_wheel_radius * units::pi * 2)).to(1 / units::s) * m_ticks_per_rev);
                         writeN(cmd, speed);
                         return;
                     case MotorDynamics::DType::kSpeedAccel:
@@ -525,8 +525,8 @@ namespace rip
                                 cmd = Command::kM2SpeedAccel; //!< 39
                                 break;
                         }
-                        speed = static_cast<int32_t>((*dynamics.getSpeed() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
-                        accel = static_cast<uint32_t>((*dynamics.getAcceleration() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
+                        speed = static_cast<int32_t>((*dynamics.getSpeed() / (m_wheel_radius * units::pi * 2)).to(1 / units::s) * m_ticks_per_rev);
+                        accel = static_cast<uint32_t>((*dynamics.getAcceleration() / (m_wheel_radius * units::pi * 2)).to(1 / (units::s * units::s)) * m_ticks_per_rev);
                         writeN(cmd, accel, speed);
                         break;
                     case MotorDynamics::DType::kSpeedDist:
@@ -541,8 +541,8 @@ namespace rip
                                 cmd = Command::kM2SpeedDist; //!< 42
                                 break;
                         }
-                        speed = static_cast<int32_t>((*dynamics.getSpeed() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
-                        dist = static_cast<uint32_t>((*dynamics.getDistance() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
+                        speed = static_cast<int32_t>((*dynamics.getSpeed() / (m_wheel_radius * units::pi * 2)).to(1 / units::s) * m_ticks_per_rev);
+                        dist = static_cast<uint32_t>((*dynamics.getDistance() / (m_wheel_radius * units::pi * 2)).to(units::none) * m_ticks_per_rev);
                         // std::cout << "Debugging: dist raw value " << dist << std::endl;
                         writeN(cmd, speed, dist, static_cast<uint8_t>(respectBuffer));
                         break;
