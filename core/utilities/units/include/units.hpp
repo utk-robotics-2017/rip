@@ -346,6 +346,8 @@ namespace rip
         typedef Units < 0, - 1, 0, 0, 0, 1 > AngularVelocity;
         typedef Units < 0, - 2, 0, 0, 0, 1 > AngularAcceleration;
         typedef Units<1,-2,1,0,0,0> Force;
+        typedef Units<0,-1,0,0,0,0> Frequency;
+        typedef Units<-1,-2,1,0,0,0> Pressure;
         typedef Units<2,-2,1,0,0,0> Torque;
         typedef Units<1,-2,1,0,0,0> Weight;
         typedef Units<2,-2,1,0,0,0> Energy;
@@ -433,7 +435,12 @@ namespace rip
         const Capacitance nF = nano*F;
         const Capacitance uF = micro*F;
         const Capacitance mF = milli*F;
-
+        const Pressure Pa = 1;
+        const Pressure kPa = 1e3 * Pa;
+        const Pressure bar = Pa * 100000;
+        const Pressure millibar = 1e-3 * bar;
+        const Pressure psi = lbf/(inch*inch);
+        const Pressure atm = 101325 * Pa;
         const Temperature K = 1;
         const Temperature degC = 1 * K;
         const Temperature degF = 5 / 9 * K;
