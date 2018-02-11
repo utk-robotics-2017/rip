@@ -5,6 +5,8 @@
 
 #include <gtest/gtest.h>
 
+#define ROBOCLAW_TEST_NEAR_ACCURACY_CM 0.01 // required precision in centimeters
+
 namespace rip
 {
     namespace utilities
@@ -335,7 +337,7 @@ namespace rip
                     EXPECT_NEAR(
                         d.to(units::cm),
                         (((1.0 * (int32_t)0x0000DEAD) / ticks_per_rev) * (wheel_radius.to(units::cm) * units::pi * 2)),
-                        0.01 // absolute error allowed
+                        units::Length(units::cm * ROBOCLAW_TEST_NEAR_ACCURACY_CM).to(units::cm) // absolute error allowed
                     );
                         //backwards/negative
 
@@ -346,7 +348,7 @@ namespace rip
                     EXPECT_NEAR(
                         d.to(units::cm),
                         (((1.0 * (int32_t)0x0000BEEF) / ticks_per_rev) * (wheel_radius.to(units::cm) * units::pi * 2)),
-                        0.01 // absolute error allowed
+                        units::Length(units::cm * ROBOCLAW_TEST_NEAR_ACCURACY_CM).to(units::cm) // absolute error allowed
                     );
 
                 }
@@ -386,7 +388,7 @@ namespace rip
                     EXPECT_NEAR(
                         d.to(units::cm),
                         (static_cast<double>(0x0000F00D) / ticks_per_rev) * wheel_radius.to(units::cm) * (units::pi * 2),
-                        0.01 // absolute error allowed
+                        units::Length(units::cm * ROBOCLAW_TEST_NEAR_ACCURACY_CM).to(units::cm) // absolute error allowed
                     );
                         //backwards/negative
 
@@ -397,7 +399,7 @@ namespace rip
                     EXPECT_NEAR(
                         d.to(units::cm),
                         (static_cast<double>(0x0000C001) / ticks_per_rev) * wheel_radius.to(units::cm) * (units::pi * 2),
-                        0.01 // absolute error allowed
+                        units::Length(units::cm * ROBOCLAW_TEST_NEAR_ACCURACY_CM).to(units::cm) // absolute error allowed
                     );
 
                 }
@@ -407,7 +409,8 @@ namespace rip
                     std::shared_ptr<Roboclaw> testClaw(new Roboclaw);
                     std::vector<uint8_t> response;
                     units::Velocity v;
-                    double ticks_per_rev = 360.0, wheel_radius=.04;//base unit meter
+                    double ticks_per_rev = 360.0;
+                    units::Length wheel_radius(units::m * 0.04);//base unit meter
                     testClaw->setBytes(0);
                     //velocity tests
                       //motor 1
@@ -416,26 +419,34 @@ namespace rip
                     testClaw->setcResponse(response);
                     EXPECT_DOUBLE_EQ(testClaw->readEncoderVelocityRaw(Roboclaw::Motor::kM1), 0.0);
                     v=testClaw->readEncoderVelocity(Roboclaw::Motor::kM1);
-                    EXPECT_DOUBLE_EQ(v(), 0.0);
+                    EXPECT_DOUBLE_EQ(v.to(units::m / units::s), 0.0);
                         //still(negative)
                     response = {0x0, 0x0, 0x0, 0x0, 2};
                     testClaw->setcResponse(response);
                     EXPECT_DOUBLE_EQ(testClaw->readEncoderVelocityRaw(Roboclaw::Motor::kM1), 0.0);
                     v=testClaw->readEncoderVelocity(Roboclaw::Motor::kM1);
-                    EXPECT_DOUBLE_EQ(v(), 0.0);
+                    EXPECT_DOUBLE_EQ(v.to(units::m / units::s), 0.0);
 
                         //Forward
-                    response = {0x0, 0x0, 0xFF, 0x0, 0x0};
+                    response = {0x00, 0x00, 0xCA, 0xFE, 0x0};
                     testClaw->setcResponse(response);
-                    EXPECT_DOUBLE_EQ(testClaw->readEncoderVelocityRaw(Roboclaw::Motor::kM1), 0xFF00);
+                    EXPECT_DOUBLE_EQ(testClaw->readEncoderVelocityRaw(Roboclaw::Motor::kM1), (int32_t)0xCAFE);
                     v=testClaw->readEncoderVelocity(Roboclaw::Motor::kM1);
-                    EXPECT_DOUBLE_EQ(v(),static_cast<double>(0xFF00) / ticks_per_rev * wheel_radius * (units::pi * 2));
+                    EXPECT_NEAR(
+                        v.to(units::m / units::s),
+                        (static_cast<double>(0xCAFE) / ticks_per_rev) * wheel_radius.to(units::m) * (units::pi * 2),
+                        units::Length(units::cm * ROBOCLAW_TEST_NEAR_ACCURACY_CM).to(units::m)
+                    );
                         //backward
-                    response = {0x0, 0x0, 0xFF, 0x0, 0x2};
+                    response = {0xFF, 0xFF, 0xF1, 0x00, 0x2}; // negative values (twos complement)
                     testClaw->setcResponse(response);
                     v=testClaw->readEncoderVelocity(Roboclaw::Motor::kM1);
-                    EXPECT_DOUBLE_EQ(testClaw->readEncoderVelocityRaw(Roboclaw::Motor::kM1), -65280);
-                    EXPECT_DOUBLE_EQ(v(),static_cast<double>(-65280) / ticks_per_rev * wheel_radius * (units::pi * 2));
+                    EXPECT_DOUBLE_EQ(testClaw->readEncoderVelocityRaw(Roboclaw::Motor::kM1), (int32_t)-0x0F00);
+                    EXPECT_NEAR(
+                        v.to(units::m / units::s),
+                        (static_cast<double>(-0x0F00) / ticks_per_rev) * wheel_radius.to(units::m) * (units::pi * 2),
+                        units::Length(units::cm * ROBOCLAW_TEST_NEAR_ACCURACY_CM).to(units::m)
+                    );
 
 
                 }
@@ -445,7 +456,8 @@ namespace rip
                     std::shared_ptr<Roboclaw> testClaw(new Roboclaw);
                     std::vector<uint8_t> response;
                     units::Velocity v;
-                    double ticks_per_rev = 360.0, wheel_radius=.04;//base unit meter
+                    double ticks_per_rev = 360.0;
+                    units::Length wheel_radius(units::m * 0.04);//base unit meter
                     testClaw->setBytes(0);
 
                       //motor 2
@@ -454,26 +466,34 @@ namespace rip
                     testClaw->setcResponse(response);
                     EXPECT_DOUBLE_EQ(testClaw->readEncoderVelocityRaw(Roboclaw::Motor::kM2), 0.0);
                     v=testClaw->readEncoderVelocity(Roboclaw::Motor::kM2);
-                    EXPECT_DOUBLE_EQ(v(), 0.0);
+                    EXPECT_DOUBLE_EQ(v.to(units::m / units::s), 0.0);
                         //still(negative)
                     response = {0x0, 0x0, 0x0, 0x0, 2};
                     testClaw->setcResponse(response);
                     EXPECT_DOUBLE_EQ(testClaw->readEncoderVelocityRaw(Roboclaw::Motor::kM2), 0.0);
                     v=testClaw->readEncoderVelocity(Roboclaw::Motor::kM2);
-                    EXPECT_DOUBLE_EQ(v(), 0.0);
+                    EXPECT_DOUBLE_EQ(v.to(units::m / units::s), 0.0);
 
                         //Forward
                     response = {0x0, 0x0, 0xFF, 0xFF, 0x0};
                     testClaw->setcResponse(response);
                     EXPECT_DOUBLE_EQ(testClaw->readEncoderVelocityRaw(Roboclaw::Motor::kM2), 0xFFFF);
                     v=testClaw->readEncoderVelocity(Roboclaw::Motor::kM2);
-                    EXPECT_DOUBLE_EQ(v(),static_cast<double>(0xFFFF) / ticks_per_rev * wheel_radius * (units::pi * 2));
+                    EXPECT_NEAR(
+                        v.to(units::m / units::s),
+                        (static_cast<double>(0xFFFF) / ticks_per_rev) * wheel_radius.to(units::m) * (units::pi * 2),
+                        units::Length(units::cm * ROBOCLAW_TEST_NEAR_ACCURACY_CM).to(units::m)
+                    );
                         //backward
-                    response = {0x0, 0x0, 0xFF, 0x0, 0x2};
+                    response = {0xFF, 0xFF, 0xF3, 0x00, 0x2}; // twos complement for negatives
                     testClaw->setcResponse(response);
                     v=testClaw->readEncoderVelocity(Roboclaw::Motor::kM2);
-                    EXPECT_DOUBLE_EQ(testClaw->readEncoderVelocityRaw(Roboclaw::Motor::kM2), -65280);
-                    EXPECT_DOUBLE_EQ(v(),static_cast<double>(-65280) / ticks_per_rev * wheel_radius * (units::pi * 2));
+                    EXPECT_DOUBLE_EQ(testClaw->readEncoderVelocityRaw(Roboclaw::Motor::kM2), -0x0D00);
+                    EXPECT_NEAR(
+                        v.to(units::m / units::s),
+                        (static_cast<double>(-0x0D00) / ticks_per_rev) * wheel_radius.to(units::m) * (units::pi * 2),
+                        units::Length(units::cm * ROBOCLAW_TEST_NEAR_ACCURACY_CM).to(units::m)
+                    );
 
                 }
 
