@@ -579,14 +579,16 @@ namespace rip
                     EXPECT_DOUBLE_EQ(testClaw->readEncodersVelocityRaw()[1], 0xAB01);
 
                     v=testClaw->readEncodersVelocity()[0];
-                    EXPECT_DOUBLE_EQ(
+                    EXPECT_NEAR(
                         v.to(units::m / units::s),
-                        static_cast<double>(0xAB01) / ticks_per_rev * wheel_radius.to(units::m) * (units::pi * 2)
+                        static_cast<double>(0xAB01) / ticks_per_rev * wheel_radius.to(units::m) * (units::pi * 2),
+                        units::Length(units::cm * ROBOCLAW_TEST_NEAR_ACCURACY_CM).to(units::m)
                     );
                     v=testClaw->readEncodersVelocity()[1];
-                    EXPECT_DOUBLE_EQ(
+                    EXPECT_NEAR(
                         v.to(units::m / units::s),
-                        static_cast<double>(0xAB01) / ticks_per_rev * wheel_radius.to(units::m) * (units::pi * 2)
+                        static_cast<double>(0xAB01) / ticks_per_rev * wheel_radius.to(units::m) * (units::pi * 2),
+                        units::Length(units::cm * ROBOCLAW_TEST_NEAR_ACCURACY_CM).to(units::m)
                     );
 
                 }
@@ -602,7 +604,11 @@ namespace rip
                     testClaw->setBytes(0);
 
                       //backwards
-                    response = {0x0, 0x0, 0xAB, 0x1, 0x0, 0x0, 0xAB, 0x1, 0x2, 0x2};
+                    response = {
+                        0xFF, 0xFF, 0x54, 0xFF, // this one negative
+                        0x00, 0x00, 0xAB, 0x01,
+                        0x02, 0x02
+                    };
                     testClaw->setcResponse(response);
 
                     d=testClaw->readEncoder(Roboclaw::Motor::kM1);
@@ -613,20 +619,22 @@ namespace rip
                     EXPECT_DOUBLE_EQ(d2.to(units::cm), d.to(units::cm));
 
                     EXPECT_DOUBLE_EQ(testClaw->readEncodersRaw()[0], -43777);
-                    EXPECT_DOUBLE_EQ(testClaw->readEncodersRaw()[1], -43777);
+                    EXPECT_DOUBLE_EQ(testClaw->readEncodersRaw()[1], 43777);
 
                     EXPECT_DOUBLE_EQ(testClaw->readEncodersVelocityRaw()[0], -43777);
-                    EXPECT_DOUBLE_EQ(testClaw->readEncodersVelocityRaw()[1], -43777);
+                    EXPECT_DOUBLE_EQ(testClaw->readEncodersVelocityRaw()[1], 43777);
 
                     v=testClaw->readEncodersVelocity()[0];
-                    EXPECT_DOUBLE_EQ(
+                    EXPECT_NEAR(
                         v.to(units::m / units::s),
-                        static_cast<double>(-43777) / ticks_per_rev * wheel_radius.to(units::m) * (units::pi * 2)
+                        static_cast<double>(-43777) / ticks_per_rev * wheel_radius.to(units::m) * (units::pi * 2),
+                        units::Length(units::cm * ROBOCLAW_TEST_NEAR_ACCURACY_CM).to(units::m)
                     );
                     v=testClaw->readEncodersVelocity()[1];
-                    EXPECT_DOUBLE_EQ(
+                    EXPECT_NEAR(
                         v.to(units::m / units::s),
-                        static_cast<double>(-43777) / ticks_per_rev * wheel_radius.to(units::m) * (units::pi * 2)
+                        static_cast<double>(43777) / ticks_per_rev * wheel_radius.to(units::m) * (units::pi * 2),
+                        units::Length(units::cm * ROBOCLAW_TEST_NEAR_ACCURACY_CM).to(units::m)
                     );
 
                 }

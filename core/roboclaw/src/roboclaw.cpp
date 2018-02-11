@@ -285,8 +285,6 @@ namespace rip
                 // First 4 bytes are the ticks per second
                 rv = (static_cast<int32_t>((response[0] << 8*3) + (response[1] << 8*2) + (response[2] << 8) + response[3]));
 
-                // Status indicates the direction (0 – forward, 1 - backward).
-
                 return rv;
             }
 
@@ -297,9 +295,10 @@ namespace rip
 
             std::array<int32_t, 2> Roboclaw::readEncodersVelocityRaw()
             {
+                std::vector<uint8_t> response = readN(8, Command::kGetISpeeds);
                 std::array<int32_t, 2> rv;
-                rv[0] = readEncoderVelocityRaw(Motor::kM1);
-                rv[1] = readEncoderVelocityRaw(Motor::kM2);
+                rv[0] = static_cast<int32_t>((response[0] << 8*3) + (response[1] << 8*2) + (response[2] << 8) + response[3]);
+                rv[1] = static_cast<int32_t>((response[4] << 8*3) + (response[5] << 8*2) + (response[6] << 8) + response[7]);
                 return rv;
             }
 
