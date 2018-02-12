@@ -6,7 +6,7 @@ namespace rip
     namespace periphery
     {
 
-        void gpio::open(unsigned int pin, int direction)
+        void Gpio::open(unsigned int pin, int direction)
         {
             gpio_direction_t dir;
             switch(direction)
@@ -22,20 +22,20 @@ namespace rip
             return;
         }
 
-        bool gpio::read()
+        bool Gpio::read()
         {
             bool *val;
             int err_code = gpio_read(&gpio, val);
             return *val;
         }
 
-        void gpio::write(bool value)
+        void Gpio::write(bool value)
         {
             int err_code = gpio_write(&gpio, value);
             return;
         }
 
-        int gpio::poll(int timeout_ms)
+        int Gpio::poll(int timeout_ms)
         {
             int pollnum = gpio_poll(&gpio, timeout_ms);
             if (pollnum == 1 || pollnum == 0)
@@ -49,20 +49,20 @@ namespace rip
             }
         }
 
-        void gpio::close()
+        void Gpio::close()
         {
             int err_code = gpio_close(&gpio);
             return;
         }
 
-        bool gpio::supports_interupts()
+        bool Gpio::supportsInterupts()
         {
             bool *support;
             int err_code = gpio_supports_interupts(&gpio, support);
             return *support;
         }
 
-        int gpio::get_direction()
+        int Gpio::getDirection()
         {
             gpio_direction_t *dir;
             int err_code = gpio_get_direction(&gpio, dir);
@@ -79,7 +79,7 @@ namespace rip
             return dirnum;
         }
 
-        int gpio::get_edge()
+        int Gpio::getEdge()
         {
             gpio_edge_t *edge;
             int err_code = gpio_get_edge(&gpio, edge);
@@ -95,7 +95,7 @@ namespace rip
             return edgenum;
         }
 
-        void gpio::set_direction(int direction)
+        void Gpio::setDirection(int direction)
         {
             gpio_direction_t dir;
             switch(direction)
@@ -112,7 +112,7 @@ namespace rip
             return;
         }
 
-        void gpio::set_edge(int edge)
+        void Gpio::setEdge(int edge)
         {
             gpio_edge_t ed;
             switch(edge)
@@ -128,20 +128,20 @@ namespace rip
             return;
         }
 
-        unsigned int gpio::pin()
+        unsigned int Gpio::pin()
         {
             unsigned int pinnum;
             pinnum = gpio_pin(&gpio);
             return pinnum;
         }
 
-        int gpio::fd()
+        int Gpio::fd()
         {
             int filedescriptor = gpio_fd(&gpio);
             return filedescriptor;
         }
 
-        std::string gpio::tostring(size_t len)
+        std::string Gpio::toString(size_t len)
         {
             char *cstr;
             int err_num = gpio_tostring(&gpio, cstr, len);

@@ -14,7 +14,7 @@ namespace rip
     namespace periphery
     {
 
-        class i2c 
+        class I2c 
         {
             public:
 
@@ -26,7 +26,7 @@ namespace rip
 
                 int fd();
 
-                std::string tostring(size_t len);
+                std::string toString(size_t len);
 
             private:
 
