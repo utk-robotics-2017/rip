@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 cd external/g2o
 mkdir build
 cd build
