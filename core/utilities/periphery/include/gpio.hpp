@@ -12,7 +12,7 @@ namespace rip
     namespace periphery
     {
 
-        class gpio
+        class Gpio
         {
             public:
 
@@ -26,21 +26,21 @@ namespace rip
 
                 void close();
 
-                bool supports_interrupts();
+                bool supportsInterrupts();
 
-                int get_direction();
+                int getDirection();
 
-                int get_edge();
+                int getEdge();
 
-                void set_direction(int direction);
+                void setDirection(int direction);
 
-                void set_edge(int edge);
+                void setEdge(int edge);
 
                 unsigned int pin();
 
                 int fd();
 
-                std::string tostring(size_t len);
+                std::string toString(size_t len);
 
             private:
 

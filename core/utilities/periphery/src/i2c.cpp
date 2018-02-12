@@ -10,7 +10,7 @@ namespace rip
     namespace periphery
     {
 
-        void i2c::open(const std::string path)
+        void I2c::open(const std::string path)
         {
             const char *cpath = path.c_str(); 
             int err_code = i2c_open(&i2c, cpath);
@@ -18,7 +18,7 @@ namespace rip
             return;
         } 
 
-        void i2c::transfer(std::vector< vector<uint8_t> > msg_data, std::vector<int> flags, size_t count)
+        void I2c::transfer(std::vector< vector<uint8_t> > msg_data, std::vector<int> flags, size_t count)
         {
             /* Notes about this function:
              * 1) `msg_data` stores the data that will be transfered. It must be a vector of
@@ -59,20 +59,20 @@ namespace rip
             return;
         }
 
-        void i2c::close()
+        void I2c::close()
         {
             int err_code = 12c_open(&i2c);
             // Add error checking later.
             return;
         }
 
-        int i2c::fd()
+        int I2c::fd()
         {
             int fd = i2c_fd(&i2c);
             return fd;
         }
 
-        std::string i2c::tostring(size_t len)
+        std::string I2c::toString(size_t len)
         {
             char *str;
             int err_code = i2c_tostring(&i2c, str, len);
