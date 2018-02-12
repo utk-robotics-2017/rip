@@ -3,11 +3,16 @@
 
 extern "C"
 {
+<<<<<<< HEAD
     #include "spi.h"
+=======
+    #include "serial.h"
+>>>>>>> 2f57d3d4c4282211acf60e6e2f1f19b1184c621f
 }
 
 namespace rip
 {
+<<<<<<< HEAD
 
     namespace periphery
     {
@@ -39,3 +44,15 @@ namespace rip
     }
 
 }
+=======
+    namespace periphery
+    {
+        class Spi
+        {
+            
+        }
+    }
+}
+
+#endif
+>>>>>>> 2f57d3d4c4282211acf60e6e2f1f19b1184c621f
