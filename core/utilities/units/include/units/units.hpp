@@ -22,9 +22,12 @@ namespace rip
             {}
 
             // This turns the class into a function object that allows
-            // the user to easily get at the value.
+            // the user to easily get at the internal value.
             NT operator()() const
             {
+#ifndef UNITS_FUNC
+#warning("This function returns the internal value for the units class. Only use if this is exactly what you want.")
+#endif
                 return value;
             }
 
@@ -289,7 +292,7 @@ namespace rip
         }
 
         template<int U1, int U2, int U3, int U4, int U5, int U6, typename... Args>
-        typename std::enable_if<1 < sizeof...(Args), Units<U1, U2, U3, U4, U5, U6>>::type max(const Units<U1, U2, U3, U4, U5, U6>& lhs, Args... rhs)
+        typename std::enable_if < 1 < sizeof...(Args), Units<U1, U2, U3, U4, U5, U6>>::type max(const Units<U1, U2, U3, U4, U5, U6>& lhs, Args... rhs)
         {
             return units::max(lhs, units::max(rhs...));
         }
@@ -301,7 +304,7 @@ namespace rip
         }
 
         template<int U1, int U2, int U3, int U4, int U5, int U6, typename... Args>
-        typename std::enable_if<1 < sizeof...(Args), Units<U1, U2, U3, U4, U5, U6>>::type min(const Units<U1, U2, U3, U4, U5, U6>& lhs, Args... rhs)
+        typename std::enable_if < 1 < sizeof...(Args), Units<U1, U2, U3, U4, U5, U6>>::type min(const Units<U1, U2, U3, U4, U5, U6>& lhs, Args... rhs)
         {
             return units::min(lhs, units::min(rhs...));
         }
@@ -350,26 +353,26 @@ namespace rip
 
         // Typedefs for derived units
         typedef Units<2, 0, 0, 0, 0, 0> Area;
-        typedef Units<3,0,0,0,0,0> Volume;
-        typedef Units<-3,0,1,0,0,0> Density;
+        typedef Units<3, 0, 0, 0, 0, 0> Volume;
+        typedef Units < -3, 0, 1, 0, 0, 0 > Density;
         typedef Units < 1, - 1, 0, 0, 0, 0 > Velocity;
         typedef Units < 1, - 2, 0, 0, 0, 0 > Acceleration;
         typedef Units < 1, - 3, 0, 0, 0, 0 > Jerk;
         typedef Units < 0, - 1, 0, 0, 0, 1 > AngularVelocity;
         typedef Units < 0, - 2, 0, 0, 0, 1 > AngularAcceleration;
-        typedef Units<1,-2,1,0,0,0> Force;
+        typedef Units < 1, -2, 1, 0, 0, 0 > Force;
         typedef Units<0,-1,0,0,0,0> Frequency;
         typedef Units<-1,-2,1,0,0,0> Pressure;
-        typedef Units<2,-2,1,0,0,0> Torque;
-        typedef Units<1,-2,1,0,0,0> Weight;
-        typedef Units<2,-2,1,0,0,0> Energy;
-        typedef Units<2,-2,1,0,0,0> Work;
-        typedef Units<0,1,0,1,0,0> Charge;
-        typedef Units<2,-3,1,0,0,0> Power;
-        typedef Units<2,-3,1,-1,0,0> Voltage;
-        typedef Units<2,-3,1,-2,0,0> Resistance;
-        typedef Units<-2,3,-1,2,0,0> Conductance;
-        typedef Units<-2,4,-1,2,0,0> Capacitance;
+        typedef Units < 2, -2, 1, 0, 0, 0 > Torque;
+        typedef Units < 1, -2, 1, 0, 0, 0 > Weight;
+        typedef Units < 2, -2, 1, 0, 0, 0 > Energy;
+        typedef Units < 2, -2, 1, 0, 0, 0 > Work;
+        typedef Units<0, 1, 0, 1, 0, 0> Charge;
+        typedef Units < 2, -3, 1, 0, 0, 0 > Power;
+        typedef Units < 2, -3, 1, -1, 0, 0 > Voltage;
+        typedef Units < 2, -3, 1, -2, 0, 0 > Resistance;
+        typedef Units < -2, 3, -1, 2, 0, 0 > Conductance;
+        typedef Units < -2, 4, -1, 2, 0, 0 > Capacitance;
 
         typedef Units<0, 0, 0, 0, 0, 0> Unitless;
 
@@ -418,35 +421,35 @@ namespace rip
         const Time hr = 3600 * s;
         const Time hour = hr;
         const Time minute = 60 * s;
-        const Force N = 1 * kg * m / (s * s);
+        const Force N = 1 * kg * m / (s* s);
         const Force lbf = 4.4482216 * N;
         const Force oz = lbf / 16;
         const Force ounce = oz;
         const Energy J = 1 * N * m;
-        const Energy cal = 4.1868*J;
-        const Energy kcal = kilo*cal;
-        const Energy eV = 1.6021765e-19*J;
-        const Energy keV = kilo*eV;
-        const Energy MeV = mega*eV;
-        const Energy GeV = giga*eV;
-        const Energy btu = 1055.0559*J;
+        const Energy cal = 4.1868 * J;
+        const Energy kcal = kilo * cal;
+        const Energy eV = 1.6021765e-19 * J;
+        const Energy keV = kilo * eV;
+        const Energy MeV = mega * eV;
+        const Energy GeV = giga * eV;
+        const Energy btu = 1055.0559 * J;
         const Power W = 1 * J / s;
         const Current A = 1;
-        const Current MA = mega*A;
-        const Current kA = kilo*A;
-        const Current mA = milli*A;
-        const Current uA = micro*A;
-        const Current nA = nano*A;
-        const Current pA = pico*A;
-        const Charge C = 1*A*s;
+        const Current MA = mega * A;
+        const Current kA = kilo * A;
+        const Current mA = milli * A;
+        const Current uA = micro * A;
+        const Current nA = nano * A;
+        const Current pA = pico * A;
+        const Charge C = 1 * A * s;
         const Voltage V = 1 * J / C;
-        const Resistance ohm = 1 * V/A;
+        const Resistance ohm = 1 * V / A;
         const Conductance S = 1 / ohm;
         const Capacitance F = 1 * C / V;
-        const Capacitance pF = pico*F;
-        const Capacitance nF = nano*F;
-        const Capacitance uF = micro*F;
-        const Capacitance mF = milli*F;
+        const Capacitance pF = pico * F;
+        const Capacitance nF = nano * F;
+        const Capacitance uF = micro * F;
+        const Capacitance mF = milli * F;
         const Pressure Pa = 1;
         const Pressure kPa = 1e3 * Pa;
         const Pressure bar = Pa * 100000;
@@ -458,8 +461,8 @@ namespace rip
         const Temperature degF = 5 / 9 * K;
         const Acceleration AccelerationOfGravity = 9.80665 * m / (s* s);
         // const Density DensityOfWater = 1*g/cc;
-        const Velocity SpeedOfLight = 2.9979246e8*m/s;
-        const Velocity SpeedOfSound = 331.46*m/s;
+        const Velocity SpeedOfLight = 2.9979246e8 * m / s;
+        const Velocity SpeedOfSound = 331.46 * m / s;
 
         const Unitless none = 1;
 
