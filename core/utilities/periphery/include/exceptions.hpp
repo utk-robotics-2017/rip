@@ -30,6 +30,11 @@ namespace rip
              * @brief Brief description of exception
              */
             NEW_EX(ExampleName);
+            /**
+             * @class SerialOpenFail
+             * @param SerialOpenFail serial fails to open
+             */
+            NEW_EX(SerialOpenFail);
     }
 }
 
