@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 
-cd external/g2o
+pushd external/g2o
 mkdir build
 cd build
 cmake ..
 make -j4
 make install
+popd
