@@ -41,8 +41,20 @@ namespace rip
             void open(std::string device, unsigned int baudrate, unsigned int databits,
             serial_parity_t parity, unsigned int stopbits,
             bool xonxoff, bool rtscts);
+            /**
+             * @brief Reads len number of bytes via serial
+             * @param  len        number of bytes to read
+             * @param  timeout_ms length of timeout period in ms
+             * @return            vector of bytes
+             */
+            std::vector<uint8_t> read(size_t len, int timeout_ms);
+            /**
+             * @brief writes data
+             * @param data vector of bytes to be written
+             */
+            void write(std::vector<uint8_t> data);
         private:
-            serial_t serial;
+            serial_t m_serial;
         }
     }
 }
