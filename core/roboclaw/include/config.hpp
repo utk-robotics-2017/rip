@@ -21,6 +21,7 @@
 #define CONFIG_HPP
 
 #include <stdint.h>
+#include "exceptions.hpp"
 
 namespace rip
 {
@@ -143,8 +144,13 @@ namespace rip
                  * @param config
                  */
                 void set(uint16_t config);
+                /**
+                 * @brief Get the config
+                 * @param n/a
+                 */
+                 uint16_t get() const;
             private:
-                uint16_t m_config;
+                uint16_t m_config=0x80A7;
             };
         }
     }
