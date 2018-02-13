@@ -20,6 +20,8 @@
 
 #include "roboclaw.hpp"
 
+#include <cmath>
+
 namespace rip
 {
     namespace roboclaw
@@ -227,7 +229,7 @@ namespace rip
         units::Distance Roboclaw::readEncoder(Motor motor)
         {
             int32_t ticks = readEncoderRaw(motor);
-            return (static_cast<double>(ticks) / m_ticks_per_rev) * m_wheel_radius() * (units::pi * 2);
+            return (static_cast<double>(ticks) / m_ticks_per_rev) * m_wheel_radius() * (M_PI * 2);
         }
 
         std::array<units::Distance, 2> Roboclaw::readEncoders()
@@ -258,7 +260,7 @@ namespace rip
 
         void Roboclaw::setEncoder(Motor motor, units::Distance d)
         {
-            setEncoderRaw(motor, d.to(units::mm) * m_ticks_per_rev / m_wheel_radius.to(units::mm) / (units::pi * 2));
+            setEncoderRaw(motor, d.to(units::mm) * m_ticks_per_rev / m_wheel_radius.to(units::mm) / (M_PI * 2));
         }
 
         int32_t Roboclaw::readEncoderVelocityRaw(Motor motor)
@@ -288,7 +290,7 @@ namespace rip
 
         units::Velocity Roboclaw::readEncoderVelocity(Motor motor)
         {
-            return static_cast<double>(readEncoderVelocityRaw(motor)) / m_ticks_per_rev * m_wheel_radius() * (units::pi * 2);
+            return static_cast<double>(readEncoderVelocityRaw(motor)) / m_ticks_per_rev * m_wheel_radius() * (M_PI * 2);
         }
 
         std::array<int32_t, 2> Roboclaw::readEncodersVelocityRaw()
@@ -304,8 +306,8 @@ namespace rip
         {
             std::array<int32_t, 2> ticks = readEncodersVelocityRaw();
             std::array<units::Velocity, 2> rv;
-            rv[0] = ticks[0] / m_ticks_per_rev * m_wheel_radius() * (units::pi * 2);
-            rv[1] = ticks[1] / m_ticks_per_rev * m_wheel_radius() * (units::pi * 2);
+            rv[0] = ticks[0] / m_ticks_per_rev * m_wheel_radius() * (M_PI * 2);
+            rv[1] = ticks[1] / m_ticks_per_rev * m_wheel_radius() * (M_PI * 2);
             return rv;
         }
 
@@ -507,7 +509,7 @@ namespace rip
                             cmd = Command::kM2Speed; //!< 36
                             break;
                     }
-                    speed = static_cast<int32_t>((*dynamics.getSpeed() / (m_wheel_radius * units::pi * 2)).to(1 / units::s) * m_ticks_per_rev);
+                    speed = static_cast<int32_t>((*dynamics.getSpeed() / (m_wheel_radius * M_PI * 2)).to(1 / units::s) * m_ticks_per_rev);
                     writeN(cmd, speed);
                     return;
                 case MotorDynamics::DType::kSpeedAccel:
@@ -522,8 +524,8 @@ namespace rip
                             cmd = Command::kM2SpeedAccel; //!< 39
                             break;
                     }
-                    speed = static_cast<int32_t>((*dynamics.getSpeed() / (m_wheel_radius * units::pi * 2)).to(1 / units::s) * m_ticks_per_rev);
-                    accel = static_cast<uint32_t>((*dynamics.getAcceleration() / (m_wheel_radius * units::pi * 2)).to(1 / (units::s * units::s)) * m_ticks_per_rev);
+                    speed = static_cast<int32_t>((*dynamics.getSpeed() / (m_wheel_radius * M_PI * 2)).to(1 / units::s) * m_ticks_per_rev);
+                    accel = static_cast<uint32_t>((*dynamics.getAcceleration() / (m_wheel_radius * M_PI * 2)).to(1 / (units::s * units::s)) * m_ticks_per_rev);
                     writeN(cmd, accel, speed);
                     break;
                 case MotorDynamics::DType::kSpeedDist:
@@ -538,8 +540,8 @@ namespace rip
                             cmd = Command::kM2SpeedDist; //!< 42
                             break;
                     }
-                    speed = static_cast<int32_t>((*dynamics.getSpeed() / (m_wheel_radius * units::pi * 2)).to(1 / units::s) * m_ticks_per_rev);
-                    dist = static_cast<uint32_t>((*dynamics.getDistance() / (m_wheel_radius * units::pi * 2)).to(units::none) * m_ticks_per_rev);
+                    speed = static_cast<int32_t>((*dynamics.getSpeed() / (m_wheel_radius * M_PI * 2)).to(1 / units::s) * m_ticks_per_rev);
+                    dist = static_cast<uint32_t>((*dynamics.getDistance() / (m_wheel_radius * M_PI * 2)).to(units::none) * m_ticks_per_rev);
                     // std::cout << "Debugging: dist raw value " << dist << std::endl;
                     writeN(cmd, speed, dist, static_cast<uint8_t>(respectBuffer));
                     break;

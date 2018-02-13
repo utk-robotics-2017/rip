@@ -4,6 +4,7 @@
 #include <ostream>
 #include <sstream>
 #include <string>
+#include <cmath>
 
 #include <json.hpp>
 
@@ -377,6 +378,8 @@ namespace rip
 
         typedef Units<0, 0, 0, 0, 0, 0> Unitless;
 
+
+
         // Unit constants
         const NT tera = 1e12;
         const NT giga = 1e9;
@@ -408,10 +411,10 @@ namespace rip
         const Area ft2 = 1 * ft * ft;
         const Angle radian = 1;
         const Angle rad = 1;
+        const Angle pi = M_PI * rad;
         const Angle deg = 1.74532925e-2 * rad;
         const Angle degree = deg;
         const Angle degrees = deg;
-        const Angle pi = 3.14159265358 * rad;
         const Angle rev = 2 * pi;
         const Mass kg = 1;
         const Mass g = milli * kg;
