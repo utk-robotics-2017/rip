@@ -1,6 +1,4 @@
 #!/usr/bin/env bash
-./travis/compile_g2o.sh
-
 set -e
 mkdir build
 cd build
