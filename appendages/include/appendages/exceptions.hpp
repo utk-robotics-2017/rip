@@ -19,7 +19,7 @@
  */
 #ifndef EXCEPTIONS_HPP
 #define EXCEPTIONS_HPP
-#include <exception_base.hpp>
+#include <misc/exception_base.hpp>
 
 namespace rip
 {

@@ -3,8 +3,6 @@
 #include <fmt/format.h>
 #include "appendages/exceptions.hpp"
 
-using namespace rip::utilities;
-
 namespace rip
 {
     namespace appendages
@@ -38,7 +36,7 @@ namespace rip
             return std::make_shared<cmdmessenger::Command>(command_key, command_map.find(command_key)->second, parameter_string);
         }
 
-        Appendage::Appendage(const nlohmann::json& config, std::shared_ptr<utilities::cmdmessenger::Device> device)
+        Appendage::Appendage(const nlohmann::json& config, std::shared_ptr<cmdmessenger::Device> device)
             : m_device(device)
         {
 
@@ -54,7 +52,7 @@ namespace rip
             }
             m_label = config["label"];
 
-            if(config.find("id") == config.end())
+            if (config.find("id") == config.end())
             {
                 throw AppendageWithId(fmt::format("appendage missing id"));
             }

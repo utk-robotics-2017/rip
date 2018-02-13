@@ -2,67 +2,47 @@
 
 namespace rip
 {
-    namespace core
+    namespace framework
     {
-        namespace framework
+        ParallelAction::ParallelAction(const std::vector<std::shared_ptr<Action> >& actions)
+            : m_actions(actions)
+        {}
+
+        bool ParallelAction::isFinished()
         {
-            ParallelAction::ParallelAction(const std::vector<std::shared_ptr<Action> >& actions)
-                : m_actions(actions)
-            {}
-
-            bool ParallelAction::isFinished()
+            for (std::shared_ptr<Action> action : m_actions)
             {
-                for (std::shared_ptr<Action> action : m_actions)
+                if (!action->isFinished())
                 {
-                    if (!action->isFinished())
-                    {
-                        return false;
-                    }
-                }
-                return true;
-            }
-
-            void ParallelAction::update()
-            {
-                for (std::shared_ptr<Action> action : m_actions)
-                {
-                    action->update();
+                    return false;
                 }
             }
+            return true;
+        }
 
-            void ParallelAction::setup()
+        void ParallelAction::update(nlohmann::json& state)
+        {
+            for (std::shared_ptr<Action> action : m_actions)
             {
-                for (std::shared_ptr<Action> action : m_actions)
-                {
-                    action->setup();
-                }
+                action->update(state);
             }
+        }
 
-            void ParallelAction::teardown()
+        void ParallelAction::setup(nlohmann::json& state)
+        {
+            for (std::shared_ptr<Action> action : m_actions)
             {
-                for (std::shared_ptr<Action> action : m_actions)
-                {
-                    action->teardown();
-                }
+                action->setup(state);
             }
+        }
 
-            nlohmann::json ParallelAction::save() const
+        void ParallelAction::teardown(nlohmann::json& state)
+        {
+            for (std::shared_ptr<Action> action : m_actions)
             {
-                nlohmann::json j;
-                for (std::shared_ptr<Action> action : m_actions)
-                {
-                    j.push_back(action->save());
-                }
-                return j;
-            }
-
-            void ParallelAction::restore(const nlohmann::json& state)
-            {
-                for (int i = 0, end = m_actions.size(); i < end; i++)
-                {
-                    m_actions[i]->restore(state[i]);
-                }
+                action->teardown(state);
             }
         }
     }
+
 }

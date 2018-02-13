@@ -25,11 +25,12 @@ namespace rip
             // the user to easily get at the internal value.
             NT operator()() const
             {
-#ifndef UNITS_FUNC
+#if UNITS_FUNC
 #warning("This function returns the internal value for the units class. Only use if this is exactly what you want.")
 #endif
                 return value;
             }
+#define UNITS_FUNC true
 
             // Helper function to get a text representation of the
             // object's dimensions.  It is static because the
@@ -361,8 +362,8 @@ namespace rip
         typedef Units < 0, - 1, 0, 0, 0, 1 > AngularVelocity;
         typedef Units < 0, - 2, 0, 0, 0, 1 > AngularAcceleration;
         typedef Units < 1, -2, 1, 0, 0, 0 > Force;
-        typedef Units<0,-1,0,0,0,0> Frequency;
-        typedef Units<-1,-2,1,0,0,0> Pressure;
+        typedef Units < 0, -1, 0, 0, 0, 0 > Frequency;
+        typedef Units < -1, -2, 1, 0, 0, 0 > Pressure;
         typedef Units < 2, -2, 1, 0, 0, 0 > Torque;
         typedef Units < 1, -2, 1, 0, 0, 0 > Weight;
         typedef Units < 2, -2, 1, 0, 0, 0 > Energy;
@@ -454,7 +455,7 @@ namespace rip
         const Pressure kPa = 1e3 * Pa;
         const Pressure bar = Pa * 100000;
         const Pressure millibar = 1e-3 * bar;
-        const Pressure psi = lbf/(inch*inch);
+        const Pressure psi = lbf / (inch* inch);
         const Pressure atm = 101325 * Pa;
         const Temperature K = 1;
         const Temperature degC = 1 * K;
@@ -468,6 +469,8 @@ namespace rip
 
         double cos(const Angle& lhs);
         double sin(const Angle& lhs);
+#undef UNITS_FUNC
+#define UNITS_FUNC false
     }
 }
 #endif // UNITS_HPP

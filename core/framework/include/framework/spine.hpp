@@ -29,7 +29,7 @@
 #include <appendages/appendage.hpp>
 #include <cmd_messenger/device.hpp>
 
-#include "exceptions.hpp"
+#include "framework/exceptions.hpp"
 
 namespace rip
 {
@@ -97,7 +97,7 @@ namespace rip
              * @exception FileNotFound Thrown if the config file cannot be found
              * @exception IncorrectConfig Thrown if the config has incorrect information in it
              */
-            void loadConfig(std::shared_ptr<utilities::cmdmessenger::Device> device, const std::string& path);
+            void loadConfig(std::shared_ptr<cmdmessenger::Device> device, const std::string& path);
 
             /**
              * @brief Checks if possible to load a device
@@ -108,7 +108,7 @@ namespace rip
              */
             bool canLoadDevice(const std::string& arduino_gen_folder, const std::string& device_name) const;
 
-            std::map< std::string, std::shared_ptr<utilities::cmdmessenger::Device> > m_devices;
+            std::map< std::string, std::shared_ptr<cmdmessenger::Device> > m_devices;
             std::map< std::string, std::shared_ptr<appendages::Appendage> > m_appendages;
 
         }; // class Spine
