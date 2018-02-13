@@ -104,12 +104,11 @@ namespace rip
                     tcflush(this->fd, TCOFLUSH);
                 }
 
-                void write(char *data, int length)
+                virtual void write(char *data, int length)
                 {
                     int n_written = 0, spot = 0;
                     do
                     {
-
                         n_written = ::write(this->fd, &data[spot], length);
                         if(n_written > 0)
                             spot += n_written;
@@ -123,13 +122,12 @@ namespace rip
                     return bytes_avail;
                 }
 
-                int read(char *data, int size)
+                void int read(char *data, int size)
                 {
                     int n = 0, loc = 0;
                     char buf = '\0';
                     memset(data, '\0', size);
                     err = 0;
-
                     do
                     {
                         n = ::read(this->fd, &buf, 1);
@@ -158,7 +156,8 @@ namespace rip
                         //TODO: replace this garbage serial library
                         std::cout << "Error reading: " << strerror(errno) << std::endl;
                     }
-                    else if(n == 0) {
+                    else if(n == 0)
+                    {
                         std::cout << "Read nothing!" << std::endl;
                     }
                     else

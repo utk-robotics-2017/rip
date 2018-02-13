@@ -92,7 +92,8 @@ namespace rip
                 signal_transmit_integration_control = true;
             }
 
-            void SerialIO::dispatchStreamResponse(IMUProtocol::StreamResponse& response) {
+            void SerialIO::dispatchStreamResponse(IMUProtocol::StreamResponse& response)
+            {
                 board_state.cal_status =(uint8_t)(response.flags & NAV6_FLAG_MASK_CALIBRATION_STATE);
                 board_state.capability_flags =(int16_t)(response.flags & ~NAV6_FLAG_MASK_CALIBRATION_STATE);
                 board_state.op_status = 0x04; /* TODO:  Create a symbol for this */
@@ -260,7 +261,6 @@ namespace rip
                             }
                         }
 
-
                         if(!bstop &&(remainder_bytes == 0) &&(serial_port->getBytesReceived() < 1))
                         {
                             //usleep(1000000/update_rate_hz);
@@ -268,6 +268,7 @@ namespace rip
                         }
 
                         int packets_received = 0;
+                        //read, overwritten in unit testing
                         int bytes_read = serial_port->read(received_data, sizeof(received_data));
                         byte_count += bytes_read;
 
@@ -312,8 +313,7 @@ namespace rip
                                             /* This binary packet contains an embedded     */
                                             /* end-of-line character.  Continue to receive */
                                             /* more data until entire packet is received.  */
-                                            int additional_received_data_length =
-                                                    serial_port->read(additional_received_data,sizeof(additional_received_data));
+                                            int additional_received_data_length = serial_port->read(additional_received_data,sizeof(additional_received_data));
                                             byte_count += additional_received_data_length;
 
                                             /* Resize array to hold existing and new data */

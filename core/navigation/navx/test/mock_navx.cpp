@@ -10,11 +10,7 @@ namespace rip
         {
             namespace mocks
             {
-                class MockRoboclaw
-                {
-                public:
-                    
-                };
+                
             }
         }
     }

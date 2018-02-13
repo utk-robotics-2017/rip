@@ -14,6 +14,7 @@ namespace rip
                 {
                 public:
                     //void setResponse();
+                    
                 private:
                     //m_response;
                 }

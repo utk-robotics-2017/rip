@@ -129,7 +129,7 @@ namespace rip
                 }
                 TEST(AHRS, getRequestedUpdateRate)
                 {
-                    
+
                 }
 
                 /* BOOLS */
@@ -175,10 +175,11 @@ namespace rip
                 {
 
                 }
-                TEST(resetDisplacement)TEST(AHRS, getCompassHeading)
+                TEST(resetDisplacement)
                 {
 
                 }
+                TEST(AHRS, getCompassHeading)
                 {
 
                 }
