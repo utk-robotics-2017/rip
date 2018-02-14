@@ -52,6 +52,21 @@ namespace rip
              * @param data vector of bytes to be written
              */
             void write(std::vector<uint8_t> data);
+            void Flush();
+            void Input_Waiting(unsigned int *count);
+            void Output_Waiting(unsigned int *count); 
+            void Input_Waiting(unsigned int *count);
+            void Close();
+            uint32_t Get_Baudrate();
+            unsigned int Get_Databits();
+            serial_parity_t Get_Parity();
+            unsigned int Get_Stopbits();
+            bool Get_Rtscts();
+            void Set_Baudrate(uint32_t baudrate);
+            void Set_Databits(unsigned int databits);
+            void Set_Parity(emun serial_parity parity);
+            void Set_xOnxOff(bool enabled);
+            void Set_Rtscts(bool enabled);
         private:
             serial_t m_serial;
         }

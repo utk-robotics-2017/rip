@@ -137,8 +137,33 @@ namespace rip
                 throw SerialSetFailure(serial_errmsg(m_serial));
             }
         }
-        void Serial::
-        
-
+        void Serial::Set_Databits(unsigned int databits)
+        {
+            if (serial_set_baudrate(m_serial, databits) < 0)
+            {
+                throw SerialSetFailure(serial_errmsg(m_serial));
+            }
+        }
+        void Serial::Set_Parity(emun serial_parity parity)
+        {
+            if (serial_set_parity(m_serial, parity) < 0)
+            {
+                throw SerialSetFailure(serial_errmsg(m_serial));
+            }
+        }
+        void Serial::Set_xOnxOff(bool enabled)
+        {
+            if (serial_set_xonxoff(m_serial, enabled) < 0)
+            {
+                throw SerialSetFailure(serial_errmsg(m_serial));
+            }
+        }
+        void Serial::Set_Rtscts(bool enabled)
+        {
+            if (serial_set_rtscts(m_serial, enabled) < 0)
+            {
+                throw SerialSetFailure(serial_errmsg(m_serial));
+            }
+        }
     }
 }

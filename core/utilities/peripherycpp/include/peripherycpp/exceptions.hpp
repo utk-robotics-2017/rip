@@ -27,42 +27,42 @@ namespace rip
     {
             /**
              * @class ExampleName
-             * @brief Brief description of exception
+             * @brief Brief description of exception.
              */
             NEW_EX(ExampleName);
             /**
              * @class SerialOpenFail
-             * @param SerialOpenFail serial fails to open
+             * @param SerialOpenFail Serial fails to open.
              */
             NEW_EX(SerialOpenFail);
             /**
              * @class SerialReadFailure
-             * @param SerialReadFailure failure to read bytes
+             * @param SerialReadFailure Failure to read bytes.
              */
             NEW_EX(SerialReadFailure);
             /**
              * @class SerialWriteFailure
-             * @param SerialWriteFailure serial writing fails
+             * @param SerialWriteFailure Serial writing fails.
              */
             NEW_EX(SerialWriteFailure);
             /**
              * @class SerialFlushFailure
-             * @param SerialFlushFailure serial fails to flush
+             * @param SerialFlushFailure Serial fails to flush.
              */
             NEW_EX(SerialFlushFailure);
             /**
              * @class SerialCloseFailure
-             * @param SerialCloseFailure serial fails to close
+             * @param SerialCloseFailure Serial fails to close.
              */
             NEW_EX(SerialCloseFailure);
             /**
              * @class SerialGetFailure
-             * @param SerialGetFailure failed to get data from serial struct
+             * @param SerialGetFailure Failed to get data from serial struct.
              */ 
             NEW_EX(SerialGetFailure);
             /**
              * @class SerialSetFailure
-             * @param SerialSetFailure failed to set data in serial struct
+             * @param SerialSetFailure Failed to set data in serial struct.
              */
             NEW_EX(SerialSetFailure);
     }
