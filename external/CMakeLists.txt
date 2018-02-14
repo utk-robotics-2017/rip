@@ -14,7 +14,6 @@ add_subdirectory(clipper)
 add_subdirectory(stp)
 add_subdirectory(serial)
 add_subdirectory(optional-lite)
-add_subdirectory(g2o)
 
 # custom
 message("Building custom addons")

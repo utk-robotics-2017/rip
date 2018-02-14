@@ -1,25 +1,21 @@
 cmake_minimum_required(VERSION 3.1)
 project(roboclaw)
+message("Building Roboclaw")
 
 file(GLOB_RECURSE ${PROJECT_NAME}_SOURCES src/*.cpp)
 add_library(${PROJECT_NAME} ${${PROJECT_NAME}_SOURCES})
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
-if(ENABLE_TESTING)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage")
-endif()
 target_include_directories(${PROJECT_NAME} PUBLIC include)
-target_link_libraries(${PROJECT_NAME} periphery)
-target_link_libraries(${PROJECT_NAME} json units fmt misc)
+target_link_libraries(${PROJECT_NAME} periphery json units fmt misc)
+
+
 if(ENABLE_TESTING)
-    message(Building roboclaw diag)
     file(GLOB_RECURSE ${PROJECT_NAME}_DIAG_SOURCES "diag/*.cpp")
     add_executable(${PROJECT_NAME}_diag ${${PROJECT_NAME}_DIAG_SOURCES})
     set_property(TARGET ${PROJECT_NAME}_diag PROPERTY CXX_STANDARD 11)
     target_link_libraries(${PROJECT_NAME}_diag ${PROJECT_NAME})
     target_link_libraries(${PROJECT_NAME}_diag periphery units)
-endif()
 
-if(ENABLE_TESTING)
     # Get test source files and test data files
     file(GLOB_RECURSE ${PROJECT_NAME}_TEST_SOURCES "test/*.cpp")
     file(GLOB_RECURSE ${PROJECT_NAME}_TEST_DATA "test/data/*")
