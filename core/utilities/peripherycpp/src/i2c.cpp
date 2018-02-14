@@ -1,6 +1,7 @@
 #include <string>
 #include <vector>
 #include "peripherycpp/i2c.hpp"
+#include "peripherycpp/exceptions.hpp"
 
 #define EEPROM_I2C_ADDR 0x50
 
@@ -14,7 +15,14 @@ namespace rip
         {
             const char *cpath = path.c_str(); 
             int err_code = i2c_open(&i2c, cpath);
-            // Add error checking later.
+            switch(err_code)
+            {
+                case -1: throw I2cArgError(i2c_errmsg(&i2c)); break;
+                case -2: throw I2cOpenError(i2c_errmsg(&i2c)); break;
+                case -3: throw I2cQuerySupportError(i2c_errmsg(&i2c)); break;
+                case -4: throw I2cNotSupportedError(i2c_errmsg(&i2c)); break;
+                default: break;
+            }
             return;
         } 
 
@@ -35,8 +43,7 @@ namespace rip
              */
             if (msg_data.size() != count || flags.size() != count)
             {
-                // Add error throw later
-                return;
+                throw I2cArgError("msg_data and flags must be the same size.");
             }
             struct i2c_msg msgs[count];
             uint8_t *data;
@@ -55,14 +62,24 @@ namespace rip
                 }
             }
             int err_code = i2c_transfer(&i2c, msgs, count);
-            // Add additional error checking later.
+            switch(err_code)
+            {
+                case -1: throw I2cArgError(i2c_errmsg(&i2c)); break;
+                case -5: throw I2cTransferError(i2c_errmsg(&i2c)); break;
+                default: break;
+            }
             return;
         }
 
         void I2c::close()
         {
             int err_code = 12c_open(&i2c);
-            // Add error checking later.
+            switch(err_code)
+            {
+                case -1: throw I2cArgError(i2c_errmsg(&i2c)); break;
+                case -6: throw I2cCloseError(i2c_errmsg(&i2c)); break;
+                default: break;
+            }
             return;
         }
 
@@ -75,8 +92,7 @@ namespace rip
         std::string I2c::toString(size_t len)
         {
             char *str;
-            int err_code = i2c_tostring(&i2c, str, len);
-            // Add error checking later.
+            i2c_tostring(&i2c, str, len);
             std::string outstr = str;
             return outstr;
         }
