@@ -140,6 +140,61 @@ namespace rip
              * @param GpioGetEdgeError Error occured while getting the GPIO interrupt edge.
              */
             NEW_EX(GpioGetEdgeError);
+            /**
+             * @class MmioArgError
+             * @param MmioArgError Invalid arguments.
+             */
+            NEW_EX(MmioArgError);
+            /**
+             * @class MmioOpenError
+             * @param MmioOpenError Error occured while opening /dev/mem.
+             */
+            NEW_EX(MmioOpenError);
+            /**
+             * @class MmioMapError
+             * @param MmioMapError Error occured while mapping memory.
+             */
+            NEW_EX(MmioMapError);
+            /**
+             * @class MmioCloseError
+             * @param MmioCloseError Error occured while closing /dev/mem.
+             */
+            NEW_EX(MmioCloseError);
+            /**
+             * @class MmioUnmapError
+             * @param MmioUnmapError Error occured while unmapping memory.
+             */
+            NEW_EX(MmioUnmapError);
+            /**
+             * @class SpiArgError
+             * @param SpiArgError Invalid arguments.
+             */
+            NEW_EX(SpiArgError);
+            /**
+             * @class SpiOpenError
+             * @param SpiOpenError Error occured while opening SPI device.
+             */
+            NEW_EX(SpiOpenError);
+            /**
+             * @class SpiQueryError
+             * @param SpiQueryError Error occured while querying SPI device settings.
+             */
+            NEW_EX(SpiQueryError);
+            /**
+             * @class SpiConfigureError
+             * @param SpiConfigureError Error occured while configuring SPI device.
+             */
+            NEW_EX(SpiConfigureError);
+            /**
+             * @class SpiTransferError
+             * @param SpiTransferError Error occured during SPI transfer.
+             */
+            NEW_EX(SpiTransferError);
+            /**
+             * @class SpiCloseError
+             * @param SpiCloseError Error occured while closing SPI device.
+             */
+            NEW_EX(SpiCloseError);
     }
 }
 
