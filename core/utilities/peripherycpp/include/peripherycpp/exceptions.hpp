@@ -65,6 +65,36 @@ namespace rip
              * @param SerialSetFailure Failed to set data in serial struct.
              */
             NEW_EX(SerialSetFailure);
+            /**
+             * @class I2cArgError
+             * @param I2cArgError Invalid arguments.
+             */
+            NEW_EX(I2cArgError);
+            /**
+             * @class I2cOpenError
+             * @param I2cOpenError Error opening I2C device.
+             */
+            NEW_EX(I2cOpenError);
+            /**
+             * @class I2cQuerySupportError
+             * @param I2cQuerySupportError Error querying I2C support on I2C device.
+             */
+            NEW_EX(I2cQuerySupportError);
+            /**
+             * @class I2cNotSupportedError
+             * @param I2cNotSupportedError I2C not supported on this device.
+             */
+            NEW_EX(I2cNotSupportedError);
+            /**
+             * @class I2cTransferError
+             * @param I2cTransferError Error occured during I2C transfer.
+             */
+            NEW_EX(I2cTransferError);
+            /**
+             * @class I2cCloseError
+             * @param I2cCloseError Error closing the I2C device.
+             */
+            NEW_EX(I2cCloseError);
     }
 }
 
