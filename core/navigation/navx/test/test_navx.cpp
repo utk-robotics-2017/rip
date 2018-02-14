@@ -1,8 +1,10 @@
-#include "mock_navx.hpp"
-#include <exceptions.hpp>
 #include <memory>
 #include <gtest/gtest.h>
 
+#include <navx/exceptions.hpp>
+#include "mock_navx.hpp"
+
+#if 0
 namespace rip
 {
     namespace navigation
@@ -195,3 +197,4 @@ namespace rip
         }
     }
 }
+#endif

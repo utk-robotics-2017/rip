@@ -1,5 +1,5 @@
+#include <navx/ContinuousAngleTracker.h>
 
-#include <ContinuousAngleTracker.h>
 namespace rip
 {
     namespace navigation

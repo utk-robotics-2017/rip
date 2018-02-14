@@ -1,8 +1,10 @@
 //replace me with periphery?
-#include <SerialIO.h>
 #include <time.h>
 #include <unistd.h>
 #include <string>
+
+#include <navx/SerialIO.h>
+
 namespace rip
 {
     namespace navigation

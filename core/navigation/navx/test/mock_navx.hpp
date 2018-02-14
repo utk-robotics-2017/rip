@@ -1,6 +1,6 @@
 #ifndef MOCK_NAVX_HPP
 #define MOCK_NAVX_HPP
-#include <AHRS.h>
+#include <navx/navx.h>
 
 namespace rip
 {
@@ -10,16 +10,17 @@ namespace rip
         {
             namespace mocks
             {
-                class MockNavX : AHRS
+                class MockNavX : NavX
                 {
                 public:
                     //void setResponse();
                     
                 private:
                     //m_response;
-                }
+                };
             }
         }
     }
 }
+
 #endif //MOCK_NAVX_HPP
