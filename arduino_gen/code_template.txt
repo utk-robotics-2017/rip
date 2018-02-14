@@ -12,13 +12,6 @@ const char LED = 13;
 
 enum
 {{
-	kAcknowledge,
-	kError,
-	kUnknown,
-	kSetLed,
-	kPing,
-	kPingResult,
-	kPong,
 {command_enums}
 }};
 

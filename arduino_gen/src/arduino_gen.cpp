@@ -86,6 +86,7 @@ namespace rip
             }
 
             loadTemplates();
+            loadCommandEnums();
         }
 
         void ArduinoGen::generateOutput()
@@ -131,11 +132,9 @@ namespace rip
 
         void ArduinoGen::loadTemplates()
         {
-            // auto -> std::multimap<std::string, std::shared_ptr<Appendage>>::iterator
-            for(auto it = m_appendages.begin(), end = m_appendages.end(); it != end;
-                    it = m_appendages.upper_bound(it->first))
+            for (std::string type : get_mmap_keys(m_appendages))
             {
-                std::string type_file = it->first;
+                std::string type_file = type;
                 for(char& c : type_file)
                 {
                     if(c == ' ')
@@ -148,7 +147,7 @@ namespace rip
                     }
                 }
 
-                std::vector<std::shared_ptr<Appendage>> appendages = mmap_to_vector(m_appendages, it->first);
+                std::vector<std::shared_ptr<Appendage>> appendages = get_mmap_values_at_index(m_appendages, type);
 
                 tinyxml2::XMLDocument doc;
                 loadXmlFile(doc, fmt::format("{0}/xml/{1}.xml", m_appendage_data_folder, type_file), { "code", "setup", "loop" });
@@ -161,12 +160,39 @@ namespace rip
                         "AppendageTemplate xml files must have a root of appendage-template.");
                 }
 
-                m_appendage_templates.emplace_back(element, it->first, appendages);
+                m_appendage_templates.emplace_back(element, type, appendages);
             }
 
             sort(begin(m_appendage_templates), end(m_appendage_templates), [](AppendageTemplate a, AppendageTemplate b) {
                 return a.GetType() < b.GetType();
             });
+        }
+
+        void ArduinoGen::loadCommandEnums()
+        {
+            int cmd_idx = 0;
+
+            m_commands["kAcknowledge"] = cmd_idx++;
+            m_commands["kError"] = cmd_idx++;
+            m_commands["kUnknown"] = cmd_idx++;
+            m_commands["kSetLed"] = cmd_idx++;
+            m_commands["kPing"] = cmd_idx++;
+            m_commands["kPingResult"] = cmd_idx++;
+            m_commands["kPong"] = cmd_idx++;
+
+            for(const AppendageTemplate& at : m_appendage_templates)
+            {
+                for(const std::shared_ptr<Command>& cmd : at.GetCommands())
+                {
+                    m_commands[cmd->getId()] = cmd_idx++;
+
+                    std::string result_id = cmd->getResultId();
+                    if(result_id.size())
+                    {
+                        m_commands[result_id] = cmd_idx++;
+                    }
+                }
+            }
         }
 
         std::string ArduinoGen::getIncludes()
@@ -266,36 +292,23 @@ namespace rip
 
         std::string ArduinoGen::getCommandEnums()
         {
-            std::string rv = "";
+            std::map<int, std::string> sorted_commands;
 
-            m_commands["kAcknowledge"] = 0;
-            m_commands["kError"] = 1;
-            m_commands["kUnknown"] = 2;
-            m_commands["kSetLed"] = 3;
-            m_commands["kPing"] = 4;
-            m_commands["kPingResult"] = 5;
-            m_commands["kPong"] = 6;
-
-            int cmd_idx = 7;
-
-            for(const AppendageTemplate& at : m_appendage_templates)
+            // auto -> std::map<std::string, int>::iterator
+            for (auto it : m_commands)
             {
-                for(const std::shared_ptr<Command>& cmd : at.GetCommands())
-                {
-                    std::string cmd_id = cmd->getId();
-                    rv += fmt::format("\t{},\n", cmd_id);
-                    m_commands[cmd_id] = cmd_idx++;
-
-                    std::string result_id = cmd->getResultId();
-                    if(result_id.size())
-                    {
-                        rv += fmt::format("\t{},\n", result_id);
-                        m_commands[result_id] = cmd_idx++;
-                    }
-                }
+                sorted_commands.emplace(it.second, it.first);
             }
 
-            rv = rv.substr(0, rv.size() - 2); // Remove last comma
+            std::string rv = "";
+
+            for (auto it : sorted_commands)
+            {
+                rv += fmt::format("\t{},\n", it.second);
+            }
+
+            rv.pop_back(); // Remove last newline
+            rv.pop_back(); // Remove last comma
 
             return rv;
         }
@@ -341,8 +354,22 @@ namespace rip
 
         std::string ArduinoGen::getCoreConfig()
         {
-            // TODO: Implement
-            return "";
+            nlohmann::json config;
+
+            config["commands"] = m_commands;
+
+            config["appendages"] = nlohmann::json::array();
+            for(std::string type : get_mmap_keys(m_appendages))
+            {
+                std::vector<std::shared_ptr<Appendage>> appendages_of_type = get_mmap_values_at_index(m_appendages, type);
+
+                for (int i = 0; i < appendages_of_type.size(); i++)
+                {
+                    config["appendages"].emplace_back(appendages_of_type[i]->getCoreJson(i));
+                }
+            }
+
+            return config.dump(4);
         }
 
         std::string ArduinoGen::getUploadScript()

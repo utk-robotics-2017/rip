@@ -16,7 +16,7 @@ using Constructor = rip::arduinogen::Constructor;
 using AttributeException = rip::arduinogen::AttributeException;
 using ElementException = rip::arduinogen::ElementException;
 using rip::arduinogen::loadXmlFile;
-using rip::arduinogen::mmap_to_vector;
+using rip::arduinogen::get_mmap_values_at_index;
 
 namespace rip
 {
@@ -96,7 +96,7 @@ namespace rip
                 std::multimap<std::string, std::shared_ptr<Appendage>> appendage_map;
                 appendage_map.emplace(std::make_pair("A Type", std::make_shared<Appendage>(j, appendage_map, "", false)));
 
-                std::vector<std::shared_ptr<Appendage>> appendages = mmap_to_vector(appendage_map, "A Type");
+                std::vector<std::shared_ptr<Appendage>> appendages = get_mmap_values_at_index(appendage_map, "A Type");
 
                 ASSERT_EQ(constructor->toString(appendages),
                     "Type type [1] = {\n"
@@ -122,7 +122,7 @@ namespace rip
                 std::multimap< std::string, std::shared_ptr<Appendage> > appendage_map;
                 appendage_map.emplace(std::make_pair("A Type", std::make_shared<Appendage>(j, appendage_map, "", false)));
 
-                std::vector<std::shared_ptr<Appendage>> appendages = mmap_to_vector(appendage_map, "A Type");
+                std::vector<std::shared_ptr<Appendage>> appendages = get_mmap_values_at_index(appendage_map, "A Type");
 
                 ASSERT_EQ(constructor->toString(appendages),
                     "Type type [1] = {\n"
@@ -148,7 +148,7 @@ namespace rip
                 std::multimap< std::string, std::shared_ptr<Appendage> > appendage_map;
                 appendage_map.emplace(std::make_pair("A Type", std::make_shared<Appendage>(j, appendage_map, "", false)));
 
-                std::vector<std::shared_ptr<Appendage>> appendages = mmap_to_vector(appendage_map, "A Type");
+                std::vector<std::shared_ptr<Appendage>> appendages = get_mmap_values_at_index(appendage_map, "A Type");
 
                 ASSERT_EQ(constructor->toString(appendages),
                     "Type type [1] = {\n"
@@ -174,7 +174,7 @@ namespace rip
                 std::multimap< std::string, std::shared_ptr<Appendage> > appendage_map;
                 appendage_map.emplace(std::make_pair("A Type", std::make_shared<Appendage>(j, appendage_map, "", false)));
 
-                std::vector<std::shared_ptr<Appendage>> appendages = mmap_to_vector(appendage_map, "A Type");
+                std::vector<std::shared_ptr<Appendage>> appendages = get_mmap_values_at_index(appendage_map, "A Type");
 
                 ASSERT_EQ(appendages.size(), 1);
 
@@ -209,7 +209,7 @@ namespace rip
                 appendage_map.emplace(std::make_pair("abc Type", std::make_shared<Appendage>(j, appendage_map, "", false)));
                 appendage_map.emplace(std::make_pair("one more Type", std::make_shared<Appendage>(j, appendage_map, "", false)));
 
-                std::vector<std::shared_ptr<Appendage>> appendages = mmap_to_vector(appendage_map, "A Type");
+                std::vector<std::shared_ptr<Appendage>> appendages = get_mmap_values_at_index(appendage_map, "A Type");
 
                 ASSERT_EQ(appendages.size(), 1);
 
@@ -264,7 +264,7 @@ namespace rip
                 appendage_map.emplace(std::make_pair("abc Type", std::make_shared<Appendage>(j, appendage_map, "", false)));
                 appendage_map.emplace(std::make_pair("one more Type", std::make_shared<Appendage>(j, appendage_map, "", false)));
 
-                std::vector<std::shared_ptr<Appendage>> appendages = mmap_to_vector(appendage_map, "A Type");
+                std::vector<std::shared_ptr<Appendage>> appendages = get_mmap_values_at_index(appendage_map, "A Type");
 
                 ASSERT_EQ(appendages.size(), 4);
 
@@ -295,7 +295,7 @@ namespace rip
                 std::multimap<std::string, std::shared_ptr<Appendage>> appendage_map;
                 appendage_map.emplace(std::make_pair("A Type", std::make_shared<Appendage>(j, appendage_map, "", false)));
 
-                std::vector<std::shared_ptr<Appendage>> appendages = mmap_to_vector(appendage_map, "A Type");
+                std::vector<std::shared_ptr<Appendage>> appendages = get_mmap_values_at_index(appendage_map, "A Type");
 
                 ASSERT_EQ(constructor->toString(appendages),
                     "Type type [1] = {\n"
@@ -321,7 +321,7 @@ namespace rip
                 std::multimap<std::string, std::shared_ptr<Appendage>> appendage_map;
                 appendage_map.emplace(std::make_pair("A Type", std::make_shared<Appendage>(j, appendage_map, "", false)));
 
-                std::vector<std::shared_ptr<Appendage>> appendages = mmap_to_vector(appendage_map, "A Type");
+                std::vector<std::shared_ptr<Appendage>> appendages = get_mmap_values_at_index(appendage_map, "A Type");
 
                 ASSERT_EQ(constructor->toString(appendages),
                     "unsigned char pins [1] = {\n"

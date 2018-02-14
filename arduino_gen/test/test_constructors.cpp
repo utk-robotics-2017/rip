@@ -16,7 +16,7 @@ using Constructors = rip::arduinogen::Constructors;
 using AttributeException = rip::arduinogen::AttributeException;
 using ElementException = rip::arduinogen::ElementException;
 using rip::arduinogen::loadXmlFile;
-using rip::arduinogen::mmap_to_vector;
+using rip::arduinogen::get_mmap_values_at_index;
 
 namespace rip
 {
@@ -66,7 +66,7 @@ namespace rip
                 std::multimap<std::string, std::shared_ptr<Appendage>> appendage_map;
                 appendage_map.emplace(std::make_pair("A Type", std::make_shared<Appendage>(j, appendage_map, "", false)));
 
-                std::vector<std::shared_ptr<Appendage>> appendages = mmap_to_vector(appendage_map, "A Type");
+                std::vector<std::shared_ptr<Appendage>> appendages = get_mmap_values_at_index(appendage_map, "A Type");
 
                 ASSERT_EQ(constructors->toString(appendages),
                     ""
@@ -91,7 +91,7 @@ namespace rip
                 std::multimap<std::string, std::shared_ptr<Appendage>> appendage_map;
                 appendage_map.emplace(std::make_pair("A Type", std::make_shared<Appendage>(j, appendage_map, "", false)));
 
-                std::vector<std::shared_ptr<Appendage>> appendages = mmap_to_vector(appendage_map, "A Type");
+                std::vector<std::shared_ptr<Appendage>> appendages = get_mmap_values_at_index(appendage_map, "A Type");
 
                 ASSERT_EQ(constructors->toString(appendages),
                     "Type type [1] = {\n"
@@ -118,7 +118,7 @@ namespace rip
                 std::multimap<std::string, std::shared_ptr<Appendage>> appendage_map;
                 appendage_map.emplace(std::make_pair("A Type", std::make_shared<Appendage>(j, appendage_map, "", false)));
 
-                std::vector<std::shared_ptr<Appendage>> appendages = mmap_to_vector(appendage_map, "A Type");
+                std::vector<std::shared_ptr<Appendage>> appendages = get_mmap_values_at_index(appendage_map, "A Type");
 
                 ASSERT_EQ(constructors->toString(appendages),
                     "IntType intType [1] = {\n"

@@ -60,6 +60,11 @@ namespace rip
             void loadTemplates();
 
             /**
+             * TODO: Properly comment
+             */
+            void loadCommandEnums();
+
+            /**
              * @brief Returns the includes for the Arduino Code
              * @returns The includes for the Arduino Code
              */
@@ -173,6 +178,12 @@ namespace rip
             FRIEND_TEST(ArduinoGenTest, arduino_code_one_appendage);
             FRIEND_TEST(ArduinoGenTest, arduino_code_two_appendages_same);
             FRIEND_TEST(ArduinoGenTest, arduino_code_two_appendages_different);
+
+            FRIEND_TEST(ArduinoGenTest, get_core_config_no_appendages);
+            FRIEND_TEST(ArduinoGenTest, get_core_config_one_empty_appendage);
+            FRIEND_TEST(ArduinoGenTest, get_core_config_one_appendage);
+            FRIEND_TEST(ArduinoGenTest, get_core_config_two_appendages_same);
+            FRIEND_TEST(ArduinoGenTest, get_core_config_two_appendages_different);
 #endif
         };
     }

@@ -268,7 +268,13 @@ namespace rip
             RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/no_appendages.json", false));
 
             ASSERT_EQ(ag->getCommandEnums(),
-                ""
+                "\tkAcknowledge,\n"
+                "\tkError,\n"
+                "\tkUnknown,\n"
+                "\tkSetLed,\n"
+                "\tkPing,\n"
+                "\tkPingResult,\n"
+                "\tkPong"
             );
         }
 
@@ -279,7 +285,13 @@ namespace rip
             RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/one_empty_appendage.json", false));
 
             ASSERT_EQ(ag->getCommandEnums(),
-                ""
+                "\tkAcknowledge,\n"
+                "\tkError,\n"
+                "\tkUnknown,\n"
+                "\tkSetLed,\n"
+                "\tkPing,\n"
+                "\tkPingResult,\n"
+                "\tkPong"
             );
         }
 
@@ -290,6 +302,13 @@ namespace rip
             RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/one_appendage.json", false));
 
             ASSERT_EQ(ag->getCommandEnums(),
+                "\tkAcknowledge,\n"
+                "\tkError,\n"
+                "\tkUnknown,\n"
+                "\tkSetLed,\n"
+                "\tkPing,\n"
+                "\tkPingResult,\n"
+                "\tkPong,\n"
                 "\tkReadUltrasonic,\n"
                 "\tkReadUltrasonicResult"
             );
@@ -302,6 +321,13 @@ namespace rip
             RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/two_appendages_same.json", false));
 
             ASSERT_EQ(ag->getCommandEnums(),
+                "\tkAcknowledge,\n"
+                "\tkError,\n"
+                "\tkUnknown,\n"
+                "\tkSetLed,\n"
+                "\tkPing,\n"
+                "\tkPingResult,\n"
+                "\tkPong,\n"
                 "\tkReadUltrasonic,\n"
                 "\tkReadUltrasonicResult"
             );
@@ -314,6 +340,13 @@ namespace rip
             RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/two_appendages_different.json", false));
 
             ASSERT_EQ(ag->getCommandEnums(),
+                "\tkAcknowledge,\n"
+                "\tkError,\n"
+                "\tkUnknown,\n"
+                "\tkSetLed,\n"
+                "\tkPing,\n"
+                "\tkPingResult,\n"
+                "\tkPong,\n"
                 "\tkSetServo,\n"
                 "\tkReadUltrasonic,\n"
                 "\tkReadUltrasonicResult"
@@ -512,8 +545,7 @@ namespace rip
                 "\tkSetLed,\n"
                 "\tkPing,\n"
                 "\tkPingResult,\n"
-                "\tkPong,\n"
-                "\n"
+                "\tkPong\n"
                 "};\n"
                 "\n"
                 "void setup()\n"
@@ -608,8 +640,7 @@ namespace rip
                 "\tkSetLed,\n"
                 "\tkPing,\n"
                 "\tkPingResult,\n"
-                "\tkPong,\n"
-                "\n"
+                "\tkPong\n"
                 "};\n"
                 "\n"
                 "void setup()\n"
@@ -1039,6 +1070,157 @@ namespace rip
                 "\tcmdMessenger.sendCmdBinArg(rv);\n"
                 "\tcmdMessenger.sendCmdEnd();\n"
                 "}\n"
+            );
+        }
+
+        TEST_F(ArduinoGenTest, get_core_config_no_appendages)
+        {
+            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "/", "test/data/arduino_gen", true));
+
+            RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/no_appendages.json", false));
+
+            ASSERT_EQ(ag->getCoreConfig(),
+                "{\n"
+                "    \"appendages\": [],\n"
+                "    \"commands\": {\n"
+                "        \"kAcknowledge\": 0,\n"
+                "        \"kError\": 1,\n"
+                "        \"kPing\": 4,\n"
+                "        \"kPingResult\": 5,\n"
+                "        \"kPong\": 6,\n"
+                "        \"kSetLed\": 3,\n"
+                "        \"kUnknown\": 2\n"
+                "    }\n"
+                "}"
+            );
+        }
+
+        TEST_F(ArduinoGenTest, get_core_config_one_empty_appendage)
+        {
+            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "/", "test/data/arduino_gen", true));
+
+            RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/one_empty_appendage.json", false));
+
+            ASSERT_EQ(ag->getCoreConfig(),
+                "{\n"
+                "    \"appendages\": [\n"
+                "        {\n"
+                "            \"index\": 0,\n"
+                "            \"label\": \"Empty1\",\n"
+                "            \"type\": \"Empty Appendage\"\n"
+                "        }\n"
+                "    ],\n"
+                "    \"commands\": {\n"
+                "        \"kAcknowledge\": 0,\n"
+                "        \"kError\": 1,\n"
+                "        \"kPing\": 4,\n"
+                "        \"kPingResult\": 5,\n"
+                "        \"kPong\": 6,\n"
+                "        \"kSetLed\": 3,\n"
+                "        \"kUnknown\": 2\n"
+                "    }\n"
+                "}"
+            );
+        }
+
+        TEST_F(ArduinoGenTest, get_core_config_one_appendage)
+        {
+            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "/", "test/data/arduino_gen", true));
+
+            RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/one_appendage.json", false));
+
+            ASSERT_EQ(ag->getCoreConfig(),
+                "{\n"
+                "    \"appendages\": [\n"
+                "        {\n"
+                "            \"index\": 0,\n"
+                "            \"label\": \"Ultrasonic1\",\n"
+                "            \"type\": \"Ultrasonic\"\n"
+                "        }\n"
+                "    ],\n"
+                "    \"commands\": {\n"
+                "        \"kAcknowledge\": 0,\n"
+                "        \"kError\": 1,\n"
+                "        \"kPing\": 4,\n"
+                "        \"kPingResult\": 5,\n"
+                "        \"kPong\": 6,\n"
+                "        \"kReadUltrasonic\": 7,\n"
+                "        \"kReadUltrasonicResult\": 8,\n"
+                "        \"kSetLed\": 3,\n"
+                "        \"kUnknown\": 2\n"
+                "    }\n"
+                "}"
+            );
+        }
+
+        TEST_F(ArduinoGenTest, get_core_config_two_appendages_same)
+        {
+            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "/", "test/data/arduino_gen", true));
+
+            RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/two_appendages_same.json", false));
+
+            ASSERT_EQ(ag->getCoreConfig(),
+                "{\n"
+                "    \"appendages\": [\n"
+                "        {\n"
+                "            \"index\": 0,\n"
+                "            \"label\": \"Ultrasonic1\",\n"
+                "            \"type\": \"Ultrasonic\"\n"
+                "        },\n"
+                "        {\n"
+                "            \"index\": 1,\n"
+                "            \"label\": \"Ultrasonic2\",\n"
+                "            \"type\": \"Ultrasonic\"\n"
+                "        }\n"
+                "    ],\n"
+                "    \"commands\": {\n"
+                "        \"kAcknowledge\": 0,\n"
+                "        \"kError\": 1,\n"
+                "        \"kPing\": 4,\n"
+                "        \"kPingResult\": 5,\n"
+                "        \"kPong\": 6,\n"
+                "        \"kReadUltrasonic\": 7,\n"
+                "        \"kReadUltrasonicResult\": 8,\n"
+                "        \"kSetLed\": 3,\n"
+                "        \"kUnknown\": 2\n"
+                "    }\n"
+                "}"
+            );
+        }
+
+        TEST_F(ArduinoGenTest, get_core_config_two_appendages_different)
+        {
+            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "/", "test/data/arduino_gen", true));
+
+            RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/two_appendages_different.json", false));
+
+            ASSERT_EQ(ag->getCoreConfig(),
+                "{\n"
+                "    \"appendages\": [\n"
+                "        {\n"
+                "            \"index\": 0,\n"
+                "            \"label\": \"Servo1\",\n"
+                "            \"type\": \"Servo\"\n"
+                "        },\n"
+                "        {\n"
+                "            \"index\": 0,\n"
+                "            \"label\": \"Ultrasonic1\",\n"
+                "            \"type\": \"Ultrasonic\"\n"
+                "        }\n"
+                "    ],\n"
+                "    \"commands\": {\n"
+                "        \"kAcknowledge\": 0,\n"
+                "        \"kError\": 1,\n"
+                "        \"kPing\": 4,\n"
+                "        \"kPingResult\": 5,\n"
+                "        \"kPong\": 6,\n"
+                "        \"kReadUltrasonic\": 8,\n"
+                "        \"kReadUltrasonicResult\": 9,\n"
+                "        \"kSetLed\": 3,\n"
+                "        \"kSetServo\": 7,\n"
+                "        \"kUnknown\": 2\n"
+                "    }\n"
+                "}"
             );
         }
     }
