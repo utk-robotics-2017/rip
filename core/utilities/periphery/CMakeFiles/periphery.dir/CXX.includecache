@@ -1,0 +1,18 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/dd/files/documents/UTK Robotics/rip/core/utilities/periphery/src/gpio.cpp
+
+/home/dd/files/documents/UTK Robotics/rip/core/utilities/periphery/src/i2c.cpp
+
+/home/dd/files/documents/UTK Robotics/rip/core/utilities/periphery/src/mmio.cpp
+
+/home/dd/files/documents/UTK Robotics/rip/core/utilities/periphery/src/serial.cpp
+
+/home/dd/files/documents/UTK Robotics/rip/core/utilities/periphery/src/spi.cpp
+

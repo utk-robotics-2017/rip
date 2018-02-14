@@ -1,0 +1,3 @@
+/home/dd/files/documents/UTK Robotics/rip/core/utilities/periphery/CMakeFiles/rebuild_cache.dir
+/home/dd/files/documents/UTK Robotics/rip/core/utilities/periphery/CMakeFiles/edit_cache.dir
+/home/dd/files/documents/UTK Robotics/rip/core/utilities/periphery/CMakeFiles/periphery.dir

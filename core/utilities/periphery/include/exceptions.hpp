@@ -45,6 +45,26 @@ namespace rip
              * @param SerialWriteFailure serial writing fails
              */
             NEW_EX(SerialWriteFailure);
+            /**
+             * @class SerialFlushFailure
+             * @param SerialFlushFailure serial fails to flush
+             */
+            NEW_EX(SerialFlushFailure);
+            /**
+             * @class SerialCloseFailure
+             * @param SerialCloseFailure serial fails to close
+             */
+            NEW_EX(SerialCloseFailure);
+            /**
+             * @class SerialGetFailure
+             * @param SerialGetFailure failed to get data from serial struct
+             */ 
+            NEW_EX(SerialGetFailure);
+            /**
+             * @class SerialSetFailure
+             * @param SerialSetFailure failed to set data in serial struct
+             */
+            NEW_EX(SerialSetFailure);
     }
 }
 
