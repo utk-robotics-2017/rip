@@ -72,12 +72,12 @@ namespace rip
             NEW_EX(I2cArgError);
             /**
              * @class I2cOpenError
-             * @param I2cOpenError Error opening I2C device.
+             * @param I2cOpenError Error occured while opening I2C device.
              */
             NEW_EX(I2cOpenError);
             /**
              * @class I2cQuerySupportError
-             * @param I2cQuerySupportError Error querying I2C support on I2C device.
+             * @param I2cQuerySupportError Error occured while querying I2C support on I2C device.
              */
             NEW_EX(I2cQuerySupportError);
             /**
@@ -92,9 +92,54 @@ namespace rip
             NEW_EX(I2cTransferError);
             /**
              * @class I2cCloseError
-             * @param I2cCloseError Error closing the I2C device.
+             * @param I2cCloseError Error occured while closing the I2C device.
              */
             NEW_EX(I2cCloseError);
+            /**
+             * @class GpioArgError
+             * @param GpioArgError Invalid arguments.
+             */
+            NEW_EX(GpioArgError);
+            /**
+             * @class GpioExportError
+             * @param GpioExportError Error occured during GPIO export.
+             */
+            NEW_EX(GpioExportError);
+            /**
+             * @class GpioOpenError
+             * @param GpioOpenError Error occured while opening the GPIO value.
+             */
+            NEW_EX(GpioOpenError);
+            /**
+             * @class GpioIoError
+             * @param GpioIoError Error occured while reading/writing the GPIO value.
+             */
+            NEW_EX(GpioIoError);
+            /**
+             * @class GpioCloseError
+             * @param GpioCloseError Error occured while closing the GPIO value.
+             */
+            NEW_EX(GpioCloseError);
+            /**
+             * @class GpioSetDirectionError
+             * @param GpioSetDirectionError Error occured while setting the GPIO direction.
+             */
+            NEW_EX(GpioSetDirectionError);
+            /**
+             * @class GpioGetDirectionError
+             * @param GpioGetDirectionError Error occured while getting the GPIO direction.
+             */
+            NEW_EX(GpioGetDirectionError);
+            /**
+             * @class GpioSetEdgeError
+             * @param GpioSetEdgeError Error occured while setting the GPIO interrupt edge.
+             */
+            NEW_EX(GpioSetEdgeError);
+            /**
+             * @class GpioGetEdgeError
+             * @param GpioGetEdgeError Error occured while getting the GPIO interrupt edge.
+             */
+            NEW_EX(GpioGetEdgeError);
     }
 }
 
