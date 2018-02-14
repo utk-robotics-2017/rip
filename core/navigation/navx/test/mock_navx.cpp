@@ -1,6 +1,6 @@
 
 #include "mock_navx.hpp"
-#include <navx.h>
+#include <AHRS.h>
 
 namespace rip
 {
@@ -10,11 +10,7 @@ namespace rip
         {
             namespace mocks
             {
-                class MockRoboclaw
-                {
-                public:
-
-                };
+                
             }
         }
     }
