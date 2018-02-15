@@ -10,6 +10,6 @@ RUN sudo apt-get -y install \
       lcov \
       libssl-dev
 
-COPY --chown=901:901 . /home/${LUSER}/rip
+COPY --chown=901:901 . /home/${LUSER}/code/rip
 
-
+WORKDIR /home/${LUSER}/code/rip
