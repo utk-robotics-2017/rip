@@ -27,9 +27,10 @@ namespace rip
     namespace arduinogen
     {
 
-        ArduinoGen::ArduinoGen(std::string arduino, std::string parent_folder, std::string appendage_data_folder, bool testing)
+        ArduinoGen::ArduinoGen(std::string arduino, std::string parent_folder, std::string current_arduino_code_dir, std::string appendage_data_folder, bool testing)
             : m_arduino(arduino)
             , m_parent_folder(parent_folder)
+            , m_current_arduino_code_dir(current_arduino_code_dir)
             , m_appendage_data_folder(appendage_data_folder)
         {
             assert(m_arduino.size() > 0);
@@ -374,8 +375,19 @@ namespace rip
 
         std::string ArduinoGen::getUploadScript()
         {
-            // TODO: Implement
-            return "";
+            return fmt::format(
+                "#!/usr/bin/env bash\n"
+                "\n"
+                "cd {current_arduino_code_dir}/{arduino}\n"
+                "\n"
+                "git add -A\n"
+                "git commit -m \"New code for {arduino}\"\n"
+                "git push\n"
+                "\n"
+                "pio run -t upload\n",
+                fmt::arg("current_arduino_code_dir", m_current_arduino_code_dir),
+                fmt::arg("arduino", m_arduino)
+            );
         }
     }
 }

@@ -27,7 +27,7 @@ namespace rip
             /**
              * @brief Constructor
              */
-            ArduinoGen(std::string arduino, std::string parent_folder, std::string appendage_data_folder = "appendages", bool testing = false);
+            ArduinoGen(std::string arduino, std::string parent_folder, std::string current_arduino_code_dir = "/Robot/CurrentArduinoCode", std::string appendage_data_folder = "appendages", bool testing = false);
 
             /**
              * @brief Reads the config file with the appendages
@@ -118,6 +118,7 @@ namespace rip
 
             std::string m_arduino;
             std::string m_parent_folder;
+            std::string m_current_arduino_code_dir;
 
             std::map<std::string, int> m_commands;
 
@@ -184,6 +185,8 @@ namespace rip
             FRIEND_TEST(ArduinoGenTest, get_core_config_one_appendage);
             FRIEND_TEST(ArduinoGenTest, get_core_config_two_appendages_same);
             FRIEND_TEST(ArduinoGenTest, get_core_config_two_appendages_different);
+
+            FRIEND_TEST(ArduinoGenTest, get_upload_script);
 #endif
         };
     }
