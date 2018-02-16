@@ -7,6 +7,7 @@
 #include <tinyxml2.h>
 #include <fmt/format.h>
 #include <json.hpp>
+#include <cppfs/cppfs.h>
 #include <cppfs/fs.h>
 #include <cppfs/FileHandle.h>
 
@@ -27,7 +28,7 @@ namespace rip
     namespace arduinogen
     {
 
-        ArduinoGen::ArduinoGen(std::string arduino, std::string parent_folder, std::string current_arduino_code_dir, std::string appendage_data_folder, bool testing)
+        ArduinoGen::ArduinoGen(std::string arduino, std::string parent_folder, std::string current_arduino_code_dir, std::string appendage_data_folder)
             : m_arduino(arduino)
             , m_parent_folder(parent_folder)
             , m_current_arduino_code_dir(current_arduino_code_dir)
@@ -35,48 +36,49 @@ namespace rip
         {
             assert(m_arduino.size() > 0);
             assert(m_parent_folder.size() > 0);
-
-            if (!testing)
-            {
-                setupFolder();
-            }
         }
 
         void ArduinoGen::setupFolder()
         {
-            cppfs::FileHandle device_folder = cppfs::fs::open(fmt::format("{}/{}", m_parent_folder, m_arduino));
+            using namespace cppfs;
+
+            FileHandle device_folder = fs::open(fmt::format("{}/{}", m_parent_folder, m_arduino));
 
             if (device_folder.exists() && device_folder.isDirectory())
             {
-                device_folder.removeDirectory();
+                device_folder.removeDirectoryRec();
             }
             device_folder.createDirectory();
-            // TODO: chmod
+            device_folder.setPermissions(FilePermissions::UserRead  | FilePermissions::UserWrite  | FilePermissions::UserExec  |
+                                         FilePermissions::GroupRead | FilePermissions::GroupWrite | FilePermissions::GroupExec |
+                                         FilePermissions::OtherRead | FilePermissions::OtherWrite | FilePermissions::OtherExec);
 
-            cppfs::FileHandle source_folder = cppfs::fs::open(fmt::format("{}/{}/{}", m_parent_folder, m_arduino, "src"));
+            FileHandle source_folder = fs::open(fmt::format("{}/{}/{}", m_parent_folder, m_arduino, "src"));
             source_folder.createDirectory();
-            // TODO: chmod
+            source_folder.setPermissions(FilePermissions::UserRead  | FilePermissions::UserWrite  | FilePermissions::UserExec  |
+                                         FilePermissions::GroupRead | FilePermissions::GroupWrite | FilePermissions::GroupExec |
+                                         FilePermissions::OtherRead | FilePermissions::OtherWrite | FilePermissions::OtherExec);
         }
 
         void ArduinoGen::readConfig(std::string config_path, bool copy)
         {
-            if(copy)
+            using namespace cppfs;
+
+            FileHandle config_file = fs::open(config_path);
+
+            if (!config_file.exists() || !config_file.isFile())
             {
-                // TODO: copy and chmod
+                throw FileIoException("Config file does not exist");
+            }
+
+            if (copy)
+            {
+                FileHandle device_folder = fs::open(fmt::format("{}/{}", m_parent_folder, m_arduino));
+                config_file.copy(device_folder);
             }
 
             // Read the config file in as json
-            // REVIEW: We could change this to use cppfs
-            std::ifstream config_stream;
-            config_stream.open(config_path);
-            std::string config_string = "";
-            std::string line = "";
-            while(getline(config_stream, line))
-            {
-                config_string += line;
-            }
-            config_stream.close();
-            nlohmann::json config = nlohmann::json::parse(config_string);
+            nlohmann::json config = nlohmann::json::parse(config_file.readFile());
 
             for(nlohmann::json appendage_json : config)
             {

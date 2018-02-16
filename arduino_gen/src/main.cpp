@@ -10,7 +10,7 @@ int main(int argc, char* argv[])
         return EXIT_FAILURE;
     }
 
-    std::unique_ptr<rip::arduinogen::ArduinoGen> ag = std::unique_ptr<rip::arduinogen::ArduinoGen>(new rip::arduinogen::ArduinoGen("mega", ".", "/Robot/CurrentArduinoCode", "test/data/arduino_gen", true));
+    std::unique_ptr<rip::arduinogen::ArduinoGen> ag = std::unique_ptr<rip::arduinogen::ArduinoGen>(new rip::arduinogen::ArduinoGen("mega", ".", "/Robot/CurrentArduinoCode", "test/data/arduino_gen"));
 
     ag->readConfig(argv[1], false);
 
