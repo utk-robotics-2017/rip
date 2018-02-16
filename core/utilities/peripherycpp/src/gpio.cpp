@@ -24,12 +24,7 @@ namespace rip
                 case -1: throw GpioArgError(gpio_errmsg(&gpio)); break;
                 case -2: throw GpioExportError(gpio_errmsg(&gpio)); break;
                 case -3: throw GpioOpenError(gpio_errmsg(&gpio)); break;
-                case -4: throw GpioIoError(gpio_errmsg(&gpio)); break;
-                case -5: throw GpioCloseError(gpio_errmsg(&gpio)); break;
                 case -6: throw GpioSetDirectionError(gpio_errmsg(&gpio)); break;
-                case -7: throw GpioGetDirectionError(gpio_errmsg(&gpio)); break;
-                case -8: throw GpioSetEdgeError(gpio_errmsg(&gpio)); break;
-                case -9: throw GpioGetEdgeError(gpio_errmsg(&gpio)); break;
                 default: break;
             }
             return;
@@ -42,14 +37,7 @@ namespace rip
             switch(err_code)
             {
                 case -1: throw GpioArgError(gpio_errmsg(&gpio)); break;
-                case -2: throw GpioExportError(gpio_errmsg(&gpio)); break;
-                case -3: throw GpioOpenError(gpio_errmsg(&gpio)); break;
                 case -4: throw GpioIoError(gpio_errmsg(&gpio)); break;
-                case -5: throw GpioCloseError(gpio_errmsg(&gpio)); break;
-                case -6: throw GpioSetDirectionError(gpio_errmsg(&gpio)); break;
-                case -7: throw GpioGetDirectionError(gpio_errmsg(&gpio)); break;
-                case -8: throw GpioSetEdgeError(gpio_errmsg(&gpio)); break;
-                case -9: throw GpioGetEdgeError(gpio_errmsg(&gpio)); break;
                 default: break;
             }
             return *val;
@@ -61,14 +49,7 @@ namespace rip
             switch(err_code)
             {
                 case -1: throw GpioArgError(gpio_errmsg(&gpio)); break;
-                case -2: throw GpioExportError(gpio_errmsg(&gpio)); break;
-                case -3: throw GpioOpenError(gpio_errmsg(&gpio)); break;
                 case -4: throw GpioIoError(gpio_errmsg(&gpio)); break;
-                case -5: throw GpioCloseError(gpio_errmsg(&gpio)); break;
-                case -6: throw GpioSetDirectionError(gpio_errmsg(&gpio)); break;
-                case -7: throw GpioGetDirectionError(gpio_errmsg(&gpio)); break;
-                case -8: throw GpioSetEdgeError(gpio_errmsg(&gpio)); break;
-                case -9: throw GpioGetEdgeError(gpio_errmsg(&gpio)); break;
                 default: break;
             }
             return;
@@ -86,15 +67,8 @@ namespace rip
                 switch(err_code)
                 {
                     case -1: throw GpioArgError(gpio_errmsg(&gpio)); break;
-                    case -2: throw GpioExportError(gpio_errmsg(&gpio)); break;
-                    case -3: throw GpioOpenError(gpio_errmsg(&gpio)); break;
                     case -4: throw GpioIoError(gpio_errmsg(&gpio)); break;
-                    case -5: throw GpioCloseError(gpio_errmsg(&gpio)); break;
-                    case -6: throw GpioSetDirectionError(gpio_errmsg(&gpio)); break;
-                    case -7: throw GpioGetDirectionError(gpio_errmsg(&gpio)); break;
-                    case -8: throw GpioSetEdgeError(gpio_errmsg(&gpio)); break;
-                    case -9: throw GpioGetEdgeError(gpio_errmsg(&gpio)); break;
-                   default: break;
+                    default: break;
                 }
                 return -1;
             }
@@ -106,14 +80,7 @@ namespace rip
             switch(err_code)
             {
                 case -1: throw GpioArgError(gpio_errmsg(&gpio)); break;
-                case -2: throw GpioExportError(gpio_errmsg(&gpio)); break;
-                case -3: throw GpioOpenError(gpio_errmsg(&gpio)); break;
-                case -4: throw GpioIoError(gpio_errmsg(&gpio)); break;
                 case -5: throw GpioCloseError(gpio_errmsg(&gpio)); break;
-                case -6: throw GpioSetDirectionError(gpio_errmsg(&gpio)); break;
-                case -7: throw GpioGetDirectionError(gpio_errmsg(&gpio)); break;
-                case -8: throw GpioSetEdgeError(gpio_errmsg(&gpio)); break;
-                case -9: throw GpioGetEdgeError(gpio_errmsg(&gpio)); break;
                 default: break;
             }
             return;
@@ -126,14 +93,7 @@ namespace rip
             switch(err_code)
             {
                 case -1: throw GpioArgError(gpio_errmsg(&gpio)); break;
-                case -2: throw GpioExportError(gpio_errmsg(&gpio)); break;
-                case -3: throw GpioOpenError(gpio_errmsg(&gpio)); break;
                 case -4: throw GpioIoError(gpio_errmsg(&gpio)); break;
-                case -5: throw GpioCloseError(gpio_errmsg(&gpio)); break;
-                case -6: throw GpioSetDirectionError(gpio_errmsg(&gpio)); break;
-                case -7: throw GpioGetDirectionError(gpio_errmsg(&gpio)); break;
-                case -8: throw GpioSetEdgeError(gpio_errmsg(&gpio)); break;
-                case -9: throw GpioGetEdgeError(gpio_errmsg(&gpio)); break;
                 default: break;
             }
             return *support;
@@ -146,14 +106,7 @@ namespace rip
             switch(err_code)
             {
                 case -1: throw GpioArgError(gpio_errmsg(&gpio)); break;
-                case -2: throw GpioExportError(gpio_errmsg(&gpio)); break;
-                case -3: throw GpioOpenError(gpio_errmsg(&gpio)); break;
-                case -4: throw GpioIoError(gpio_errmsg(&gpio)); break;
-                case -5: throw GpioCloseError(gpio_errmsg(&gpio)); break;
-                case -6: throw GpioSetDirectionError(gpio_errmsg(&gpio)); break;
                 case -7: throw GpioGetDirectionError(gpio_errmsg(&gpio)); break;
-                case -8: throw GpioSetEdgeError(gpio_errmsg(&gpio)); break;
-                case -9: throw GpioGetEdgeError(gpio_errmsg(&gpio)); break;
                 default: break;
             }
             int dirnum;
@@ -164,7 +117,6 @@ namespace rip
                 case GPIO_DIR_OUT_LOW: dirnum = 2; break;
                 case GPIO_DIR_OUT_HIGH: dirnum = 3; break;
                 case GPIO_DIR_PRESERVE: dirnum = 4; break;
-                default: return//Error throw
             }
             return dirnum;
         }
@@ -176,13 +128,6 @@ namespace rip
             switch(err_code)
             {
                 case -1: throw GpioArgError(gpio_errmsg(&gpio)); break;
-                case -2: throw GpioExportError(gpio_errmsg(&gpio)); break;
-                case -3: throw GpioOpenError(gpio_errmsg(&gpio)); break;
-                case -4: throw GpioIoError(gpio_errmsg(&gpio)); break;
-                case -5: throw GpioCloseError(gpio_errmsg(&gpio)); break;
-                case -6: throw GpioSetDirectionError(gpio_errmsg(&gpio)); break;
-                case -7: throw GpioGetDirectionError(gpio_errmsg(&gpio)); break;
-                case -8: throw GpioSetEdgeError(gpio_errmsg(&gpio)); break;
                 case -9: throw GpioGetEdgeError(gpio_errmsg(&gpio)); break;
                 default: break;
             }
@@ -193,7 +138,6 @@ namespace rip
                 case GPIO_EDGE_RISING: edgenum = 1; break;
                 case GPIO_EDGE_FALLING: edgenum = 2; break;
                 case GPIO_EDGE_BOTH: edgenum = 3; break;
-                default: return//Error throw
             }
             return edgenum;
         }
@@ -208,9 +152,15 @@ namespace rip
                 case 2: dir = GPIO_DIR_OUT_LOW; break;
                 case 3: dir = GPIO_DIR_OUT_HIGH; break;
                 case 4: dir = GPIO_DIR_PRESERVE; break;
-                default: return//Error throw
+                default: throw GpioArgError("direction must be in the range [0, 4]."); break; 
             }
             int err_code = gpio_set_direction(&gpio, dir);
+            switch(err_code)
+            {
+                case -1: throw GpioArgError(gpio_errmsg(&gpio)); break;
+                case -6: throw GpioSetDirectionError(gpio_errmsg(&gpio)); break;
+                default: break;
+            }
             return;
         }
 
@@ -223,10 +173,15 @@ namespace rip
                 case 1: ed = GPIO_EDGE_RISING; break;
                 case 2: ed = GPIO_EDGE_FALLING; break;
                 case 3: ed = GPIO_EDGE_BOTH; break;
-                default: return//Error throw
+                default: throw GpioArgError("edge must be in the range [0, 3]."
             }
             int err_code = gpio_set_edge(&gpio, ed);
-            // Additional error checking
+            switch(err_code)
+            {
+                case -1: throw GpioArgError(gpio_errmsg(&gpio)); break;
+                case -8: throw GpioSetEdgeError(gpio_errmsg(&gpio)); break;
+                default: break;
+            }
             return;
         }
 
@@ -246,7 +201,7 @@ namespace rip
         std::string Gpio::toString(size_t len)
         {
             char *cstr;
-            int err_num = gpio_tostring(&gpio, cstr, len);
+            gpio_tostring(&gpio, cstr, len);
             std::string str = cstr;
             return str;
         }
