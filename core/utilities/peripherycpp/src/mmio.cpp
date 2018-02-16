@@ -11,7 +11,13 @@ namespace rip
         void Mmio::open(uintptr_t base, size_t size)
         {
             int err_num = mmio_open(&mmio, base, size);
-            // Add error checking
+            switch(err_num)
+            {
+                case -1: throw MmioArgError(mmio_errmsg(&mmio));
+                case -2: throw MmioOpenError(mmio_errmsg(&mmio));
+                case -3: throw MmioMapError(mmio_errmsg(&mmio));
+                default: break;
+            }
             return;
         }
 
@@ -21,7 +27,10 @@ namespace rip
         {
             uint32_t *value;
             int err_num = mmio_read32(&mmio, offset, value);
-            // Add error checking
+            if (err_num == -1)
+            {
+                throw MmioArgError(mmio_errmsg(&mmio));
+            }
             return *value;
         }
 
@@ -29,7 +38,10 @@ namespace rip
         {
             uint16_t *value;
             int err_num = mmio_read16(&mmio, offset, value);
-            // Add error checking
+            if (err_num == -1)
+            {
+                throw MmioArgError(mmio_errmsg(&mmio));
+            }
             return *value;
         }
 
@@ -37,7 +49,10 @@ namespace rip
         {
             uint8_t *value;
             int err_num = mmio_read8(&mmio, offset, value);
-            // Add error checking
+            if (err_num == -1)
+            {
+                throw MmioArgError(mmio_errmsg(&mmio));
+            }
             return *value;
         }
 
@@ -45,42 +60,63 @@ namespace rip
         {
             std::vector<uint8_t> buf(static_cast<int>(len));
             int err_num = mmio_read(&mmio, offset, &buf[0], len);
-            // Add error checking
+            if (err_num == -1)
+            {
+                throw MmioArgError(mmio_errmsg(&mmio));
+            }
             return buf;
         }
 
         void Mmio::write32(uintptr_t offset, uint32_t value)
         {
             int err_num = mmio_write32(&mmio, offset, value);
-            // Add error checking
+            if (err_num == -1)
+            {
+                throw MmioArgError(mmio_errmsg(&mmio));
+            }
             return;
         }
 
         void Mmio::write16(uintptr_t offset, uint16_t value)
         {
             int err_num = mmio_write16(&mmio, offset, value);
-            // Add error checking
+            if (err_num == -1)
+            {
+                throw MmioArgError(mmio_errmsg(&mmio));
+            }
             return;
         }
 
         void Mmio::write8(uintptr_t offset, uint8_t value)
         {
             int err_num = mmio_write8(&mmio, offset, value);
-            // Add error checking
+            if (err_num == -1)
+            {
+                throw MmioArgError(mmio_errmsg(&mmio));
+            }
             return;
         }
 
         void Mmio::write(uintptr_t offset, std::vector<uint8_t> &buf)
         {
             int err_num = mmio_write(&mmio, offset, &buf[0], buf.size());
-            // Add error checking
+            if (err_num == -1)
+            {
+                throw MmioArgError(mmio_errmsg(&mmio));
+            }
             return;
         }
 
         void Mmio::close()
         {
             int err_num = mmio_close(&mmio);
-            // Add error checking
+            switch(err_num)
+            {
+                case -1: throw MmioArgError(mmio_errmsg(&mmio)); break;
+                case -4: throw MmioCloseError(mmio_errmsg(&mmio)); break;
+                case -5: throw MmioUnmapError(mmio_errmsg(&mmio)); break;
+                default: break;
+            }
             return;
         }
 
@@ -97,8 +133,7 @@ namespace rip
         std::string toString(size_t len)
         {
             char *cstr;
-            int err_num = mmio_tostring(&mmio, cstr, len);
-            // Add error checking
+            mmio_tostring(&mmio, cstr, len);
             string str = cstr;
             return str;
         }
