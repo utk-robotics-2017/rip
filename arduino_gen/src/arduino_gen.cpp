@@ -94,27 +94,25 @@ namespace rip
 
         void ArduinoGen::generateOutput()
         {
-            // Write the Arduino Code
-            std::ofstream source;
-            source.open(fmt::format("{0}/{1}/src/{1}.ino", m_parent_folder, m_arduino),
-                        std::ios::out | std::ios::trunc);
-            source << getArduinoCode();
-            source.close();
-            // TODO: chmod
+            using namespace cppfs;
 
-            // Write config for core
-            std::ofstream core_config;
-            core_config.open(fmt::format("{0}/{1}/core_config.json", m_parent_folder, m_arduino),
-                             std::ios::out | std::ios::trunc);
-            core_config << getCoreConfig();
-            core_config.close();
+            FileHandle source = fs::open(fmt::format("{0}/{1}/src/{1}.ino", m_parent_folder, m_arduino));
+            source.writeFile(getArduinoCode());
+            source.setPermissions(FilePermissions::UserRead  | FilePermissions::UserWrite  |
+                                  FilePermissions::GroupRead | FilePermissions::GroupWrite |
+                                  FilePermissions::OtherRead | FilePermissions::OtherWrite);
 
-            // Write build and upload script
-            std::ofstream upload;
-            upload.open(fmt::format("{0}/{1}/upload.sh", m_parent_folder, m_arduino),
-                        std::ios::out | std::ios::trunc);
-            upload << getUploadScript();
-            upload.close();
+            FileHandle config = fs::open(fmt::format("{0}/{1}/core_config.json", m_parent_folder, m_arduino));
+            config.writeFile(getCoreConfig());
+            config.setPermissions(FilePermissions::UserRead  | FilePermissions::UserWrite  |
+                                  FilePermissions::GroupRead | FilePermissions::GroupWrite |
+                                  FilePermissions::OtherRead | FilePermissions::OtherWrite);
+
+            FileHandle upload = fs::open(fmt::format("{0}/{1}/upload.sh", m_parent_folder, m_arduino));
+            upload.writeFile(getUploadScript());
+            upload.setPermissions(FilePermissions::UserRead  | FilePermissions::UserWrite  | FilePermissions::UserExec  |
+                                  FilePermissions::GroupRead | FilePermissions::GroupWrite | FilePermissions::GroupExec |
+                                  FilePermissions::OtherRead | FilePermissions::OtherWrite | FilePermissions::OtherExec);
         }
 
         std::string ArduinoGen::getArduinoCode()

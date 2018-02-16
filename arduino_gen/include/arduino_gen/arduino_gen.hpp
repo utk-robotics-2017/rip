@@ -189,6 +189,8 @@ namespace rip
             FRIEND_TEST(ArduinoGenTest, get_upload_script);
 
             FRIEND_TEST(ArduinoGenTest, setup_folder);
+
+            FRIEND_TEST(ArduinoGenTest, generate_output);
 #endif
         };
     }
