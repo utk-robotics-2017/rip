@@ -22,7 +22,6 @@
 #include <exception_base.hpp>
 namespace rip
 {
-
     namespace periphery
     {
             /**
@@ -58,7 +57,7 @@ namespace rip
             /**
              * @class SerialGetFailure
              * @param SerialGetFailure Failed to get data from serial struct.
-             */ 
+             */
             NEW_EX(SerialGetFailure);
             /**
              * @class SerialSetFailure
