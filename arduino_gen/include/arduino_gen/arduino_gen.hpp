@@ -33,26 +33,20 @@ namespace rip
              * @brief Reads the config file with the appendages
              *
              * @param filepath The filepath to the appendages config file to read
-             * @param copy Whether to copy the appendages config file into the output folder
              */
-            void readConfig(std::string filepath, bool copy = true);
+            void readConfig(std::string filepath);
 
             /**
              * @brief Writes the Arduino code, build script, and the config file used by RIP
              */
             void generateOutput();
 
+        private:
             /**
              * TODO: Properly comment
              * TODO: Make private again
              */
             std::string getArduinoCode();
-
-        private:
-            /**
-             * @brief Removes the device folder if it exists and creates a new one
-             */
-            void setupFolder();
 
             /**
              * TODO: Properly comment
@@ -127,6 +121,9 @@ namespace rip
             std::multimap< std::string, std::shared_ptr<Appendage> > m_appendages;
 
             std::vector<AppendageTemplate> m_appendage_templates;
+
+            std::string config;
+            std::string platformio_config;
 
 #ifdef TESTING
         private:

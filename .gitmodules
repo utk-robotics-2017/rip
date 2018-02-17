@@ -22,3 +22,6 @@
 [submodule "external/serial"]
 	path = external/serial
 	url = git@github.com:utk-robotics-2017/serial.git
+[submodule "external/args"]
+	path = external/args
+	url = git@github.com:utk-robotics-2017/args.git

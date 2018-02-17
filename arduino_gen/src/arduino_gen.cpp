@@ -38,7 +38,57 @@ namespace rip
             assert(m_parent_folder.size() > 0);
         }
 
-        void ArduinoGen::setupFolder()
+        void ArduinoGen::readConfig(std::string config_path)
+        {
+            using namespace cppfs;
+
+            FileHandle config_file = fs::open(config_path);
+
+            if (!config_file.exists() || !config_file.isFile())
+            {
+                throw FileIoException("Config file does not exist");
+            }
+
+            config = config_file.readFile();
+
+            FileHandle platformio_ini = fs::open(fmt::format("{}/{}/platformio.ini", m_parent_folder, m_arduino));
+
+            if (platformio_ini.exists() && platformio_ini.isFile())
+            {
+                platformio_config = platformio_ini.readFile();
+            }
+            else
+            {
+                platformio_config = fmt::format(
+                    "[platformio]\n"
+                    "lib_dir = /Robot/ArduinoLibraries\n" // REVIEW: Should this be hard coded?
+                    "env_default = {0}\n"
+                    "\n"
+                    "[env:{0}]\n"
+                    "platform = atmelavr\n"
+                    "framework = arduino\n"
+                    "board = uno\n"
+                    "upload_port = /dev/{0}\n",
+                    m_arduino
+                );
+            }
+
+            // Read the config file in as json
+            nlohmann::json config_json = nlohmann::json::parse(config);
+
+            for(nlohmann::json appendage_json : config_json)
+            {
+                std::string type = appendage_json["type"];
+
+                m_appendages.insert(std::make_pair(type, std::make_shared<Appendage>(appendage_json,
+                                                   m_appendages, m_appendage_data_folder, true)));
+            }
+
+            loadTemplates();
+            loadCommandEnums();
+        }
+
+        void ArduinoGen::generateOutput()
         {
             using namespace cppfs;
 
@@ -58,43 +108,6 @@ namespace rip
             source_folder.setPermissions(FilePermissions::UserRead  | FilePermissions::UserWrite  | FilePermissions::UserExec  |
                                          FilePermissions::GroupRead | FilePermissions::GroupWrite | FilePermissions::GroupExec |
                                          FilePermissions::OtherRead | FilePermissions::OtherWrite | FilePermissions::OtherExec);
-        }
-
-        void ArduinoGen::readConfig(std::string config_path, bool copy)
-        {
-            using namespace cppfs;
-
-            FileHandle config_file = fs::open(config_path);
-
-            if (!config_file.exists() || !config_file.isFile())
-            {
-                throw FileIoException("Config file does not exist");
-            }
-
-            if (copy)
-            {
-                FileHandle device_folder = fs::open(fmt::format("{}/{}", m_parent_folder, m_arduino));
-                config_file.copy(device_folder);
-            }
-
-            // Read the config file in as json
-            nlohmann::json config = nlohmann::json::parse(config_file.readFile());
-
-            for(nlohmann::json appendage_json : config)
-            {
-                std::string type = appendage_json["type"];
-
-                m_appendages.insert(std::make_pair(type, std::make_shared<Appendage>(appendage_json,
-                                                   m_appendages, m_appendage_data_folder, true)));
-            }
-
-            loadTemplates();
-            loadCommandEnums();
-        }
-
-        void ArduinoGen::generateOutput()
-        {
-            using namespace cppfs;
 
             FileHandle source = fs::open(fmt::format("{0}/{1}/src/{1}.ino", m_parent_folder, m_arduino));
             source.writeFile(getArduinoCode());
@@ -102,11 +115,29 @@ namespace rip
                                   FilePermissions::GroupRead | FilePermissions::GroupWrite |
                                   FilePermissions::OtherRead | FilePermissions::OtherWrite);
 
-            FileHandle config = fs::open(fmt::format("{0}/{1}/core_config.json", m_parent_folder, m_arduino));
-            config.writeFile(getCoreConfig());
-            config.setPermissions(FilePermissions::UserRead  | FilePermissions::UserWrite  |
-                                  FilePermissions::GroupRead | FilePermissions::GroupWrite |
-                                  FilePermissions::OtherRead | FilePermissions::OtherWrite);
+            FileHandle json_config = fs::open(fmt::format("{0}/{1}/{1}.json", m_parent_folder, m_arduino));
+            json_config.writeFile(config);
+            json_config.setPermissions(FilePermissions::UserRead  | FilePermissions::UserWrite  |
+                                       FilePermissions::GroupRead | FilePermissions::GroupWrite |
+                                       FilePermissions::OtherRead | FilePermissions::OtherWrite);
+
+            FileHandle core_config = fs::open(fmt::format("{0}/{1}/{1}_core.json", m_parent_folder, m_arduino));
+            core_config.writeFile(getCoreConfig());
+            core_config.setPermissions(FilePermissions::UserRead  | FilePermissions::UserWrite  |
+                                       FilePermissions::GroupRead | FilePermissions::GroupWrite |
+                                       FilePermissions::OtherRead | FilePermissions::OtherWrite);
+
+            FileHandle platformio_ini = fs::open(fmt::format("{}/{}/platformio.ini", m_parent_folder, m_arduino));
+            platformio_ini.writeFile(platformio_config);
+            platformio_ini.setPermissions(FilePermissions::UserRead  | FilePermissions::UserWrite  |
+                                          FilePermissions::GroupRead | FilePermissions::GroupWrite |
+                                          FilePermissions::OtherRead | FilePermissions::OtherWrite);
+
+            FileHandle serial = fs::open(fmt::format("{0}/{1}/serial.sh", m_parent_folder, m_arduino));
+            serial.writeFile(fmt::format("#!/usr/bin/env bash\npicocom /dev/{} -b 115200 --echo\n", m_arduino));
+            serial.setPermissions(FilePermissions::UserRead  | FilePermissions::UserWrite  | FilePermissions::UserExec  |
+                                  FilePermissions::GroupRead | FilePermissions::GroupWrite | FilePermissions::GroupExec |
+                                  FilePermissions::OtherRead | FilePermissions::OtherWrite | FilePermissions::OtherExec);
 
             FileHandle upload = fs::open(fmt::format("{0}/{1}/upload.sh", m_parent_folder, m_arduino));
             upload.writeFile(getUploadScript());
@@ -378,7 +409,7 @@ namespace rip
             return fmt::format(
                 "#!/usr/bin/env bash\n"
                 "\n"
-                "cd {current_arduino_code_dir}/{arduino}\n"
+                "cd {current_arduino_code_dir}/{arduino}\n" // REVIEW: Shouldn't this be m_parent_folder
                 "\n"
                 "git add -A\n"
                 "git commit -m \"New code for {arduino}\"\n"
