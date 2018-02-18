@@ -1,15 +1,7 @@
-FROM robobenklein/home:latest
+FROM robobenklein/rip_deps:latest
+# $LUSER is user with 901:901 from home image
 
-RUN sudo apt-get -y update
-RUN sudo apt-get -y install \
-      cmake g++ 
-
-# deps for rip build
-RUN sudo apt-get -y install \
-      libssh2-1-dev \
-      lcov \
-      libssl-dev
-
+# copy in RIP source code
 COPY --chown=901:901 . /home/${LUSER}/code/rip
 
 WORKDIR /home/${LUSER}/code/rip

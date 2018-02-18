@@ -33,7 +33,7 @@ install:
 before_script:
   # get cached images from
   - docker pull robobenklein/home
-  - docker pull robobenklein/rip
+  - docker pull robobenklein/rip_deps
   - docker build --tag rip_ci .
 #  - ./travis/before_script.sh $TRAVIS_BRANCH $TRAVIS_PULL_REQUEST $TRAVIS_PULL_REQUEST_BRANCH
 #  - ./travis/compile_g2o.sh
