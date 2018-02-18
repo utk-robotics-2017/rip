@@ -34,7 +34,7 @@ namespace rip
             {
                 m_start_time = duration_cast< milliseconds >(
                                    system_clock::now().time_since_epoch());
-                m_drivetrain->drive(m_speed);
+                m_drivetrain->drive(drivetains::NavCommand(m_speed, 0));
             }
 
             void DriveStraight::teardown(nlohmann::json& state)
