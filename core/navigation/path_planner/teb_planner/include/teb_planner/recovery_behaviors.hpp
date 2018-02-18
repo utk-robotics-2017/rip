@@ -43,6 +43,7 @@
 #ifndef RECOVERY_BEHAVIORS_HPP
 #define RECOVERY_BEHAVIORS_HPP
 
+#include <vector>
 
 #include <boost/circular_buffer.hpp>
 #include <teb_planner/fake_ros_msgs.hpp>
