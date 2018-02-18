@@ -51,28 +51,6 @@ namespace rip
 
             config = config_file.readFile();
 
-            FileHandle platformio_ini = fs::open(fmt::format("{}/{}/platformio.ini", m_parent_folder, m_arduino));
-
-            if (platformio_ini.exists() && platformio_ini.isFile())
-            {
-                platformio_config = platformio_ini.readFile();
-            }
-            else
-            {
-                platformio_config = fmt::format(
-                    "[platformio]\n"
-                    "lib_dir = /Robot/ArduinoLibraries\n" // REVIEW: Should this be hard coded?
-                    "env_default = {0}\n"
-                    "\n"
-                    "[env:{0}]\n"
-                    "platform = atmelavr\n"
-                    "framework = arduino\n"
-                    "board = uno\n"
-                    "upload_port = /dev/{0}\n",
-                    m_arduino
-                );
-            }
-
             // Read the config file in as json
             nlohmann::json config_json = nlohmann::json::parse(config);
 
@@ -88,12 +66,48 @@ namespace rip
             loadCommandEnums();
         }
 
-        void ArduinoGen::generateOutput()
+        void ArduinoGen::generateOutput(bool copyOldFiles)
         {
             using namespace cppfs;
 
-            FileHandle device_folder = fs::open(fmt::format("{}/{}", m_parent_folder, m_arduino));
+            // Read or generate platformio.ini
+            std::string platformio_str;
+            FileHandle platformio_fh = fs::open(fmt::format("{}/{}/platformio.ini", m_parent_folder, m_arduino));
+            if (copyOldFiles && platformio_fh.exists() && platformio_fh.isFile())
+            {
+                platformio_str = platformio_fh.readFile();
+            }
+            else
+            {
+                platformio_str = getPlatformIo();
+            }
 
+            // Read or generate serial.sh
+            FileHandle serial_fh = fs::open(fmt::format("{0}/{1}/serial.sh", m_parent_folder, m_arduino));
+            std::string serial_str;
+            if (copyOldFiles && serial_fh.exists() && serial_fh.isFile())
+            {
+                serial_str = serial_fh.readFile();
+            }
+            else
+            {
+                serial_str = getSerialScript();
+            }
+
+            // Read or generate upload.sh
+            FileHandle upload_fh = fs::open(fmt::format("{0}/{1}/upload.sh", m_parent_folder, m_arduino));
+            std::string upload_str;
+            if (copyOldFiles && upload_fh.exists() && upload_fh.isFile())
+            {
+                upload_str = upload_fh.readFile();
+            }
+            else
+            {
+                upload_str = getUploadScript();
+            }
+
+            // Delete and create output dir
+            FileHandle device_folder = fs::open(fmt::format("{}/{}", m_parent_folder, m_arduino));
             if (device_folder.exists() && device_folder.isDirectory())
             {
                 device_folder.removeDirectoryRec();
@@ -103,44 +117,51 @@ namespace rip
                                          FilePermissions::GroupRead | FilePermissions::GroupWrite | FilePermissions::GroupExec |
                                          FilePermissions::OtherRead | FilePermissions::OtherWrite | FilePermissions::OtherExec);
 
+            // Create src dir
             FileHandle source_folder = fs::open(fmt::format("{}/{}/{}", m_parent_folder, m_arduino, "src"));
             source_folder.createDirectory();
             source_folder.setPermissions(FilePermissions::UserRead  | FilePermissions::UserWrite  | FilePermissions::UserExec  |
                                          FilePermissions::GroupRead | FilePermissions::GroupWrite | FilePermissions::GroupExec |
                                          FilePermissions::OtherRead | FilePermissions::OtherWrite | FilePermissions::OtherExec);
 
+            // Create ino file
             FileHandle source = fs::open(fmt::format("{0}/{1}/src/{1}.ino", m_parent_folder, m_arduino));
             source.writeFile(getArduinoCode());
             source.setPermissions(FilePermissions::UserRead  | FilePermissions::UserWrite  |
                                   FilePermissions::GroupRead | FilePermissions::GroupWrite |
                                   FilePermissions::OtherRead | FilePermissions::OtherWrite);
 
+            // Create config file
             FileHandle json_config = fs::open(fmt::format("{0}/{1}/{1}.json", m_parent_folder, m_arduino));
             json_config.writeFile(config);
             json_config.setPermissions(FilePermissions::UserRead  | FilePermissions::UserWrite  |
                                        FilePermissions::GroupRead | FilePermissions::GroupWrite |
                                        FilePermissions::OtherRead | FilePermissions::OtherWrite);
 
+            // Create core file
             FileHandle core_config = fs::open(fmt::format("{0}/{1}/{1}_core.json", m_parent_folder, m_arduino));
             core_config.writeFile(getCoreConfig());
             core_config.setPermissions(FilePermissions::UserRead  | FilePermissions::UserWrite  |
                                        FilePermissions::GroupRead | FilePermissions::GroupWrite |
                                        FilePermissions::OtherRead | FilePermissions::OtherWrite);
 
+            // Create platformio.ini
             FileHandle platformio_ini = fs::open(fmt::format("{}/{}/platformio.ini", m_parent_folder, m_arduino));
-            platformio_ini.writeFile(platformio_config);
+            platformio_ini.writeFile(platformio_str);
             platformio_ini.setPermissions(FilePermissions::UserRead  | FilePermissions::UserWrite  |
                                           FilePermissions::GroupRead | FilePermissions::GroupWrite |
                                           FilePermissions::OtherRead | FilePermissions::OtherWrite);
 
+            // Create serial script
             FileHandle serial = fs::open(fmt::format("{0}/{1}/serial.sh", m_parent_folder, m_arduino));
-            serial.writeFile(fmt::format("#!/usr/bin/env bash\npicocom /dev/{} -b 115200 --echo\n", m_arduino));
+            serial.writeFile(serial_str);
             serial.setPermissions(FilePermissions::UserRead  | FilePermissions::UserWrite  | FilePermissions::UserExec  |
                                   FilePermissions::GroupRead | FilePermissions::GroupWrite | FilePermissions::GroupExec |
                                   FilePermissions::OtherRead | FilePermissions::OtherWrite | FilePermissions::OtherExec);
 
+            // Create upload script
             FileHandle upload = fs::open(fmt::format("{0}/{1}/upload.sh", m_parent_folder, m_arduino));
-            upload.writeFile(getUploadScript());
+            upload.writeFile(upload_str);
             upload.setPermissions(FilePermissions::UserRead  | FilePermissions::UserWrite  | FilePermissions::UserExec  |
                                   FilePermissions::GroupRead | FilePermissions::GroupWrite | FilePermissions::GroupExec |
                                   FilePermissions::OtherRead | FilePermissions::OtherWrite | FilePermissions::OtherExec);
@@ -418,6 +439,32 @@ namespace rip
                 "pio run -t upload\n",
                 fmt::arg("current_arduino_code_dir", m_current_arduino_code_dir),
                 fmt::arg("arduino", m_arduino)
+            );
+        }
+
+        std::string ArduinoGen::getSerialScript()
+        {
+            return fmt::format(
+                "#!/usr/bin/env bash\n"
+                "\n"
+                "picocom /dev/{} -b 115200 --echo\n",
+                fmt::arg("arduino", m_arduino)
+            );
+        }
+
+        std::string ArduinoGen::getPlatformIo()
+        {
+            return fmt::format(
+                "[platformio]\n"
+                "lib_dir = /Robot/ArduinoLibraries\n" // REVIEW: Should this be hard coded?
+                "env_default = {0}\n"
+                "\n"
+                "[env:{0}]\n"
+                "platform = atmelavr\n"
+                "framework = arduino\n"
+                "board = uno\n"
+                "upload_port = /dev/{0}\n",
+                m_arduino
             );
         }
     }

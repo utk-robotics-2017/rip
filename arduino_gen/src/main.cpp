@@ -30,6 +30,7 @@ int main(int argc, char* argv[])
     args::ValueFlag<std::string> config(parser, "CONFIG", "Location of the config json file", {'c', "config"}, args::Options::Required | args::Options::Single);
     args::ValueFlag<std::string> parent_folder(parser, "PARENT_FOLDER", "Parent folder of the folder to put all the output files", {"parent_folder"}, "/Robot/CurrentArduinoCode", args::Options::Single);
     args::ValueFlag<std::string> appendages(parser, "APPENDAGES_FOLDER", "Folder of where to look for appendage files", {"appendages"}, "./appendages", args::Options::Single);
+    args::Flag noCopy(parser, "NO_COPY", "Don't copy existing files", {'n', "no_copy"}, args::Options::Single);
 
     args::Group buildUploadGroup(parser, "Build or Upload arduino code", args::Group::Validators::AtMostOne);
     args::Flag build(buildUploadGroup, "build", "Build the ino file into something that can be uploaded to the Arduino", {'b', "build"}, args::Options::Single);
@@ -81,7 +82,7 @@ int main(int argc, char* argv[])
     rip::arduinogen::ArduinoGen ag(args::get(arduino), args::get(parent_folder), "/Robot/CurrentArduinoCode", args::get(appendages));
 
     ag.readConfig(args::get(config));
-    ag.generateOutput();
+    ag.generateOutput(!args::get(noCopy));
 
     // TODO: Build and Upload
 

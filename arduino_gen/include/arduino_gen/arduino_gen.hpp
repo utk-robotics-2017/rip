@@ -39,7 +39,7 @@ namespace rip
             /**
              * @brief Writes the Arduino code, build script, and the config file used by RIP
              */
-            void generateOutput();
+            void generateOutput(bool copyOldFiles);
 
         private:
             /**
@@ -109,6 +109,16 @@ namespace rip
              * TODO: Properly comment
              */
             std::string getUploadScript();
+
+            /**
+             * TODO: Properly comment
+             */
+            std::string getSerialScript();
+
+            /**
+             * TODO: Properly comment
+             */
+            std::string getPlatformIo();
 
             std::string m_arduino;
             std::string m_parent_folder;
