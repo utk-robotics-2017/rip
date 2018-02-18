@@ -39,7 +39,7 @@ before_script:
 # start the container persistence:
   - docker run --name rip_ci -t -d rip_ci zsh -l
 # run setup in container:
-  - docker exec -t --name rip_ci rip_ci zsh -c "./travis/before_script.sh $TRAVIS_BRANCH $TRAVIS_PULL_REQUEST $TRAVIS_PULL_REQUEST_BRANCH"
+  - docker exec -t rip_ci zsh -c "./travis/before_script.sh $TRAVIS_BRANCH $TRAVIS_PULL_REQUEST $TRAVIS_PULL_REQUEST_BRANCH"
   - docker start rip_ci
 
 script:
