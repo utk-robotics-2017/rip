@@ -30,33 +30,33 @@ namespace rip
              * @class SerialOpen
              * @brief NavxSerialIo failed to open
              */
-            NEW_EX(SerialOpen);
+            NEW_EX(SerialOpen)
             /**
              * @class SerialReset
              * @brief NavxSerialIo failed to open
              */
-            NEW_EX(SerialReset);
+            NEW_EX(SerialReset)
              /**
               * @class SerialNotOpen
               * @brief Attempted to run things on a serial that is not open
               */
-            NEW_EX(SerialNotOpen);
+            NEW_EX(SerialNotOpen)
              /**
               * @class SerialFail
               * @brief Serial communications have failed during runtime.
               */
-            NEW_EX(SerialFail);
+            NEW_EX(SerialFail)
             /**
               * @class SerialEncoding
               * @brief Serial communications have failed while encoding data.
               */
-            NEW_EX(SerialEncoding);
+            NEW_EX(SerialEncoding)
             /**
               * @class SerialSend
               * @brief erial communications have failed during transmission due to
               * an issue with integration control.
               */
-            NEW_EX(SerialIntegrationControl);
+            NEW_EX(SerialIntegrationControl)
 
         }
     }

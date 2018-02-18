@@ -54,7 +54,7 @@ namespace rip
                     }
                     catch(std::exception  ex)
                     {
-                        throw SerialReset("Failed to reset navx serialPort")
+                        throw SerialReset("Failed to reset navx serialPort");
                         // This has been seen to happen before....
                         //^top notch exception handling as usual
                     }
@@ -195,7 +195,7 @@ namespace rip
                 }
                 catch(std::exception ex)
                 {
-                    throw SerialFail("SerialPort Run() Port Initialization Exception: ", ex.what());
+                    throw SerialFail("SerialPort Run() Port Initialization Exception: ");
                 }
 
                 char stream_command[256];
@@ -218,7 +218,7 @@ namespace rip
                 }
                 catch(std::exception ex)
                 {
-                    throw SerialEncoding("SerialPort Run() Port Send Encode Stream Command Exception: ", ex.what());
+                    throw SerialEncoding("SerialPort Run() Port Send Encode Stream Command Exception: ");
                 }
 
                 int remainder_bytes = 0;
@@ -257,7 +257,7 @@ namespace rip
                             }
                             catch(std::exception ex)
                             {
-                                throw SerialIntegrationControl("SerialPort Run() IntegrationControl Send Exception:  %s\n", ex.what());
+                                throw SerialIntegrationControl("SerialPort Run() IntegrationControl Send Exception");
                             }
                         }
 
@@ -547,7 +547,7 @@ namespace rip
                                 }
                                 catch(std::exception ex2)
                                 {
-                                    throw SerialEncoding("SerialPort Run() Re-transmit Encode Stream Command Exception:  %s\n", ex2.what());
+                                    throw SerialEncoding("SerialPort Run() Re-transmit Encode Stream Command Exception: \n");
                                 }
                             }
                             else

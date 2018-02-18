@@ -10,83 +10,83 @@ namespace rip
         {
             namespace tests
             {
-                TEST(AHRS, SerialConstructor1)
+                TEST(NavX, SerialConstructor1)
                 {
                     // do me
                 }
-                TEST(AHRS, SerialConstructor2)
+                TEST(NavX, SerialConstructor2)
                 {
                     //
                 }
-                TEST(AHRS, zeroYaw)
+                TEST(NavX, zeroYaw)
                 {
 
                 }
 
-                TEST(AHRS, LinearAccel)
+                TEST(NavX, LinearAccel)
                 {
 
                 }
-                TEST(AHRS, Quaternion)
+                TEST(NavX, Quaternion)
                 {
 
                 }
 
                 /* GETS */
-                TEST(AHRS, getCompassHeading)
+                TEST(NavX, getCompassHeading)
                 {
 
                 }
-                TEST(AHRS, getPitch)
+                TEST(NavX, getPitch)
                 {
 
                 }
-                TEST(AHRS, getRoll)
+                TEST(NavX, getRoll)
                 {
 
                 }
-                TEST(AHRS, getYaw)
+                TEST(NavX, getYaw)
                 {
 
                 }
-                TEST(AHRS, getVelocity)
+                TEST(NavX, getVelocity)
                 {
                     // x, y, z
                 }
 
-                TEST(AHRS, getByteCount)
+                TEST(NavX, getByteCount)
                 {
 
                 }
-                TEST(AHRS, getUpdateCount)
-                {
-
-                }Z
-                TEST(AHRS, getLastSensorTimestamp)
+                TEST(NavX, getUpdateCount)
                 {
 
                 }
-                TEST(ARHS, getWorldLinearAccel)
+                TEST(NavX, getLastSensorTimestamp)
+                {
+
+                }
+                TEST(NavX, getWorldLinearAccel)
                 {
                     // x, y, z
                 }
-                TEST(AHRS, getBarometricPressure)
+                TEST(NavX, getBarometricPressure)
                 {
 
                 }
-                TEST(AHRS, getAltitude)
+                TEST(NavX, getAltitude)
                 {
 
                 }
-                TEST(AHRS, getFusedHeading)
+                TEST(NavX, getFusedHeading)
                 {
 
                 }
-                TEST(AHRS, getQuaternion)
+                TEST(NavX, getQuaternion)
                 {
                     // w, x, y, z
                 }
-                TEST(AHRS, getDisplacement)
+                TEST(NavX, getDisplacement)
                 {
                     // x, y, z
                 }
@@ -94,99 +94,99 @@ namespace rip
                 {
 
                 }
-                TEST(AHRS, getRate)
+                TEST(NavX, getRate)
                 {
 
                 }
-                TEST(AHRS, getRawGyro)
+                TEST(NavX, getRawGyro)
                 {
                     // x, y, z
                 }
-                TEST(AHRS, getRawAccel)
+                TEST(NavX, getRawAccel)
                 {
                     // x, y, z
                 }
-                TEST(AHRS, getRawMag)
+                TEST(NavX, getRawMag)
                 {
                     // x, y, z
                 }
-                TEST(AHRS, getTempC)
+                TEST(NavX, getTempC)
                 {
 
                 }
-                TEST(AHRS, getBoardYawAxis)
+                TEST(NavX, getBoardYawAxis)
                 {
 
                 }
-                TEST(AHRS, getFirmwareVersion)
+                TEST(NavX, getFirmwareVersion)
                 {
 
                 }
-                TEST(AHRS, getActualUpdateRate)
+                TEST(NavX, getActualUpdateRate)
                 {
 
                 }
-                TEST(AHRS, getRequestedUpdateRate)
+                TEST(NavX, getRequestedUpdateRate)
                 {
 
                 }
 
                 /* BOOLS */
-                TEST(AHRS, isCalibrating)
+                TEST(NavX, isCalibrating)
                 {
 
                 }
-                TEST(AHRS, isConnected)
+                TEST(NavX, isConnected)
                 {
 
                 }
-                TEST(AHRS, isMoving)
+                TEST(NavX, isMoving)
                 {
 
                 }
-                TEST(AHRS, isRotating)
+                TEST(NavX, isRotating)
                 {
 
                 }
-                TEST(AHRS, isAltitudeValid)
+                TEST(NavX, isAltitudeValid)
                 {
 
                 }
-                TEST(AHRS, isMagneticDisturbance)
+                TEST(NavX, isMagneticDisturbance)
                 {
 
                 }
-                TEST(AHRS, isMagnetometerCalibrated)
+                TEST(NavX, isMagnetometerCalibrated)
                 {
 
                 }
-                TEST(AHRS, registerCallback)
+                TEST(NavX, registerCallback)
                 {
 
                 }
-                TEST(AHRS, deregisterCallback)
+                TEST(NavX, deregisterCallback)
                 {
 
                 }
 
                 /* OTHER FUNCTIONS */
-                TEST(AHRS, reset)
+                TEST(NavX, reset)
                 {
 
                 }
-                TEST(resetDisplacement)
+                TEST(NavX, resetDisplacement)
                 {
 
                 }
-                TEST(AHRS, getCompassHeading)
+                TEST(NavX, getCompassHeading)
                 {
 
                 }
-                TEST(AHRS, updateDisplacement_noargs)
+                TEST(NavX, updateDisplacement_noargs)
                 {
 
                 }
-                TEST(AHRS, updateDisplacement_withargs)
+                TEST(NavX, updateDisplacement_withargs)
                 {
 
                 }

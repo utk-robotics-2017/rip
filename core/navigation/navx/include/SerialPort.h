@@ -118,7 +118,7 @@ namespace rip
                     return bytes_avail;
                 }
 
-                void int read(char *data, int size)
+                virtual int read(char *data, int size)
                 {
                     int n = 0, loc = 0;
                     char buf = '\0';
