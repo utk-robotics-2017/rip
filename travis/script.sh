@@ -4,7 +4,7 @@ set -e
 pushd build
 
 # Checks if it compiles
-make -j$(nprocs )
+make -j$(nproc )
 
 if [[ $2 ]]; then
     BRANCH=$1
