@@ -12,27 +12,10 @@ compiler:
 
 install:
 - if [ "$CXX" = "g++" ]; then export CXX="g++-4.9" CC="gcc-4.9"; fi
-
-# addons:
-#     apt:
-#         sources:
-#             - ubuntu-toolchain-r-test
-#         packages:
-#             - g++-4.9
-#             - gcc-4.9
-#             - clang
-#             - cppcheck
-#             - cmake
-#             - lcov
-#             - libssh2-1-dev
-#             - libsuitesparse-dev
-#             - libeigen3-dev
-
+- docker pull utkrobotics/rip_deps
 
 before_script:
   # get cached images from
-  - docker pull robobenklein/home
-  - docker pull robobenklein/rip_deps
   - docker build --tag rip_ci .
 #  - ./travis/before_script.sh $TRAVIS_BRANCH $TRAVIS_PULL_REQUEST $TRAVIS_PULL_REQUEST_BRANCH
 #  - ./travis/compile_g2o.sh
@@ -51,4 +34,3 @@ after_script:
   - docker exec -t rip_ci zsh -c "./travis/after_script.sh $TRAVIS_BRANCH $TRAVIS_PULL_REQUEST $TRAVIS_PULL_REQUEST_BRANCH"
   - docker stop rip_ci
   - docker rm rip_ci
-
