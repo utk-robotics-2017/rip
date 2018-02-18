@@ -6,8 +6,6 @@
 
 #include <cmd_messenger/cmd_messenger.hpp>
 
-using namespace rip::utilities;
-
 namespace rip
 {
     namespace appendages

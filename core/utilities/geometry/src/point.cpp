@@ -1,4 +1,4 @@
-#include "point.hpp"
+#include "geometry/point.hpp"
 
 namespace rip
 {
@@ -20,7 +20,7 @@ namespace rip
             return m_x;
         }
 
-        void Point::x(const Distance& x)
+        void Point::setX(const Distance& x)
         {
             m_x = x;
         }
@@ -30,7 +30,7 @@ namespace rip
             return m_y;
         }
 
-        void Point::y(const Distance& y)
+        void Point::setY(const Distance& y)
         {
             m_y = y;
         }
@@ -49,6 +49,16 @@ namespace rip
         {
             Distance mag = magnitude();
             return Point(m_x / mag(), m_y / mag());
+        }
+
+        double Point::dot(const Point& rhs) const
+        {
+            return (m_x * rhs.m_x + m_y * rhs.m_y)();
+        }
+
+        double Point::cross(const Point& rhs) const
+        {
+            return (m_x * rhs.m_y - rhs.m_x * m_y)();
         }
 
         Point Point::operator -() const
@@ -109,10 +119,20 @@ namespace rip
             return *this;
         }
 
+        bool Point::operator ==(const Point& rhs) const
+        {
+            return m_x == rhs.m_x && m_y == rhs.m_y;
+        }
+
+        bool Point::operator !=(const Point& rhs) const
+        {
+            return m_x != rhs.m_x || m_y != rhs.m_y;
+        }
+
         void from_json(const nlohmann::json& j, Point& point)
         {
-            point.x(j["x"]);
-            point.y(j["y"]);
+            point.setX(j["x"]);
+            point.setY(j["y"]);
         }
 
         void to_json(nlohmann::json& j, const Point& point)

@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.1)
-project(core)
+project(framework)
 
 # utils built by top level cmake
 # appendages built by top level cmake

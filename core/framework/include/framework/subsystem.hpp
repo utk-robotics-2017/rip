@@ -24,28 +24,25 @@
 
 namespace rip
 {
-    namespace core
+    namespace framework
     {
-        namespace framework
+        class Subsystem
         {
-            class Subsystem
+        public:
+            Subsystem(const std::string& name)
+                : m_name(name)
+            {}
+
+            std::string name() const
             {
-            public:
-                Subsystem(const std::string& name)
-                    : m_name(name)
-                {}
+                return m_name;
+            }
 
-                std::string name() const
-                {
-                    return m_name;
-                }
-
-                virtual bool diagnostic() = 0;
-                virtual void stop() = 0;
-            private:
-                std::string m_name;
-            };
-        }
+            virtual bool diagnostic() = 0;
+            virtual void stop() = 0;
+        private:
+            std::string m_name;
+        };
     }
 }
 
