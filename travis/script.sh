@@ -4,7 +4,7 @@ set -e
 pushd build
 
 # Checks if it compiles
-make -j4
+make -j$(nprocs )
 
 if [[ $2 ]]; then
     BRANCH=$1
@@ -30,6 +30,12 @@ function test_cmd_messenger() {
     popd
 }
 
+function test_peripherycpp() {
+    pushd core/utilities/peripherycpp
+    ./peripherycpp_test
+    popd
+}
+
 case $BRANCH in
   arduino_gen*)
     test_arduino_gen
@@ -40,10 +46,14 @@ case $BRANCH in
   cmd_messenger*)
     test_cmd_messenger
     ;;
+  periphery*)
+    test_peripherycpp
+    ;;
   *)
     test_arduino_gen
     test_cmd_messenger
     test_roboclaw
+    test_peripherycpp
     ;;
 esac
 
