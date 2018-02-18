@@ -1,4 +1,4 @@
-FROM robobenklein/rip_deps:latest
+FROM utkrobotics/rip_deps:latest
 # $LUSER is user with 901:901 from home image
 
 # copy in RIP source code
