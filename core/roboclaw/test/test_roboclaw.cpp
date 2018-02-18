@@ -82,7 +82,7 @@ namespace rip
                 ASSERT_EQ(testClaw->getLastCmd()[3], 0xff);
                 //final test: given proper conditions, does not throw an exception
                 //correct size of byte array
-                ASSERT_EQ(testClaw->getLastCmd().size(), 6);
+                ASSERT_EQ(testClaw->getLastCmd().size(), 6u);
                 testClaw->drive(Roboclaw::Motor::kM1, Roboclaw::kFullSpeedForward);
                 ASSERT_NO_THROW(testClaw->drive(Roboclaw::Motor::kM1, Roboclaw::kFullSpeedForward));
 
@@ -501,7 +501,6 @@ namespace rip
                 std::vector<uint8_t> response;
                 units::Velocity v;
                 units::Distance d, d2;
-                double ticks_per_rev = 360.0;
                 units::Length wheel_radius(units::m * 0.04);
                 testClaw->setBytes(0);
 
@@ -644,7 +643,6 @@ namespace rip
                 std::vector<uint8_t> response;
                 units::Velocity v;
                 units::Distance d, d2;
-                double ticks_per_rev = 360.0;
                 units::Length wheel_radius(units::m * 0.04);
                 int ticks, ticksc;
                 testClaw->setBytes(0);
@@ -685,11 +683,10 @@ namespace rip
 
                 std::shared_ptr<Roboclaw> testClaw(new Roboclaw);
                 std::vector<uint8_t> response;
+                const double ticks_per_rev = 360.0;
                 units::Velocity v;
                 units::Distance d, d2;
-                double ticks_per_rev = 360.0;
                 units::Length wheel_radius(units::m * 0.04);
-                int ticks, ticksc;
                 testClaw->setBytes(0);
 
                 d = 100 * units::cm;
@@ -1134,7 +1131,7 @@ namespace rip
                 EXPECT_GE(pparams->kp, 0);
                 EXPECT_GE(pparams->ki, 0);
                 EXPECT_GE(pparams->kd, 0);
-                EXPECT_GE(pparams->kiMax, 0);
+                EXPECT_GE(pparams->kiMax, 0u);
                 EXPECT_GE(pparams->deadzone, 0);
                 EXPECT_GE(pparams->min, 0);
                 EXPECT_GE(pparams->max, 0);

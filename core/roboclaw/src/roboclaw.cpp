@@ -1,3 +1,5 @@
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wswitch-default"
 /*
  * The RIP License (Revision 0.3):
  * This software is available without warranty and without support.
@@ -341,7 +343,7 @@ namespace rip
 
                 for (uint8_t i = 0; i < 48; i++)
                 {
-                    if (data != -1)
+                    if (data != 0xFF)
                     {
                         data = read(&m_serial, m_timeout);
                         version += data;
@@ -350,12 +352,12 @@ namespace rip
                         {
                             uint16_t ccrc;
                             data = read(&m_serial, m_timeout);
-                            if (data != -1)
+                            if (data != 0xFF)
                             {
                                 ccrc = static_cast<uint16_t>(data) << 8;
                                 data = read(&m_serial, m_timeout);
 
-                                if (data != -1)
+                                if (data != 0xFF)
                                 {
                                     ccrc |= data;
                                     if (crcGet() == ccrc)
@@ -647,11 +649,6 @@ namespace rip
 //////////////////////////////////////////////////////////////////////////////////////////////
         std::vector<uint8_t> Roboclaw::readN(uint8_t n, Command cmd)
         {
-            uint8_t crc;
-
-            uint8_t value = 0;
-            uint8_t trys = kMaxRetries;
-            int16_t data;
 
             std::vector<uint8_t> command = {m_address, static_cast<uint8_t>(cmd)};
             for (uint8_t try_ = 0; try_ < kMaxRetries; try_++)
@@ -671,21 +668,21 @@ namespace rip
                     data = read(&m_serial, m_timeout);
                     crcUpdate(data);
                     response.push_back(data);
-                    if (data == -1)
+                    if (data == 0xFF)
                     {
                         continue;
                     }
                 }
 
-                if (data != -1)
+                if (data != 0xFF)
                 {
                     uint16_t ccrc;
                     data = read(&m_serial, m_timeout);
-                    if (data != -1)
+                    if (data != 0xFF)
                     {
                         ccrc = static_cast<uint16_t>(data) << 8;
                         data = read(&m_serial, m_timeout);
-                        if (data != -1)
+                        if (data != 0xFF)
                         {
                             ccrc |= data;
                             if (crcGet() == ccrc)
@@ -939,6 +936,9 @@ namespace rip
                 case Motor::kM2:
                     return response[1];
             }
+
+            assert(false); // unreachable code
+            return 0;
         }
 
         void Roboclaw::validateConfig(nlohmann::json testcfg)
@@ -1000,3 +1000,4 @@ namespace rip
         }
     }
 }
+#pragma GCC diagnostic pop

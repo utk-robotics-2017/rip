@@ -1,3 +1,10 @@
+#pragma GCC diagnostic push                                                   
+#pragma GCC diagnostic ignored "-Wunused-variable"
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+#pragma GCC diagnostic ignored "-Wswitch-default"
+#pragma GCC diagnostic ignored "-Wsign-compare"
+#pragma GCC diagnostic ignored "-Wimplicit-fallthrough="
+
 #include <roboclaw.hpp>
 #include <iostream>
 #include <inttypes.h>
@@ -70,3 +77,5 @@ int main(int argc, char** argv)
     */
     return 0;
 }
+
+#pragma GCC diagnostic pop
