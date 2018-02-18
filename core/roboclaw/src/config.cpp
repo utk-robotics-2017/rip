@@ -70,6 +70,7 @@ namespace rip
         {
             switch (static_cast<uint32_t>(this->getCommMode()))
             {
+                case 0:
                 case 1:
                     throw InvalidCommMode("commMode is RC/Analog");
                     break;
@@ -77,7 +78,6 @@ namespace rip
                     throw InvalidCommMode("Simple serial is write only");
                     break;
                 default:
-                case 0:
                     // do nothing?
                     break;
             }
@@ -101,6 +101,7 @@ namespace rip
         {
             switch (static_cast<uint32_t>(this->getCommMode()))
             {
+                case 0:
                 case 1:
                     throw InvalidCommMode("commMode is RC/Analog");
                     break;
@@ -108,7 +109,6 @@ namespace rip
                     throw InvalidCommMode("Simple serial is write only");
                     break;
                 default:
-                case 0:
                     // do nothing?
                     break;
             }
