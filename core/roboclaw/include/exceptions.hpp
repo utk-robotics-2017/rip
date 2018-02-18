@@ -19,38 +19,50 @@
  */
 #ifndef ROBOCLAW_EXCEPTIONS_HPP
 #define ROBOCLAW_EXCEPTIONS_HPP
-#include <exception_base.hpp>
+#include <misc/exception_base.hpp>
 
 namespace rip
 {
-    namespace utilities
+    namespace roboclaw
     {
-        namespace roboclaw
-        {
-            /**
-             * @class CommandFailure
-             * @brief An exception for when the command fails
-             */
-            NEW_EX(CommandFailure);
+        /**
+         * @class CommandFailure
+         * @brief An exception for when the command fails
+         */
+        NEW_EX(CommandFailure)
 
-            /**
-             * @class ReadFailure
-             * @brief An exception for when the response for a read command fails
-             */
-            NEW_EX(ReadFailure);
+        /**
+         * @class ReadFailure
+         * @brief An exception for when the response for a read command fails
+         */
+        NEW_EX(ReadFailure)
 
-            /**
-             * @class OutOfRange
-             * @brief An exception for when something falls out of range
-             */
-            NEW_EX(OutOfRange);
+        /**
+         * @class OutOfRange
+         * @brief An exception for when something falls out of range
+         */
+        NEW_EX(OutOfRange)
 
-            /**
-             * @class UnknownDType
-             * @brief Unknown combination of motor dynamic parameters
-             */
-            NEW_EX(UnknownDType);
-        }
+        /**
+         * @class UnknownDType
+         * @brief Unknown combination of motor dynamic parameters
+         */
+        NEW_EX(UnknownDType)
+        /**
+         * Json passed to Roboclaw constructor is null or has bad data.
+         */
+        NEW_EX(BadJson)
+
+        /**
+         * @class SerialOpenFail
+         * @brief Exception thrown if serial device fails to open
+         */
+        NEW_EX(SerialOpenFail)
+        /**
+         * @class InvalidCommMode
+         * @brief Exception thrown if invalid comm mode is in use
+         */
+        NEW_EX(InvalidCommMode)
     }
 }
 #endif //ROBOCLAW_EXCEPTIONS_HPP
