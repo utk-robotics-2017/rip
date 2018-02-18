@@ -11,7 +11,7 @@ extern "C"
 namespace rip
 {
 
-    namespace periphery
+    namespace peripherycpp
     {
 
         class I2c 

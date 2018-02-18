@@ -22,7 +22,7 @@
 #include <exception_base.hpp>
 namespace rip
 {
-    namespace periphery
+    namespace peripherycpp
     {
             /**
              * @class ExampleName

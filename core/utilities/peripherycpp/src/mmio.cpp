@@ -5,7 +5,7 @@
 namespace rip
 {
 
-    namespace periphery
+    namespace peripherycpp
     {
 
         void Mmio::open(uintptr_t base, size_t size)

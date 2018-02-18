@@ -12,7 +12,7 @@ extern "C"
 
 namespace rip
 {
-    namespace periphery
+    namespace peripherycpp
     {
         class Serial
         {
