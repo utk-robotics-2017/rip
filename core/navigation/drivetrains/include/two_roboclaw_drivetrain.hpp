@@ -21,7 +21,7 @@ namespace rip
             using Roboclaw = roboclaw::Roboclaw;
             using NavX = roboclaw::NavX;
         public:
-            TwoRoboclawNavXDriveTrain(std::shared_ptr<Roboclaw> left, std::shared_ptr<Roboclaw> right, std::shared_ptr<Navx> navx)
+            TwoRoboclawNavXDriveTrain(std::shared_ptr<Roboclaw> left, std::shared_ptr<Roboclaw> right, std::shared_ptr<Navx> navx = nullptr)
                 : m_left(left)
                 , m_right(right)
                 , m_navx(navx)

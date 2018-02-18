@@ -36,15 +36,14 @@ namespace rip
                 /**
                  * Run once after finished
                  */
-                virtual void teardown(nlohmann::json& state) override
-                {
-                    // todo
-                }
+                virtual void teardown(nlohmann::json& state) override;
 
             private:
                 bool m_use_time;
                 units::Distance m_distance;
                 units::Time m_time;
+                units::Time m_start_time;
+                units::Velocity m_speed;
                 std::shared_ptr<drivetrains::DriveTrain> m_drivetrain;
             };
 
