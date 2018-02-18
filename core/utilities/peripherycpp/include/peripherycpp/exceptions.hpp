@@ -19,7 +19,7 @@
  */
 #ifndef PERIPHERY_EXCEPTIONS_H
 #define PERIPHERY_EXCEPTIONS_H
-#include <exception_base.hpp>
+#include <misc/exception_base.hpp>
 namespace rip
 {
     namespace peripherycpp
