@@ -65,7 +65,7 @@ namespace rip
 
         unsigned int Serial::inputWaiting()
         {
-            unsigned int *count
+            unsigned int *count;
             if(serial_input_waiting(&m_serial, count) < 0)
             {
                 throw SerialReadFailure(serial_errmsg(&m_serial));
@@ -75,7 +75,7 @@ namespace rip
 
         unsigned int Serial::outputWaiting() 
         {
-            unsigned int *count
+            unsigned int *count;
             if(serial_output_waiting(&m_serial, count) < 0)
             {
                 throw SerialWriteFailure(serial_errmsg(&m_serial));
@@ -88,7 +88,7 @@ namespace rip
             bool pollval = serial_poll(&m_serial, timeout_ms);
             if(pollval >= 0)
             {
-                return pollval
+                return pollval;
             }
             else
             {
