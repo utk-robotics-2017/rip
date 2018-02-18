@@ -9,7 +9,7 @@ if(ENABLE_TESTING)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage")
 endif()
 target_include_directories(${PROJECT_NAME} PUBLIC include)
-target_link_libraries(${PROJECT_NAME} periphery exceptions_base)
+target_link_libraries(${PROJECT_NAME} periphery misc)
 
 if(ENABLE_TESTING)
     # Get test source files and test data files
@@ -34,7 +34,7 @@ if(ENABLE_TESTING)
     add_executable(${PROJECT_NAME}_test ${${PROJECT_NAME}_TEST_SOURCES} ${copiedTestData})
     set_property(TARGET ${PROJECT_NAME}_test PROPERTY CXX_STANDARD 11)
     target_link_libraries(${PROJECT_NAME}_test ${PROJECT_NAME})
-    target_link_libraries(${PROJECT_NAME}_test gmock gtest)
+    target_link_libraries(${PROJECT_NAME}_test gmock gtest googletest_rip_macros)
 
     if(CMAKE_COMPILER_IS_GNUCXX)
         include(CodeCoverage)
