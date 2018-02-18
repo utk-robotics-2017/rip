@@ -50,17 +50,17 @@ namespace rip
             /**
              * Single command to all motors
              */
-            virtual void drive(const NavCommand& command) override;
+            virtual void drive(const MotorDynamics& command) override;
 
             /**
              * Command left and right sides separately
              */
-            virtual void drive(const NavCommand& left, const NavCommand& right) override;
+            virtual void drive(const MotorDynamics& left, const MotorDynamics& right) override;
 
             /**
              * Command four wheels separately
              */
-            virtual void drive(const NavCommand& front_left, const NavCommand& front_right, const NavCommand& back_left, const NavCommand& back_right) override;
+            virtual void drive(const MotorDynamics& front_left, const MotorDynamics& front_right, const MotorDynamics& back_left, const MotorDynamics& back_right) override;
 
             virtual void stop(bool brake = false) override;
 
