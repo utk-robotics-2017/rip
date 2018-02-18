@@ -1,4 +1,5 @@
 #include "two_roboclaw_drivetrain.hpp"
+#include <roboclaw/motor_dynamics.hpp>
 
 namespace rip
 {
@@ -25,24 +26,32 @@ namespace rip
             m_right->drive(Roboclaw::Motor::kM2, 32767 * power);
         }
 
-        void TwoRoboclawDriveTrain::drive(const NavCommand& command)
+        void TwoRoboclawDriveTrain::drive(const MotorDynamics& command)
         {
-
+            m_left->setDynamics(command);
+            m_right->setDynamics(command)
         }
 
-        void TwoRoboclawDriveTrain::drive(const NavCommand& left, const NavCommand& right)
+        void TwoRoboclawDriveTrain::drive(const MotorDynamics& left, const MotorDynamics& right)
         {
-
+            m_left->setDynamics(left);
+            m_right->setDynamics(right);
         }
 
-        void TwoRoboclawDriveTrain::drive(const NavCommand& front_left, const NavCommand& front_right, const NavCommand& back_left, const NavCommand& back_right)
+        void TwoRoboclawDriveTrain::drive(const MotorDynamics& front_left, const NavCommd& front_right, const MotorDynamics& back_left, const MotorDynamics& back_right)
         {
+            m_left->setDynamics(Roboclaw::Motor::kM1, front_left);
+            m_right->setDynamics(Roboclaw::Motor::kM1, front_right;
+
+            m_left->setDynamics(Roboclaw::Motor::kM2, back_left);
+            m_right->setDynamics(Roboclaw::Motor::kM2, back_right);
 
         }
 
         void TwoRoboclawDriveTrain::stop(bool brake = false)
         {
-
+            m_left->drive(0);
+            m_right->drive(0);
         }
     }//subsystem
 }//rip
