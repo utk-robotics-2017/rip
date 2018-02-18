@@ -40,6 +40,7 @@
  *   elements
  *********************************************************************/
 
+#include <stdexcept>
 #include <teb_planner/recovery_behaviors.hpp>
 #include <limits>
 #include <functional>
