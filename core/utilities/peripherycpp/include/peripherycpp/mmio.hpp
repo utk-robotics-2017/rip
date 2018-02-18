@@ -5,6 +5,7 @@ extern "C"
 {
     #include "mmio.h"
 }
+#include "peripherycpp/exceptions.hpp"
 #include <cstdint>
 #include <vector>
 
@@ -35,7 +36,7 @@ namespace rip
 
                 void write8(uintptr_t offset, uint8_t value);
 
-                void write(uintptr_offset, std::vector<uint8_t> &buf);
+                void write(uintptr_t offset, std::vector<uint8_t> &buf);
 
                 void close();
 

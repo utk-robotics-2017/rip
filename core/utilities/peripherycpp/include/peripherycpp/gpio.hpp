@@ -5,6 +5,7 @@ extern "C"
 {
     #include "gpio.h"
 }
+#include "peripherycpp/exceptions.hpp"
 
 namespace rip
 {

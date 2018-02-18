@@ -2,8 +2,7 @@
 #define _PERIPHERY_SERIAL_HPP
 #include <string>
 #include <vector>
-#include <stdint>
-#include "exceptions.h"
+#include "peripherycpp/exceptions.hpp"
 
 extern "C"
 {
@@ -38,8 +37,8 @@ namespace rip
              * and hardware flow control (rtscts) settings.
              */
             void open(std::string device, unsigned int baudrate, unsigned int databits,
-            serial_parity_t parity, unsigned int stopbits,
-            bool xonxoff, bool rtscts);
+                      int parity, unsigned int stopbits,
+                      bool xonxoff, bool rtscts);
             /**
              * @brief Reads len number of bytes via serial
              * @param  len        number of bytes to read
@@ -52,24 +51,43 @@ namespace rip
              * @param data vector of bytes to be written
              */
             void write(std::vector<uint8_t> data);
-            void Flush();
-            void Input_Waiting(unsigned int *count);
-            void Output_Waiting(unsigned int *count); 
-            void Input_Waiting(unsigned int *count);
-            void Close();
-            uint32_t Get_Baudrate();
-            unsigned int Get_Databits();
-            serial_parity_t Get_Parity();
-            unsigned int Get_Stopbits();
-            bool Get_Rtscts();
-            void Set_Baudrate(uint32_t baudrate);
-            void Set_Databits(unsigned int databits);
-            void Set_Parity(emun serial_parity parity);
-            void Set_xOnxOff(bool enabled);
-            void Set_Rtscts(bool enabled);
+
+            void flush();
+
+            void outputWaiting(unsigned int *count); 
+
+            void inputWaiting(unsigned int *count);
+
+            void poll(int timeout_ms);
+
+            void close();
+
+            uint32_t getBaudrate();
+
+            unsigned int getDatabits();
+
+            int getParity();
+
+            unsigned int getStopbits();
+
+            bool getxOnxOff();
+
+            bool getRtscts();
+
+            void setBaudrate(uint32_t baudrate);
+
+            void setDatabits(unsigned int databits);
+
+            void setParity(int parity);
+
+            void setxOnxOff(bool enabled);
+
+            void setRtscts(bool enabled);
+
         private:
+
             serial_t m_serial;
-        }
+        };
     }
 }
 

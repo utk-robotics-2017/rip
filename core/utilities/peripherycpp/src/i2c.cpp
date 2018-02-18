@@ -26,7 +26,7 @@ namespace rip
             return;
         } 
 
-        void I2c::transfer(std::vector< vector<uint8_t> > msg_data, std::vector<int> flags, size_t count)
+        void I2c::transfer(std::vector< std::vector<uint8_t> > msg_data, std::vector<int> flags, size_t count)
         {
             /* Notes about this function:
              * 1) `msg_data` stores the data that will be transfered. It must be a vector of
@@ -52,7 +52,7 @@ namespace rip
             {
                 data = &(msg_data[i][0]);
                 size = msg_data[i].size();
-                if (flags[i] == 0
+                if (flags[i] == 0)
                 {
                     msgs[i] = { .addr = EEPROM_I2C_ADDR, .flags = 0, .len = size, .buf = data };
                 }
@@ -73,7 +73,7 @@ namespace rip
 
         void I2c::close()
         {
-            int err_code = 12c_open(&i2c);
+            int err_code = i2c_close(&i2c);
             switch(err_code)
             {
                 case -1: throw I2cArgError(i2c_errmsg(&i2c)); break;

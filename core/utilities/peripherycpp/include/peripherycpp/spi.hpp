@@ -5,6 +5,8 @@ extern "C"
 {
     #include "spi.h"
 }
+#include "peripherycpp/exceptions.hpp"
+#include <string>
 
 namespace rip
 {

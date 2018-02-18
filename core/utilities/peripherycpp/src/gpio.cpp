@@ -64,7 +64,7 @@ namespace rip
             }
             else
             {
-                switch(err_code)
+                switch(pollnum)
                 {
                     case -1: throw GpioArgError(gpio_errmsg(&gpio)); break;
                     case -4: throw GpioIoError(gpio_errmsg(&gpio)); break;
@@ -86,10 +86,10 @@ namespace rip
             return;
         }
 
-        bool Gpio::supportsInterupts()
+        bool Gpio::supportsInterrupts()
         {
             bool *support;
-            int err_code = gpio_supports_interupts(&gpio, support);
+            int err_code = gpio_supports_interrupts(&gpio, support);
             switch(err_code)
             {
                 case -1: throw GpioArgError(gpio_errmsg(&gpio)); break;
@@ -132,7 +132,7 @@ namespace rip
                 default: break;
             }
             int edgenum;
-            switch(*dir)
+            switch(*edge)
             {
                 case GPIO_EDGE_NONE: edgenum = 0; break;
                 case GPIO_EDGE_RISING: edgenum = 1; break;
@@ -173,7 +173,7 @@ namespace rip
                 case 1: ed = GPIO_EDGE_RISING; break;
                 case 2: ed = GPIO_EDGE_FALLING; break;
                 case 3: ed = GPIO_EDGE_BOTH; break;
-                default: throw GpioArgError("edge must be in the range [0, 3]."
+                default: throw GpioArgError("edge must be in the range [0, 3].");
             }
             int err_code = gpio_set_edge(&gpio, ed);
             switch(err_code)

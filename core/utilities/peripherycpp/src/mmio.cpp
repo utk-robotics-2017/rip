@@ -1,4 +1,4 @@
-#include "mmio.hpp"
+#include "peripherycpp/mmio.hpp"
 #include <cstdint>
 #include <vector>
 
@@ -125,16 +125,16 @@ namespace rip
             return mmio_base(&mmio);
         }
 
-        size_t size()
+        size_t Mmio::size()
         {
             return mmio_size(&mmio);
         }
 
-        std::string toString(size_t len)
+        std::string Mmio::toString(size_t len)
         {
             char *cstr;
             mmio_tostring(&mmio, cstr, len);
-            string str = cstr;
+            std::string str = cstr;
             return str;
         }
 

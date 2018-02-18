@@ -5,6 +5,7 @@ extern "C"
 {
     #include "i2c.h"
 }
+#include "peripherycpp/exceptions.hpp"
 #include <vector>
 #include <string>
 
@@ -20,7 +21,7 @@ namespace rip
 
                 void open(const std::string path);
 
-                void transfer(std::vector< vector<uint8_t> > msg_data, std::vector<int> flags, size_t count);
+                void transfer(std::vector< std::vector<uint8_t> > msg_data, std::vector<int> flags, size_t count);
 
                 void close();
 
