@@ -63,25 +63,34 @@ namespace rip
             }
         }
 
-        void Serial::inputWaiting(unsigned int *count)
+        unsigned int Serial::inputWaiting()
         {
+            unsigned int *count
             if(serial_input_waiting(&m_serial, count) < 0)
             {
                 throw SerialReadFailure(serial_errmsg(&m_serial));
             }
+            return *count;
         }
 
-        void Serial::outputWaiting(unsigned int *count) 
+        unsigned int Serial::outputWaiting() 
         {
+            unsigned int *count
             if(serial_output_waiting(&m_serial, count) < 0)
             {
                 throw SerialWriteFailure(serial_errmsg(&m_serial));
             }
+            return *count;
         }
 
-        void Serial::poll(int timeout_ms)
+        bool Serial::poll(int timeout_ms)
         {
-            if(serial_poll(&m_serial, timeout_ms) < 0)
+            bool pollval = serial_poll(&m_serial, timeout_ms);
+            if(pollval >= 0)
+            {
+                return pollval
+            }
+            else
             {
                 throw SerialReadFailure(serial_errmsg(&m_serial));
             }
