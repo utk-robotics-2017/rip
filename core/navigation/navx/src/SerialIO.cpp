@@ -24,9 +24,9 @@ namespace rip
                 this->serial_port_id = port_id;
                 ypr_update_data = {0., 0., 0., 0.};
                 gyro_update_data = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0.};
-                ahrs_update_data = {};
-                ahrspos_update_data = {};
-                ahrspos_ts_update_data = {};
+                navx_update_data = {};
+                navxpos_update_data = {};
+                navxpos_ts_update_data = {};
                 board_id = {0, 0, 0, 0, 0, {0}};
                 board_state = {0, 0, 0, 0, 0, 0, 0, 0};
                 this->notify_sink = notify_sink;
@@ -36,7 +36,7 @@ namespace rip
                 this->update_rate_hz = update_rate_hz;
                 if(processed_data)
                 {
-                    update_type = MSGID_AHRSPOS_TS_UPDATE;
+                    update_type = MSGID_NAVXPOS_TS_UPDATE;
                 }
                 else
                 {
@@ -102,22 +102,22 @@ namespace rip
                 board_state.gyro_fsr_dps = response.gyro_fsr_dps;
                 board_state.update_rate_hz =(uint8_t) response.update_rate_hz;
                 notify_sink->setBoardState(board_state);
-                /* If AHRSPOS_TS is update type is requested, but board doesn't support it, */
-                /* retransmit the stream config, falling back to AHRSPos update mode, if   */
-                /* the board supports it, otherwise fall all the way back to AHRS Update mode. */
-                if(this->update_type == MSGID_AHRSPOS_TS_UPDATE)
+                /* If NAVXPOS_TS is update type is requested, but board doesn't support it, */
+                /* retransmit the stream config, falling back to NAVXPos update mode, if   */
+                /* the board supports it, otherwise fall all the way back to NAVX Update mode. */
+                if(this->update_type == MSGID_NAVXPOS_TS_UPDATE)
                 {
-                    if(board_capabilities->isAHRSPosTimestampSupported())
+                    if(board_capabilities->isNavXPosTimestampSupported())
                     {
-                        this->update_type = MSGID_AHRSPOS_TS_UPDATE;
+                        this->update_type = MSGID_NAVXPOS_TS_UPDATE;
                     }
                     else if(board_capabilities->isDisplacementSupported())
                     {
-                        this->update_type = MSGID_AHRSPOS_UPDATE;
+                        this->update_type = MSGID_NAVXPOS_UPDATE;
                     }
                     else
                     {
-                        this->update_type = MSGID_AHRS_UPDATE;
+                        this->update_type = MSGID_NAVX_UPDATE;
                     }
                     signal_retransmit_stream_config = true;
                 }
@@ -132,27 +132,27 @@ namespace rip
                     notify_sink->setYawPitchRoll(ypr_update_data, sensor_timestamp);
                     //printf("UPDATING YPR Data\n");
                 }
-                else if((packet_length = AHRSProtocol::decodeAHRSPosTSUpdate(received_data, bytes_remaining, ahrspos_ts_update_data)) > 0)
+                else if((packet_length = NavXProtocol::decodeNavXPosTSUpdate(received_data, bytes_remaining, navxpos_ts_update_data)) > 0)
                 {
-                    notify_sink->setAHRSPosData(ahrspos_ts_update_data, ahrspos_ts_update_data.timestamp);
-                    //printf("UPDATING AHRSPosTS Data\n");
+                    notify_sink->setNavXPosData(navxpos_ts_update_data, navxpos_ts_update_data.timestamp);
+                    //printf("UPDATING NAVXPosTS Data\n");
                 }
-                else if((packet_length = AHRSProtocol::decodeAHRSPosUpdate(received_data, bytes_remaining, ahrspos_update_data)) > 0)
+                else if((packet_length = NavXProtocol::decodeNavXPosUpdate(received_data, bytes_remaining, navxpos_update_data)) > 0)
                 {
-                    notify_sink->setAHRSPosData(ahrspos_update_data, sensor_timestamp);
-                    //printf("UPDATING AHRSPos Data\n");
+                    notify_sink->setNavXPosData(navxpos_update_data, sensor_timestamp);
+                    //printf("UPDATING NAVXPos Data\n");
                 }
-                else if((packet_length = AHRSProtocol::decodeAHRSUpdate(received_data, bytes_remaining, ahrs_update_data)) > 0)
+                else if((packet_length = NavXProtocol::decodeNavXUpdate(received_data, bytes_remaining, navx_update_data)) > 0)
                 {
-                    notify_sink->setAHRSData(ahrs_update_data, sensor_timestamp);
-                    //printf("UPDATING AHRS Data\n");
+                    notify_sink->setNavXData(navx_update_data, sensor_timestamp);
+                    //printf("UPDATING NAVX Data\n");
                 }
                 else if((packet_length = IMUProtocol::decodeGyroUpdate(received_data, bytes_remaining, gyro_update_data)) > 0)
                 {
                     notify_sink->setRawData(gyro_update_data, sensor_timestamp);
                     //printf("UPDAING GYRO Data\n");
                 }
-                else if((packet_length = AHRSProtocol::decodeBoardIdentityResponse(received_data, bytes_remaining, board_id)) > 0)
+                else if((packet_length = NavXProtocol::decodeBoardIdentityResponse(received_data, bytes_remaining, board_id)) > 0)
                 {
                     notify_sink->setBoardID(board_id);
                     //printf("UPDATING ELSE\n");
@@ -201,8 +201,8 @@ namespace rip
                 char stream_command[256];
                 char integration_control_command[256];
                 IMUProtocol::StreamResponse response = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-                AHRSProtocol::IntegrationControl integration_control = {0, 0};
-                AHRSProtocol::IntegrationControl integration_control_response = {0, 0};
+                NavXProtocol::IntegrationControl integration_control = {0, 0};
+                NavXProtocol::IntegrationControl integration_control_response = {0, 0};
 
                 int cmd_packet_length = IMUProtocol::encodeStreamCommand(stream_command, update_type, update_rate_hz);
                 try
@@ -210,7 +210,7 @@ namespace rip
                     serial_port->reset();
                     //std::cout << "Initial Write" << std::endl;
                     serial_port->write(stream_command, cmd_packet_length);
-                    cmd_packet_length = AHRSProtocol::encodeDataGetRequest(stream_command,  AHRS_DATA_TYPE::BOARD_IDENTITY, AHRS_TUNING_VAR_ID::UNSPECIFIED);
+                    cmd_packet_length = NavXProtocol::encodeDataGetRequest(stream_command,  NAVX_DATA_TYPE::BOARD_IDENTITY, NAVX_TUNING_VAR_ID::UNSPECIFIED);
                     serial_port->write(stream_command, cmd_packet_length);
                     serial_port->flush();
                     port_reset_count++;
@@ -248,7 +248,7 @@ namespace rip
                             integration_control.action = next_integration_control_action;
                             signal_transmit_integration_control = false;
                             next_integration_control_action = 0;
-                            cmd_packet_length = AHRSProtocol::encodeIntegrationControlCmd(integration_control_command, integration_control);
+                            cmd_packet_length = NavXProtocol::encodeIntegrationControlCmd(integration_control_command, integration_control);
                             try
                             {
                                 //std::cout << "No idea where this write is..." << std::endl;
@@ -361,7 +361,7 @@ namespace rip
                                     }
                                     else
                                     {
-                                        packet_length = AHRSProtocol::decodeIntegrationControlResponse(received_data + i, bytes_remaining,
+                                        packet_length = NavXProtocol::decodeIntegrationControlResponse(received_data + i, bytes_remaining,
                                                 integration_control_response);
                                         if(packet_length > 0)
                                         {
@@ -541,7 +541,7 @@ namespace rip
                                     last_stream_command_sent_timestamp = time(0);
                                     //std::cout << "Retransmitting Stream Command!!!!" << std::endl;
                                     serial_port->write(stream_command, cmd_packet_length);
-                                    cmd_packet_length = AHRSProtocol::encodeDataGetRequest(stream_command,  AHRS_DATA_TYPE::BOARD_IDENTITY, AHRS_TUNING_VAR_ID::UNSPECIFIED);
+                                    cmd_packet_length = NavXProtocol::encodeDataGetRequest(stream_command,  NAVX_DATA_TYPE::BOARD_IDENTITY, NAVX_TUNING_VAR_ID::UNSPECIFIED);
                                     serial_port->write(stream_command, cmd_packet_length);
                                     serial_port->flush();
                                 }

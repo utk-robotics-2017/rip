@@ -1,12 +1,11 @@
 
-#ifndef SRC_AHRS_H_
-#define SRC_AHRS_H_
+#ifndef SRC_NAVX_H_
+#define SRC_NAVX_H_
 
 #include "ITimestampedDataSubscriber.h"
 #include <memory>
 #include <string>
 #include <units.hpp>
-#include <spdlog/spdlog.h>
 
 namespace rip
 {
@@ -18,14 +17,14 @@ namespace rip
             class ContinuousAngleTracker;
             class InertialDataIntegrator;
             class OffsetTracker;
-            class AHRSInternal;
+            class NavXInternal;
 
             /**
-             * The AHRS class provides an interface to AHRS capabilities
+             * The NAVX class provides an interface to NAVX capabilities
              * of the KauaiLabs navX Robotics Navigation Sensor via SPI, I2C and
              * Serial(TTL UART and USB) communications interfaces on RIP.
              *
-             * The AHRS class enables access to basic connectivity and state information,
+             * The NAVX class enables access to basic connectivity and state information,
              * as well as key 6-axis and 9-axis orientation information(yaw, pitch, roll,
              * compass heading, fused(9-axis) heading and magnetic disturbance detection.
              *
@@ -33,12 +32,12 @@ namespace rip
              * including linear acceleration, motion detection, rotation detection and sensor
              * temperature.
              *
-             * If used with the navX Aero, the AHRS class also provides access to
+             * If used with the navX Aero, the NAVX class also provides access to
              * altitude, barometric pressure and pressure sensor temperature data
              * @author Scott & UTK IEEE Robotics.
              */
              using namespace rip;
-            class AHRS
+            class NavX
             {
             public:
 
@@ -70,9 +69,8 @@ namespace rip
                 };
 
             private:
-                std::shared_ptr<spdlog::logger> console = spdlog::stdout_color_mt("console");
-                friend class AHRSInternal;
-                AHRSInternal *      ahrs_internal;
+                friend class NavXInternal;
+                NavXInternal *      navx_internal;
 
                 volatile float      yaw;
                 volatile float      pitch;
@@ -145,7 +143,7 @@ namespace rip
             public:
 
                  /**
-                  * Constructs the AHRS class using serial communication and the default update rate,
+                  * Constructs the NAVX class using serial communication and the default update rate,
                   * and returning processed(rather than raw) data.
                   *<p>
                   * This constructor should be used if communicating via either
@@ -153,9 +151,9 @@ namespace rip
                   *<p>
                   * @param serial_port_id SerialPort to use
                   */
-                AHRS(std::string serial_port_id);
+                NavX(std::string serial_port_id);
                 /**
-                 * Constructs the AHRS class using serial communication, overriding the
+                 * Constructs the NAVX class using serial communication, overriding the
                  * default update rate with a custom rate which may be from 4 to 200,
                  * representing the number of updates per second sent by the sensor.
                  *<p>
@@ -174,7 +172,7 @@ namespace rip
                  * @param data_type either kProcessedData or kRawData
                  * @param update_rate_hz Custom Update Rate(Hz)
                  */
-                AHRS(std::string serial_port_id, AHRS::serialDataType data_type, uint8_t update_rate_hz);
+                NavX(std::string serial_port_id, NavX::serialDataType data_type, uint8_t update_rate_hz);
 
                 /**
                  * Returns the current pitch value(in degrees, from -180 to 180)
@@ -276,7 +274,7 @@ namespace rip
                  * IO methods(SPI, I2C) are used; sensor timestamps are not
                  * provided when Serial-based IO methods(TTL UART, USB)
                  * are used.
-                 * @return The sensor timestamp corresponding to the current AHRS sensor data.
+                 * @return The sensor timestamp corresponding to the current NAVX sensor data.
                  */
                 long   getLastSensorTimestamp();
                 /**
@@ -384,7 +382,7 @@ namespace rip
                  * has recently rotated less than the Compass Noise Bandwidth(~2 degrees).
                  * @return Fused Heading in Degrees(range 0-360)
                  */
-                float  getFusedHeading();
+                units::Angle  getFusedHeading();
                 /**
                  * Indicates whether the current magnetic field strength diverges from the
                  * calibrated value for the earth's magnetic field by more than the currently-
@@ -684,7 +682,7 @@ namespace rip
                  *<p>
                  * @return The currently-configured board yaw axis/direction.
                  */
-                AHRS::BoardYawAxis getBoardYawAxis();
+                NavX::BoardYawAxis getBoardYawAxis();
                 /**
                  * Returns the version number of the firmware currently executing
                  * on the sensor.
@@ -751,7 +749,7 @@ namespace rip
                 void close();
 
             private:
-                void serialInit(std::string serial_port_id, AHRS::serialDataType data_type, uint8_t update_rate_hz);
+                void serialInit(std::string serial_port_id, NavX::serialDataType data_type, uint8_t update_rate_hz);
                 void commonInit(uint8_t update_rate_hz);
                 static void *threadFunc(void *threadarg);
 
@@ -760,4 +758,4 @@ namespace rip
         } // navx
     } // navigation
 } // rip
-#endif /* SRC_AHRS_H_ */
+#endif /* SRC_NAVX_H_ */

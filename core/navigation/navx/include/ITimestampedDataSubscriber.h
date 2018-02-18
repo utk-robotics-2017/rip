@@ -1,4 +1,4 @@
-#include "AHRSProtocol.h"
+#include "navx_protocol.h"
 
 /**
  * The ITimestampedDataSubscriber interface provides a method for consumers
@@ -32,7 +32,7 @@ namespace rip
             {
             public:
                 virtual ~ITimestampedDataSubscriber(){}
-                virtual void timestampedDataReceived(long system_timestamp, long sensor_timestamp, AHRSProtocol::AHRSUpdateBase& sensor_data, void * context) = 0;
+                virtual void timestampedDataReceived(long system_timestamp, long sensor_timestamp, NavXProtocol::NavXUpdateBase& sensor_data, void * context) = 0;
             };
         }
     }

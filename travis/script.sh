@@ -43,6 +43,7 @@ case $BRANCH in
   *)
     test_arduino_gen
     test_cmd_messenger
+    test_roboclaw
     ;;
 esac
 

@@ -1,5 +1,4 @@
 #include "mock_navx.hpp"
-#include <exceptions.hpp>
 #include <memory>
 #include <gtest/gtest.h>
 

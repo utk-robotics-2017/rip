@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.1)
 project(rip)
 message(building)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Can remove this if found to be not needed - was required on some machines
 # to correctly compile the codebase despite this line being in the

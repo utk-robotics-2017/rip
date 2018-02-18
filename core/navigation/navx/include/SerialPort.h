@@ -30,7 +30,7 @@ namespace rip
                     int baudRate;
                     int fd;
                     struct termios tty;
-                int err;
+                    int err;
 
                 public:
 
@@ -54,7 +54,6 @@ namespace rip
                     this->baudRate = baudRate;
                     this->id = id;
 
-
                     cfsetospeed(&tty,(speed_t)baudRate);
                     cfsetispeed(&tty,(speed_t)baudRate);
 
@@ -63,9 +62,6 @@ namespace rip
                     tty.c_cflag &= ~CSIZE;
                     tty.c_cflag |= CS8;
 
-                    //tty.c_cflag = CS8|CREAD|CLOCAL;
-
-                    //tty.c_cflag &= ~CRTSCTS;
                     tty.c_cc[VMIN] = 1;
                     tty.c_cc[VTIME] = 10;
 
@@ -127,7 +123,7 @@ namespace rip
                     int n = 0, loc = 0;
                     char buf = '\0';
                     memset(data, '\0', size);
-                    err = 0;
+                    //error tracks number of errors
                     do
                     {
                         n = ::read(this->fd, &buf, 1);
@@ -135,18 +131,17 @@ namespace rip
                         loc += n;
 
                         if(n == 0) err++;
-
-                        if(err > 100)
+                        //if read fails over 10 times, reset the serial interface and abandons this attempt at reading
+                        //throw will be caught by read, and read will be re-attempted
+                        if(err > 10)
                         {
                             err = 0;
                             reset();
                             close();
-                            std::this_thread::sleep_for(std::chrono::milliseconds(30000));
                             init(this->baudRate, this->id);
                             setTimeout(this->timeout);
                             setReadBufferSize(this->readBufferSize);
                             enableTermination(this->terminationChar);
-                            reset();
                             break;
                         }
                     } while(buf != terminationChar && loc < size);

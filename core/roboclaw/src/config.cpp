@@ -18,6 +18,7 @@
  *   \$$$$$$     \$$    \$$   \$$       \$$   \$$ \$$$$$$ \$$
  */
 #include "config.hpp"
+#include <iostream>
 namespace rip
 {
     namespace utilities
@@ -35,7 +36,7 @@ namespace rip
 
             Config::CommMode Config::getCommMode() const
             {
-                return static_cast<CommMode>(m_config && 0x03);
+                return static_cast<CommMode>(m_config & 0x03);
             }
 
             void Config::setBatteryMode(BatteryMode battery_mode)
@@ -49,13 +50,18 @@ namespace rip
 
             Config::BatteryMode Config::getBatteryMode() const
             {
-                return static_cast<BatteryMode>(m_config && 0x1C);
+
+                return static_cast<BatteryMode>(m_config & 0x1C);
             }
 
             void Config::setBaudRate(BaudRate baud_rate)
             {
+                if(static_cast<uint32_t>(this->getCommMode()) <= 1)
+                {
+                    throw InvalidCommMode("Baudrate cannot be set when commMode is RC/Analog");
+                }
                 // Clear baud rate using bit mask
-                uint16_t clear = 0xFF10;
+                uint16_t clear = 0xFF1F;
                 m_config &= clear;
 
                 m_config |= static_cast<uint16_t>(baud_rate);
@@ -63,11 +69,23 @@ namespace rip
 
             Config::BaudRate Config::getBaudRate() const
             {
-                return static_cast<BaudRate>(m_config && 0xE0);
+                switch(static_cast<uint32_t>(this->getCommMode()))
+                {
+                    case 0:
+                    case 1:
+                        throw InvalidCommMode("commMode is RC/Analog");
+                    case 2:
+                        throw InvalidCommMode("Simple serial is write only");
+                }
+                return static_cast<BaudRate>(m_config & 0xE0);
             }
 
             void Config::setPacketAddress(PacketAddress packet_address)
             {
+                if(static_cast<uint32_t>(this->getCommMode()) <= 1)
+                {
+                    throw InvalidCommMode("PacketAddress cannot be set when commMode is RC/Analog");
+                }
                 // Clear packet address using bit mask
                 uint16_t clear = 0xF0FF;
                 m_config &= clear;
@@ -77,6 +95,14 @@ namespace rip
 
             Config::PacketAddress Config::getPacketAddress() const
             {
+                switch(static_cast<uint32_t>(this->getCommMode()))
+                {
+                    case 0:
+                    case 1:
+                        throw InvalidCommMode("commMode is RC/Analog");
+                    case 2:
+                        throw InvalidCommMode("Simple serial is write only");
+                }
                 return static_cast<PacketAddress>(m_config & 0xF00);
             }
 
@@ -107,6 +133,11 @@ namespace rip
             void Config::set(uint16_t config)
             {
                 m_config = config;
+            }
+
+            uint16_t Config::get() const
+            {
+                return m_config;
             }
         }
     }
