@@ -15,7 +15,8 @@ RUN sudo apt-get -y install \
       libsuitesparse-dev
 
 # Install g2o
-COPY --chown=901:901 ./g2o /home/${LUSER}/code/g2o
+COPY ./g2o /home/${LUSER}/code/g2o
+RUN sudo chown -R ${LUSER}:${LUSER} /home/${LUSER}
 
 WORKDIR /home/${LUSER}/code/g2o
 RUN mkdir build
