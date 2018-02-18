@@ -10,11 +10,15 @@ namespace rip
         {
             namespace mocks
             {
-                class MockNavX : AHRS
+                class MockNavX : NavX
                 {
                 public:
                     //void setResponse();
-                    
+                    void int read(char *data, int size) override;
+
+                    void write(char *data, int length) override;
+
+
                 private:
                     //m_response;
                 }
