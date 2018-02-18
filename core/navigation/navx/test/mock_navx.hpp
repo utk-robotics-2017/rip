@@ -3,6 +3,7 @@
 #include <navx.h>
 #include <vector>
 #include <stdint.h>
+#include <SerialPort.h>
 
 namespace rip
 {
@@ -12,7 +13,7 @@ namespace rip
         {
             namespace mocks
             {
-                class MockNavX : NavX
+                class MockNavX : SerialPort
                 {
                 public:
                     /**
@@ -27,6 +28,10 @@ namespace rip
                      * @return int?
                      */
                     int read(char *data, int size) override;
+                    /**
+                     * last response
+                     * @return [description]
+                     */
                     std::vector<uint8_t> getLastResponse();
                     void write(char *data, int length) override;
 
