@@ -36,7 +36,10 @@ before_script:
   - docker build --tag rip_ci .
 #  - ./travis/before_script.sh $TRAVIS_BRANCH $TRAVIS_PULL_REQUEST $TRAVIS_PULL_REQUEST_BRANCH
 #  - ./travis/compile_g2o.sh
-  - docker run --name rip_ci rip_ci zsh -c "./travis/before_script.sh $TRAVIS_BRANCH $TRAVIS_PULL_REQUEST $TRAVIS_PULL_REQUEST_BRANCH"
+# start the container persistence:
+  - docker run --name rip_ci -t -d rip_ci zsh -l
+# run setup in container:
+  - docker exec -t --name rip_ci rip_ci zsh -c "./travis/before_script.sh $TRAVIS_BRANCH $TRAVIS_PULL_REQUEST $TRAVIS_PULL_REQUEST_BRANCH"
   - docker start rip_ci
 
 script:
@@ -45,4 +48,6 @@ script:
 after_script:
 #  - ./travis/after_script.sh $TRAVIS_BRANCH $TRAVIS_PULL_REQUEST $TRAVIS_PULL_REQUEST_BRANCH
   - docker exec -t rip_ci zsh -c "./travis/after_script.sh $TRAVIS_BRANCH $TRAVIS_PULL_REQUEST $TRAVIS_PULL_REQUEST_BRANCH"
+  - docker stop rip_ci
+  - docker rm rip_ci
 
