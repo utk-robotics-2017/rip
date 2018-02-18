@@ -11,7 +11,13 @@ namespace rip
         {
             const char *cpath = path.c_str();
             int err_num = spi_open(&spi, cpath, mode, max_speed);
-            // Add error checking
+            switch(err_num)
+            {
+                case -1: throw SpiArgError(spi_errmsg(&spi));
+                case -2: throw SpiOpenError(spi_errmsg(&spi));
+                case -4: throw SpiConfigureError(spi_errmsg(&spi));
+                default: break;
+            }
             return;
         }
 
@@ -29,21 +35,37 @@ namespace rip
                 bo = LSB_FIRST;
             }
             int err_num = spi_open_advanced(&spi, cpath, mode, max_speed, bo, bits_per_word, extra_flags);
-            // Add error checking
+            switch(err_num)
+            {
+                case -1: throw SpiArgError(spi_errmsg(&spi));
+                case -2: throw SpiOpenError(spi_errmsg(&spi));
+                case -4: throw SpiConfigureError(spi_errmsg(&spi));
+                default: break;
+            }
             return;
         }
 
         void Spi::transfer(const uint8_t *txbuf, uint8_t *rxbuf, size_t len)
         {
             int err_num = spi_transfer(&spi, txbuf, rxbuf, len);
-            // Add error checking
+            switch(err_num)
+            {
+                case -1: throw SpiArgError(spi_errmsg(&spi));
+                case -5: throw SpiTransferError(spi_errmsg(&spi));
+                default: break;
+            }
             return;
         }
 
         void Spi::close()
         {
             int err_num = spi_close(&spi);
-            // Add error checking
+            switch(err_num)
+            {
+                case -1: throw SpiArgError(spi_errmsg(&spi));
+                case -6: throw SpiCloseError(spi_errmsg(&spi));
+                default: break;
+            }
             return;
         }
 
@@ -51,7 +73,12 @@ namespace rip
         {
             unsigned int *mode;
             int err_num = spi_get_mode(&spi, mode);
-            // Add error checking
+            switch(err_num)
+            {
+                case -1: throw SpiArgError(spi_errmsg(&spi));
+                case -3: throw SpiQueryError(spi_errmsg(&spi));
+                default: break;
+            }
             return *mode;
         }
 
@@ -59,7 +86,12 @@ namespace rip
         {
             uint32_t *max_speed;
             int err_num = spi_get_max_speed(&spi, max_speed);
-            // Add error checking
+            switch(err_num)
+            {
+                case -1: throw SpiArgError(spi_errmsg(&spi));
+                case -3: throw SpiQueryError(spi_errmsg(&spi));
+                default: break;
+            }
             return *max_speed;
         }
 
@@ -67,7 +99,12 @@ namespace rip
         {
             spi_bit_order_t *bit_order;
             int err_num = spi_get_bit_order(&spi, bit_order);
-            // Add error checking
+            switch(err_num)
+            {
+                case -1: throw SpiArgError(spi_errmsg(&spi));
+                case -3: throw SpiQueryError(spi_errmsg(&spi));
+                default: break;
+            }
             int bo;
             if (*bit_order == MSB_FIRST)
             {
@@ -84,7 +121,12 @@ namespace rip
         {
             uint8_t *bpw;
             int err_num = spi_get_bits_per_word(&spi, bpw);
-            // Add error checking
+            switch(err_num)
+            {
+                case -1: throw SpiArgError(spi_errmsg(&spi));
+                case -3: throw SpiQueryError(spi_errmsg(&spi));
+                default: break;
+            }
             return *bpw;
         }
 
@@ -92,21 +134,37 @@ namespace rip
         {
             uint8_t *eflags;
             int err_num = spi_get_extra_flags(&spi, eflags);
-            // Add error checking
+            switch(err_num)
+            {
+                case -1: throw SpiArgError(spi_errmsg(&spi));
+                case -3: throw SpiQueryError(spi_errmsg(&spi));
+                default: break;
+            }
             return *eflags;
         }
 
         void Spi::setMode(unsigned int mode)
         {
             int err_num = spi_set_mode(&spi, mode);
-            // Add error checking
+            switch(err_num)
+            {
+                case -1: throw SpiArgError(spi_errmsg(&spi));
+                case -3: throw SpiQueryError(spi_errmsg(&spi));
+                case -4: throw SpiConfigureError(spi_errmsg(&spi));
+                default: break;
+            }
             return;
         }
 
         void Spi::setMaxSpeed(uint32_t max_speed)
         {
             int err_num = spi_set_max_speed(&spi, max_speed);
-            // Add error checking
+            switch(err_num)
+            {
+                case -1: throw SpiArgError(spi_errmsg(&spi));
+                case -4: throw SpiConfigureError(spi_errmsg(&spi));
+                default: break;
+            }
             return;
         }
 
@@ -122,21 +180,37 @@ namespace rip
                 bo = LSB_FIRST;
             }
             int err_num = spi_set_bit_order(&spi, bo);
-            // Add error checking
+            switch(err_num)
+            {
+                case -1: throw SpiArgError(spi_errmsg(&spi));
+                case -4: throw SpiConfigureError(spi_errmsg(&spi));
+                default: break;
+            }
             return;
         }
 
         void Spi::setBitsPerWord(uint8_t bits_per_word)
         {
             int err_num = spi_set_bits_per_word(&spi, bits_per_word);
-            // Add error checking
+            switch(err_num)
+            {
+                case -1: throw SpiArgError(spi_errmsg(&spi));
+                case -4: throw SpiConfigureError(spi_errmsg(&spi));
+                default: break;
+            }
             return;
         }
 
         void Spi::setExtraFlags(uint8_t extra_flags)
         {
             int err_num = spi_set_extra_flags(&spi, extra_flags);
-            // Add error checking
+            switch(err_num)
+            {
+                case -1: throw SpiArgError(spi_errmsg(&spi));
+                case -3: throw SpiQueryError(spi_errmsg(&spi));
+                case -4: throw SpiConfigureError(spi_errmsg(&spi));
+                default: break;
+            }
             return;
         }
 
@@ -148,8 +222,7 @@ namespace rip
         std::string Spi::toString(size_t len)
         {
             char *cstr;
-            int err_num = spi_tostring(&spi, cstr, len);
-            // Add error checking
+            spi_tostring(&spi, cstr, len);
             std::string str = cstr;
             return str;
         }
