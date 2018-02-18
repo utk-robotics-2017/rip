@@ -25,7 +25,7 @@ THE SOFTWARE.
  #ifndef IMU_REGISTERS_H_
  #define IMU_REGISTERS_H_
 
-#include "IMUProtocol.h"
+#include "navx/IMUProtocol.h"
 
 /*******************************************************************/
 /*******************************************************************/

@@ -1,6 +1,5 @@
+#include <navx/OffsetTracker.h>
 
-
-#include <OffsetTracker.h>
 namespace rip
 {
     namespace navigation

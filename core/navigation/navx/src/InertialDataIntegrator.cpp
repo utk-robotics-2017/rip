@@ -1,6 +1,5 @@
+#include <navx/InertialDataIntegrator.h>
 
-
-#include <InertialDataIntegrator.h>
 namespace rip
 {
     namespace navigation

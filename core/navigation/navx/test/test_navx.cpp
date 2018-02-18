@@ -1,6 +1,8 @@
-#include "mock_navx.hpp"
 #include <memory>
 #include <gtest/gtest.h>
+
+#include <navx/exceptions.h>
+#include "mock_navx.hpp"
 
 namespace rip
 {

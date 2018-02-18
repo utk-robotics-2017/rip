@@ -3,14 +3,14 @@
 #define SRC_SERIALIO_H_
 
 
-#include "SerialPort.h"
-#include "IIOProvider.h"
+#include "navx/SerialPort.h"
+#include "navx/IIOProvider.h"
 #include <stdint.h>
 #include <string.h>
-#include "navx_protocol.h"
-#include "IMUProtocol.h"
-#include "IIOCompleteNotification.h"
-#include "IBoardCapabilities.h"
+#include "navx/navx_protocol.h"
+#include "navx/IMUProtocol.h"
+#include "navx/IIOCompleteNotification.h"
+#include "navx/IBoardCapabilities.h"
 namespace rip
 {
     namespace navigation

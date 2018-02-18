@@ -1,4 +1,4 @@
-#include "navx_protocol.h"
+#include "navx/navx_protocol.h"
 
 /**
  * The ITimestampedDataSubscriber interface provides a method for consumers

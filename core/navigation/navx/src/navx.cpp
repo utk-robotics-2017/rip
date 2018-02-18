@@ -1,19 +1,21 @@
 
-#include <spdlog/spdlog.h>
 #include <sstream>
 #include <string>
 #include <iomanip>
-#include <navx.h>
-#include <navx_protocol.h>
 #include <ctime>
 #include <pthread.h>
-#include "IIOProvider.h"
-#include "IIOCompleteNotification.h"
-#include "IBoardCapabilities.h"
-#include "InertialDataIntegrator.h"
-#include "OffsetTracker.h"
-#include "ContinuousAngleTracker.h"
-#include "SerialIO.h"
+
+#include <spdlog/spdlog.h>
+#include <navx/navx.h>
+#include <navx/navx_protocol.h>
+#include <navx/IIOProvider.h>
+#include <navx/IIOCompleteNotification.h>
+#include <navx/IBoardCapabilities.h>
+#include <navx/InertialDataIntegrator.h>
+#include <navx/OffsetTracker.h>
+#include <navx/ContinuousAngleTracker.h>
+#include <navx/SerialIO.h>
+
 namespace rip
 {
     namespace navigation

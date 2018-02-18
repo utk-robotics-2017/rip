@@ -5,7 +5,7 @@
 #define SRC_IIOCOMPLETENOTIFICATION_H_
 
 #include "IMUProtocol.h"
-#include "navx_protocol.h"
+#include "navx/navx_protocol.h"
 namespace rip
 {
     namespace navigation
