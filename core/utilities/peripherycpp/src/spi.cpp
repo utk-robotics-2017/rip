@@ -4,7 +4,7 @@
 namespace rip
 {
 
-    namespace periphery
+    namespace peripherycpp
     {
 
         void Spi::open(const std::string path, unsigned int mode, uint32_t max_speed)

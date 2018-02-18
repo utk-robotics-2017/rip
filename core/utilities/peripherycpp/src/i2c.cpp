@@ -8,7 +8,7 @@
 namespace rip
 {
 
-    namespace periphery
+    namespace peripherycpp
     {
 
         void I2c::open(const std::string path)

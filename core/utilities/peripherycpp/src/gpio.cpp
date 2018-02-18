@@ -3,7 +3,7 @@
 namespace rip
 {
 
-    namespace periphery
+    namespace peripherycpp
     {
 
         void Gpio::open(unsigned int pin, int direction)

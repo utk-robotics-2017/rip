@@ -2,7 +2,7 @@
 
 namespace rip
 {
-    namespace periphery
+    namespace peripherycpp
     {
         // Primary Functions:
         void Serial::Open(std::string device, unsigned int baudrate)
