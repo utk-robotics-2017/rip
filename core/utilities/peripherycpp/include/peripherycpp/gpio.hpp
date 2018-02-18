@@ -28,6 +28,7 @@ namespace rip
                 /**
                  * read
                  * @brief  Read the state of the GPIO and return it.
+                 * @return  a bool describing the state of the GPIO.
                  */
                 bool read();
 
@@ -42,6 +43,7 @@ namespace rip
                  * poll
                  * @param timeout_ms  what it does depends on the value. If it is positive, it is a timeout in milliseconds. If 0, it is a non-blocking poll. If negative, it is a blocking poll.
                  * @brief  Poll a GPIO for the edge event configured with gpio_set_edge.
+                 * @return  1 on success, 0 on timeout
                  */
                 int poll(int timeout_ms);
 
@@ -54,18 +56,21 @@ namespace rip
                 /**
                  * supportsInterrupts
                  * @brief Query a GPIO for edge interrupt support.
+                 * @return  a bool stating whether the GPIO pin supports interrupts
                  */
                 bool supportsInterrupts();
 
                 /**
                  * getDirection
-                 * @brief  Query the configured direction of the GPIO. The direction is returned as an int of range [0, 4].
+                 * @brief  Query the configured direction of the GPIO.
+                 * @return  the direction, coded as an int of range [0, 4].
                  */
                 int getDirection();
 
                 /**
                  * getEdge
-                 * @brief  Query the configured edge of the GPIO. The edge is returned as an int of range [0, 3].
+                 * @brief  Query the configured edge of the GPIO.
+                 * @return  the edge, coded as an int of range [0, 3]
                  */
                 int getEdge();
 
@@ -86,12 +91,14 @@ namespace rip
                 /**
                  * pin
                  * @brief  Return the pin the GPIO handle was opened with.
+                 * @return  the pin the GPIO handle was opened with.
                  */
                 unsigned int pin();
 
                 /**
                  * fd
                  * @brief  Return the file descriptor (for the underlying sysfs GPIO "value" file) of the GPIO handle.
+                 * @return  the file descriptor of the GPIO handle.
                  */
                 int fd();
 
@@ -99,6 +106,7 @@ namespace rip
                  * toString
                  * @param len  the length of the returned string.
                  * @brief  Return a string representation of the GPIO handle.
+                 * @return  a string representation of the GPIO handle.
                  */
                 std::string toString(size_t len);
 

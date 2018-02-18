@@ -44,6 +44,7 @@ namespace rip
                 /**
                  * fd
                  * @brief  Return the file descriptor (for the underlying i2c-dev device) of the I2C handle.
+                 * @return  the file descriptor of the I2C handle.
                  */
                 int fd();
 
@@ -51,6 +52,7 @@ namespace rip
                  * toString
                  * @param len  the size of the string to be returned.
                  * @brief  Return a string representation of the I2C handle.
+                 * @return  the string representation of the I2C handle.
                  */
                 std::string toString(size_t len);
 
