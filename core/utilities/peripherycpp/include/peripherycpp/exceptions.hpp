@@ -25,45 +25,40 @@ namespace rip
     namespace peripherycpp
     {
             /**
-             * @class ExampleName
-             * @brief Brief description of exception.
+             * @class SerialOpenError
+             * @param SerialOpenError Serial fails to open.
              */
-            NEW_EX(ExampleName)
+            NEW_EX(SerialOpenError)
             /**
-             * @class SerialOpenFail
-             * @param SerialOpenFail Serial fails to open.
+             * @class SerialReadError
+             * @param SerialReadError Error to read bytes.
              */
-            NEW_EX(SerialOpenFail)
+            NEW_EX(SerialReadError)
             /**
-             * @class SerialReadFailure
-             * @param SerialReadFailure Failure to read bytes.
+             * @class SerialWriteError
+             * @param SerialWriteError Serial writing fails.
              */
-            NEW_EX(SerialReadFailure)
+            NEW_EX(SerialWriteError)
             /**
-             * @class SerialWriteFailure
-             * @param SerialWriteFailure Serial writing fails.
+             * @class SerialFlushError
+             * @param SerialFlushError Serial fails to flush.
              */
-            NEW_EX(SerialWriteFailure)
+            NEW_EX(SerialFlushError)
             /**
-             * @class SerialFlushFailure
-             * @param SerialFlushFailure Serial fails to flush.
+             * @class SerialCloseError
+             * @param SerialCloseError Serial fails to close.
              */
-            NEW_EX(SerialFlushFailure)
+            NEW_EX(SerialCloseError)
             /**
-             * @class SerialCloseFailure
-             * @param SerialCloseFailure Serial fails to close.
+             * @class SerialGetError
+             * @param SerialGetError Failed to get data from serial struct.
              */
-            NEW_EX(SerialCloseFailure)
+            NEW_EX(SerialGetError)
             /**
-             * @class SerialGetFailure
-             * @param SerialGetFailure Failed to get data from serial struct.
+             * @class SerialSetError
+             * @param SerialSetError Failed to set data in serial struct.
              */
-            NEW_EX(SerialGetFailure)
-            /**
-             * @class SerialSetFailure
-             * @param SerialSetFailure Failed to set data in serial struct.
-             */
-            NEW_EX(SerialSetFailure)
+            NEW_EX(SerialSetError)
             /**
              * @class I2cArgError
              * @param I2cArgError Invalid arguments.

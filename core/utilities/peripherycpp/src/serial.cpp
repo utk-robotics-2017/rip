@@ -11,7 +11,7 @@ namespace rip
         {
             if(serial_open(&m_serial, device.c_str(), baudrate) < 0)
             {
-                throw SerialOpenFail(serial_errmsg(&m_serial));
+                throw SerialOpenError(serial_errmsg(&m_serial));
             }
         }
 
@@ -34,7 +34,7 @@ namespace rip
             if(serial_open_advanced(&m_serial, device.c_str(), baudrate, databits, cpar,
                 stopbits, xonxoff, rtscts) < 0)
             {
-                throw SerialOpenFail(serial_errmsg(&m_serial));
+                throw SerialOpenError(serial_errmsg(&m_serial));
             }
         }
 
@@ -43,7 +43,7 @@ namespace rip
             std::vector<uint8_t> data(static_cast<int>(len));
             if(serial_read(&m_serial, &data[0], len, timeout_ms) < 0)
             {
-                throw SerialReadFailure(serial_errmsg(&m_serial));
+                throw SerialReadError(serial_errmsg(&m_serial));
             }
         }
 
@@ -51,7 +51,7 @@ namespace rip
         {
             if(serial_write(&m_serial, &data[0], data.size()) < 0)
             {
-                throw SerialWriteFailure(serial_errmsg(&m_serial));
+                throw SerialWriteError(serial_errmsg(&m_serial));
             }
         }
 
@@ -59,7 +59,7 @@ namespace rip
         {
             if(serial_flush(&m_serial) < 0) 
             {
-                throw SerialFlushFailure(serial_errmsg(&m_serial));
+                throw SerialFlushError(serial_errmsg(&m_serial));
             }
         }
 
@@ -68,7 +68,7 @@ namespace rip
             unsigned int *count;
             if(serial_input_waiting(&m_serial, count) < 0)
             {
-                throw SerialReadFailure(serial_errmsg(&m_serial));
+                throw SerialReadError(serial_errmsg(&m_serial));
             }
             return *count;
         }
@@ -78,7 +78,7 @@ namespace rip
             unsigned int *count;
             if(serial_output_waiting(&m_serial, count) < 0)
             {
-                throw SerialWriteFailure(serial_errmsg(&m_serial));
+                throw SerialWriteError(serial_errmsg(&m_serial));
             }
             return *count;
         }
@@ -92,7 +92,7 @@ namespace rip
             }
             else
             {
-                throw SerialReadFailure(serial_errmsg(&m_serial));
+                throw SerialReadError(serial_errmsg(&m_serial));
             }
         }
 
@@ -100,7 +100,7 @@ namespace rip
         {
             if(serial_close(&m_serial) < 0)
             {
-                throw SerialCloseFailure(serial_errmsg(&m_serial));
+                throw SerialCloseError(serial_errmsg(&m_serial));
             }
         }
 
@@ -110,7 +110,7 @@ namespace rip
             uint32_t *baudrate;
             if(serial_get_baudrate(&m_serial, baudrate) < 0)
             {
-                throw SerialGetFailure(serial_errmsg(&m_serial));
+                throw SerialGetError(serial_errmsg(&m_serial));
             }
             return *baudrate;
         }
@@ -120,7 +120,7 @@ namespace rip
             unsigned int *databits;
             if(serial_get_databits(&m_serial, databits) < 0)
             {
-                throw SerialGetFailure(serial_errmsg(&m_serial));
+                throw SerialGetError(serial_errmsg(&m_serial));
             }
             return *databits;
         }
@@ -130,7 +130,7 @@ namespace rip
             serial_parity_t *parity;
             if(serial_get_parity(&m_serial, parity) < 0)
             {
-                throw SerialGetFailure(serial_errmsg(&m_serial));
+                throw SerialGetError(serial_errmsg(&m_serial));
             }
             if (*parity == PARITY_NONE)
             {
@@ -151,7 +151,7 @@ namespace rip
             unsigned int *stopbits;
             if (serial_get_stopbits(&m_serial, stopbits) < 0)
             {
-                throw SerialGetFailure(serial_errmsg(&m_serial));
+                throw SerialGetError(serial_errmsg(&m_serial));
             }
             return *stopbits;
         }
@@ -161,7 +161,7 @@ namespace rip
             bool *xonxoff;
             if (serial_get_xonxoff(&m_serial, xonxoff) < 0)
             {
-                throw SerialGetFailure(serial_errmsg(&m_serial));
+                throw SerialGetError(serial_errmsg(&m_serial));
             }
             return *xonxoff;
         }
@@ -171,7 +171,7 @@ namespace rip
             bool *rtscts;
             if (serial_get_rtscts(&m_serial, rtscts) < 0)
             {
-                throw SerialGetFailure(serial_errmsg(&m_serial));
+                throw SerialGetError(serial_errmsg(&m_serial));
             }
             return *rtscts;
         }
@@ -181,7 +181,7 @@ namespace rip
         {
             if (serial_set_baudrate(&m_serial, baudrate) < 0)
             {
-                throw SerialSetFailure(serial_errmsg(&m_serial));
+                throw SerialSetError(serial_errmsg(&m_serial));
             }
         }
 
@@ -189,7 +189,7 @@ namespace rip
         {
             if (serial_set_baudrate(&m_serial, databits) < 0)
             {
-                throw SerialSetFailure(serial_errmsg(&m_serial));
+                throw SerialSetError(serial_errmsg(&m_serial));
             }
         }
 
@@ -210,7 +210,7 @@ namespace rip
             }
             if (serial_set_parity(&m_serial, cpar) < 0)
             {
-                throw SerialSetFailure(serial_errmsg(&m_serial));
+                throw SerialSetError(serial_errmsg(&m_serial));
             }
         }
 
@@ -218,7 +218,7 @@ namespace rip
         {
             if (serial_set_xonxoff(&m_serial, enabled) < 0)
             {
-                throw SerialSetFailure(serial_errmsg(&m_serial));
+                throw SerialSetError(serial_errmsg(&m_serial));
             }
         }
 
@@ -226,7 +226,7 @@ namespace rip
         {
             if (serial_set_rtscts(&m_serial, enabled) < 0)
             {
-                throw SerialSetFailure(serial_errmsg(&m_serial));
+                throw SerialSetError(serial_errmsg(&m_serial));
             }
         }
 
