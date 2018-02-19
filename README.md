@@ -2,9 +2,26 @@
 
 [![codecov](https://codecov.io/gh/utk-robotics-2017/rip/branch/master/graph/badge.svg?token=KqhG5MRr9F)](https://codecov.io/gh/utk-robotics-2017/rip)
 
+*Version 0.1*
+
 The Robotics Integrated Platform is designed as an all encompassing library for small autonomous robots using a raspberry pi or beaglebone as the primary controller.
 
+## Dependencies
+There are two ways to deal with the dependencies of RIP.
+
+1. Use the provided Docker.
+2. Install the packages natively on your local machine.
+
+### Docker
+Todo
+
+### Native Install
+Todo
+
 ## How to Contribute
+All contributions should be made through our [Git workflow](https://github.com/utk-robotics-2017/rip/wiki/Git-Workflow) and following our [coding standards](https://github.com/utk-robotics-2017/rip/wiki/Coding-Standards).
+
+Once your contributions are ready to be reviewed, please open a pull request to the dev branch. Ideally, mark your PR with the associated issues and the target milestone/version of RIP.
 
 ## Quick Start
 
@@ -29,21 +46,20 @@ If you'll be working on Arduino Gen, you would switch to one of the `arduino_gen
 
 ### Setup CMake
 1. Make a directory for the output files (i.e. `build` or `bin`), then go into it.
-2. Build for what you're working on.  
-   Replace `<TARGET>` with what you're building for. i.e. Arduino Gen is `ARDUINO_GEN`.
-    * Linux: `cmake -D <TARGET>=yes ..`
-    * Windows: `cmake -G "Unix Makefiles" -D <TARGET>=yes ..`
+2. Build the project.
+    * Linux: `cmake ..`
+    * Windows: `cmake -G "Unix Makefiles" ..`
 
 ### Make
 Type in `make` and you should start building rip, arduino_gen, etc.  
 Make can be sped up by passing `-j<N>`, where is `N` is the number of cores on your computer.
 
-## Core
-
-## ArduionGen
-
-## Appendages
-
-## Utilities
+### Build Script
+Optionally, rather than setting up the CMake build yourself, you may opt to use the included `build-linux.sh` script which will automatically build RIP in `build/` with testing enabled.
 
 ## License
+**The RIP License (Revision 0.3)**
+
+This software is available without warranty and without support. Use at your own risk. Literally. It might delete your filesystem or eat your cat. As long as you retain this notice, you can do whatever you want with this. If we meet some day, you owe me a beer.
+
+Go Vols!
