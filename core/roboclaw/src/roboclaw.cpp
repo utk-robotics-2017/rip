@@ -1,5 +1,3 @@
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wswitch-default"
 /*
  * The RIP License (Revision 0.3):
  * This software is available without warranty and without support.
@@ -90,6 +88,9 @@ namespace rip
                     break;
                 case Motor::kM2:
                     cmd = Command::kM2Duty;
+                    break;
+                default:
+                    assert(0);
                     break;
             }
 
@@ -208,6 +209,9 @@ namespace rip
                 case Motor::kM2:
                     cmd = Command::kGetM2Enc;
                     break;
+                default:
+                    assert(0);
+                    break;
             }
             std::vector<uint8_t> response = readN(5, cmd);
 
@@ -255,6 +259,9 @@ namespace rip
                 case Motor::kM2:
                     cmd = Command::kSetM2EncCount;
                     break;
+                default:
+                    assert(0);
+                    break;
             }
             writeN(cmd, ticks);
 
@@ -277,6 +284,9 @@ namespace rip
                     break;
                 case Motor::kM2:
                     cmd = Command::kGetM2Speed;
+                    break;
+                default:
+                    assert(0);
                     break;
             }
 
@@ -401,6 +411,9 @@ namespace rip
                 case Motor::kM2:
                     cmd = Command::kSetM2PID;
                     break;
+                default:
+                    assert(0);
+                    break;
             }
             writeN(cmd, kd, kp, ki, parameters.qpps);
         }
@@ -415,6 +428,9 @@ namespace rip
                     break;
                 case Motor::kM2:
                     cmd = Command::kReadM2PID;
+                    break;
+                default:
+                    assert(0);
                     break;
             }
 
@@ -451,6 +467,9 @@ namespace rip
                 case Motor::kM2:
                     cmd = Command::kSetM2PosPID;
                     break;
+                default:
+                    assert(0);
+                    break;
             }
 
             writeN(cmd, kd, kp, ki, parameters.kiMax, parameters.deadzone,
@@ -467,6 +486,9 @@ namespace rip
                     break;
                 case Motor::kM2:
                     cmd = Command::kReadM2PosPID;
+                    break;
+                default:
+                    assert(0);
                     break;
             }
 
@@ -510,6 +532,9 @@ namespace rip
                         case Motor::kM2:
                             cmd = Command::kM2Speed; //!< 36
                             break;
+                        default:
+                            assert(0);
+                            break;
                     }
                     speed = static_cast<int32_t>((*dynamics.getSpeed() / (m_wheel_radius * M_PI * 2)).to(1 / units::s) * m_ticks_per_rev);
                     writeN(cmd, speed);
@@ -524,6 +549,9 @@ namespace rip
                             break;
                         case Motor::kM2:
                             cmd = Command::kM2SpeedAccel; //!< 39
+                            break;
+                        default:
+                            assert(0);
                             break;
                     }
                     speed = static_cast<int32_t>((*dynamics.getSpeed() / (m_wheel_radius * M_PI * 2)).to(1 / units::s) * m_ticks_per_rev);
@@ -541,6 +569,9 @@ namespace rip
                         case Motor::kM2:
                             cmd = Command::kM2SpeedDist; //!< 42
                             break;
+                        default:
+                            assert(0);
+                            break;
                     }
                     speed = static_cast<int32_t>((*dynamics.getSpeed() / (m_wheel_radius * M_PI * 2)).to(1 / units::s) * m_ticks_per_rev);
                     dist = static_cast<uint32_t>((*dynamics.getDistance() / (m_wheel_radius * M_PI * 2)).to(units::none) * m_ticks_per_rev);
@@ -557,6 +588,9 @@ namespace rip
                             break;
                         case Motor::kM2:
                             cmd = Command::kM2SpeedAccelDist; //!< 45
+                            break;
+                        default:
+                            assert(0);
                             break;
                     }
                     speed = static_cast<int32_t>((*dynamics.getSpeed() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
@@ -576,12 +610,18 @@ namespace rip
                         case Motor::kM2:
                             cmd = Command::kM2SpeedAccelDeccelPos; //!< 45
                             break;
+                        default:
+                            assert(0);
+                            break;
                     }
                     speed = static_cast<int32_t>((*dynamics.getSpeed() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
                     dist = static_cast<uint32_t>((*dynamics.getDistance() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
                     accel = static_cast<uint32_t>((*dynamics.getAcceleration() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
                     decel = static_cast<uint32_t>((*dynamics.getDeceleration() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
                     writeN(cmd, accel, speed, decel, dist, static_cast<uint8_t>(respectBuffer));
+                    break;
+                default:
+                    assert(0);
                     break;
             }
         }
@@ -641,6 +681,9 @@ namespace rip
                     accel = static_cast<uint32_t>((*dynamics.getAcceleration() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
                     decel = static_cast<uint32_t>((*dynamics.getDeceleration() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
                     writeN(cmd, accel, speed, decel, dist, accel, speed, decel, dist, static_cast<uint8_t>(respectBuffer));
+                    break;
+                default:
+                    assert(0);
                     break;
             }
         }
@@ -935,9 +978,12 @@ namespace rip
                     return response[0];
                 case Motor::kM2:
                     return response[1];
+                default:
+                    assert(0);
+                    break;
             }
 
-            assert(false); // unreachable code
+            // unreachable code
             return 0;
         }
 
@@ -1000,4 +1046,3 @@ namespace rip
         }
     }
 }
-#pragma GCC diagnostic pop

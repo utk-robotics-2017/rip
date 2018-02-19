@@ -103,7 +103,7 @@ namespace rip
                 ASSERT_EQ(testClaw->getLastCmd()[2], 0x80);
                 ASSERT_EQ(testClaw->getLastCmd()[3], 0x1);
                 //correct size of byte array
-                ASSERT_EQ(testClaw->getLastCmd().size(), 6);
+                ASSERT_EQ(testClaw->getLastCmd().size(), 6u);
                 //final test: given proper conditions, does not throw an exception
                 testClaw->drive(Roboclaw::Motor::kM1, Roboclaw::kFullSpeedBackward);
                 ASSERT_NO_THROW(testClaw->drive(Roboclaw::Motor::kM1, Roboclaw::kFullSpeedBackward));
@@ -126,7 +126,7 @@ namespace rip
                 ASSERT_EQ(testClaw->getLastCmd()[2], 0x7f);
                 ASSERT_EQ(testClaw->getLastCmd()[3], 0xff);
                 //correct size of byte array
-                ASSERT_EQ(testClaw->getLastCmd().size(), 6);
+                ASSERT_EQ(testClaw->getLastCmd().size(), 6u);
                 //final test: given proper conditions, does not throw an exception
                 ASSERT_NO_THROW(testClaw->drive(Roboclaw::Motor::kM2, Roboclaw::kFullSpeedForward));
 
@@ -148,7 +148,7 @@ namespace rip
                 ASSERT_EQ(testClaw->getLastCmd()[2], 0x80);
                 ASSERT_EQ(testClaw->getLastCmd()[3], 0x1);
                 //correct size of byte array
-                ASSERT_EQ(testClaw->getLastCmd().size(), 6);
+                ASSERT_EQ(testClaw->getLastCmd().size(), 6u);
                 //final test: given proper conditions, does not throw an exception
                 ASSERT_NO_THROW(testClaw->drive(Roboclaw::Motor::kM2, Roboclaw::kFullSpeedBackward));
 
@@ -171,7 +171,7 @@ namespace rip
                 ASSERT_EQ(testClaw->getLastCmd()[4], 0x7f);
                 ASSERT_EQ(testClaw->getLastCmd()[5], 0xff);
                 //correct size of byte array
-                ASSERT_EQ(testClaw->getLastCmd().size(), 8);
+                ASSERT_EQ(testClaw->getLastCmd().size(), 8u);
                 //final test: given proper conditions, does not throw an exception
                 ASSERT_NO_THROW(testClaw->drive(Roboclaw::kFullSpeedForward));
 
@@ -194,7 +194,7 @@ namespace rip
                 ASSERT_EQ(testClaw->getLastCmd()[4], 0x80);
                 ASSERT_EQ(testClaw->getLastCmd()[5], 0x1);
                 //correct size of byte array
-                ASSERT_EQ(testClaw->getLastCmd().size(), 8);
+                ASSERT_EQ(testClaw->getLastCmd().size(), 8u);
                 //final test: given proper conditions, does not throw an exception
                 ASSERT_NO_THROW(testClaw->drive(Roboclaw::kFullSpeedBackward));
 
@@ -1111,10 +1111,10 @@ namespace rip
                 EXPECT_FLOAT_EQ(pparams->kp, 0);
                 EXPECT_FLOAT_EQ(pparams->ki, 0);
                 EXPECT_FLOAT_EQ(pparams->kd, 0);
-                EXPECT_EQ(pparams->kiMax, 0);
-                EXPECT_EQ(pparams->deadzone, 0);
-                EXPECT_EQ(pparams->min, 0);
-                EXPECT_EQ(pparams->max, 0);
+                EXPECT_EQ(pparams->kiMax, 0u);
+                EXPECT_EQ(pparams->deadzone, 0u);
+                EXPECT_EQ(pparams->min, 0u);
+                EXPECT_EQ(pparams->max, 0u);
 
                 response = {0xDE, 0xAD, 0xBE, 0xEF,//p
                             0x12, 0x34, 0x56, 0x78, //i
@@ -1132,9 +1132,9 @@ namespace rip
                 EXPECT_GE(pparams->ki, 0);
                 EXPECT_GE(pparams->kd, 0);
                 EXPECT_GE(pparams->kiMax, 0u);
-                EXPECT_GE(pparams->deadzone, 0);
-                EXPECT_GE(pparams->min, 0);
-                EXPECT_GE(pparams->max, 0);
+                EXPECT_GE(pparams->deadzone, 0u);
+                EXPECT_GE(pparams->min, 0u);
+                EXPECT_GE(pparams->max, 0u);
 
                 //floats are trash
                 ASSERT_NEAR(pparams->kp, static_cast<float>(0xDEADBEEF) / 1024, 20);
@@ -1202,10 +1202,10 @@ namespace rip
                 EXPECT_GE(pparams->kp, 0);
                 EXPECT_GE(pparams->ki, 0);
                 EXPECT_GE(pparams->kd, 0);
-                EXPECT_GE(pparams->kiMax, 0);
-                EXPECT_GE(pparams->deadzone, 0);
-                EXPECT_GE(pparams->min, 0);
-                EXPECT_GE(pparams->max, 0);
+                EXPECT_GE(pparams->kiMax, 0u);
+                EXPECT_GE(pparams->deadzone, 0u);
+                EXPECT_GE(pparams->min, 0u);
+                EXPECT_GE(pparams->max, 0u);
 
                 ASSERT_NEAR(pparams->kp, static_cast<float>(0xDEADBEEF) / 1024, 20);
                 EXPECT_NEAR(pparams->ki, static_cast<float>(0x12345678) / 1024, 20);
