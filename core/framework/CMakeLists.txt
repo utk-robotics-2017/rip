@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.1)
-project(core)
+project(framework)
 
 # utils built by top level cmake
 # appendages built by top level cmake
@@ -37,9 +37,4 @@ if(ENABLE_TESTING)
     set_property(TARGET ${PROJECT_NAME}_test PROPERTY CXX_STANDARD 11)
     target_link_libraries(${PROJECT_NAME}_test ${PROJECT_NAME})
     target_link_libraries(${PROJECT_NAME}_test gmock gtest googletest_rip_macros)
-
-    if(CMAKE_COMPILER_IS_GNUCXX)
-        include(CodeCoverage)
-        setup_target_for_coverage(${PROJECT_NAME}_coverage ${PROJECT_NAME}_test coverage)
-    endif()
 endif()

@@ -41,7 +41,7 @@ namespace rip
                 EXPECT_EQ(appendageTemplate->GetConstructors(), nullptr);
                 EXPECT_EQ(appendageTemplate->GetSetup(), nullptr);
                 EXPECT_EQ(appendageTemplate->GetLoop(), nullptr);
-                EXPECT_EQ(appendageTemplate->GetCommands().size(), 0);
+                EXPECT_EQ(appendageTemplate->GetCommands().size(), 0u);
             }
 
             TEST(AppendageTemplate_constructor, includes)

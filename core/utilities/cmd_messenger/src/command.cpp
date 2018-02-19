@@ -22,30 +22,27 @@
 
 namespace rip
 {
-    namespace utilities
+    namespace cmdmessenger
     {
-        namespace cmdmessenger
+        Command::Command(const std::string& id, int enum_, const std::string& argument_types)
+            : m_id(id)
+            , m_enum(enum_)
+            , m_argument_types(argument_types)
+        {}
+
+        std::string Command::getId() const
         {
-            Command::Command(const std::string& id, int enum_, const std::string& argument_types)
-                : m_id(id)
-                , m_enum(enum_)
-                , m_argument_types(argument_types)
-            {}
+            return m_id;
+        }
 
-            std::string Command::getId() const
-            {
-                return m_id;
-            }
+        int Command::getEnum() const
+        {
+            return m_enum;
+        }
 
-            int Command::getEnum() const
-            {
-                return m_enum;
-            }
-
-            std::string Command::getArgumentTypes() const
-            {
-                return m_argument_types;
-            }
+        std::string Command::getArgumentTypes() const
+        {
+            return m_argument_types;
         }
     }
 }
