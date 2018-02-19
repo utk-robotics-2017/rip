@@ -78,7 +78,7 @@ namespace rip
                     throw InvalidCommMode("Simple serial is write only");
                     break;
                 default:
-                    // do nothing?
+                    // TODO: What is upposed to happen in this case
                     break;
             }
             return static_cast<BaudRate>(m_config & 0xE0);
@@ -109,7 +109,7 @@ namespace rip
                     throw InvalidCommMode("Simple serial is write only");
                     break;
                 default:
-                    // do nothing?
+                    // TODO: What is upposed to happen in this case
                     break;
             }
             return static_cast<PacketAddress>(m_config & 0xF00);
