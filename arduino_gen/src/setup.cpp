@@ -24,7 +24,7 @@ namespace rip
             std::string rv = "";
             std::regex replace_regex("\\$(\\w+)\\$");
 
-            for(int i = 0; i < appendages.size(); i++)
+            for(size_t i = 0; i < appendages.size(); i++)
             {
                 std::shared_ptr<Appendage> appendage = appendages[i];
 

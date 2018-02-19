@@ -73,8 +73,13 @@ namespace rip
                 case 0:
                 case 1:
                     throw InvalidCommMode("commMode is RC/Analog");
+                    break;
                 case 2:
                     throw InvalidCommMode("Simple serial is write only");
+                    break;
+                default:
+                    // TODO: What is upposed to happen in this case
+                    break;
             }
             return static_cast<BaudRate>(m_config & 0xE0);
         }
@@ -99,8 +104,13 @@ namespace rip
                 case 0:
                 case 1:
                     throw InvalidCommMode("commMode is RC/Analog");
+                    break;
                 case 2:
                     throw InvalidCommMode("Simple serial is write only");
+                    break;
+                default:
+                    // TODO: What is upposed to happen in this case
+                    break;
             }
             return static_cast<PacketAddress>(m_config & 0xF00);
         }

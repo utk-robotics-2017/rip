@@ -176,7 +176,7 @@ namespace rip
 
                 std::vector<std::shared_ptr<Appendage>> appendages = mmap_to_vector(appendage_map, "A Type");
 
-                ASSERT_EQ(appendages.size(), 1);
+                ASSERT_EQ(appendages.size(), 1u);
 
                 ASSERT_EQ(constructors->toString(appendages),
                     "Type type [1] = {\n"

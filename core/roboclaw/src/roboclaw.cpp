@@ -89,6 +89,9 @@ namespace rip
                 case Motor::kM2:
                     cmd = Command::kM2Duty;
                     break;
+                default:
+                    assert(0);
+                    break;
             }
 
             writeN(cmd, speed);
@@ -206,6 +209,9 @@ namespace rip
                 case Motor::kM2:
                     cmd = Command::kGetM2Enc;
                     break;
+                default:
+                    assert(0);
+                    break;
             }
             std::vector<uint8_t> response = readN(5, cmd);
 
@@ -253,6 +259,9 @@ namespace rip
                 case Motor::kM2:
                     cmd = Command::kSetM2EncCount;
                     break;
+                default:
+                    assert(0);
+                    break;
             }
             writeN(cmd, ticks);
 
@@ -275,6 +284,9 @@ namespace rip
                     break;
                 case Motor::kM2:
                     cmd = Command::kGetM2Speed;
+                    break;
+                default:
+                    assert(0);
                     break;
             }
 
@@ -341,7 +353,7 @@ namespace rip
 
                 for (uint8_t i = 0; i < 48; i++)
                 {
-                    if (data != -1)
+                    if (data != 0xFF)
                     {
                         data = read(&m_serial, m_timeout);
                         version += data;
@@ -350,12 +362,12 @@ namespace rip
                         {
                             uint16_t ccrc;
                             data = read(&m_serial, m_timeout);
-                            if (data != -1)
+                            if (data != 0xFF)
                             {
                                 ccrc = static_cast<uint16_t>(data) << 8;
                                 data = read(&m_serial, m_timeout);
 
-                                if (data != -1)
+                                if (data != 0xFF)
                                 {
                                     ccrc |= data;
                                     if (crcGet() == ccrc)
@@ -399,6 +411,9 @@ namespace rip
                 case Motor::kM2:
                     cmd = Command::kSetM2PID;
                     break;
+                default:
+                    assert(0);
+                    break;
             }
             writeN(cmd, kd, kp, ki, parameters.qpps);
         }
@@ -413,6 +428,9 @@ namespace rip
                     break;
                 case Motor::kM2:
                     cmd = Command::kReadM2PID;
+                    break;
+                default:
+                    assert(0);
                     break;
             }
 
@@ -449,6 +467,9 @@ namespace rip
                 case Motor::kM2:
                     cmd = Command::kSetM2PosPID;
                     break;
+                default:
+                    assert(0);
+                    break;
             }
 
             writeN(cmd, kd, kp, ki, parameters.kiMax, parameters.deadzone,
@@ -465,6 +486,9 @@ namespace rip
                     break;
                 case Motor::kM2:
                     cmd = Command::kReadM2PosPID;
+                    break;
+                default:
+                    assert(0);
                     break;
             }
 
@@ -508,6 +532,9 @@ namespace rip
                         case Motor::kM2:
                             cmd = Command::kM2Speed; //!< 36
                             break;
+                        default:
+                            assert(0);
+                            break;
                     }
                     speed = static_cast<int32_t>((*dynamics.getSpeed() / (m_wheel_radius * M_PI * 2)).to(1 / units::s) * m_ticks_per_rev);
                     writeN(cmd, speed);
@@ -522,6 +549,9 @@ namespace rip
                             break;
                         case Motor::kM2:
                             cmd = Command::kM2SpeedAccel; //!< 39
+                            break;
+                        default:
+                            assert(0);
                             break;
                     }
                     speed = static_cast<int32_t>((*dynamics.getSpeed() / (m_wheel_radius * M_PI * 2)).to(1 / units::s) * m_ticks_per_rev);
@@ -539,6 +569,9 @@ namespace rip
                         case Motor::kM2:
                             cmd = Command::kM2SpeedDist; //!< 42
                             break;
+                        default:
+                            assert(0);
+                            break;
                     }
                     speed = static_cast<int32_t>((*dynamics.getSpeed() / (m_wheel_radius * M_PI * 2)).to(1 / units::s) * m_ticks_per_rev);
                     dist = static_cast<uint32_t>((*dynamics.getDistance() / (m_wheel_radius * M_PI * 2)).to(units::none) * m_ticks_per_rev);
@@ -555,6 +588,9 @@ namespace rip
                             break;
                         case Motor::kM2:
                             cmd = Command::kM2SpeedAccelDist; //!< 45
+                            break;
+                        default:
+                            assert(0);
                             break;
                     }
                     speed = static_cast<int32_t>((*dynamics.getSpeed() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
@@ -574,12 +610,18 @@ namespace rip
                         case Motor::kM2:
                             cmd = Command::kM2SpeedAccelDeccelPos; //!< 45
                             break;
+                        default:
+                            assert(0);
+                            break;
                     }
                     speed = static_cast<int32_t>((*dynamics.getSpeed() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
                     dist = static_cast<uint32_t>((*dynamics.getDistance() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
                     accel = static_cast<uint32_t>((*dynamics.getAcceleration() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
                     decel = static_cast<uint32_t>((*dynamics.getDeceleration() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
                     writeN(cmd, accel, speed, decel, dist, static_cast<uint8_t>(respectBuffer));
+                    break;
+                default:
+                    assert(0);
                     break;
             }
         }
@@ -640,6 +682,9 @@ namespace rip
                     decel = static_cast<uint32_t>((*dynamics.getDeceleration() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
                     writeN(cmd, accel, speed, decel, dist, accel, speed, decel, dist, static_cast<uint8_t>(respectBuffer));
                     break;
+                default:
+                    assert(0);
+                    break;
             }
         }
 //////////////////////////////////////////////////////////////////////////////////////////////
@@ -647,11 +692,6 @@ namespace rip
 //////////////////////////////////////////////////////////////////////////////////////////////
         std::vector<uint8_t> Roboclaw::readN(uint8_t n, Command cmd)
         {
-            uint8_t crc;
-
-            uint8_t value = 0;
-            uint8_t trys = kMaxRetries;
-            int16_t data;
 
             std::vector<uint8_t> command = {m_address, static_cast<uint8_t>(cmd)};
             for (uint8_t try_ = 0; try_ < kMaxRetries; try_++)
@@ -671,21 +711,21 @@ namespace rip
                     data = read(&m_serial, m_timeout);
                     crcUpdate(data);
                     response.push_back(data);
-                    if (data == -1)
+                    if (data == 0xFF)
                     {
                         continue;
                     }
                 }
 
-                if (data != -1)
+                if (data != 0xFF)
                 {
                     uint16_t ccrc;
                     data = read(&m_serial, m_timeout);
-                    if (data != -1)
+                    if (data != 0xFF)
                     {
                         ccrc = static_cast<uint16_t>(data) << 8;
                         data = read(&m_serial, m_timeout);
-                        if (data != -1)
+                        if (data != 0xFF)
                         {
                             ccrc |= data;
                             if (crcGet() == ccrc)
@@ -938,7 +978,13 @@ namespace rip
                     return response[0];
                 case Motor::kM2:
                     return response[1];
+                default:
+                    assert(0);
+                    break;
             }
+
+            // unreachable code
+            return 0;
         }
 
         void Roboclaw::validateConfig(nlohmann::json testcfg)

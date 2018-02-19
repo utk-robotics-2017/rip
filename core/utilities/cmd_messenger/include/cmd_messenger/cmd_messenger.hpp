@@ -1,3 +1,5 @@
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-parameter"
 /*
  * The RIP License (Revision 0.3):
  * This software is available without warranty and without support.
@@ -470,7 +472,7 @@ namespace rip
             typename std::enable_if<std::is_convertible<std::string, Desired>::value, Desired>::type fromBytesString(std::string& message)
             {
                 std::string rv;
-                int comma_position = message.find(m_field_separator);
+                size_t comma_position = message.find(m_field_separator);
                 if (comma_position != std::string::npos)
                 {
                     rv = message.substr(0, comma_position);
@@ -773,3 +775,4 @@ namespace rip
     }
 }
 #endif // CMD_MESSENGER_HPP
+#pragma GCC diagnostic pop

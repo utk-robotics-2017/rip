@@ -1,3 +1,9 @@
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-variable"
+#pragma GCC diagnostic ignored "-Wswitch-default"
+#pragma GCC diagnostic ignored "-Wsign-compare"
+#pragma GCC diagnostic ignored "-Wimplicit-fallthrough="
+
 #include "diag_roboclaw.hpp"
 namespace rip
 {
@@ -125,7 +131,7 @@ namespace rip
                 std::cout << std::endl << "NOTE: Damage can result from improper use. So don't do that" << std::endl;
                 std::cout << "Reading the current voltage values" << std::endl;
 
-                for (int i = 0; i < m_roboclaws.size(); i++)
+                for (size_t i = 0; i < m_roboclaws.size(); i++)
                 {
                     try
                     {
@@ -165,7 +171,7 @@ namespace rip
                         }
                         case 1:
                         {
-                            for (int i = 0; i < m_roboclaws.size(); i++)
+                            for (size_t i = 0; i < m_roboclaws.size(); i++)
                             {
                                 try
                                 {
@@ -181,7 +187,7 @@ namespace rip
                         }
                         case 2:
                         {
-                            for (int i = 0; i < m_roboclaws.size(); i++)
+                            for (size_t i = 0; i < m_roboclaws.size(); i++)
                             {
                                 try
                                 {
@@ -198,7 +204,7 @@ namespace rip
                         case 3:
                         {
                             //min max main
-                            for (int i = 0; i < m_roboclaws.size(); i++)
+                            for (size_t i = 0; i < m_roboclaws.size(); i++)
                             {
                                 try
                                 {
@@ -215,7 +221,7 @@ namespace rip
                         }
                         case 4:
                         {
-                            for (int i = 0; i < m_roboclaws.size(); i++)
+                            for (size_t i = 0; i < m_roboclaws.size(); i++)
                             {
                                 try
                                 {
@@ -241,7 +247,7 @@ namespace rip
                             std::cin.clear();
                             std::cin >> c;
                             minmax[1] = c * units::V;
-                            for (int i = 0; i < m_roboclaws.size(); i++)
+                            for (size_t i = 0; i < m_roboclaws.size(); i++)
                             {
                                 try
                                 {
@@ -265,7 +271,7 @@ namespace rip
                             std::cin >> c;
                             minmax[1] = c * units::V;
 
-                            for (int i = 0; i < m_roboclaws.size(); i++)
+                            for (size_t i = 0; i < m_roboclaws.size(); i++)
                             {
                                 try
                                 {
@@ -283,7 +289,7 @@ namespace rip
                             if (defaultsSet)
                             {
                                 std::cout << "setting roboclaw's back to their prior values (upon entering voltage menu)" << std::endl;
-                                for (int i = 0; i < m_roboclaws.size(); i++)
+                                for (size_t i = 0; i < m_roboclaws.size(); i++)
                                 {
                                     try
                                     {
@@ -324,7 +330,7 @@ namespace rip
                                        };
 
                 std::cout << "Reading status" << std::endl;
-                for (int i = 0; i < m_roboclaws.size(); i++)
+                for (size_t i = 0; i < m_roboclaws.size(); i++)
                 {
                     try
                     {
@@ -352,7 +358,7 @@ namespace rip
                 int n;
                 std::cout << "RoboClaw readversion" << std::endl;
                 std::cout << "Output should resemble: <USB Roboclaw 2x7a v4.1.24>" << std::endl;
-                for (int i = 0; i < m_roboclaws.size(); i++)
+                for (size_t i = 0; i < m_roboclaws.size(); i++)
                 {
                     try
                     {
@@ -376,7 +382,7 @@ namespace rip
                 std::cin.clear();
                 std::cin >> duty;
 
-                for (int i = 0; i < m_roboclaws.size(); i++)
+                for (size_t i = 0; i < m_roboclaws.size(); i++)
                 {
                     try
                     {
@@ -432,7 +438,7 @@ namespace rip
                         case 4:
                         case 5:
                         {
-                            for (int i = 0; i < m_roboclaws.size(); i++)
+                            for (size_t i = 0; i < m_roboclaws.size(); i++)
                             {
                                 try
                                 {
@@ -444,7 +450,7 @@ namespace rip
                                     std::cout << "Ensure that the dynamics are properly set." << std::endl;
                                 }
                             }
-                            for (int i = 0; i < m_roboclaws.size(); i++)
+                            for (size_t i = 0; i < m_roboclaws.size(); i++)
                             {
                                 try
                                 {
@@ -461,7 +467,7 @@ namespace rip
                         case 1:
                         case 2:
                         {
-                            for (int i = 0; i < m_roboclaws.size(); i++)
+                            for (size_t i = 0; i < m_roboclaws.size(); i++)
                             {
                                 try
                                 {
@@ -688,7 +694,7 @@ namespace rip
                                 std::cout << " Speed/acceleration dynamic type required" << std::endl;
                                 break;
                             }
-                            for (int i = 0; i < m_roboclaws.size(); i++)
+                            for (size_t i = 0; i < m_roboclaws.size(); i++)
                             {
                                 try
                                 {
@@ -711,7 +717,7 @@ namespace rip
 
                             do
                             {
-                                for (int i = 0; i < m_roboclaws.size(); i++)
+                                for (size_t i = 0; i < m_roboclaws.size(); i++)
                                 {
                                     try
                                     {
@@ -764,7 +770,7 @@ namespace rip
                                 dumb_iterator++;
                             }
                             while (numb != -1);
-                            for (int i = 0; i < m_roboclaws.size(); i++)
+                            for (size_t i = 0; i < m_roboclaws.size(); i++)
                             {
                                 try
                                 {
@@ -1889,3 +1895,4 @@ namespace rip
         }
     }
 }
+#pragma GCC diagnostic pop
