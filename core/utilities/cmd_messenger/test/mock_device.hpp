@@ -69,7 +69,7 @@ namespace rip
                 {
                     char* byte_pointer = reinterpret_cast<char*>(const_cast<T*>(&t));
                     std::string rv;
-                    for (int i = 0; i < sizeof(t); i++)
+                    for (size_t i = 0; i < sizeof(t); i++)
                     {
                         // Add the escape character
                         if (*byte_pointer == m_field_separator ||
@@ -96,7 +96,7 @@ namespace rip
                 {
                     std::string rv;
                     int comma_position = message.find("" + m_escape_character + m_field_separator);
-                    if (comma_position != std::string::npos)
+                    if (static_cast<size_t>(comma_position) != std::string::npos)
                     {
                         rv = message.substr(0, comma_position);
                         message.erase(0, comma_position);
@@ -105,6 +105,8 @@ namespace rip
                     return message.substr(0, message.size() - 1); // remove command separator
                 }
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-parameter"
                 /**
                  * @brief The version of the fromBytesString
                  *
@@ -120,6 +122,7 @@ namespace rip
                     throw cmdmessenger::UnconvertibleArgument();
                     return T();
                 }
+#pragma GCC diagnostic pop
 
                 /**
                  * @brief Converts part of a string (as a list of bytes) into an object of type T
@@ -139,7 +142,7 @@ namespace rip
                         return fromBytesString<T>(message);
                     }
                     char* byte_pointer = reinterpret_cast<char*>(&rv);
-                    for (int i = 0; i < sizeof(rv); i++)
+                    for (size_t i = 0; i < sizeof(rv); i++)
                     {
                         // Skip the escape character
                         if (message[i] == m_escape_character)
