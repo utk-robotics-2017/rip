@@ -106,6 +106,11 @@ namespace rip
                 upload_str = getUploadScript();
             }
 
+            // TODO: Move generation code to before the device folder gets removed.
+            // If an exception occurs during generation, we don't want to remove the old device_folder.
+
+            // REVIEW: Do we need to change the file and directory owners in addition to setting permissions?
+
             // Delete and create output dir
             FileHandle device_folder = fs::open(fmt::format("{}/{}", m_parent_folder, m_arduino));
             if (device_folder.exists() && device_folder.isDirectory())
