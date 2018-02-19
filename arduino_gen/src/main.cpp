@@ -2,25 +2,14 @@
 
 #include <args.hxx>
 #include <fmt/format.h>
+#include <cppfs/cppfs.h>
+#include <cppfs/fs.h>
+#include <cppfs/FileHandle.h>
 
 #include "arduino_gen/arduino_gen.hpp"
 
 int main(int argc, char* argv[])
 {
-    /*
-    if (argc != 2)
-    {
-        std::cerr << "usage: ./arduino_gen <config_file>" << std::endl;
-        return EXIT_FAILURE;
-    }
-
-    std::unique_ptr<rip::arduinogen::ArduinoGen> ag = std::unique_ptr<rip::arduinogen::ArduinoGen>(new rip::arduinogen::ArduinoGen("mega", ".", "/Robot/CurrentArduinoCode", "test/data/arduino_gen"));
-
-    ag->readConfig(argv[1], false);
-
-    std::cout << ag->getArduinoCode() << std::endl;
-    */
-
     args::ArgumentParser parser("ArduinoGen generates arduino code to be used with RIP.");
     args::HelpFlag help(parser, "help", "Display this help menu", {'h', "help"}, args::Options::Single);
     args::CompletionFlag completion(parser, {"complete"});
@@ -30,7 +19,8 @@ int main(int argc, char* argv[])
     args::ValueFlag<std::string> config(parser, "CONFIG", "Location of the config json file", {'c', "config"}, args::Options::Required | args::Options::Single);
     args::ValueFlag<std::string> parent_folder(parser, "PARENT_FOLDER", "Parent folder of the folder to put all the output files", {"parent_folder"}, "/Robot/CurrentArduinoCode", args::Options::Single);
     args::ValueFlag<std::string> appendages(parser, "APPENDAGES_FOLDER", "Folder of where to look for appendage files", {"appendages"}, "./appendages", args::Options::Single);
-    args::Flag noCopy(parser, "NO_COPY", "Don't copy existing files", {'n', "no_copy"}, args::Options::Single);
+    args::Flag noCopy(parser, "NO_COPY", "Don't copy existing files", {"no_copy"}, args::Options::Single);
+    args::Flag noGit(parser, "NO_GIT", "Don't git commit the files when uploading", {"no_git"}, args::Options::Single);
 
     args::Group buildUploadGroup(parser, "Build or Upload arduino code", args::Group::Validators::AtMostOne);
     args::Flag build(buildUploadGroup, "build", "Build the ino file into something that can be uploaded to the Arduino", {'b', "build"}, args::Options::Single);
@@ -79,12 +69,76 @@ int main(int argc, char* argv[])
      * build and upload are guarenteed to be mutually exclusive
     */
 
+    cppfs::FileHandle config_fh = cppfs::fs::open(args::get(config));
+    if (!config_fh.exists() || !config_fh.isFile())
+    {
+        std::cerr << fmt::format("The config file \"{}\" doesn't exist.", args::get(config)) << std::endl;
+        return EXIT_FAILURE;
+    }
+
+    cppfs::FileHandle parent_folder_fh = cppfs::fs::open(args::get(parent_folder));
+    if (!parent_folder_fh.exists() || !parent_folder_fh.isDirectory())
+    {
+        std::cerr << fmt::format("The parent folder \"{}\" doesn't exist.", args::get(parent_folder)) << std::endl;
+        return EXIT_FAILURE;
+    }
+
+    cppfs::FileHandle appendages_fh = cppfs::fs::open(args::get(appendages));
+    if (!appendages_fh.exists() || !appendages_fh.isDirectory())
+    {
+        std::cerr << fmt::format("The appendages folder \"{}\" doesn't exist.", args::get(appendages)) << std::endl;
+        return EXIT_FAILURE;
+    }
+
     rip::arduinogen::ArduinoGen ag(args::get(arduino), args::get(parent_folder), "/Robot/CurrentArduinoCode", args::get(appendages));
 
-    ag.readConfig(args::get(config));
-    ag.generateOutput(!args::get(noCopy));
+    try
+    {
+        ag.readConfig(args::get(config));
+    }
+    catch (std::exception e)
+    {
+        std::cerr << "ArduinoGen failed to read the config file.\n" << e.what() << std::endl;
+        return EXIT_FAILURE;
+    }
 
-    // TODO: Build and Upload
+    try
+    {
+        ag.generateOutput(!args::get(noCopy));
+    }
+    catch (std::exception e)
+    {
+        std::cerr << "ArduinoGen failed to generate the output.\n" << e.what() << std::endl;
+        return EXIT_FAILURE;
+    }
+
+    std::cout << "Arduino code generated." << std::endl;
+
+    // REVIEW: Do we want to check the build/upload flags before generating the new .ino?
+
+    // REVIEW: Is using std::system fine?
+
+    if (build)
+    {
+        std::system(fmt::format("pio run --project-dir {}/{}", args::get(parent_folder), args::get(arduino)).c_str());
+    }
+    else if (upload)
+    {
+        if (noGit)
+        {
+            std::system(fmt::format("pio run --project-dir {}/{} -t upload", args::get(parent_folder), args::get(arduino)).c_str());
+        }
+        else if (args::get(parent_folder) != "/Robot/CurrentArduinoCode")
+        {
+            std::cerr << "ArduinoGen will not upload when the parent_folder is not \"/Robot/CurrentArduinoCode\".\n"
+                         "You can override this using --no_git" << std::endl;
+            return EXIT_FAILURE;
+        }
+        else
+        {
+            std::system(fmt::format("sh {}/{}/upload.sh", args::get(parent_folder), args::get(arduino)).c_str());
+        }
+    }
 
     return EXIT_SUCCESS;
 }
