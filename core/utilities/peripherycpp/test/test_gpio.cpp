@@ -23,7 +23,14 @@ namespace rip
 
         namespace test
         {
+            TEST(Gpio_open, bad_direction)
+            {
+                Gpio g;
+                unsigned int pin = 50;
+                ASSERT_THROW(g.open(pin, 5), ArgError);
+            }
 
+            TEST(Gpio_open, 
         }
 
     }
