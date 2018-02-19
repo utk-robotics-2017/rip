@@ -21,39 +21,37 @@ namespace rip
             return;
         }
 
-        // void *ptr()
-
         uint32_t Mmio::read32(uintptr_t offset)
         {
-            uint32_t *value;
-            int err_num = mmio_read32(&mmio, offset, value);
+            uint32_t value;
+            int err_num = mmio_read32(&mmio, offset, &value);
             if (err_num == -1)
             {
                 throw MmioArgError(mmio_errmsg(&mmio));
             }
-            return *value;
+            return value;
         }
 
         uint16_t Mmio::read16(uintptr_t offset)
         {
-            uint16_t *value;
-            int err_num = mmio_read16(&mmio, offset, value);
+            uint16_t value;
+            int err_num = mmio_read16(&mmio, offset, &value);
             if (err_num == -1)
             {
                 throw MmioArgError(mmio_errmsg(&mmio));
             }
-            return *value;
+            return value;
         }
 
         uint8_t Mmio::read8(uintptr_t offset)
         {
-            uint8_t *value;
-            int err_num = mmio_read8(&mmio, offset, value);
+            uint8_t value;
+            int err_num = mmio_read8(&mmio, offset, &value);
             if (err_num == -1)
             {
                 throw MmioArgError(mmio_errmsg(&mmio));
             }
-            return *value;
+            return value;
         }
 
         std::vector<uint8_t> Mmio::read(uintptr_t offset, size_t len)
@@ -74,7 +72,6 @@ namespace rip
             {
                 throw MmioArgError(mmio_errmsg(&mmio));
             }
-            return;
         }
 
         void Mmio::write16(uintptr_t offset, uint16_t value)
@@ -84,7 +81,6 @@ namespace rip
             {
                 throw MmioArgError(mmio_errmsg(&mmio));
             }
-            return;
         }
 
         void Mmio::write8(uintptr_t offset, uint8_t value)
@@ -94,7 +90,6 @@ namespace rip
             {
                 throw MmioArgError(mmio_errmsg(&mmio));
             }
-            return;
         }
 
         void Mmio::write(uintptr_t offset, std::vector<uint8_t> &buf)
@@ -104,7 +99,6 @@ namespace rip
             {
                 throw MmioArgError(mmio_errmsg(&mmio));
             }
-            return;
         }
 
         void Mmio::close()
@@ -117,7 +111,6 @@ namespace rip
                 case -5: throw MmioUnmapError(mmio_errmsg(&mmio)); break;
                 default: break;
             }
-            return;
         }
 
         uintptr_t Mmio::base()
@@ -132,10 +125,9 @@ namespace rip
 
         std::string Mmio::toString(size_t len)
         {
-            char *cstr;
+            char *cstr = new char[len];
             mmio_tostring(&mmio, cstr, len);
-            std::string str = cstr;
-            return str;
+            return std::string(cstr);
         }
 
     }

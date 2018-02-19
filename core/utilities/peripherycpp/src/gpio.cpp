@@ -2,10 +2,8 @@
 
 namespace rip
 {
-
     namespace peripherycpp
     {
-
         void Gpio::open(unsigned int pin, int direction)
         {
             gpio_direction_t dir;
@@ -32,15 +30,15 @@ namespace rip
 
         bool Gpio::read()
         {
-            bool *val;
-            int err_code = gpio_read(&gpio, val);
+            bool val;
+            int err_code = gpio_read(&gpio, &val);
             switch(err_code)
             {
                 case -1: throw GpioArgError(gpio_errmsg(&gpio)); break;
                 case -4: throw GpioIoError(gpio_errmsg(&gpio)); break;
                 default: break;
             }
-            return *val;
+            return val;
         }
 
         void Gpio::write(bool value)
@@ -88,56 +86,62 @@ namespace rip
 
         bool Gpio::supportsInterrupts()
         {
-            bool *support;
-            int err_code = gpio_supports_interrupts(&gpio, support);
+            bool support;
+            int err_code = gpio_supports_interrupts(&gpio, &support);
             switch(err_code)
             {
                 case -1: throw GpioArgError(gpio_errmsg(&gpio)); break;
                 case -4: throw GpioIoError(gpio_errmsg(&gpio)); break;
                 default: break;
             }
-            return *support;
+            return support;
         }
 
         int Gpio::getDirection()
         {
-            gpio_direction_t *dir;
-            int err_code = gpio_get_direction(&gpio, dir);
+            gpio_direction_t dir;
+            int err_code = gpio_get_direction(&gpio, &dir);
+            int dirnum = 4; // by default preserve direction
+
             switch(err_code)
             {
                 case -1: throw GpioArgError(gpio_errmsg(&gpio)); break;
                 case -7: throw GpioGetDirectionError(gpio_errmsg(&gpio)); break;
                 default: break;
             }
-            int dirnum;
-            switch(*dir)
+
+            switch(dir)
             {
                 case GPIO_DIR_IN: dirnum = 0; break;
                 case GPIO_DIR_OUT: dirnum = 1; break;
                 case GPIO_DIR_OUT_LOW: dirnum = 2; break;
                 case GPIO_DIR_OUT_HIGH: dirnum = 3; break;
                 case GPIO_DIR_PRESERVE: dirnum = 4; break;
+                default: throw GpioGetDirectionError("Invalid enum value"); break;
             }
             return dirnum;
         }
 
         int Gpio::getEdge()
         {
-            gpio_edge_t *edge;
-            int err_code = gpio_get_edge(&gpio, edge);
+            gpio_edge_t edge;
+            int edgenum;
+            int err_code = gpio_get_edge(&gpio, &edge);
+
             switch(err_code)
             {
                 case -1: throw GpioArgError(gpio_errmsg(&gpio)); break;
                 case -9: throw GpioGetEdgeError(gpio_errmsg(&gpio)); break;
-                default: break;
+                default: /* do nothing */ break;
             }
-            int edgenum;
-            switch(*edge)
+
+            switch(edge)
             {
                 case GPIO_EDGE_NONE: edgenum = 0; break;
                 case GPIO_EDGE_RISING: edgenum = 1; break;
                 case GPIO_EDGE_FALLING: edgenum = 2; break;
                 case GPIO_EDGE_BOTH: edgenum = 3; break;
+                default: throw GpioGetEdgeError("Invalid enum value"); break;
             }
             return edgenum;
         }
@@ -161,7 +165,6 @@ namespace rip
                 case -6: throw GpioSetDirectionError(gpio_errmsg(&gpio)); break;
                 default: break;
             }
-            return;
         }
 
         void Gpio::setEdge(int edge)
@@ -182,7 +185,6 @@ namespace rip
                 case -8: throw GpioSetEdgeError(gpio_errmsg(&gpio)); break;
                 default: break;
             }
-            return;
         }
 
         unsigned int Gpio::pin()
@@ -200,12 +202,9 @@ namespace rip
 
         std::string Gpio::toString(size_t len)
         {
-            char *cstr;
+            char *cstr = new char[len];
             gpio_tostring(&gpio, cstr, len);
-            std::string str = cstr;
-            return str;
+            return std::string(cstr);
         }
-
     }
-
 }

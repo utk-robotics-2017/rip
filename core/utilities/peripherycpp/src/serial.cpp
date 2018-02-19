@@ -45,6 +45,7 @@ namespace rip
             {
                 throw SerialReadError(serial_errmsg(&m_serial));
             }
+            return data;
         }
 
         void Serial::write(std::vector<uint8_t> data)
@@ -65,28 +66,28 @@ namespace rip
 
         unsigned int Serial::inputWaiting()
         {
-            unsigned int *count;
-            if(serial_input_waiting(&m_serial, count) < 0)
+            unsigned int count;
+            if(serial_input_waiting(&m_serial, &count) < 0)
             {
                 throw SerialReadError(serial_errmsg(&m_serial));
             }
-            return *count;
+            return count;
         }
 
         unsigned int Serial::outputWaiting() 
         {
-            unsigned int *count;
-            if(serial_output_waiting(&m_serial, count) < 0)
+            unsigned int count;
+            if(serial_output_waiting(&m_serial, &count) < 0)
             {
                 throw SerialWriteError(serial_errmsg(&m_serial));
             }
-            return *count;
+            return count;
         }
 
         bool Serial::poll(int timeout_ms)
         {
             bool pollval = serial_poll(&m_serial, timeout_ms);
-            if(pollval >= 0)
+            if(pollval)
             {
                 return pollval;
             }
@@ -107,36 +108,36 @@ namespace rip
         // Getters:
         uint32_t Serial::getBaudrate()
         {
-            uint32_t *baudrate;
-            if(serial_get_baudrate(&m_serial, baudrate) < 0)
+            uint32_t baudrate;
+            if(serial_get_baudrate(&m_serial, &baudrate) < 0)
             {
                 throw SerialGetError(serial_errmsg(&m_serial));
             }
-            return *baudrate;
+            return baudrate;
         }
 
         unsigned int Serial::getDatabits()
         {
-            unsigned int *databits;
-            if(serial_get_databits(&m_serial, databits) < 0)
+            unsigned int databits;
+            if(serial_get_databits(&m_serial, &databits) < 0)
             {
                 throw SerialGetError(serial_errmsg(&m_serial));
             }
-            return *databits;
+            return databits;
         }
 
         int Serial::getParity()
         {
-            serial_parity_t *parity;
-            if(serial_get_parity(&m_serial, parity) < 0)
+            serial_parity_t parity;
+            if(serial_get_parity(&m_serial, &parity) < 0)
             {
                 throw SerialGetError(serial_errmsg(&m_serial));
             }
-            if (*parity == PARITY_NONE)
+            if (parity == PARITY_NONE)
             {
                 return 0;
             }
-            else if (*parity == PARITY_ODD)
+            else if (parity == PARITY_ODD)
             {
                 return 1;
             }
@@ -148,32 +149,32 @@ namespace rip
 
         unsigned int Serial::getStopbits()
         {
-            unsigned int *stopbits;
-            if (serial_get_stopbits(&m_serial, stopbits) < 0)
+            unsigned int stopbits;
+            if (serial_get_stopbits(&m_serial, &stopbits) < 0)
             {
                 throw SerialGetError(serial_errmsg(&m_serial));
             }
-            return *stopbits;
+            return stopbits;
         }
 
         bool Serial::getxOnxOff()
         {
-            bool *xonxoff;
-            if (serial_get_xonxoff(&m_serial, xonxoff) < 0)
+            bool xonxoff;
+            if (serial_get_xonxoff(&m_serial, &xonxoff) < 0)
             {
                 throw SerialGetError(serial_errmsg(&m_serial));
             }
-            return *xonxoff;
+            return xonxoff;
         }
 
         bool Serial::getRtscts()
         {
-            bool *rtscts;
-            if (serial_get_rtscts(&m_serial, rtscts) < 0)
+            bool rtscts;
+            if (serial_get_rtscts(&m_serial, &rtscts) < 0)
             {
                 throw SerialGetError(serial_errmsg(&m_serial));
             }
-            return *rtscts;
+            return rtscts;
         }
         
         // Setters:

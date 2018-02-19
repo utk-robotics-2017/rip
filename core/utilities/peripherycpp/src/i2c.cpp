@@ -7,14 +7,11 @@
 
 namespace rip
 {
-
     namespace peripherycpp
     {
-
         void I2c::open(const std::string path)
         {
-            const char *cpath = path.c_str(); 
-            int err_code = i2c_open(&i2c, cpath);
+            int err_code = i2c_open(&i2c, path.c_str());
             switch(err_code)
             {
                 case -1: throw I2cArgError(i2c_errmsg(&i2c)); break;
@@ -45,13 +42,16 @@ namespace rip
             {
                 throw I2cArgError("msg_data and flags must be the same size.");
             }
-            struct i2c_msg msgs[count];
+            struct i2c_msg *msgs = new struct i2c_msg[count];
             uint8_t *data;
             uint16_t size;
             for (int i = 0; i < (int)count; i++) 
             {
                 data = &(msg_data[i][0]);
                 size = msg_data[i].size();
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wpedantic"
                 if (flags[i] == 0)
                 {
                     msgs[i] = { .addr = EEPROM_I2C_ADDR, .flags = 0, .len = size, .buf = data };
@@ -60,6 +60,7 @@ namespace rip
                 {
                     msgs[i] = { .addr = EEPROM_I2C_ADDR, .flags = I2C_M_RD, .len = size, .buf = data };
                 }
+#pragma GCC diagnostic pop
             }
             int err_code = i2c_transfer(&i2c, msgs, count);
             switch(err_code)
@@ -91,10 +92,9 @@ namespace rip
 
         std::string I2c::toString(size_t len)
         {
-            char *str;
+            char *str = new char[len];
             i2c_tostring(&i2c, str, len);
-            std::string outstr = str;
-            return outstr;
+            return std::string(str);
         }
 
     }

@@ -3,14 +3,11 @@
 
 namespace rip
 {
-
     namespace peripherycpp
     {
-
         void Spi::open(const std::string path, unsigned int mode, uint32_t max_speed)
         {
-            const char *cpath = path.c_str();
-            int err_num = spi_open(&spi, cpath, mode, max_speed);
+            int err_num = spi_open(&spi, path.c_str(), mode, max_speed);
             switch(err_num)
             {
                 case -1: throw SpiArgError(spi_errmsg(&spi));
@@ -24,7 +21,6 @@ namespace rip
         void Spi::openAdvanced(const std::string path, unsigned int mode, uint32_t max_speed,
                                 int bit_order, uint8_t bits_per_word, uint8_t extra_flags)
         {
-            const char *cpath = path.c_str();
             spi_bit_order_t bo;
             if (bit_order == 0)
             {
@@ -34,7 +30,7 @@ namespace rip
             {
                 bo = LSB_FIRST;
             }
-            int err_num = spi_open_advanced(&spi, cpath, mode, max_speed, bo, bits_per_word, extra_flags);
+            int err_num = spi_open_advanced(&spi, path.c_str(), mode, max_speed, bo, bits_per_word, extra_flags);
             switch(err_num)
             {
                 case -1: throw SpiArgError(spi_errmsg(&spi));
@@ -42,7 +38,6 @@ namespace rip
                 case -4: throw SpiConfigureError(spi_errmsg(&spi));
                 default: break;
             }
-            return;
         }
 
         void Spi::transfer(const uint8_t *txbuf, uint8_t *rxbuf, size_t len)
@@ -54,7 +49,6 @@ namespace rip
                 case -5: throw SpiTransferError(spi_errmsg(&spi));
                 default: break;
             }
-            return;
         }
 
         void Spi::close()
@@ -66,81 +60,75 @@ namespace rip
                 case -6: throw SpiCloseError(spi_errmsg(&spi));
                 default: break;
             }
-            return;
         }
 
         unsigned int Spi::getMode()
         {
-            unsigned int *mode;
-            int err_num = spi_get_mode(&spi, mode);
+            unsigned int mode;
+            int err_num = spi_get_mode(&spi, &mode);
             switch(err_num)
             {
                 case -1: throw SpiArgError(spi_errmsg(&spi));
                 case -3: throw SpiQueryError(spi_errmsg(&spi));
                 default: break;
             }
-            return *mode;
+            return mode;
         }
 
         uint32_t Spi::getMaxSpeed()
         {
-            uint32_t *max_speed;
-            int err_num = spi_get_max_speed(&spi, max_speed);
+            uint32_t max_speed;
+            int err_num = spi_get_max_speed(&spi, &max_speed);
+
             switch(err_num)
             {
                 case -1: throw SpiArgError(spi_errmsg(&spi));
                 case -3: throw SpiQueryError(spi_errmsg(&spi));
                 default: break;
             }
-            return *max_speed;
+
+            return max_speed;
         }
 
         int Spi::getBitOrder()
         {
-            spi_bit_order_t *bit_order;
-            int err_num = spi_get_bit_order(&spi, bit_order);
+            spi_bit_order_t bit_order;
+            int err_num = spi_get_bit_order(&spi, &bit_order);
+
             switch(err_num)
             {
                 case -1: throw SpiArgError(spi_errmsg(&spi));
                 case -3: throw SpiQueryError(spi_errmsg(&spi));
                 default: break;
             }
-            int bo;
-            if (*bit_order == MSB_FIRST)
-            {
-                bo = 0;
-            }
-            else
-            {
-                bo = 1;
-            }
-            return bo;
+
+            return (bit_order == MSB_FIRST);
         }
 
         uint8_t Spi::getBitsPerWord()
         {
-            uint8_t *bpw;
-            int err_num = spi_get_bits_per_word(&spi, bpw);
+            uint8_t bpw;
+            int err_num = spi_get_bits_per_word(&spi, &bpw);
             switch(err_num)
             {
                 case -1: throw SpiArgError(spi_errmsg(&spi));
                 case -3: throw SpiQueryError(spi_errmsg(&spi));
                 default: break;
             }
-            return *bpw;
+            return bpw;
         }
 
         uint8_t Spi::getExtraFlags()
         {
-            uint8_t *eflags;
-            int err_num = spi_get_extra_flags(&spi, eflags);
+            uint8_t eflags;
+            int err_num = spi_get_extra_flags(&spi, &eflags);
             switch(err_num)
             {
                 case -1: throw SpiArgError(spi_errmsg(&spi));
                 case -3: throw SpiQueryError(spi_errmsg(&spi));
                 default: break;
             }
-            return *eflags;
+            return eflags;
         }
 
         void Spi::setMode(unsigned int mode)
@@ -153,7 +141,6 @@ namespace rip
                 case -4: throw SpiConfigureError(spi_errmsg(&spi));
                 default: break;
             }
-            return;
         }
 
         void Spi::setMaxSpeed(uint32_t max_speed)
@@ -165,7 +152,6 @@ namespace rip
                 case -4: throw SpiConfigureError(spi_errmsg(&spi));
                 default: break;
             }
-            return;
         }
 
         void Spi::setBitOrder(int bit_order)
@@ -186,7 +172,6 @@ namespace rip
                 case -4: throw SpiConfigureError(spi_errmsg(&spi));
                 default: break;
             }
-            return;
         }
 
         void Spi::setBitsPerWord(uint8_t bits_per_word)
@@ -198,7 +183,6 @@ namespace rip
                 case -4: throw SpiConfigureError(spi_errmsg(&spi));
                 default: break;
             }
-            return;
         }
 
         void Spi::setExtraFlags(uint8_t extra_flags)
@@ -211,7 +195,6 @@ namespace rip
                 case -4: throw SpiConfigureError(spi_errmsg(&spi));
                 default: break;
             }
-            return;
         }
 
         int Spi::fd()
@@ -221,12 +204,9 @@ namespace rip
 
         std::string Spi::toString(size_t len)
         {
-            char *cstr;
+            char *cstr = new char[len];
             spi_tostring(&spi, cstr, len);
-            std::string str = cstr;
-            return str;
+            return std::string(cstr);
         }
-
     }
-
 }
