@@ -173,12 +173,12 @@ namespace rip
         {
             switch(err_code)
             {
-                case SERIAL_ERROR_ARG: throw(SerialArgError(serial_errmsg(&m_serial))); break;
-                case SERIAL_ERROR_OPEN: throw(SerialOpenError(serial_errmsg(&m_serial))); break;
-                case SERIAL_ERROR_QUERY: throw(SerialQueryError(serial_errmsg(&m_serial))); break;
-                case SERIAL_ERROR_IO: throw(SerialIoError(serial_errmsg(&m_serial))); break;
-                case SERIAL_ERROR_CONFIGURE: throw(SerialConfigureError(serial_errmsg(&m_serial)));
-                case SERIAL_ERROR_CLOSE: throw(SerialCloseError(serial_errmsg(&m_serial)));
+                case SERIAL_ERROR_ARG: throw SerialArgError(serial_errmsg(&m_serial)); break;
+                case SERIAL_ERROR_OPEN: throw SerialOpenError(serial_errmsg(&m_serial)); break;
+                case SERIAL_ERROR_QUERY: throw SerialQueryError(serial_errmsg(&m_serial)); break;
+                case SERIAL_ERROR_IO: throw SerialIoError(serial_errmsg(&m_serial)); break;
+                case SERIAL_ERROR_CONFIGURE: throw SerialConfigureError(serial_errmsg(&m_serial)); break;
+                case SERIAL_ERROR_CLOSE: throw SerialCloseError(serial_errmsg(&m_serial)); break;
                 default: /* no defined error */ break;
             }
         }

@@ -89,11 +89,11 @@ namespace rip
         {
             switch(err_code)
             {
-                case -1: throw MmioArgError(mmio_errmsg(&m_mmio));   break;
-                case -2: throw MmioOpenError(mmio_errmsg(&m_mmio));  break;
-                case -3: throw MmioMapError(mmio_errmsg(&m_mmio));   break;
-                case -4: throw MmioCloseError(mmio_errmsg(&m_mmio)); break;
-                case -5: throw MmioUnmapError(mmio_errmsg(&m_mmio)); break;
+                case MMIO_ERROR_ARG: throw MmioArgError(mmio_errmsg(&m_mmio));   break;
+                case MMIO_ERROR_OPEN: throw MmioOpenError(mmio_errmsg(&m_mmio));  break;
+                case MMIO_ERROR_MAP: throw MmioMapError(mmio_errmsg(&m_mmio));   break;
+                case MMIO_ERROR_CLOSE: throw MmioCloseError(mmio_errmsg(&m_mmio)); break;
+                case MMIO_ERROR_UNMAP: throw MmioUnmapError(mmio_errmsg(&m_mmio)); break;
                 default: /* no defined error */ break;
             }
         }

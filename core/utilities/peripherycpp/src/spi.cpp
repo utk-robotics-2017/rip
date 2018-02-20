@@ -123,12 +123,12 @@ namespace rip
         {
             switch(err_code)
             {
-                case -1: throw SpiArgError(spi_errmsg(&m_spi));
-                case -2: throw SpiOpenError(spi_errmsg(&m_spi));
-                case -3: throw SpiQueryError(spi_errmsg(&m_spi));
-                case -4: throw SpiConfigureError(spi_errmsg(&m_spi));
-                case -5: throw SpiTransferError(spi_errmsg(&m_spi));
-                case -6: throw SpiCloseError(spi_errmsg(&m_spi));
+                case SPI_ERROR_ARG: throw SpiArgError(spi_errmsg(&m_spi));
+                case SPI_ERROR_OPEN: throw SpiOpenError(spi_errmsg(&m_spi));
+                case SPI_ERROR_QUERY: throw SpiQueryError(spi_errmsg(&m_spi));
+                case SPI_ERROR_CONFIGURE: throw SpiConfigureError(spi_errmsg(&m_spi));
+                case SPI_ERROR_TRANSFER: throw SpiTransferError(spi_errmsg(&m_spi));
+                case SPI_ERROR_CLOSE: throw SpiCloseError(spi_errmsg(&m_spi));
                 default: /* no defined error */ break;
             }
         }

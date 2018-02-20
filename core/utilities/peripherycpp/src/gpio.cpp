@@ -151,15 +151,15 @@ namespace rip
         {
             switch(err_code)
             {
-                case -1: throw GpioArgError(gpio_errmsg(&m_gpio)); break;
-                case -2: throw GpioExportError(gpio_errmsg(&m_gpio)); break;
-                case -3: throw GpioOpenError(gpio_errmsg(&m_gpio)); break;
-                case -4: throw GpioIoError(gpio_errmsg(&m_gpio)); break;
-                case -5: throw GpioCloseError(gpio_errmsg(&m_gpio)); break;
-                case -6: throw GpioSetDirectionError(gpio_errmsg(&m_gpio)); break;
-                case -7: throw GpioGetDirectionError(gpio_errmsg(&m_gpio)); break;
-                case -8: throw GpioSetEdgeError(gpio_errmsg(&m_gpio)); break;
-                case -9: throw GpioGetEdgeError(gpio_errmsg(&m_gpio)); break;
+                case GPIO_ERROR_ARG: throw GpioArgError(gpio_errmsg(&m_gpio)); break;
+                case GPIO_ERROR_EXPORT: throw GpioExportError(gpio_errmsg(&m_gpio)); break;
+                case GPIO_ERROR_OPEN: throw GpioOpenError(gpio_errmsg(&m_gpio)); break;
+                case GPIO_ERROR_IO: throw GpioIoError(gpio_errmsg(&m_gpio)); break;
+                case GPIO_ERROR_CLOSE: throw GpioCloseError(gpio_errmsg(&m_gpio)); break;
+                case GPIO_ERROR_SET_DIRECTION:
+                case GPIO_ERROR_GET_DIRECTION: throw GpioGetDirectionError(gpio_errmsg(&m_gpio)); break;
+                case GPIO_ERROR_SET_EDGE:
+                case GPIO_ERROR_GET_EDGE: throw GpioGetEdgeError(gpio_errmsg(&m_gpio)); break;
                 default: /* no defined error */ break;
               }
         }

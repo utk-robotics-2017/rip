@@ -81,12 +81,12 @@ namespace rip
         {
             switch(err_code)
             {
-                case -1: throw I2cArgError(i2c_errmsg(&m_i2c)); break;
-                case -2: throw I2cOpenError(i2c_errmsg(&m_i2c)); break;
-                case -3: throw I2cQuerySupportError(i2c_errmsg(&m_i2c)); break;
-                case -4: throw I2cNotSupportedError(i2c_errmsg(&m_i2c)); break;
-                case -5: throw I2cTransferError(i2c_errmsg(&m_i2c)); break;
-                case -6: throw I2cCloseError(i2c_errmsg(&m_i2c)); break;
+                case I2C_ERROR_ARG: throw I2cArgError(i2c_errmsg(&m_i2c)); break;
+                case I2C_ERROR_OPEN: throw I2cOpenError(i2c_errmsg(&m_i2c)); break;
+                case I2C_ERROR_QUERY_SUPPORT: throw I2cQuerySupportError(i2c_errmsg(&m_i2c)); break;
+                case I2C_ERROR_NOT_SUPPORTED: throw I2cNotSupportedError(i2c_errmsg(&m_i2c)); break;
+                case I2C_ERROR_TRANSFER: throw I2cTransferError(i2c_errmsg(&m_i2c)); break;
+                case I2C_ERROR_CLOSE: throw I2cCloseError(i2c_errmsg(&m_i2c)); break;
                 default: break;
             }
         }
