@@ -21,6 +21,8 @@
 #define SUBSYSTEM_HPP
 
 #include <string>
+#include <ostream>
+#include <istream>
 
 namespace rip
 {
@@ -33,6 +35,11 @@ namespace rip
                 : m_name(name)
             {}
 
+            void setName(const std::string& name)
+            {
+                m_name = name;
+            }
+
             std::string name() const
             {
                 return m_name;
@@ -40,6 +47,18 @@ namespace rip
 
             virtual bool diagnostic() = 0;
             virtual void stop() = 0;
+
+            /*
+                        void setDiagOut(std::ostream output)
+                        {
+                            m_diag_output = output;
+                        }
+
+                        void setDiagIn(std::istream input)
+                        {
+                            m_diag_input = input;
+                        }
+                        */
         private:
             std::string m_name;
         };

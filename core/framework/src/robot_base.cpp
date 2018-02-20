@@ -67,23 +67,6 @@ namespace rip
             m_running = false;
         }
 
-        void RobotBase::diagnostic()
-        {
-            if (!m_spine->diagnostic())
-            {
-                return;
-            }
-
-            for (auto iter : m_subsystems)
-            {
-                if (!iter.second->diagnostic())
-                {
-                    // Diagnostic
-                    return;
-                }
-            }
-        }
-
         void RobotBase::run()
         {
             nlohmann::json state;
