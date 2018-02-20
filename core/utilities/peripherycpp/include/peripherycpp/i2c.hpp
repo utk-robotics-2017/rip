@@ -15,13 +15,13 @@ namespace rip
     namespace peripherycpp
     {
 
-        class I2c 
+        class I2c
         {
             public:
 
                 /**
                  * open
-                 * @param path  the path to the desired i2c-dev device. 
+                 * @param path  the path to the desired i2c-dev device.
                  * @brief  Open the i2c-dev device at the specified path.
                  */
                 void open(const std::string path);
@@ -58,7 +58,14 @@ namespace rip
 
             private:
 
-                i2c_t i2c;
+                /**
+                 * checkError
+                 * @param err_code An int error code from Periphery I2C
+                 * @brief Acts as a error handler for the I2C class
+                 */
+                void checkError(int err_code);
+
+                i2c_t m_i2c;
 
         };
 

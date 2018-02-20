@@ -16,99 +16,55 @@ namespace rip
                 case 4: dir = GPIO_DIR_PRESERVE; break;
                 default: throw GpioArgError("direction must be in the range [0, 4].");
             }
-            int err_code = gpio_open(&gpio, pin, dir);
-            switch(err_code)
-            {
-                case -1: throw GpioArgError(gpio_errmsg(&gpio)); break;
-                case -2: throw GpioExportError(gpio_errmsg(&gpio)); break;
-                case -3: throw GpioOpenError(gpio_errmsg(&gpio)); break;
-                case -6: throw GpioSetDirectionError(gpio_errmsg(&gpio)); break;
-                default: break;
-            }
+            checkError(gpio_open(&m_gpio, pin, dir));
             return;
         }
 
         bool Gpio::read()
         {
             bool val;
-            int err_code = gpio_read(&gpio, &val);
-            switch(err_code)
-            {
-                case -1: throw GpioArgError(gpio_errmsg(&gpio)); break;
-                case -4: throw GpioIoError(gpio_errmsg(&gpio)); break;
-                default: break;
-            }
+            checkError(gpio_read(&m_gpio, &val));
             return val;
         }
 
         void Gpio::write(bool value)
         {
-            int err_code = gpio_write(&gpio, value);
-            switch(err_code)
-            {
-                case -1: throw GpioArgError(gpio_errmsg(&gpio)); break;
-                case -4: throw GpioIoError(gpio_errmsg(&gpio)); break;
-                default: break;
-            }
+            checkError(gpio_write(&m_gpio, value));
             return;
         }
 
         int Gpio::poll(int timeout_ms)
         {
-            int pollnum = gpio_poll(&gpio, timeout_ms);
+            int pollnum = gpio_poll(&m_gpio, timeout_ms);
             if (pollnum == 1 || pollnum == 0)
             {
                 return pollnum;
             }
             else
             {
-                switch(pollnum)
-                {
-                    case -1: throw GpioArgError(gpio_errmsg(&gpio)); break;
-                    case -4: throw GpioIoError(gpio_errmsg(&gpio)); break;
-                    default: break;
-                }
+                checkError(pollnum);
                 return -1;
             }
         }
 
         void Gpio::close()
         {
-            int err_code = gpio_close(&gpio);
-            switch(err_code)
-            {
-                case -1: throw GpioArgError(gpio_errmsg(&gpio)); break;
-                case -5: throw GpioCloseError(gpio_errmsg(&gpio)); break;
-                default: break;
-            }
-            return;
+            checkError(gpio_close(&m_gpio));
         }
 
         bool Gpio::supportsInterrupts()
         {
             bool support;
-            int err_code = gpio_supports_interrupts(&gpio, &support);
-            switch(err_code)
-            {
-                case -1: throw GpioArgError(gpio_errmsg(&gpio)); break;
-                case -4: throw GpioIoError(gpio_errmsg(&gpio)); break;
-                default: break;
-            }
+            checkError(gpio_supports_interrupts(&m_gpio, &support));
             return support;
         }
 
         int Gpio::getDirection()
         {
             gpio_direction_t dir;
-            int err_code = gpio_get_direction(&gpio, &dir);
             int dirnum = 4; // by default preserve direction
 
-            switch(err_code)
-            {
-                case -1: throw GpioArgError(gpio_errmsg(&gpio)); break;
-                case -7: throw GpioGetDirectionError(gpio_errmsg(&gpio)); break;
-                default: break;
-            }
+            checkError(gpio_get_direction(&m_gpio, &dir));
 
             switch(dir)
             {
@@ -126,14 +82,8 @@ namespace rip
         {
             gpio_edge_t edge;
             int edgenum;
-            int err_code = gpio_get_edge(&gpio, &edge);
 
-            switch(err_code)
-            {
-                case -1: throw GpioArgError(gpio_errmsg(&gpio)); break;
-                case -9: throw GpioGetEdgeError(gpio_errmsg(&gpio)); break;
-                default: /* do nothing */ break;
-            }
+            checkError(gpio_get_edge(&m_gpio, &edge));
 
             switch(edge)
             {
@@ -156,15 +106,9 @@ namespace rip
                 case 2: dir = GPIO_DIR_OUT_LOW; break;
                 case 3: dir = GPIO_DIR_OUT_HIGH; break;
                 case 4: dir = GPIO_DIR_PRESERVE; break;
-                default: throw GpioArgError("direction must be in the range [0, 4]."); break; 
+                default: throw GpioArgError("direction must be in the range [0, 4]."); break;
             }
-            int err_code = gpio_set_direction(&gpio, dir);
-            switch(err_code)
-            {
-                case -1: throw GpioArgError(gpio_errmsg(&gpio)); break;
-                case -6: throw GpioSetDirectionError(gpio_errmsg(&gpio)); break;
-                default: break;
-            }
+            checkError(gpio_set_direction(&m_gpio, dir));
         }
 
         void Gpio::setEdge(int edge)
@@ -178,33 +122,46 @@ namespace rip
                 case 3: ed = GPIO_EDGE_BOTH; break;
                 default: throw GpioArgError("edge must be in the range [0, 3].");
             }
-            int err_code = gpio_set_edge(&gpio, ed);
-            switch(err_code)
-            {
-                case -1: throw GpioArgError(gpio_errmsg(&gpio)); break;
-                case -8: throw GpioSetEdgeError(gpio_errmsg(&gpio)); break;
-                default: break;
-            }
+            checkError(gpio_set_edge(&m_gpio, ed));
         }
 
         unsigned int Gpio::pin()
         {
             unsigned int pinnum;
-            pinnum = gpio_pin(&gpio);
+            pinnum = gpio_pin(&m_gpio);
             return pinnum;
         }
 
         int Gpio::fd()
         {
-            int filedescriptor = gpio_fd(&gpio);
+            int filedescriptor = gpio_fd(&m_gpio);
             return filedescriptor;
         }
 
         std::string Gpio::toString(size_t len)
         {
             char *cstr = new char[len];
-            gpio_tostring(&gpio, cstr, len);
-            return std::string(cstr);
+            gpio_tostring(&m_gpio, cstr, len);
+            std::string ret(cstr);
+            delete [] cstr;
+            return ret;
+        }
+
+        void Gpio::checkError(int err_code)
+        {
+            switch(err_code)
+            {
+                case -1: throw GpioArgError(gpio_errmsg(&m_gpio)); break;
+                case -2: throw GpioExportError(gpio_errmsg(&m_gpio)); break;
+                case -3: throw GpioOpenError(gpio_errmsg(&m_gpio)); break;
+                case -4: throw GpioIoError(gpio_errmsg(&m_gpio)); break;
+                case -5: throw GpioCloseError(gpio_errmsg(&m_gpio)); break;
+                case -6: throw GpioSetDirectionError(gpio_errmsg(&m_gpio)); break;
+                case -7: throw GpioGetDirectionError(gpio_errmsg(&m_gpio)); break;
+                case -8: throw GpioSetEdgeError(gpio_errmsg(&m_gpio)); break;
+                case -9: throw GpioGetEdgeError(gpio_errmsg(&m_gpio)); break;
+                default: /* no defined error */ break;
+              }
         }
     }
 }

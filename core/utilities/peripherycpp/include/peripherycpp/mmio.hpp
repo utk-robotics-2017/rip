@@ -123,7 +123,14 @@ namespace rip
 
             private:
 
-                mmio_t mmio;
+                /**
+                 * checkError
+                 * @param err_code An int error code from Periphery MMIO
+                 * @brief Acts as a error handler for the MMIO class
+                 */
+                void checkError(int err_code);
+
+                mmio_t m_mmio;
 
         };
     }

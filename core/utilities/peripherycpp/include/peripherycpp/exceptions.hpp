@@ -24,171 +24,197 @@ namespace rip
 {
     namespace peripherycpp
     {
-            /**
-             * @class SerialOpenError
-             * @param SerialOpenError Serial fails to open.
-             */
-            NEW_EX(SerialOpenError)
-            /**
-             * @class SerialReadError
-             * @param SerialReadError Error to read bytes.
-             */
-            NEW_EX(SerialReadError)
-            /**
-             * @class SerialWriteError
-             * @param SerialWriteError Serial writing fails.
-             */
-            NEW_EX(SerialWriteError)
-            /**
-             * @class SerialFlushError
-             * @param SerialFlushError Serial fails to flush.
-             */
-            NEW_EX(SerialFlushError)
-            /**
-             * @class SerialCloseError
-             * @param SerialCloseError Serial fails to close.
-             */
-            NEW_EX(SerialCloseError)
-            /**
-             * @class SerialGetError
-             * @param SerialGetError Failed to get data from serial struct.
-             */
-            NEW_EX(SerialGetError)
-            /**
-             * @class SerialSetError
-             * @param SerialSetError Failed to set data in serial struct.
-             */
-            NEW_EX(SerialSetError)
-            /**
-             * @class I2cArgError
-             * @param I2cArgError Invalid arguments.
-             */
-            NEW_EX(I2cArgError)
-            /**
-             * @class I2cOpenError
-             * @param I2cOpenError Error occured while opening I2C device.
-             */
-            NEW_EX(I2cOpenError)
-            /**
-             * @class I2cQuerySupportError
-             * @param I2cQuerySupportError Error occured while querying I2C support on I2C device.
-             */
-            NEW_EX(I2cQuerySupportError)
-            /**
-             * @class I2cNotSupportedError
-             * @param I2cNotSupportedError I2C not supported on this device.
-             */
-            NEW_EX(I2cNotSupportedError)
-            /**
-             * @class I2cTransferError
-             * @param I2cTransferError Error occured during I2C transfer.
-             */
-            NEW_EX(I2cTransferError)
-            /**
-             * @class I2cCloseError
-             * @param I2cCloseError Error occured while closing the I2C device.
-             */
-            NEW_EX(I2cCloseError)
-            /**
-             * @class GpioArgError
-             * @param GpioArgError Invalid arguments.
-             */
-            NEW_EX(GpioArgError)
-            /**
-             * @class GpioExportError
-             * @param GpioExportError Error occured during GPIO export.
-             */
-            NEW_EX(GpioExportError)
-            /**
-             * @class GpioOpenError
-             * @param GpioOpenError Error occured while opening the GPIO value.
-             */
-            NEW_EX(GpioOpenError)
-            /**
-             * @class GpioIoError
-             * @param GpioIoError Error occured while reading/writing the GPIO value.
-             */
-            NEW_EX(GpioIoError)
-            /**
-             * @class GpioCloseError
-             * @param GpioCloseError Error occured while closing the GPIO value.
-             */
-            NEW_EX(GpioCloseError)
-            /**
-             * @class GpioSetDirectionError
-             * @param GpioSetDirectionError Error occured while setting the GPIO direction.
-             */
-            NEW_EX(GpioSetDirectionError)
-            /**
-             * @class GpioGetDirectionError
-             * @param GpioGetDirectionError Error occured while getting the GPIO direction.
-             */
-            NEW_EX(GpioGetDirectionError)
-            /**
-             * @class GpioSetEdgeError
-             * @param GpioSetEdgeError Error occured while setting the GPIO interrupt edge.
-             */
-            NEW_EX(GpioSetEdgeError)
-            /**
-             * @class GpioGetEdgeError
-             * @param GpioGetEdgeError Error occured while getting the GPIO interrupt edge.
-             */
-            NEW_EX(GpioGetEdgeError)
-            /**
-             * @class MmioArgError
-             * @param MmioArgError Invalid arguments.
-             */
-            NEW_EX(MmioArgError)
-            /**
-             * @class MmioOpenError
-             * @param MmioOpenError Error occured while opening /dev/mem.
-             */
-            NEW_EX(MmioOpenError)
-            /**
-             * @class MmioMapError
-             * @param MmioMapError Error occured while mapping memory.
-             */
-            NEW_EX(MmioMapError)
-            /**
-             * @class MmioCloseError
-             * @param MmioCloseError Error occured while closing /dev/mem.
-             */
-            NEW_EX(MmioCloseError)
-            /**
-             * @class MmioUnmapError
-             * @param MmioUnmapError Error occured while unmapping memory.
-             */
-            NEW_EX(MmioUnmapError)
-            /**
-             * @class SpiArgError
-             * @param SpiArgError Invalid arguments.
-             */
-            NEW_EX(SpiArgError)
-            /**
-             * @class SpiOpenError
-             * @param SpiOpenError Error occured while opening SPI device.
-             */
-            NEW_EX(SpiOpenError)
-            /**
-             * @class SpiQueryError
-             * @param SpiQueryError Error occured while querying SPI device settings.
-             */
-            NEW_EX(SpiQueryError)
-            /**
-             * @class SpiConfigureError
-             * @param SpiConfigureError Error occured while configuring SPI device.
-             */
-            NEW_EX(SpiConfigureError)
-            /**
-             * @class SpiTransferError
-             * @param SpiTransferError Error occured during SPI transfer.
-             */
-            NEW_EX(SpiTransferError)
-            /**
-             * @class SpiCloseError
-             * @param SpiCloseError Error occured while closing SPI device.
-             */
-            NEW_EX(SpiCloseError)
+        /**
+         * @class SerialArgError
+         * @brief Exception for when invalid serial arguments.
+         */
+        NEW_EX(SerialArgError)
+
+        /**
+         * @class SerialOpenError
+         * @brief Exception for when serial fails to open.
+         */
+        NEW_EX(SerialOpenError)
+
+        /**
+         * @class SerialQueryError
+         * @brief Exception when serial encounters an IO failure cannot query port attributes.
+         */
+        NEW_EX(SerialQueryError)
+
+        /**
+         * @class SerialIoError
+         * @brief Exception when serial encounters an IO failure.
+         */
+        NEW_EX(SerialIoError)
+
+        /**
+         * @class SerialConfigureError
+         * @brief Exception when serial fails to configure.
+         */
+        NEW_EX(SerialConfigureError)
+
+        /**
+         * @class SerialCloseError
+         * @brief Exception when serial fails to close.
+         */
+        NEW_EX(SerialCloseError)
+
+        /**
+         * @class I2cArgError
+         * @brief Excpetion for invalid I2C arguments.
+         */
+        NEW_EX(I2cArgError)
+
+        /**
+         * @class I2cOpenError
+         * @brief Exception for an error when opening I2C device.
+         */
+        NEW_EX(I2cOpenError)
+
+        /**
+         * @class I2cQuerySupportError
+         * @brief Exception for an error occured while querying I2C support on I2C device.
+         */
+        NEW_EX(I2cQuerySupportError)
+
+        /**
+         * @class I2cNotSupportedError
+         * @brief Exception for when I2C is not supported on the device.
+         */
+        NEW_EX(I2cNotSupportedError)
+
+        /**
+         * @class I2cTransferError
+         * @brief Exeption for an error during I2C transfer.
+         */
+        NEW_EX(I2cTransferError)
+
+        /**
+         * @class I2cCloseError
+         * @brief Exception for an error when closing the I2C device.
+         */
+        NEW_EX(I2cCloseError)
+
+        /**
+         * @class GpioArgError
+         * @brief Exception for invalid GPIO arguments.
+         */
+        NEW_EX(GpioArgError)
+
+        /**
+         * @class GpioExportError
+         * @brief Exception for an error during GPIO export.
+         */
+        NEW_EX(GpioExportError)
+
+        /**
+         * @class GpioOpenError
+         * @brief Exception for an error during opening the GPIO value.
+         */
+        NEW_EX(GpioOpenError)
+
+        /**
+         * @class GpioIoError
+         * @brief Exception for an error during reading/writing the GPIO value.
+         */
+        NEW_EX(GpioIoError)
+
+        /**
+         * @class GpioCloseError
+         * @brief Exception for an error when closing the GPIO value.
+         */
+        NEW_EX(GpioCloseError)
+
+        /**
+         * @class GpioSetDirectionError
+         * @brief Exception for an error when setting the GPIO direction.
+         */
+        NEW_EX(GpioSetDirectionError)
+
+        /**
+         * @class GpioGetDirectionError
+         * @brief Exception for an error when getting the GPIO direction.
+         */
+        NEW_EX(GpioGetDirectionError)
+
+        /**
+         * @class GpioSetEdgeError
+         * @brief Exception for an error when setting the GPIO interrupt edge.
+         */
+        NEW_EX(GpioSetEdgeError)
+
+        /**
+         * @class GpioGetEdgeError
+         * @brief Exception for an error when getting the GPIO interrupt edge.
+         */
+        NEW_EX(GpioGetEdgeError)
+
+        /**
+         * @class MmioArgError
+         * @brief Exception for invalid MMIO arguments.
+         */
+        NEW_EX(MmioArgError)
+
+        /**
+         * @class MmioOpenError
+         * @brief Exception for error when opening /dev/mem.
+         */
+        NEW_EX(MmioOpenError)
+
+        /**
+         * @class MmioMapError
+         * @brief Exception for an error when mapping memory.
+         */
+        NEW_EX(MmioMapError)
+
+        /**
+         * @class MmioCloseError
+         * @brief Exception for an error when closing /dev/mem.
+         */
+        NEW_EX(MmioCloseError)
+
+        /**
+         * @class MmioUnmapError
+         * @brief Exception for an error when unmapping memory.
+         */
+        NEW_EX(MmioUnmapError)
+
+        /**
+         * @class SpiArgError
+         * @brief Exception for invalid SPI arguements.
+         */
+        NEW_EX(SpiArgError)
+
+        /**
+         * @class SpiOpenError
+         * @brief Exception for an error when opening SPI device.
+         */
+        NEW_EX(SpiOpenError)
+
+        /**
+         * @class SpiQueryError
+         * @brief Exception for an error when querying SPI device settings.
+         */
+        NEW_EX(SpiQueryError)
+
+        /**
+         * @class SpiConfigureError
+         * @brief Exception for an error when configuring SPI device.
+         */
+        NEW_EX(SpiConfigureError)
+
+        /**
+         * @class SpiTransferError
+         * @brief Exception for an error during a SPI transfer.
+         */
+        NEW_EX(SpiTransferError)
+
+        /**
+         * @class SpiCloseError
+         * @brief Exception for an error when closing SPI device.
+         */
+        NEW_EX(SpiCloseError)
     }
 }
 

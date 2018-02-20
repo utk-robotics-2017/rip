@@ -11,17 +11,8 @@ namespace rip
     {
         void I2c::open(const std::string path)
         {
-            int err_code = i2c_open(&i2c, path.c_str());
-            switch(err_code)
-            {
-                case -1: throw I2cArgError(i2c_errmsg(&i2c)); break;
-                case -2: throw I2cOpenError(i2c_errmsg(&i2c)); break;
-                case -3: throw I2cQuerySupportError(i2c_errmsg(&i2c)); break;
-                case -4: throw I2cNotSupportedError(i2c_errmsg(&i2c)); break;
-                default: break;
-            }
-            return;
-        } 
+            checkError(i2c_open(&m_i2c, path.c_str()));
+        }
 
         void I2c::transfer(std::vector< std::vector<uint8_t> > msg_data, std::vector<int> flags, size_t count)
         {
@@ -45,7 +36,7 @@ namespace rip
             struct i2c_msg *msgs = new struct i2c_msg[count];
             uint8_t *data;
             uint16_t size;
-            for (int i = 0; i < (int)count; i++) 
+            for (int i = 0; i < (int)count; i++)
             {
                 data = &(msg_data[i][0]);
                 size = msg_data[i].size();
@@ -62,41 +53,43 @@ namespace rip
                 }
 #pragma GCC diagnostic pop
             }
-            int err_code = i2c_transfer(&i2c, msgs, count);
-            switch(err_code)
-            {
-                case -1: throw I2cArgError(i2c_errmsg(&i2c)); break;
-                case -5: throw I2cTransferError(i2c_errmsg(&i2c)); break;
-                default: break;
-            }
-            return;
+            delete [] msgs;
+            checkError(i2c_transfer(&m_i2c, msgs, count));
         }
 
         void I2c::close()
         {
-            int err_code = i2c_close(&i2c);
-            switch(err_code)
-            {
-                case -1: throw I2cArgError(i2c_errmsg(&i2c)); break;
-                case -6: throw I2cCloseError(i2c_errmsg(&i2c)); break;
-                default: break;
-            }
-            return;
+            checkError(i2c_close(&m_i2c));
         }
 
         int I2c::fd()
         {
-            int fd = i2c_fd(&i2c);
+            int fd = i2c_fd(&m_i2c);
             return fd;
         }
 
         std::string I2c::toString(size_t len)
         {
             char *str = new char[len];
-            i2c_tostring(&i2c, str, len);
-            return std::string(str);
+            i2c_tostring(&m_i2c, str, len);
+            std::string ret(str);
+            delete [] str;
+            return ret;
         }
 
+        void I2c::checkError(int err_code)
+        {
+            switch(err_code)
+            {
+                case -1: throw I2cArgError(i2c_errmsg(&m_i2c)); break;
+                case -2: throw I2cOpenError(i2c_errmsg(&m_i2c)); break;
+                case -3: throw I2cQuerySupportError(i2c_errmsg(&m_i2c)); break;
+                case -4: throw I2cNotSupportedError(i2c_errmsg(&m_i2c)); break;
+                case -5: throw I2cTransferError(i2c_errmsg(&m_i2c)); break;
+                case -6: throw I2cCloseError(i2c_errmsg(&m_i2c)); break;
+                default: break;
+            }
+        }
     }
 
 }
