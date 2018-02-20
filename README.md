@@ -16,7 +16,7 @@ There are two ways to deal with the dependencies of RIP.
 See the [Docker Readme](Docker.md).
 
 ### Native Install
-RIP requires several dependencies -- namely Eigen 3, Suitesparse, G2O, CMake, and GCC 4.9+. RIP GUIs require QT5.
+RIP requires several dependencies -- namely Eigen 3, Suitesparse, G2O, CMake, and GCC/G++ 4.9+. RIP GUIs require QT5.
 
 ## How to Contribute
 All contributions should be made through our [Git workflow](https://github.com/utk-robotics-2017/rip/wiki/Git-Workflow) and following our [coding standards](https://github.com/utk-robotics-2017/rip/wiki/Coding-Standards).
