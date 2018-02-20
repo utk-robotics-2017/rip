@@ -1,3 +1,6 @@
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+
 #include "mock_roboclaw.hpp"
 
 namespace rip
@@ -65,3 +68,4 @@ namespace rip
         }
     }
 }
+#pragma GCC diagnostic pop

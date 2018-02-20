@@ -10,7 +10,7 @@ extern "C"
 
 namespace rip
 {
-    
+
     namespace peripherycpp
     {
 
@@ -144,8 +144,14 @@ namespace rip
                 std::string toString(size_t len);
 
             private:
+                /**
+                 * checkError
+                 * @param err_code An int error code from Periphery Serial
+                 * @brief Acts as a error handler for the Serial class
+                 */
+                void checkError(int err_code);
 
-                spi_t spi;
+                spi_t m_spi;
         };
 
     }

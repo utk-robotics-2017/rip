@@ -713,7 +713,7 @@ namespace rip
                 for (int try_ = 0; try_ < kMaxRetries; try_++)
                 {
                     crcClear();
-                    for (int index = 0; index < command.size(); index++)
+                    for (size_t index = 0; index < command.size(); index++)
                     {
                         crcUpdate(command[index]);
                     }
@@ -732,6 +732,9 @@ namespace rip
                 throw CommandFailure();
             }
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+
             /**
              * @brief Converts a series of arguments that integer based into individual bytes that are added to a vector
              *
@@ -746,13 +749,13 @@ namespace rip
             {
                 auto value = std::get<I>(tup);
                 size_t size_v = sizeof(value);
-                for (int i_v = 0; i_v < size_v; i_v++)
+                for (size_t i_v = 0; i_v < size_v; i_v++)
                 {
                     command.push_back(value >> (8 * (size_v - 1 - i_v)));
                 }
 
                 argsToVector < I + 1, Args... > (command, tup);
-            };
+            }
 
             /**
              * @brief Ends the recursion
@@ -764,7 +767,9 @@ namespace rip
              * @param args The argument to add to the vector
              */
             template<int I = 0, typename... Args>
-            typename std::enable_if<I == sizeof...(Args), void>::type argsToVector(std::vector<uint8_t>& command, std::tuple<Args...> args) {};
+            typename std::enable_if<I == sizeof...(Args), void>::type argsToVector(std::vector<uint8_t>& command, std::tuple<Args...> args) {}
+
+#pragma GCC diagnostic pop
 
             /**
              * @brief Read N bytes

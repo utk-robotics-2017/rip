@@ -40,9 +40,9 @@ namespace rip
                 ASSERT_NO_THROW(cmd_messenger.send(device, command, 1));
 
                 std::string sent = device->getLastSent();
-                ASSERT_EQ(sent.size(), 6); // 1 2 byte int, 1 2 byte int and 2 1 byte chars
+                ASSERT_EQ(sent.size(), 6u); // 1 2 byte int, 1 2 byte int and 2 1 byte chars
 
-                ASSERT_EQ(device->fromBytes<uint16_t>(sent), 7);
+                ASSERT_EQ(device->fromBytes<uint16_t>(sent), 7u);
                 sent.erase(0, 1);
                 ASSERT_EQ(device->fromBytes<int16_t>(sent), 1);
             }
@@ -59,11 +59,11 @@ namespace rip
                 ASSERT_NO_THROW(cmd_messenger.send(device, command, 1));
 
                 std::string sent = device->getLastSent();
-                ASSERT_EQ(sent.size(), 6); // 1 2 byte int, 1 2 byte int and 2 1 byte chars
+                ASSERT_EQ(sent.size(), 6u); // 1 2 byte int, 1 2 byte int and 2 1 byte chars
 
-                ASSERT_EQ(device->fromBytes<uint16_t>(sent), 7);
+                ASSERT_EQ(device->fromBytes<uint16_t>(sent), 7u);
                 sent.erase(0, 1);
-                ASSERT_EQ(device->fromBytes<uint16_t>(sent), 1);
+                ASSERT_EQ(device->fromBytes<uint16_t>(sent), 1u);
             }
 
             TEST(CmdMessenger_send, Long)
@@ -78,9 +78,9 @@ namespace rip
                 ASSERT_NO_THROW(cmd_messenger.send(device, command, 1));
 
                 std::string sent = device->getLastSent();
-                ASSERT_EQ(sent.size(), 8); // 1 2 byte int, 1 4 byte string and 2 1 byte chars
+                ASSERT_EQ(sent.size(), 8u); // 1 2 byte int, 1 4 byte string and 2 1 byte chars
 
-                ASSERT_EQ(device->fromBytes<uint16_t>(sent), 7);
+                ASSERT_EQ(device->fromBytes<uint16_t>(sent), 7u);
                 sent.erase(0, 1);
                 ASSERT_EQ(device->fromBytes<int32_t>(sent), 1);
             }
@@ -97,11 +97,11 @@ namespace rip
                 ASSERT_NO_THROW(cmd_messenger.send(device, command, 123));
 
                 std::string sent = device->getLastSent();
-                ASSERT_EQ(sent.size(), 8); // 1 2 byte int, 1 4 byte int and 2 1 byte chars
+                ASSERT_EQ(sent.size(), 8u); // 1 2 byte int, 1 4 byte int and 2 1 byte chars
 
-                ASSERT_EQ(device->fromBytes<uint16_t>(sent), 7);
+                ASSERT_EQ(device->fromBytes<uint16_t>(sent), 7u);
                 sent.erase(0, 1);
-                ASSERT_EQ(device->fromBytes<uint32_t>(sent), 123);
+                ASSERT_EQ(device->fromBytes<uint32_t>(sent), 123u);
             }
 
             TEST(CmdMessenger_send, Float)
@@ -116,9 +116,9 @@ namespace rip
                 ASSERT_NO_THROW(cmd_messenger.send(device, command, 2.0f));
 
                 std::string sent = device->getLastSent();
-                ASSERT_EQ(sent.size(), 8); // 1 2 byte int, 1 4 byte float and 2 1 byte chars
+                ASSERT_EQ(sent.size(), 8u); // 1 2 byte int, 1 4 byte float and 2 1 byte chars
 
-                ASSERT_EQ(device->fromBytes<uint16_t>(sent), 7);
+                ASSERT_EQ(device->fromBytes<uint16_t>(sent), 7u);
                 sent.erase(0, 1);
                 ASSERT_FLOAT_EQ(device->fromBytes<float>(sent), 2.0);
             }
@@ -135,9 +135,9 @@ namespace rip
                 ASSERT_NO_THROW(cmd_messenger.send(device, command, 2.5));
 
                 std::string sent = device->getLastSent();
-                ASSERT_EQ(sent.size(), 8); // 1 2 byte int, 1 4 byte float and 2 1 byte chars
+                ASSERT_EQ(sent.size(), 8u); // 1 2 byte int, 1 4 byte float and 2 1 byte chars
 
-                ASSERT_EQ(device->fromBytes<uint16_t>(sent), 7);
+                ASSERT_EQ(device->fromBytes<uint16_t>(sent), 7u);
                 sent.erase(0, 1);
                 ASSERT_FLOAT_EQ(device->fromBytes<float>(sent), 2.5);
             }
@@ -154,9 +154,9 @@ namespace rip
                 ASSERT_NO_THROW(cmd_messenger.send(device, command, 'c'));
 
                 std::string sent = device->getLastSent();
-                ASSERT_EQ(sent.size(), 5); // 1 2 byte int, 1 1 byte char and 2 1 byte chars
+                ASSERT_EQ(sent.size(), 5u); // 1 2 byte int, 1 1 byte char and 2 1 byte chars
 
-                ASSERT_EQ(device->fromBytes<uint16_t>(sent), 7);
+                ASSERT_EQ(device->fromBytes<uint16_t>(sent), 7u);
                 sent.erase(0, 1);
                 ASSERT_EQ(device->fromBytes<char>(sent), 'c');
             }
@@ -173,9 +173,9 @@ namespace rip
                 ASSERT_NO_THROW(cmd_messenger.send(device, command, "Hello World"));
 
                 std::string sent = device->getLastSent();
-                ASSERT_EQ(sent.size(), 15); // 1 2 byte int, 1 12 byte string and 2 1 byte chars
+                ASSERT_EQ(sent.size(), 15u); // 1 2 byte int, 1 12 byte string and 2 1 byte chars
 
-                ASSERT_EQ(device->fromBytes<uint16_t>(sent), 7);
+                ASSERT_EQ(device->fromBytes<uint16_t>(sent), 7u);
                 sent.erase(0, 1);
                 ASSERT_EQ(device->fromBytes<std::string>(sent), "Hello World");
             }
@@ -192,9 +192,9 @@ namespace rip
                 ASSERT_NO_THROW(cmd_messenger.send(device, command, false));
 
                 std::string sent = device->getLastSent();
-                ASSERT_EQ(sent.size(), 5); // 1 2 byte int, 1 1 byte char and 2 1 byte chars
+                ASSERT_EQ(sent.size(), 5u); // 1 2 byte int, 1 1 byte char and 2 1 byte chars
 
-                ASSERT_EQ(device->fromBytes<uint16_t>(sent), 7);
+                ASSERT_EQ(device->fromBytes<uint16_t>(sent), 7u);
                 sent.erase(0, 1);
                 ASSERT_EQ(device->fromBytes<char>(sent), false);
             }
@@ -211,13 +211,13 @@ namespace rip
                 ASSERT_NO_THROW(cmd_messenger.send(device, command, 1, 2));
 
                 std::string sent = device->getLastSent();
-                ASSERT_EQ(sent.size(), 9); // 3 2 byte ints and 3 1 byte chars
+                ASSERT_EQ(sent.size(), 9u); // 3 2 byte ints and 3 1 byte chars
 
-                ASSERT_EQ(device->fromBytes<uint16_t>(sent), 7);
+                ASSERT_EQ(device->fromBytes<uint16_t>(sent), 7u);
                 sent.erase(0, 1);
-                ASSERT_EQ(device->fromBytes<uint16_t>(sent), 1);
+                ASSERT_EQ(device->fromBytes<uint16_t>(sent), 1u);
                 sent.erase(0, 1);
-                ASSERT_EQ(device->fromBytes<uint16_t>(sent), 2);
+                ASSERT_EQ(device->fromBytes<uint16_t>(sent), 2u);
             }
 
             TEST(CmdMessenger_send, MultiIntFloat)
@@ -232,11 +232,11 @@ namespace rip
                 ASSERT_NO_THROW(cmd_messenger.send(device, command, 1, 2.0));
 
                 std::string sent = device->getLastSent();
-                ASSERT_EQ(sent.size(), 11); //2 2 byte ints, 1 4 byte float and 3 1 byte chars
+                ASSERT_EQ(sent.size(), 11u); //2 2 byte ints, 1 4 byte float and 3 1 byte chars
 
-                ASSERT_EQ(device->fromBytes<uint16_t>(sent), 7);
+                ASSERT_EQ(device->fromBytes<uint16_t>(sent), 7u);
                 sent.erase(0, 1);
-                ASSERT_EQ(device->fromBytes<uint16_t>(sent), 1);
+                ASSERT_EQ(device->fromBytes<uint16_t>(sent), 1u);
                 sent.erase(0, 1);
                 ASSERT_FLOAT_EQ(device->fromBytes<float>(sent), 2.0);
             }
@@ -341,7 +341,7 @@ namespace rip
 
                 std::tuple<ArduinoCmdMessenger::UnsignedLongType> response_tuple;
                 ASSERT_NO_THROW(response_tuple = cmd_messenger.receive<ArduinoCmdMessenger::UnsignedLongType>(command));
-                ASSERT_EQ(std::get<0>(response_tuple), 16);
+                ASSERT_EQ(std::get<0>(response_tuple), 16u);
             }
 
             TEST(CmdMessenger_response, Float)

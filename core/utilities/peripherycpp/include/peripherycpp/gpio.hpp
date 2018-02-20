@@ -111,8 +111,14 @@ namespace rip
                 std::string toString(size_t len);
 
             private:
+                /**
+                 * checkError
+                 * @param err_code An int error code from Periphery GPIO
+                 * @brief Acts as a error handler for the GPIO class
+                 */
+                void checkError(int err_code);
 
-                gpio_t gpio;
+                gpio_t m_gpio;
         };
 
     }

@@ -65,7 +65,7 @@ namespace rip
              * @brief  Query the number of bytes waiting to be written from the serial port.
              * @return  the number of bytes waiting to be written from the serial port.
              */
-            unsigned int outputWaiting(); 
+            unsigned int outputWaiting();
 
             /**
              * inputWaiting
@@ -166,8 +166,15 @@ namespace rip
             void setRtscts(bool enabled);
 
         private:
+            /**
+             * checkError
+             * @param err_code An int error code from Periphery Serial
+             * @brief Acts as a error handler for the Serial class
+             */
+            void checkError(int err_code);
 
             serial_t m_serial;
+
         };
     }
 }
