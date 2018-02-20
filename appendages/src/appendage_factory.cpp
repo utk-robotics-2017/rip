@@ -8,8 +8,6 @@
 
 #include "appendages/exceptions.hpp"
 
-using namespace rip::utilities;
-
 namespace rip
 {
     namespace appendages
@@ -36,9 +34,9 @@ namespace rip
         }
 
         void AppendageFactory::registerAppendage(const std::string& type, std::function<std::shared_ptr<Appendage>(const nlohmann::json&,
-                                                                                          const std::map<std::string, int>&,
-                                                                                          std::shared_ptr<cmdmessenger::Device>)
-                                                 > constructor)
+                const std::map<std::string, int>&,
+                std::shared_ptr<cmdmessenger::Device>)
+                > constructor)
         {
             m_constructors[type] = constructor;
         }

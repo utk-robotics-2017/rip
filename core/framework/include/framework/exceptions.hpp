@@ -19,19 +19,16 @@
  */
 #ifndef EXCEPTIONS_HPP
 #define EXCEPTIONS_HPP
-#include <exception_base.hpp>
+#include <misc/exception_base.hpp>
 
 namespace rip
 {
-    namespace core
+    namespace framework
     {
-        namespace framework
-        {
-            NEW_EX(AppendageNotFound)
-            NEW_EX(FileNotFound)
-            NEW_EX(AppendageWithoutType)
-            NEW_EX(CannotLoadDevice)
-        }
+        NEW_EX(AppendageNotFound)
+        NEW_EX(FileNotFound)
+        NEW_EX(AppendageWithoutType)
+        NEW_EX(CannotLoadDevice)
     }
 }
 #endif // EXCEPTIONS_HPP

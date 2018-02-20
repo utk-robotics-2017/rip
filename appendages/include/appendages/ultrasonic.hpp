@@ -42,7 +42,7 @@ namespace rip
              * @param command_map A map of the name of the commands to their enumerations
              * @param device The connection to the device
              */
-            static std::shared_ptr<Appendage> create(const nlohmann::json& config, const std::map<std::string, int>& command_map, std::shared_ptr<utilities::cmdmessenger::Device> device);
+            static std::shared_ptr<Appendage> create(const nlohmann::json& config, const std::map<std::string, int>& command_map, std::shared_ptr<cmdmessenger::Device> device);
 
         private:
             /**
@@ -52,10 +52,10 @@ namespace rip
              * @param command_map A map of the name of the commands to their enumerations
              * @param device The connection to the device
              */
-            Ultrasonic(const nlohmann::json& config, const std::map<std::string, int>& command_map, std::shared_ptr<utilities::cmdmessenger::Device> device);
+            Ultrasonic(const nlohmann::json& config, const std::map<std::string, int>& command_map, std::shared_ptr<cmdmessenger::Device> device);
 
-            std::shared_ptr<utilities::cmdmessenger::Command> m_read;
-            std::shared_ptr<utilities::cmdmessenger::Command> m_read_result;
+            std::shared_ptr<cmdmessenger::Command> m_read;
+            std::shared_ptr<cmdmessenger::Command> m_read_result;
         };
     }
 }

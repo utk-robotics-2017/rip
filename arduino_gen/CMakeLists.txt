@@ -11,7 +11,7 @@ set_property(TARGET _${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
 if(ENABLE_TESTING)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage -DTESTING")
 endif()
-target_link_libraries(_${PROJECT_NAME} fmt json spdlog tinyxml2 cppfs exceptions_base)
+target_link_libraries(_${PROJECT_NAME} fmt json spdlog tinyxml2 cppfs misc)
 target_link_libraries(_${PROJECT_NAME} gtest)
 target_include_directories(_${PROJECT_NAME} PUBLIC include)
 
