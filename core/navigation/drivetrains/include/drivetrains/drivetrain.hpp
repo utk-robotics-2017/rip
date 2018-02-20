@@ -61,7 +61,7 @@ namespace rip
                  *
                  * @param brake whether to actively hold position or just cut power
                  */
-                virtual void stop(bool brake) = 0;
+                virtual void stop(bool brake = true) = 0;
             };
         }
     }

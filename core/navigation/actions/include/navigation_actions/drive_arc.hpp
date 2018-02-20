@@ -18,34 +18,22 @@ namespace rip
                 /**
                 * Returns whether or not the action has finished execution.
                 */
-                virtual bool isFinished() override
-                {
-                    // todo
-                }
+                virtual bool isFinished() override;
 
                 /**
                  * Iteratively called until {@see Action#isFinished()} returns true
                  */
-                virtual void update(nlohmann::json& state) override
-                {
-                    // todo
-                }
+                virtual void update(nlohmann::json& state) override;
 
                 /**
                  * Run once before the main code
                  */
-                virtual void setup(nlohmann::json& state) override
-                {
-                    // todo
-                }
+                virtual void setup(nlohmann::json& state) override;
 
                 /**
                  * Run once after finished
                  */
-                virtual void teardown(nlohmann::json& state) override
-                {
-                    // todo
-                }
+                virtual void teardown(nlohmann::json& state) override;
 
             private:
             };
