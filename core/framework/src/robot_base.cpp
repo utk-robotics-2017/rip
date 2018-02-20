@@ -49,7 +49,7 @@ namespace rip
             m_spine = std::unique_ptr<Spine>(new Spine);
             m_spine->loadDevices(j["arduino_gen_home"], devices);
 
-            createSubsystems(j);
+            createSubsystems(j["subsystems"]);
 
             createRoutine();
 
