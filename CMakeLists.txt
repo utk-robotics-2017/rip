@@ -19,6 +19,7 @@ add_subdirectory(core)
 add_subdirectory(appendages)
 add_subdirectory(arduino_gen)
 
+
 option(GUI "Build the GUI" OFF)
 if(GUI)
     message("Building the GUI")

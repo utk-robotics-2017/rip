@@ -2,10 +2,7 @@
 
 namespace rip
 {
-    namespace core
+    namespace framework
     {
-        namespace framework
-        {
-        }
     }
 }
