@@ -12,7 +12,7 @@ namespace rip
 
         bool SeriesAction::isFinished()
         {
-            return m_current == m_actions.size();
+            return m_current == static_cast<int>(m_actions.size());
         }
 
         void SeriesAction::setup(nlohmann::json& state) {}

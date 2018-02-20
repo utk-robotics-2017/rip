@@ -12,13 +12,16 @@ target_link_libraries(${PROJECT_NAME} framework periphery json units fmt misc)
 
 if(ENABLE_TESTING)
     file(GLOB_RECURSE ${PROJECT_NAME}_DIAG_SOURCES "diag/*.cpp")
+    file(GLOB_RECURSE ${PROJECT_NAME}_DIAG_HEADERS "diag/*.hpp")
     add_executable(${PROJECT_NAME}_diag ${${PROJECT_NAME}_DIAG_SOURCES})
     set_property(TARGET ${PROJECT_NAME}_diag PROPERTY CXX_STANDARD 11)
     target_link_libraries(${PROJECT_NAME}_diag ${PROJECT_NAME})
-    target_link_libraries(${PROJECT_NAME}_diag periphery units)
+    target_link_libraries(${PROJECT_NAME}_diag motor_controllers periphery units)
+    target_include_directories(${PROJECT_NAME}_diag PUBLIC diag)
 
     # Get test source files and test data files
     file(GLOB_RECURSE ${PROJECT_NAME}_TEST_SOURCES "test/*.cpp")
+    file(GLOB_RECURSE ${PROJECT_NAME}_TEST_HEADERS "test/*.hpp")
     file(GLOB_RECURSE ${PROJECT_NAME}_TEST_DATA "test/data/*")
 
     # Copy test data to outdir/test
@@ -40,6 +43,7 @@ if(ENABLE_TESTING)
     set_property(TARGET ${PROJECT_NAME}_test PROPERTY CXX_STANDARD 11)
     target_link_libraries(${PROJECT_NAME}_test ${PROJECT_NAME})
     target_link_libraries(${PROJECT_NAME}_test gmock gtest)
+    target_include_directories(${PROJECT_NAME}_test PUBLIC include test)
 
     if(CMAKE_COMPILER_IS_GNUCXX)
         include(CodeCoverage)

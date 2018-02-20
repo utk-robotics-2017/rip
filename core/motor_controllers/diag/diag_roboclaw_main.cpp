@@ -1,11 +1,18 @@
-#include <roboclaw.hpp>
+#pragma GCC diagnostic push                                                   
+#pragma GCC diagnostic ignored "-Wunused-variable"
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+#pragma GCC diagnostic ignored "-Wswitch-default"
+#pragma GCC diagnostic ignored "-Wsign-compare"
+#pragma GCC diagnostic ignored "-Wimplicit-fallthrough="
+
+#include <motor_controllers/roboclaw/roboclaw.hpp>
 #include <iostream>
 #include <inttypes.h>
 #include <serial.h>
 #include <units/units.hpp>
 #include "diag_roboclaw.hpp"
 
-using namespace rip::roboclaw;
+using namespace rip::motorcontrollers::roboclaw;
 /*
 Interactive diagnostic tests, specifically for the Roboclaw's on the demo bot (for now)
 DO NOT run without physical access, and powered on via battery.
@@ -70,3 +77,5 @@ int main(int argc, char** argv)
     */
     return 0;
 }
+
+#pragma GCC diagnostic pop
