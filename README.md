@@ -1,5 +1,7 @@
 # RIP
 
+[![codecov](https://codecov.io/gh/utk-robotics-2017/rip/branch/master/graph/badge.svg?token=KqhG5MRr9F)](https://codecov.io/gh/utk-robotics-2017/rip)
+
 The Robotics Integrated Platform is designed as an all encompassing library for small autonomous robots using a raspberry pi or beaglebone as the primary controller.
 
 ## How to Contribute
