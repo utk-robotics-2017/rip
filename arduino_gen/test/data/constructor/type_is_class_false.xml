@@ -1,0 +1,3 @@
+<constructor type="unsigned char" variable="pins" type-is-class="false">
+    <argument name="pin" type="int" />
+</constructor>

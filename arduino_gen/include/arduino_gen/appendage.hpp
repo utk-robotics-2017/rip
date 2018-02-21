@@ -26,7 +26,7 @@ namespace rip
              * @param test Whether to test the type or not (default: true)
              */
             Appendage(nlohmann::json data,
-                      std::multimap<std::string, std::shared_ptr<Appendage>>& appendages, 
+                      std::multimap<std::string, std::shared_ptr<Appendage>>& appendages,
                       std::string appendage_data_folder = "appendages", bool test = true);
 
             /**
@@ -73,6 +73,11 @@ namespace rip
              * @return Whether the data is the specified type
              */
             bool isType(std::string data_name, std::string type) const;
+
+            /*
+             * TODO: Properly document
+             */
+            nlohmann::json getCoreJson(int index) const;
 
         private:
             /**
