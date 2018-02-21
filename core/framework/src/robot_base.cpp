@@ -95,7 +95,7 @@ namespace rip
                 }
 
                 // Setup the action
-                misc::Logger::getInstance()->debug("Setting up action: %s", action->name());
+                misc::Logger::getInstance()->debug("Setting up action: {}", action->name());
                 action->setup(state);
 
                 // Reset the state file
