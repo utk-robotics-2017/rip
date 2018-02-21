@@ -20,6 +20,7 @@ namespace rip
 
                 TEST(RoboclawCore, loadJson)
                 {
+                    j["name"] = "mock_roboclaw";
                     j["faking"] = "yep";
                     //test some types of variables that are not json obj
                     ASSERT_THROW(std::make_shared<Roboclaw>("strayTaco"), BadJson);

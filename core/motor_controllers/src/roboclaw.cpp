@@ -44,21 +44,21 @@ namespace rip
                 {
                     setName(config["name"]);
                     //required parameters
-                    m_address = config["address"].get<uint8_t>();
-                    m_timeout = config["timeout"];
-                    m_ticks_per_rev = config["ticks_per_rev"];
-                    m_wheel_radius = config["wheel_radius"];
+                    m_address = config.at("address").get<uint8_t>();
+                    m_timeout = config.at("timeout");
+                    m_ticks_per_rev = config.at("ticks_per_rev");
+                    m_wheel_radius = config.at("wheel_radius");
                     //serial
-                    std::string temp = config["device"];
+                    std::string temp = config.at("device");
                     m_device = temp.c_str();
-                    m_baudrate = config["baudrate"];
+                    m_baudrate = config.at("baudrate");
                     if (config.find("advanced serial options") != config.end())
                     {
-                        m_databits = config["databits"];
-                        m_stopbits = config["stopbits"];
-                        m_xonxoff = config["xonxoff"];
-                        m_rtscts = config["rtscts"];
-                        m_parity = config["parity"];
+                        m_databits = config.at("databits");
+                        m_stopbits = config.at("stopbits");
+                        m_xonxoff = config.at("xonxoff");
+                        m_rtscts = config.at("rtscts");
+                        m_parity = config.at("parity");
                     }
                 }
                 if (config.find("faking") == config.end())
@@ -73,11 +73,18 @@ namespace rip
                         open(&m_serial, m_device, m_baudrate);
                     }
                 }
+                else
+                {
+                    m_faking = true;
+                }
             }
             Roboclaw::~Roboclaw()
             {
-                stop();
-                serial_close(&m_serial);
+                if(!m_faking)
+                {
+                    stop();
+                    serial_close(&m_serial);
+                }
             }
 
 //////////////////////////////////////////////////////////////////////////////////////////////
@@ -1025,20 +1032,20 @@ namespace rip
                 try
                 {
                     setName(testcfg["name"]);
-                    m_address = testcfg["address"].get<uint8_t>();
-                    m_timeout = testcfg["timeout"];
-                    m_ticks_per_rev = testcfg["ticks_per_rev"];
-                    m_wheel_radius = testcfg["wheel_radius"];
-                    std::string temp = testcfg["device"];
+                    m_address = testcfg.at("address").get<uint8_t>();
+                    m_timeout = testcfg.at("timeout");
+                    m_ticks_per_rev = testcfg.at("ticks_per_rev");
+                    m_wheel_radius = testcfg.at("wheel_radius");
+                    std::string temp = testcfg.at("device");
                     m_device = temp.c_str();
-                    m_baudrate = testcfg["baudrate"];
+                    m_baudrate = testcfg.at("baudrate");
                     if (testcfg.find("advanced serial options") != testcfg.end())
                     {
-                        m_databits = testcfg["databits"];
-                        m_stopbits = testcfg["stopbits"];
-                        m_xonxoff = testcfg["xonxoff"];
-                        m_rtscts = testcfg["rtscts"];
-                        m_parity = testcfg["parity"];
+                        m_databits = testcfg.at("databits");
+                        m_stopbits = testcfg.at("stopbits");
+                        m_xonxoff = testcfg.at("xonxoff");
+                        m_rtscts = testcfg.at("rtscts");
+                        m_parity = testcfg.at("parity");
                     }
                 }
                 catch (...)

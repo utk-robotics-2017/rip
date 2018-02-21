@@ -16,11 +16,10 @@ namespace rip
                 public:
 
                     //MockRoboclaw();
-                    MockRoboclaw(nlohmann::json config = {{"address", 0x80}, {"timeout", 100 * units::ms},
+                    MockRoboclaw(nlohmann::json config = {{"name", "mock_roboclaw"},{"address", 0x80}, {"timeout", 100 * units::ms},
                         {"ticks_per_rev", 360.0}, {"wheel_radius", 4 * units::cm}, {"device", "/dev/ttyS0"},
                         {"baudrate", 115200}, {"faking", 1}
                     }, bool test = 1);
-
                     void setcResponse(const std::vector<uint8_t> response);
                     void setResponse(const std::string& response);
                     uint8_t returnFF() override;

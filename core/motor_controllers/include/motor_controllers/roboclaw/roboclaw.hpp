@@ -793,6 +793,7 @@ namespace rip
                 //advanced
                 unsigned int m_databits, m_stopbits;
                 bool m_xonxoff, m_rtscts;
+                bool m_faking = false;
                 serial_parity_t m_parity;
                 //TODO: support advanced serial opening
 
