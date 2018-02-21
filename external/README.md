@@ -1,2 +1,3 @@
-# utils_cpp
-A repository holding utility classes (several of which are submodules)
+# External Libraries
+
+This folder houses external libraries which are used by RIP.
