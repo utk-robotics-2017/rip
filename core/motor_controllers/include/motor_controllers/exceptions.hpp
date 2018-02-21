@@ -17,13 +17,13 @@
  *  \$$    $$   | $$   | $$  \$$\      | $$  | $$|   $$ \| $$
  *   \$$$$$$     \$$    \$$   \$$       \$$   \$$ \$$$$$$ \$$
  */
-#ifndef ROBOCLAW_EXCEPTIONS_HPP
-#define ROBOCLAW_EXCEPTIONS_HPP
+#ifndef MOTORCONTROLLER_EXCEPTIONS_HPP
+#define MOTORCONTROLLER_EXCEPTIONS_HPP
 #include <misc/exception_base.hpp>
 
 namespace rip
 {
-    namespace roboclaw
+    namespace motorcontrollers
     {
         /**
          * @class CommandFailure
@@ -65,4 +65,4 @@ namespace rip
         NEW_EX(InvalidCommMode)
     }
 }
-#endif //ROBOCLAW_EXCEPTIONS_HPP
+#endif //MOTORCONTROLLER_EXCEPTIONS_HPP

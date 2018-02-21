@@ -2,20 +2,17 @@
 #include <sstream>
 #include <string>
 #include <iomanip>
+#include <navx/navx.hpp>
+#include <navx/navx_protocol.hpp>
 #include <ctime>
 #include <pthread.h>
-
-#include <spdlog/spdlog.h>
-#include <navx/navx.h>
-#include <navx/navx_protocol.h>
-#include <navx/IIOProvider.h>
-#include <navx/IIOCompleteNotification.h>
-#include <navx/IBoardCapabilities.h>
-#include <navx/InertialDataIntegrator.h>
-#include <navx/OffsetTracker.h>
-#include <navx/ContinuousAngleTracker.h>
-#include <navx/SerialIO.h>
-
+#include "navx/iio_provider.hpp"
+#include "navx/iio_complete_notification.hpp"
+#include "navx/i_board_capabilities.hpp"
+#include "navx/inertial_data_integrator.hpp"
+#include "navx/offset_tracker.hpp"
+#include "navx/continuous_angle_tracker.hpp"
+#include "navx/serial_io.hpp"
 namespace rip
 {
     namespace navigation
@@ -34,7 +31,7 @@ namespace rip
 
             class NavXInternal : public IIOCompleteNotification, public IBoardCapabilities
             {
-                NavX *navx;
+                NavX* navx;
                 friend class NavX;
                 NavXInternal(NavX* navx)
                 {
@@ -85,20 +82,20 @@ namespace rip
 
                     // Status/Motion Detection
                     navx->is_moving              =
-                           ((navx_update.sensor_status &
-                                    NAVX_SENSOR_STATUS_MOVING) != 0);
+                        ((navx_update.sensor_status &
+                          NAVX_SENSOR_STATUS_MOVING) != 0);
                     navx->is_rotating                =
-                           ((navx_update.sensor_status &
-                                    NAVX_SENSOR_STATUS_YAW_STABLE) != 0);
+                        ((navx_update.sensor_status &
+                          NAVX_SENSOR_STATUS_YAW_STABLE) != 0);
                     navx->altitude_valid             =
-                           ((navx_update.sensor_status &
-                                    NAVX_SENSOR_STATUS_ALTITUDE_VALID) != 0);
+                        ((navx_update.sensor_status &
+                          NAVX_SENSOR_STATUS_ALTITUDE_VALID) != 0);
                     navx->is_magnetometer_calibrated =
-                           ((navx_update.cal_status &
-                                    NAVX_CAL_STATUS_MAG_CAL_COMPLETE) != 0);
+                        ((navx_update.cal_status &
+                          NAVX_CAL_STATUS_MAG_CAL_COMPLETE) != 0);
                     navx->magnetic_disturbance       =
-                           ((navx_update.sensor_status &
-                                    NAVX_SENSOR_STATUS_MAG_DISTURBANCE) != 0);
+                        ((navx_update.sensor_status &
+                          NAVX_SENSOR_STATUS_MAG_DISTURBANCE) != 0);
 
                     navx->quaternionW                = navx_update.quat_w;
                     navx->quaternionX                = navx_update.quat_x;
@@ -108,16 +105,16 @@ namespace rip
                     navx->last_sensor_timestamp = sensor_timestamp;
 
                     /* Notify external data arrival subscribers, if any. */
-                    for(int i = 0; i < MAX_NUM_CALLBACKS; i++)
+                    for (int i = 0; i < MAX_NUM_CALLBACKS; i++)
                     {
-                        ITimestampedDataSubscriber *callback = navx->callbacks[i];
-                        if(callback != NULL)
+                        ITimestampedDataSubscriber* callback = navx->callbacks[i];
+                        if (callback != NULL)
                         {
-                            long system_timestamp =(long)(std::time(nullptr) * 1000);
+                            long system_timestamp = (long)(std::time(nullptr) * 1000);
                             callback->timestampedDataReceived(system_timestamp,
-                                    sensor_timestamp,
-                                    navx_update,
-                                    navx->callback_contexts[i]);
+                                                              sensor_timestamp,
+                                                              navx_update,
+                                                              navx->callback_contexts[i]);
                         }
                     }
 
@@ -181,24 +178,24 @@ namespace rip
 
                     // Status/Motion Detection
                     navx->is_moving              =
-                           ((navx_update.sensor_status &
-                                    NAVX_SENSOR_STATUS_MOVING) != 0);
+                        ((navx_update.sensor_status &
+                          NAVX_SENSOR_STATUS_MOVING) != 0);
 
                     navx->is_rotating                =
-                           ((navx_update.sensor_status &
-                                    NAVX_SENSOR_STATUS_YAW_STABLE) != 0);
+                        ((navx_update.sensor_status &
+                          NAVX_SENSOR_STATUS_YAW_STABLE) != 0);
 
                     navx->altitude_valid             =
-                           ((navx_update.sensor_status &
-                                    NAVX_SENSOR_STATUS_ALTITUDE_VALID) != 0);
+                        ((navx_update.sensor_status &
+                          NAVX_SENSOR_STATUS_ALTITUDE_VALID) != 0);
 
                     navx->is_magnetometer_calibrated =
-                           ((navx_update.cal_status &
-                                    NAVX_CAL_STATUS_MAG_CAL_COMPLETE) != 0);
+                        ((navx_update.cal_status &
+                          NAVX_CAL_STATUS_MAG_CAL_COMPLETE) != 0);
 
                     navx->magnetic_disturbance       =
-                           ((navx_update.sensor_status &
-                                    NAVX_SENSOR_STATUS_MAG_DISTURBANCE) != 0);
+                        ((navx_update.sensor_status &
+                          NAVX_SENSOR_STATUS_MAG_DISTURBANCE) != 0);
 
                     navx->quaternionW                = navx_update.quat_w;
                     navx->quaternionX                = navx_update.quat_x;
@@ -208,23 +205,23 @@ namespace rip
                     navx->last_sensor_timestamp = sensor_timestamp;
 
                     /* Notify external data arrival subscribers, if any. */
-                    for(int i = 0; i < MAX_NUM_CALLBACKS; i++)
+                    for (int i = 0; i < MAX_NUM_CALLBACKS; i++)
                     {
-                        ITimestampedDataSubscriber *callback = navx->callbacks[i];
-                        if(callback != NULL)
+                        ITimestampedDataSubscriber* callback = navx->callbacks[i];
+                        if (callback != NULL)
                         {
-                            long system_timestamp =(long)(std::time(nullptr) * 1000);
+                            long system_timestamp = (long)(std::time(nullptr) * 1000);
                             callback->timestampedDataReceived(system_timestamp,
-                                    sensor_timestamp,
-                                    navx_update,
-                                    navx->callback_contexts[i]);
+                                                              sensor_timestamp,
+                                                              navx_update,
+                                                              navx->callback_contexts[i]);
                         }
                     }
 
                     navx->updateDisplacement(navx->world_linear_accel_x,
-                            navx->world_linear_accel_y,
-                            navx->update_rate_hz,
-                            navx->is_moving);
+                                             navx->world_linear_accel_y,
+                                             navx->update_rate_hz,
+                                             navx->is_moving);
 
                     navx->yaw_angle_tracker->nextAngle((navx->getYaw())());
                 }
@@ -247,29 +244,29 @@ namespace rip
                     navx->sensor_status = board_state.sensor_status;
                     navx->cal_status = board_state.cal_status;
                     navx->selftest_status = board_state.selftest_status;
-                 }
+                }
 
                 /***********************************************************/
                 /* IBoardCapabilities Interface Implementation        */
                 /***********************************************************/
                 bool isOmniMountSupported()
                 {
-                   return((navx->capability_flags & NAVX_CAPABILITY_FLAG_OMNIMOUNT) !=0);
+                    return ((navx->capability_flags & NAVX_CAPABILITY_FLAG_OMNIMOUNT) != 0);
                 }
 
                 bool isBoardYawResetSupported()
                 {
-                    return((navx->capability_flags & NAVX_CAPABILITY_FLAG_YAW_RESET) != 0);
+                    return ((navx->capability_flags & NAVX_CAPABILITY_FLAG_YAW_RESET) != 0);
                 }
 
                 bool isDisplacementSupported()
                 {
-                    return((navx->capability_flags & NAVX_CAPABILITY_FLAG_VEL_AND_DISP) != 0);
+                    return ((navx->capability_flags & NAVX_CAPABILITY_FLAG_VEL_AND_DISP) != 0);
                 }
 
                 bool isNavXPosTimestampSupported()
                 {
-                    return((navx->capability_flags & NAVX_CAPABILITY_FLAG_NAVXPOS_TS) != 0);
+                    return ((navx->capability_flags & NAVX_CAPABILITY_FLAG_NAVXPOS_TS) != 0);
                 }
             };
 
@@ -285,34 +282,34 @@ namespace rip
 
             units::Angle NavX::getPitch()
             {
-                return static_cast<float>(pitch)*units::deg;
+                return static_cast<float>(pitch) * units::deg;
             }
 
             units::Angle NavX::getRoll()
             {
-                return static_cast<float>(roll)*units::degrees;
+                return static_cast<float>(roll) * units::degrees;
             }
 
             units::Angle NavX::getYaw()
             {
-                if(navx_internal->isBoardYawResetSupported())
+                if (navx_internal->isBoardYawResetSupported())
                 {
-                    return static_cast<float>((this->yaw))*units::degrees;
+                    return static_cast<float>((this->yaw)) * units::degrees;
                 }
                 else
                 {
-                    return((float) yaw_offset_tracker->applyOffset(this->yaw))*units::degrees;
+                    return ((float) yaw_offset_tracker->applyOffset(this->yaw)) * units::degrees;
                 }
             }
 
             units::Angle NavX::getCompassHeading()
             {
-                return static_cast<float>(compass_heading)*units::degrees;
+                return static_cast<float>(compass_heading) * units::degrees;
             }
 
             void NavX::zeroYaw()
             {
-                if(navx_internal->isBoardYawResetSupported())
+                if (navx_internal->isBoardYawResetSupported())
                 {
                     io->zeroYaw();
                 }
@@ -325,8 +322,8 @@ namespace rip
             bool NavX::isCalibrating()
             {
                 return !((cal_status &
-                            NAVX_CAL_STATUS_IMU_CAL_STATE_MASK) ==
-                                NAVX_CAL_STATUS_IMU_CAL_COMPLETE);
+                          NAVX_CAL_STATUS_IMU_CAL_STATE_MASK) ==
+                         NAVX_CAL_STATUS_IMU_CAL_COMPLETE);
             }
 
             bool NavX::isConnected()
@@ -426,7 +423,7 @@ namespace rip
 
             void NavX::resetDisplacement()
             {
-                if(navx_internal->isDisplacementSupported())
+                if (navx_internal->isDisplacementSupported())
                 {
                     io->zeroDisplacement();
                 }
@@ -437,45 +434,45 @@ namespace rip
             }
 
             void NavX::updateDisplacement(float accel_x_g, float accel_y_g,
-                                                int update_rate_hz, bool is_moving)
+                                          int update_rate_hz, bool is_moving)
             {
                 integrator->updateDisplacement(accel_x_g, accel_y_g, update_rate_hz, is_moving);
             }
 
             units::Velocity NavX::getVelocityX()
             {
-                return units::m / units::s *(navx_internal->isDisplacementSupported() ? velocity[0] : integrator->getVelocityX());
+                return units::m / units::s * (navx_internal->isDisplacementSupported() ? velocity[0] : integrator->getVelocityX());
             }
 
             units::Velocity NavX::getVelocityY()
             {
-                return units::m / units::s *(navx_internal->isDisplacementSupported() ? velocity[1] : integrator->getVelocityY());
+                return units::m / units::s * (navx_internal->isDisplacementSupported() ? velocity[1] : integrator->getVelocityY());
             }
 
             units::Velocity NavX::getVelocityZ()
             {
-                return units::m / units::s *(navx_internal->isDisplacementSupported() ? velocity[2] : 0.f);
+                return units::m / units::s * (navx_internal->isDisplacementSupported() ? velocity[2] : 0.f);
             }
 
             units::Distance NavX::getDisplacementX()
             {
-                return units::m *(navx_internal->isDisplacementSupported() ? displacement[0] : integrator->getVelocityX());
+                return units::m * (navx_internal->isDisplacementSupported() ? displacement[0] : integrator->getVelocityX());
             }
 
             units::Distance NavX::getDisplacementY()
             {
-                return units::m *(navx_internal->isDisplacementSupported() ? displacement[1] : integrator->getVelocityY());
+                return units::m * (navx_internal->isDisplacementSupported() ? displacement[1] : integrator->getVelocityY());
             }
 
             units::Distance NavX::getDisplacementZ()
             {
-                return units::m *(navx_internal->isDisplacementSupported() ? displacement[2] : 0.f);
+                return units::m * (navx_internal->isDisplacementSupported() ? displacement[2] : 0.f);
             }
 
             void NavX::serialInit(std::string serial_port_id, NavX::serialDataType data_type, uint8_t update_rate_hz)
             {
                 commonInit(update_rate_hz);
-                bool processed_data =(data_type == serialDataType::kProcessedData);
+                bool processed_data = (data_type == serialDataType::kProcessedData);
                 io = new SerialIO(serial_port_id, update_rate_hz, processed_data, navx_internal, navx_internal);
                 ::pthread_t trd;
                 ::pthread_create(&trd, NULL, NavX::threadFunc, io);
@@ -517,7 +514,7 @@ namespace rip
 
                 /* Integrated Data */
 
-                for(int i = 0; i < 3; i++)
+                for (int i = 0; i < 3; i++)
                 {
                     velocity[i] = 0.0f;
                     displacement[i] = 0.0f;
@@ -553,7 +550,7 @@ namespace rip
 
                 io = 0;
 
-                for(int i = 0; i < MAX_NUM_CALLBACKS; i++)
+                for (int i = 0; i < MAX_NUM_CALLBACKS; i++)
                 {
                     callbacks[i] = NULL;
                     callback_contexts[i] = NULL;
@@ -579,33 +576,33 @@ namespace rip
 
             float NavX::getRawGyroX()
             {
-                return this->raw_gyro_x /(DEV_UNITS_MAX /(float)gyro_fsr_dps);
+                return this->raw_gyro_x / (DEV_UNITS_MAX / (float)gyro_fsr_dps);
             }
 
             float NavX::getRawGyroY()
             {
-                return this->raw_gyro_y /(DEV_UNITS_MAX /(float)gyro_fsr_dps);
+                return this->raw_gyro_y / (DEV_UNITS_MAX / (float)gyro_fsr_dps);
             }
 
             float NavX::getRawGyroZ()
             {
-                return this->raw_gyro_z /(DEV_UNITS_MAX /(float)gyro_fsr_dps);
+                return this->raw_gyro_z / (DEV_UNITS_MAX / (float)gyro_fsr_dps);
             }
 
             float NavX::getRawAccelX()
             {
-                return this->raw_accel_x /(DEV_UNITS_MAX /(float)accel_fsr_g);
+                return this->raw_accel_x / (DEV_UNITS_MAX / (float)accel_fsr_g);
             }
 
             float NavX::getRawAccelY()
             {
-                return this->raw_accel_y /(DEV_UNITS_MAX /(float)accel_fsr_g);
+                return this->raw_accel_y / (DEV_UNITS_MAX / (float)accel_fsr_g);
             }
 
 
             float NavX::getRawAccelZ()
             {
-                return this->raw_accel_z /(DEV_UNITS_MAX /(float)accel_fsr_g);
+                return this->raw_accel_z / (DEV_UNITS_MAX / (float)accel_fsr_g);
             }
 
             static const float UTESLA_PER_DEV_UNIT = 0.15f;
@@ -633,29 +630,29 @@ namespace rip
             NavX::BoardYawAxis NavX::getBoardYawAxis()
             {
                 BoardYawAxis yaw_axis;
-                short yaw_axis_info =(short)(capability_flags >> 3);
+                short yaw_axis_info = (short)(capability_flags >> 3);
                 yaw_axis_info &= 7;
-                if(yaw_axis_info == OMNIMOUNT_DEFAULT)
+                if (yaw_axis_info == OMNIMOUNT_DEFAULT)
                 {
                     yaw_axis.up = true;
                     yaw_axis.board_axis = boardAxis::kBoardAxisZ;
                 }
                 else
                 {
-                    yaw_axis.up =((yaw_axis_info & 0x01) != 0);
+                    yaw_axis.up = ((yaw_axis_info & 0x01) != 0);
                     yaw_axis_info >>= 1;
-                    switch(yaw_axis_info)
+                    switch (yaw_axis_info)
                     {
-                    case 0:
-                        yaw_axis.board_axis = boardAxis::kBoardAxisX;
-                        break;
-                    case 1:
-                        yaw_axis.board_axis = boardAxis::kBoardAxisY;
-                        break;
-                    case 2:
-                    default:
-                        yaw_axis.board_axis = boardAxis::kBoardAxisZ;
-                        break;
+                        case 0:
+                            yaw_axis.board_axis = boardAxis::kBoardAxisX;
+                            break;
+                        case 1:
+                            yaw_axis.board_axis = boardAxis::kBoardAxisY;
+                            break;
+                        case 2:
+                        default:
+                            yaw_axis.board_axis = boardAxis::kBoardAxisZ;
+                            break;
                     }
                 }
                 return yaw_axis;
@@ -664,24 +661,24 @@ namespace rip
             std::string NavX::getFirmwareVersion()
             {
                 std::ostringstream os;
-                os <<(int)fw_ver_major << "." <<(int)fw_ver_minor;
+                os << (int)fw_ver_major << "." << (int)fw_ver_minor;
                 std::string fw_version = os.str();
                 return fw_version;
             }
 
-            void *NavX::threadFunc(void *threadarg)
+            void* NavX::threadFunc(void* threadarg)
             {
-                IIOProvider *io_provider =(IIOProvider*)threadarg;
+                IIOProvider* io_provider = (IIOProvider*)threadarg;
                 io_provider->run();
                 return NULL;
             }
 
-            bool NavX::registerCallback(ITimestampedDataSubscriber *callback, void *callback_context)
+            bool NavX::registerCallback(ITimestampedDataSubscriber* callback, void* callback_context)
             {
                 bool registered = false;
-                for(int i = 0; i < MAX_NUM_CALLBACKS; i++)
+                for (int i = 0; i < MAX_NUM_CALLBACKS; i++)
                 {
-                    if(callbacks[i] == NULL)
+                    if (callbacks[i] == NULL)
                     {
                         callbacks[i] = callback;
                         callback_contexts[i] = callback_context;
@@ -692,12 +689,12 @@ namespace rip
                 return registered;
             }
 
-            bool NavX::deregisterCallback(ITimestampedDataSubscriber *callback)
+            bool NavX::deregisterCallback(ITimestampedDataSubscriber* callback)
             {
                 bool deregistered = false;
-                for(int i = 0; i < MAX_NUM_CALLBACKS; i++)
+                for (int i = 0; i < MAX_NUM_CALLBACKS; i++)
                 {
-                    if(callbacks[i] == callback)
+                    if (callbacks[i] == callback)
                     {
                         callbacks[i] = NULL;
                         deregistered = true;
@@ -710,21 +707,21 @@ namespace rip
             int NavX::getActualUpdateRate()
             {
                 uint8_t actual_update_rate = getActualUpdateRateInternal(getRequestedUpdateRate());
-                return(int)actual_update_rate;
+                return (int)actual_update_rate;
             }
 
             uint8_t NavX::getActualUpdateRateInternal(uint8_t update_rate)
             {
-            #define NAVX_MOTION_PROCESSOR_UPDATE_RATE_HZ 200
-                int integer_update_rate =(int)update_rate;
+#define NAVX_MOTION_PROCESSOR_UPDATE_RATE_HZ 200
+                int integer_update_rate = (int)update_rate;
                 int realized_update_rate = NAVX_MOTION_PROCESSOR_UPDATE_RATE_HZ /
-                       (NAVX_MOTION_PROCESSOR_UPDATE_RATE_HZ / integer_update_rate);
-                return(uint8_t)realized_update_rate;
+                                           (NAVX_MOTION_PROCESSOR_UPDATE_RATE_HZ / integer_update_rate);
+                return (uint8_t)realized_update_rate;
             }
 
             int NavX::getRequestedUpdateRate()
             {
-                return(int)update_rate_hz;
+                return (int)update_rate_hz;
             }
 
             void NavX::close()

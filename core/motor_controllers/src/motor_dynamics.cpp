@@ -17,13 +17,13 @@
  *  \$$    $$   | $$   | $$  \$$\      | $$  | $$|   $$ \| $$
  *   \$$$$$$     \$$    \$$   \$$       \$$   \$$ \$$$$$$ \$$
  */
-#include "motor_dynamics.hpp"
+#include "motor_controllers/motor_dynamics.hpp"
 
-#include "exceptions.hpp"
+#include "motor_controllers/exceptions.hpp"
 
 namespace rip
 {
-    namespace roboclaw
+    namespace motorcontrollers
     {
         MotorDynamics::MotorDynamics()
             : m_distance(nullptr)

@@ -26,7 +26,7 @@
 
 namespace rip
 {
-    namespace roboclaw
+    namespace motorcontrollers
     {
         /**
          * @struct MotorDynamics

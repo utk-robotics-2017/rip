@@ -4,6 +4,7 @@
 #include <json.hpp>
 
 #include <framework/action.hpp>
+#include <drivetrains/drivetrain.hpp>
 
 namespace rip
 {
@@ -14,9 +15,9 @@ namespace rip
             class DriveStraight : public framework::Action
             {
             public:
-                DriveStraight(std::shared_ptr<drivetrains::DriveTrain> drivetrain, const units::Distance& distance);
+                DriveStraight(std::shared_ptr<drivetrains::Drivetrain> drivetrain, const units::Distance& distance, double p, double i, double d);
 
-                DriveStraight(std::shared_ptr<drivetrains::DriveTrain> drivetrain, const units::Time& time);
+                DriveStraight(std::shared_ptr<drivetrains::Drivetrain> drivetrain, const units::Time& time, const units::Velocity& speed);
 
                 /**
                 * Returns whether or not the action has finished execution.
@@ -44,7 +45,7 @@ namespace rip
                 units::Time m_time;
                 units::Time m_start_time;
                 units::Velocity m_speed;
-                std::shared_ptr<drivetrains::DriveTrain> m_drivetrain;
+                std::shared_ptr<drivetrains::Drivetrain> m_drivetrain;
             };
 
         }
