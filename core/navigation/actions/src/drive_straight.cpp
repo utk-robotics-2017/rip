@@ -1,4 +1,5 @@
 #include "navigation_actions/drive_straight.hpp"
+#include <misc/logger.hpp>
 
 #include <chrono>
 
@@ -35,9 +36,12 @@ namespace rip
 
             void DriveStraight::setup(nlohmann::json& state)
             {
+                misc::Logger::getInstance()->debug("Driving Straight");
                 m_start_time = std::chrono::duration_cast< std::chrono::milliseconds >(
                                    std::chrono::system_clock::now().time_since_epoch()).count() * units::ms;
-                //m_drivetrain->drive(drivetains::NavCommand(m_speed, 0));
+                motorcontrollers::MotorDynamics dynamics;
+                dynamics.setVelocity(m_speed);
+                m_drivetrain->drive(dynamics);
             }
 
             void DriveStraight::teardown(nlohmann::json& state)
