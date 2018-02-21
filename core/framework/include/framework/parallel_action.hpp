@@ -38,9 +38,10 @@ namespace rip
             /**
              * Constructor
              *
+             * @param name Name of the action
              * @param actions A list of actions to be completed at the same time
              */
-            ParallelAction(const std::vector< std::shared_ptr<Action> >& actions);
+            ParallelAction(const std::string& name, const std::vector< std::shared_ptr<Action> >& actions);
 
             /**
              * Returns whether or not this action is finished

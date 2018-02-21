@@ -4,8 +4,9 @@ namespace rip
 {
     namespace framework
     {
-        WaitAction::WaitAction(const units::Time& wait_time)
-            : m_wait_time(wait_time)
+        WaitAction::WaitAction(const std::string& name, const units::Time& wait_time)
+            : Action(name)
+            , m_wait_time(wait_time)
         {}
 
         bool WaitAction::isFinished()

@@ -10,7 +10,6 @@
 
 namespace rip
 {
-
     namespace units
     {
         using NT = float;   // Number Type

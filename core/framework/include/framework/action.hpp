@@ -32,6 +32,20 @@ namespace rip
         class Action
         {
         public:
+            Action(const std::string& name)
+                : m_name(name)
+            {}
+
+            std::string name() const
+            {
+                return m_name;
+            }
+
+            void setName(const std::string& name)
+            {
+                m_name = name;
+            }
+
             /**
              * Returns whether or not the action has finished execution.
              */
@@ -51,6 +65,8 @@ namespace rip
              * Run once after finished
              */
             virtual void teardown(nlohmann::json& state) = 0;
+        protected:
+            std::string m_name;
         };
     }
 }

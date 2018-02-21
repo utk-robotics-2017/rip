@@ -39,8 +39,15 @@
 
 namespace rip
 {
+    namespace diag
+    {
+        class Diag;
+    }
+
     namespace framework
     {
+        void handleSignal(int signum);
+
         /**
          * Main robot base class
          */
@@ -57,7 +64,7 @@ namespace rip
             /**
              * Destructor
              */
-            ~RobotBase();
+            virtual ~RobotBase();
 
             /**
              * Initalize robot
@@ -84,18 +91,12 @@ namespace rip
              */
             void stop();
 
-            /**
-             * Run the diagnostics for all of the subsystems and appendages
-             */
-            void diagnostic();
-
         protected:
             /**
              * Main loop for the routine
              */
             void run();
 
-        protected:
             bool m_running;
             units::Time m_update_time;
             std::unique_ptr<std::thread> m_thread;
@@ -107,6 +108,8 @@ namespace rip
             std::map<std::string, std::shared_ptr<Subsystem> > m_subsystems;
 
             std::string m_config_path;
+
+            friend class Diag;
         };
     }
 }
