@@ -15,9 +15,9 @@ namespace rip
             class DriveStraight : public framework::Action
             {
             public:
-                DriveStraight(std::shared_ptr<drivetrains::Drivetrain> drivetrain, const units::Distance& distance, double p, double i, double d);
+                DriveStraight(const std::string& name, std::shared_ptr<drivetrains::Drivetrain> drivetrain, const units::Distance& distance, double p, double i, double d);
 
-                DriveStraight(std::shared_ptr<drivetrains::Drivetrain> drivetrain, const units::Time& time, const units::Velocity& speed);
+                DriveStraight(const std::string& name, std::shared_ptr<drivetrains::Drivetrain> drivetrain, const units::Time& time, const units::Velocity& speed);
 
                 /**
                 * Returns whether or not the action has finished execution.

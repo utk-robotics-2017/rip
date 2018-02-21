@@ -4,8 +4,9 @@ namespace rip
 {
     namespace framework
     {
-        SeriesAction::SeriesAction(const std::vector<std::shared_ptr<Action> >& actions)
-            : m_actions(actions)
+        SeriesAction::SeriesAction(const std::string& name, const std::vector<std::shared_ptr<Action> >& actions)
+            : Action(name)
+            , m_actions(actions)
             , m_current(0)
             , m_previous(-1)
         {}

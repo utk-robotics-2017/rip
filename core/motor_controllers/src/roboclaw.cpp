@@ -76,6 +76,7 @@ namespace rip
             }
             Roboclaw::~Roboclaw()
             {
+                stop();
                 serial_close(&m_serial);
             }
 

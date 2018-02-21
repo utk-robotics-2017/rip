@@ -16,6 +16,11 @@ namespace rip
                 , m_navx(navx)
             {}
 
+            TwoRoboclawDrivetrain::~TwoRoboclawDrivetrain()
+            {
+                stop();
+            }
+
             void TwoRoboclawDrivetrain::drive(double power)
             {
                 if (std::abs(power) > 1)
@@ -74,18 +79,13 @@ namespace rip
 
             void TwoRoboclawDrivetrain::stop()
             {
-                stop(true);
+                m_left->drive(0);
+                m_right->drive(0);
             }
 
             bool TwoRoboclawDrivetrain::diagnostic()
             {
                 // todo
-            }
-
-            void TwoRoboclawDrivetrain::stop(bool brake)
-            {
-                m_left->drive(0);
-                m_right->drive(0);
             }
         }
     }//subsystem

@@ -5,6 +5,10 @@ namespace rip
 
     namespace framework
     {
+        InstantAction::InstantAction(const std::string& name)
+            : Action(name)
+        {}
+
         bool InstantAction::isFinished()
         {
             return true;

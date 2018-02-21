@@ -168,7 +168,7 @@ namespace rip
                  *
                  */
 
-                ~Roboclaw();
+                virtual ~Roboclaw();
                 /**
                 * @brief validates json config passed to roboclaw
                 *

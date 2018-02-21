@@ -8,14 +8,16 @@ namespace rip
     {
         namespace actions
         {
-            DriveStraight::DriveStraight(std::shared_ptr<drivetrains::Drivetrain> drivetrain, const units::Distance& distance, double p, double i, double d)
-                : m_use_time(false)
+            DriveStraight::DriveStraight(const std::string& name, std::shared_ptr<drivetrains::Drivetrain> drivetrain, const units::Distance& distance, double p, double i, double d)
+                : Action(name)
+                , m_use_time(false)
                 , m_distance(distance)
                 , m_drivetrain(drivetrain)
             {}
 
-            DriveStraight::DriveStraight(std::shared_ptr<drivetrains::Drivetrain> drivetrain, const units::Time& time, const units::Velocity& speed)
-                : m_use_time(true)
+            DriveStraight::DriveStraight(const std::string& name, std::shared_ptr<drivetrains::Drivetrain> drivetrain, const units::Time& time, const units::Velocity& speed)
+                : Action(name)
+                , m_use_time(true)
                 , m_time(time)
                 , m_speed(speed)
                 , m_drivetrain(drivetrain)

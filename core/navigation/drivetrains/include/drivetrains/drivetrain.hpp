@@ -55,13 +55,6 @@ namespace rip
                  * Command four wheels separately
                  */
                 virtual void drive(const MotorDynamics& front_left, const MotorDynamics& front_right, const MotorDynamics& back_left, const MotorDynamics& back_right) = 0;
-
-                /**
-                 * Stop
-                 *
-                 * @param brake whether to actively hold position or just cut power
-                 */
-                virtual void stop(bool brake = true) = 0;
             };
         }
     }

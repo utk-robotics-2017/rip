@@ -5,6 +5,8 @@
 #include <cppfs/FileHandle.h>
 #include <cppfs/fs.h>
 #include <framework/exceptions.hpp>
+#include <misc/logger.hpp>
+#include <spdlog/spdlog.h>
 
 namespace rip
 {
@@ -19,17 +21,11 @@ namespace rip
         RobotBase::~RobotBase()
         {
             m_running = false;
-
-            for (auto iter : m_subsystems)
-            {
-                iter.second->stop();
-            }
-
-            m_spine->stop();
         }
 
         void RobotBase::init()
         {
+            misc::Logger::getInstance()->debug("Robot is initializing...");
             cppfs::FileHandle config_file = cppfs::fs::open(m_config_path);
             if (!config_file.exists())
             {
@@ -59,11 +55,13 @@ namespace rip
         void RobotBase::start()
         {
             m_running = true;
-            m_thread = std::unique_ptr<std::thread>(new std::thread(&RobotBase::run, this));
+            misc::Logger::getInstance()->debug("Starting the robot...");
+            run();
         }
 
         void RobotBase::stop()
         {
+            misc::Logger::getInstance()->debug("Stoping the robot...");
             m_running = false;
         }
 
@@ -81,6 +79,7 @@ namespace rip
                 }
 
                 // Setup the action
+                misc::Logger::getInstance()->debug("Setting up action: %s", action->name());
                 action->setup(state);
 
                 // Reset the state file
@@ -113,6 +112,8 @@ namespace rip
                     break;
                 }
 
+                // Teardown the action
+                misc::Logger::getInstance()->debug("Tearing down action: %s", action->name());
                 action->teardown(state);
 
                 // Reset the state file
