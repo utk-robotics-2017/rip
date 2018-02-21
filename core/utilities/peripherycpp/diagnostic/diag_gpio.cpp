@@ -1,7 +1,7 @@
 #include <peripherycpp/gpio.hpp>
 #include <cstdio>
 
-using Gpio = rip::peripherycpp::Gpio
+using Gpio = rip::peripherycpp::Gpio;
 
 int main(int argc, char **argv)
 {
