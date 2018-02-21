@@ -11,6 +11,18 @@ endif()
 target_include_directories(${PROJECT_NAME} PUBLIC include)
 target_link_libraries(${PROJECT_NAME} periphery misc)
 
+#diag executables
+if(ENABLE_TESTING)
+    # Get test source files and doag data files
+    file(GLOB_RECURSE ${PROJECT_NAME}_DIAG_SOURCES "diag/*.cpp")
+    foreach(diagFile ${${PROJECT_NAME}_DIAG_SOURCES})
+        file(RELATIVE_PATH name ${CMAKE_CURRENT_SOURCE_DIR}/diag ${diagFile})
+        add_executable(${name} ${diagFile})
+        set_property(TARGET ${name} PROPERTY CXX_STANDARD 11)
+        target_link_libraries(${name} ${PROJECT_NAME})
+    endforeach()
+endif()
+
 if(ENABLE_TESTING)
     # Get test source files and test data files
     file(GLOB_RECURSE ${PROJECT_NAME}_TEST_SOURCES "test/*.cpp")
