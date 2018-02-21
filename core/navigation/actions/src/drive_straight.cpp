@@ -26,7 +26,7 @@ namespace rip
                 std::chrono::time_point<std::chrono::system_clock> current = std::chrono::system_clock::now();
                 units::Time diff = std::chrono::duration_cast<std::chrono::milliseconds>(current - m_start_time).count() * units::ms;
                 misc::Logger::getInstance()->debug("Diff time: {}", diff.to(units::s));
-                return  diff > m_time;
+                return  diff >= m_time;
             }
 
             void DriveStraight::update(nlohmann::json& state)

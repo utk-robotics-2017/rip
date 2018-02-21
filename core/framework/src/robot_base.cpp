@@ -135,7 +135,7 @@ namespace rip
                 }
 
                 // Teardown the action
-                misc::Logger::getInstance()->debug("Tearing down action: %s", action->name());
+                misc::Logger::getInstance()->debug("Tearing down action: {}", action->name());
                 action->teardown(state);
 
                 // Reset the state file
