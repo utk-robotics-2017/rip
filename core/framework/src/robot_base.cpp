@@ -68,10 +68,13 @@ namespace rip
         void RobotBase::run()
         {
             nlohmann::json state;
+            misc::Logger::getInstance()->debug("run");
 
             // Loop through the routine
             for (std::shared_ptr<Action> action : m_routine)
             {
+                misc::Logger::getInstance()->debug("loop");
+
                 // If ever interrupted then stop
                 if (!m_running)
                 {
