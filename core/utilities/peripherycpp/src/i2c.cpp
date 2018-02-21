@@ -53,8 +53,9 @@ namespace rip
                 }
 #pragma GCC diagnostic pop
             }
-            checkError(i2c_transfer(&m_i2c, msgs, count));
+            int err = i2c_transfer(&m_i2c, msgs, count);
             delete [] msgs;
+            checkError(err);
         }
 
         void I2c::close()
