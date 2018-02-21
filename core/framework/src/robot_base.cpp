@@ -36,20 +36,33 @@ namespace rip
             nlohmann::json j;
             (*in) >> j;
             std::vector<std::string> devices;
-            for (nlohmann::json d : j["devices"])
+
+            if(j.find("devices") != j.end())
             {
-                std::string device_name = d;
-                devices.push_back(device_name);
+                for (nlohmann::json d : j["devices"])
+                {
+                    std::string device_name = d;
+                    devices.push_back(device_name);
+                }
+            }
+            m_spine = std::unique_ptr<Spine>(new Spine);
+
+
+            if(j.find("arduino_gen_home") != j.end())
+            {
+                m_spine->loadDevices(j["arduino_gen_home"], devices);
             }
 
-            m_spine = std::unique_ptr<Spine>(new Spine);
-            m_spine->loadDevices(j["arduino_gen_home"], devices);
-
-            createSubsystems(j["subsystems"]);
-
+            if(j.find("subsystems") != j.end())
+            {
+                createSubsystems(j["subsystems"]);
+            }
             createRoutine();
 
-            m_state_file = cppfs::fs::open(j["state_file"]).createOutputStream();
+            if(j.find("state_file") != j.end())
+            {
+                m_state_file = cppfs::fs::open(j["state_file"]).createOutputStream();
+            }
         }
 
         void RobotBase::start()
@@ -86,9 +99,12 @@ namespace rip
                 action->setup(state);
 
                 // Reset the state file
-                m_state_file->clear();
-                (*m_state_file) << state;
-                m_state_file->flush();
+                if(m_state_file != nullptr)
+                {
+                    m_state_file->clear();
+                    (*m_state_file) << state;
+                    m_state_file->flush();
+                }
 
                 // If ever interrupted then stop
                 if (!m_running)
@@ -102,9 +118,12 @@ namespace rip
                     action->update(state);
 
                     // Reset the state file
-                    m_state_file->clear();
-                    (*m_state_file) << state;
-                    m_state_file->flush();
+                    if(m_state_file != nullptr)
+                    {
+                        m_state_file->clear();
+                        (*m_state_file) << state;
+                        m_state_file->flush();
+                    }
 
                     // std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(m_update_time.to(units::ms))));
                 }
@@ -120,9 +139,12 @@ namespace rip
                 action->teardown(state);
 
                 // Reset the state file
-                m_state_file->clear();
-                (*m_state_file) << state;
-                m_state_file->flush();
+                if(m_state_file != nullptr)
+                {
+                    m_state_file->clear();
+                    (*m_state_file) << state;
+                    m_state_file->flush();
+                }
             }
             m_running = false;
         }
