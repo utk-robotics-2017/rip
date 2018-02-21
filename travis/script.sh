@@ -18,9 +18,9 @@ function test_arduino_gen() {
     popd
 }
 
-function test_roboclaw() {
-    pushd core/roboclaw
-    ./roboclaw_test
+function test_motor_controllers() {
+    pushd core/motor_controllers
+    ./motor_controllers_test
     popd
 }
 
@@ -35,7 +35,7 @@ case $BRANCH in
     test_arduino_gen
     ;;
   roboclaw*)
-    test_roboclaw
+    test_motor_controllers
     ;;
   cmd_messenger*)
     test_cmd_messenger
@@ -43,7 +43,7 @@ case $BRANCH in
   *)
     test_arduino_gen
     test_cmd_messenger
-    test_roboclaw
+    test_motor_controllers
     ;;
 esac
 
