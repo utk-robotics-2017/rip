@@ -6,6 +6,9 @@
 #include <framework/action.hpp>
 #include <drivetrains/drivetrain.hpp>
 
+#include <chrono>
+
+
 namespace rip
 {
     namespace navigation
@@ -43,7 +46,7 @@ namespace rip
                 bool m_use_time;
                 units::Distance m_distance;
                 units::Time m_time;
-                units::Time m_start_time;
+                std::chrono::time_point<std::chrono::system_clock> m_start_time;
                 units::Velocity m_speed;
                 std::shared_ptr<drivetrains::Drivetrain> m_drivetrain;
             };
