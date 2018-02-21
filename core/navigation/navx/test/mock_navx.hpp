@@ -1,9 +1,9 @@
 #ifndef MOCK_NAVX_HPP
 #define MOCK_NAVX_HPP
-#include <navx/navx.h>
+#include <navx/navx.hpp>
 #include <vector>
 #include <stdint.h>
-#include <navx/SerialPort.h>
+#include <navx/serial_port.hpp>
 
 namespace rip
 {

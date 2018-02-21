@@ -1,0 +1,8 @@
+<constructors>
+    <constructor type="IntType" variable="intType">
+        <argument name="something" type="int"/>
+    </constructor>
+    <constructor type="BoolType" variable="boolType">
+        <argument name="somethingElse" type="bool"/>
+    </constructor>
+</constructors>

@@ -3,6 +3,7 @@
 #include <time.h>
 #include <unistd.h>
 #include <string>
+#include <navx/exceptions.hpp>
 
 namespace rip
 {
@@ -315,12 +316,8 @@ namespace rip
                                             /* This binary packet contains an embedded     */
                                             /* end-of-line character.  Continue to receive */
                                             /* more data until entire packet is received.  */
-<<<<<<< HEAD:core/navigation/navx/src/SerialIO.cpp
-                                            int additional_received_data_length = serial_port->read(additional_received_data,sizeof(additional_received_data));
-=======
                                             int additional_received_data_length =
                                                 serial_port->read(additional_received_data, sizeof(additional_received_data));
->>>>>>> dev:core/navigation/navx/src/serial_io.cpp
                                             byte_count += additional_received_data_length;
 
                                             /* Resize array to hold existing and new data */

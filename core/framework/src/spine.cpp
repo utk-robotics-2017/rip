@@ -10,6 +10,11 @@ namespace rip
 {
     namespace framework
     {
+        Spine::~Spine()
+        {
+            stop();
+        }
+
         void Spine::loadDevices(const std::string& arduino_gen_folder, std::vector< std::string >& device_names)
         {
             // device names have not been specified

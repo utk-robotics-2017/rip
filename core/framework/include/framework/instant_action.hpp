@@ -33,6 +33,8 @@ namespace rip
         class InstantAction : public Action
         {
         public:
+            InstantAction(const std::string& name);
+
             /**
              * Returns whether the action is finished
              *

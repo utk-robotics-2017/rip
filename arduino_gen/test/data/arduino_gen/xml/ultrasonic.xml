@@ -2,10 +2,12 @@
     <includes>
         <include standard="true">NewPing.h</include>
     </includes>
-    <constructors type="NewPing" variable="sonar">
-        <argument type="int" name="triggerPin" />
-        <argument type="int" name="echoPin" />
-        <argument type="int" name="maxDistance" value="200" />
+    <constructors>
+        <constructor type="NewPing" variable="sonar">
+            <argument type="int" name="triggerPin" />
+            <argument type="int" name="echoPin" />
+            <argument type="int" name="maxDistance" value="200" />
+        </constructor>
     </constructors>
     <setup>
         // Ultrasonic triggerPin: $triggerPin$

@@ -46,6 +46,8 @@ namespace rip
 
     namespace framework
     {
+        void handleSignal(int signum);
+
         /**
          * Main robot base class
          */
@@ -62,7 +64,7 @@ namespace rip
             /**
              * Destructor
              */
-            ~RobotBase();
+            virtual ~RobotBase();
 
             /**
              * Initalize robot

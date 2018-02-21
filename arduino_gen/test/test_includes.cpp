@@ -32,7 +32,7 @@ namespace rip
                 Includes includes(includesElement);
                 std::vector<std::string> includes_vec = includes.GetIncludes();
 
-                EXPECT_EQ(includes_vec.size(), 0);
+                EXPECT_EQ(includes_vec.size(), 0u);
             }
 
             TEST(Includes, SingleInclude)

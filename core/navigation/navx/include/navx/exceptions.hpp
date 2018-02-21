@@ -19,7 +19,8 @@
  */
 #ifndef NAVX_EXCEPTIONS_H
 #define NAVX_EXCEPTIONS_H
-#include <exception_base.hpp>
+#include <misc/exception_base.hpp>
+
 namespace rip
 {
     namespace navigation

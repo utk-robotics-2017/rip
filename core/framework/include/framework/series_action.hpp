@@ -40,9 +40,10 @@ namespace rip
             /**
              * Constructor
              *
+             * @param name Name of the action
              * @param action A list of actions to complete in sequential order
              */
-            SeriesAction(const std::vector< std::shared_ptr<Action> >& actions);
+            SeriesAction(const std::string& name, const std::vector< std::shared_ptr<Action> >& actions);
 
             /**
              * Returns whether this action is finished

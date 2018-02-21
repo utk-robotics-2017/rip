@@ -1,5 +1,5 @@
 #include "mock_navx.hpp"
-#include <navx/navx.h>
+#include <navx/navx.hpp>
 
 namespace rip
 {
@@ -9,7 +9,7 @@ namespace rip
         {
             namespace mocks
             {
-                
+
             }
         }
     }

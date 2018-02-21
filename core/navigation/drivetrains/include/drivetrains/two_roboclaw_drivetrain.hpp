@@ -25,6 +25,8 @@ namespace rip
             public:
                 TwoRoboclawDrivetrain(const std::string& name, std::shared_ptr<Roboclaw> left, std::shared_ptr<Roboclaw> right, std::shared_ptr<NavX> navx = nullptr);
 
+                ~TwoRoboclawDrivetrain();
+
                 /**
                  * Drive all the motors
                  * @param power [-1.0, 1.0]
@@ -64,9 +66,6 @@ namespace rip
                 virtual void stop() override;
 
                 virtual bool diagnostic() override;
-
-                virtual void stop(bool brake = false) override;
-
             private:
                 std::shared_ptr<Roboclaw> m_left;
                 std::shared_ptr<Roboclaw> m_right;

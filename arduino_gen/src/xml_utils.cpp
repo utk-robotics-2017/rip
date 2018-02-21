@@ -10,6 +10,9 @@
 
 #include <fmt/format.h>
 
+#include <cppfs/fs.h>
+#include <cppfs/FileHandle.h>
+
 #include "arduino_gen/exceptions.hpp"
 
 namespace rip
@@ -20,14 +23,7 @@ namespace rip
         {
             std::string file, escaped, expression, suffix;
 
-            // Read in file
-            std::ifstream in(filename, std::ios::in);
-            if (!in)
-            {
-                throw FileIoException("Error reading file");
-            }
-            file = std::string{std::istreambuf_iterator<char>{in}, {}};
-            in.close();
+            file = cppfs::fs::open(filename).readFile();
 
             for (std::string element : elements_to_escape)
             {

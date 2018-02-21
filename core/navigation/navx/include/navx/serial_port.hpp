@@ -100,7 +100,7 @@ namespace rip
                     tcflush(this->fd, TCOFLUSH);
                 }
 
-                void write(char *data, int length)
+                virtual void write(char *data, int length)
                 {
                     int n_written = 0, spot = 0;
                     do
@@ -118,7 +118,7 @@ namespace rip
                     return bytes_avail;
                 }
 
-                int read(char *data, int size)
+                virtual int read(char *data, int size)
                 {
                     int n = 0, loc = 0;
                     char buf = '\0';
