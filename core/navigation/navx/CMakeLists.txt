@@ -2,10 +2,11 @@ cmake_minimum_required(VERSION 3.1)
 project(navx)
 
 # Get all .cpp files except for main.cpp
+file(GLOB_RECURSE ${PROJECT_NAME}_HEADERS "include/navx/*.hpp")
 file(GLOB_RECURSE ${PROJECT_NAME}_SOURCES "src/*.cpp")
 
 # Create the navx library, set to c++11, link external libraries, and set include dir
-add_library(${PROJECT_NAME} ${${PROJECT_NAME}_SOURCES})
+add_library(${PROJECT_NAME} ${${PROJECT_NAME}_SOURCES} ${${PROJECT_NAME}_HEADERS})
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
 if(ENABLE_TESTING)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage")

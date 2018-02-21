@@ -5,6 +5,8 @@
 #include <cppfs/FileHandle.h>
 #include <cppfs/fs.h>
 #include <framework/exceptions.hpp>
+#include <misc/logger.hpp>
+#include <spdlog/spdlog.h>
 
 namespace rip
 {
@@ -19,17 +21,11 @@ namespace rip
         RobotBase::~RobotBase()
         {
             m_running = false;
-
-            for (auto iter : m_subsystems)
-            {
-                iter.second->stop();
-            }
-
-            m_spine->stop();
         }
 
         void RobotBase::init()
         {
+            misc::Logger::getInstance()->debug("Robot is initializing...");
             cppfs::FileHandle config_file = cppfs::fs::open(m_config_path);
             if (!config_file.exists())
             {
@@ -40,57 +36,58 @@ namespace rip
             nlohmann::json j;
             (*in) >> j;
             std::vector<std::string> devices;
-            for (nlohmann::json d : j["devices"])
+
+            if(j.find("devices") != j.end())
             {
-                std::string device_name = d;
-                devices.push_back(device_name);
+                for (nlohmann::json d : j["devices"])
+                {
+                    std::string device_name = d;
+                    devices.push_back(device_name);
+                }
+            }
+            m_spine = std::unique_ptr<Spine>(new Spine);
+
+
+            if(j.find("arduino_gen_home") != j.end())
+            {
+                m_spine->loadDevices(j["arduino_gen_home"], devices);
             }
 
-            m_spine = std::unique_ptr<Spine>(new Spine);
-            m_spine->loadDevices(j["arduino_gen_home"], devices);
-
-            createSubsystems(j);
-
+            if(j.find("subsystems") != j.end())
+            {
+                createSubsystems(j["subsystems"]);
+            }
             createRoutine();
 
-            m_state_file = cppfs::fs::open(j["state_file"]).createOutputStream();
+            if(j.find("state_file") != j.end())
+            {
+                m_state_file = cppfs::fs::open(j["state_file"]).createOutputStream();
+            }
         }
 
         void RobotBase::start()
         {
             m_running = true;
-            m_thread = std::unique_ptr<std::thread>(new std::thread(&RobotBase::run, this));
+            misc::Logger::getInstance()->debug("Starting the robot...");
+            run();
         }
 
         void RobotBase::stop()
         {
+            misc::Logger::getInstance()->debug("Stoping the robot...");
             m_running = false;
-        }
-
-        void RobotBase::diagnostic()
-        {
-            if (!m_spine->diagnostic())
-            {
-                return;
-            }
-
-            for (auto iter : m_subsystems)
-            {
-                if (!iter.second->diagnostic())
-                {
-                    // Diagnostic
-                    return;
-                }
-            }
         }
 
         void RobotBase::run()
         {
             nlohmann::json state;
+            misc::Logger::getInstance()->debug("run");
 
             // Loop through the routine
             for (std::shared_ptr<Action> action : m_routine)
             {
+                misc::Logger::getInstance()->debug("loop");
+
                 // If ever interrupted then stop
                 if (!m_running)
                 {
@@ -98,12 +95,16 @@ namespace rip
                 }
 
                 // Setup the action
+                misc::Logger::getInstance()->debug("Setting up action: {}", action->name());
                 action->setup(state);
 
                 // Reset the state file
-                m_state_file->clear();
-                (*m_state_file) << state;
-                m_state_file->flush();
+                if(m_state_file != nullptr)
+                {
+                    m_state_file->clear();
+                    (*m_state_file) << state;
+                    m_state_file->flush();
+                }
 
                 // If ever interrupted then stop
                 if (!m_running)
@@ -117,9 +118,12 @@ namespace rip
                     action->update(state);
 
                     // Reset the state file
-                    m_state_file->clear();
-                    (*m_state_file) << state;
-                    m_state_file->flush();
+                    if(m_state_file != nullptr)
+                    {
+                        m_state_file->clear();
+                        (*m_state_file) << state;
+                        m_state_file->flush();
+                    }
 
                     // std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(m_update_time.to(units::ms))));
                 }
@@ -130,12 +134,17 @@ namespace rip
                     break;
                 }
 
+                // Teardown the action
+                misc::Logger::getInstance()->debug("Tearing down action: {}", action->name());
                 action->teardown(state);
 
                 // Reset the state file
-                m_state_file->clear();
-                (*m_state_file) << state;
-                m_state_file->flush();
+                if(m_state_file != nullptr)
+                {
+                    m_state_file->clear();
+                    (*m_state_file) << state;
+                    m_state_file->flush();
+                }
             }
             m_running = false;
         }

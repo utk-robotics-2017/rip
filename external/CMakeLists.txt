@@ -13,6 +13,7 @@ add_subdirectory(cppfs)
 add_subdirectory(clipper)
 add_subdirectory(stp)
 add_subdirectory(serial)
+add_subdirectory(args)
 add_subdirectory(optional-lite)
 
 # custom

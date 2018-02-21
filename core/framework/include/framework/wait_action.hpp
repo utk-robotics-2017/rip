@@ -40,9 +40,10 @@ namespace rip
             /**
              * Constructor
              *
+             * @param name Name of the action
              * @param wait_time The amount of time for this action to wait
              */
-            WaitAction(const units::Time& wait_time);
+            WaitAction(const std::string& name, const units::Time& wait_time);
 
             /**
              * Finishes when the elapsed time is more than the wait time

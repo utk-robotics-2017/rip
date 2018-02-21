@@ -4,8 +4,9 @@ namespace rip
 {
     namespace framework
     {
-        ParallelAction::ParallelAction(const std::vector<std::shared_ptr<Action> >& actions)
-            : m_actions(actions)
+        ParallelAction::ParallelAction(const std::string& name, const std::vector<std::shared_ptr<Action> >& actions)
+            : Action(name)
+            , m_actions(actions)
         {}
 
         bool ParallelAction::isFinished()
