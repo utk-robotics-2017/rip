@@ -27,37 +27,36 @@ namespace rip
             /**
              * @brief Constructor
              */
-            ArduinoGen(std::string arduino, std::string parent_folder, std::string appendage_data_folder = "appendages", bool testing = false);
+            ArduinoGen(std::string arduino, std::string parent_folder, std::string current_arduino_code_dir = "/Robot/CurrentArduinoCode", std::string appendage_data_folder = "appendages");
 
             /**
              * @brief Reads the config file with the appendages
              *
              * @param filepath The filepath to the appendages config file to read
-             * @param copy Whether to copy the appendages config file into the output folder
              */
-            void readConfig(std::string filepath, bool copy = true);
+            void readConfig(std::string filepath);
 
             /**
              * @brief Writes the Arduino code, build script, and the config file used by RIP
              */
-            void generateOutput();
+            void generateOutput(bool copyOldFiles);
 
+        private:
             /**
              * TODO: Properly comment
              * TODO: Make private again
              */
             std::string getArduinoCode();
 
-        private:
-            /**
-             * @brief Removes the device folder if it exists and creates a new one
-             */
-            void setupFolder();
-
             /**
              * TODO: Properly comment
              */
             void loadTemplates();
+
+            /**
+             * TODO: Properly comment
+             */
+            void loadCommandEnums();
 
             /**
              * @brief Returns the includes for the Arduino Code
@@ -102,12 +101,6 @@ namespace rip
             std::string getCommandCallbacks();
 
             /**
-             * @brief Returns the code for all the extra functions
-             * @returns The code for all the extra functions
-             */
-            std::string getExtras();
-
-            /**
              * TODO: Properly comment
              */
             std::string getCoreConfig();
@@ -117,8 +110,19 @@ namespace rip
              */
             std::string getUploadScript();
 
+            /**
+             * TODO: Properly comment
+             */
+            std::string getSerialScript();
+
+            /**
+             * TODO: Properly comment
+             */
+            std::string getPlatformIo();
+
             std::string m_arduino;
             std::string m_parent_folder;
+            std::string m_current_arduino_code_dir;
 
             std::map<std::string, int> m_commands;
 
@@ -127,6 +131,9 @@ namespace rip
             std::multimap< std::string, std::shared_ptr<Appendage> > m_appendages;
 
             std::vector<AppendageTemplate> m_appendage_templates;
+
+            std::string config;
+            std::string platformio_config;
 
 #ifdef TESTING
         private:
@@ -179,6 +186,18 @@ namespace rip
             FRIEND_TEST(ArduinoGenTest, arduino_code_one_appendage);
             FRIEND_TEST(ArduinoGenTest, arduino_code_two_appendages_same);
             FRIEND_TEST(ArduinoGenTest, arduino_code_two_appendages_different);
+
+            FRIEND_TEST(ArduinoGenTest, get_core_config_no_appendages);
+            FRIEND_TEST(ArduinoGenTest, get_core_config_one_empty_appendage);
+            FRIEND_TEST(ArduinoGenTest, get_core_config_one_appendage);
+            FRIEND_TEST(ArduinoGenTest, get_core_config_two_appendages_same);
+            FRIEND_TEST(ArduinoGenTest, get_core_config_two_appendages_different);
+
+            FRIEND_TEST(ArduinoGenTest, get_upload_script);
+
+            FRIEND_TEST(ArduinoGenTest, setup_folder);
+
+            FRIEND_TEST(ArduinoGenTest, generate_output);
 #endif
         };
     }

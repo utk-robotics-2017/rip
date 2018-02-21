@@ -24,7 +24,7 @@ make_appendage_json_outputs(${CMAKE_CURRENT_BINARY_DIR}/appendages appendage_jso
 # Create arduino_gen executable, set to c++11, and link arduino_gen library
 add_executable(${PROJECT_NAME} "src/main.cpp" ${code_template} ${appendage_xml_outputs} ${appendage_json_outputs})
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
-target_link_libraries(${PROJECT_NAME} _${PROJECT_NAME})
+target_link_libraries(${PROJECT_NAME} _${PROJECT_NAME} args fmt)
 
 
 if(ENABLE_TESTING)

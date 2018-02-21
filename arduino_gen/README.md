@@ -1,2 +1,4 @@
-# arduino_gen_cpp
-A C++ library that generates Arduino Code based on a config file
+# Arduino Gen
+*Now in C++11*
+
+Arduino Gen is a C++11 library within RIP to generate Arduino/Teensy code from templates and config files. It provides native integration with the RIP appendage system.

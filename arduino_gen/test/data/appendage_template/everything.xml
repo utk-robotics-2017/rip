@@ -4,11 +4,13 @@
         <include>4</include>
         <include>5</include>
     </includes>
-    <constructors type="Type" variable="type">
-        <argument name="something_int" type="int"/>
-        <argument name="something_bool" type="bool"/>
-        <argument name="something_float" type="float"/>
-        <argument name="something_string" type="string"/>
+    <constructors>
+        <constructor type="Type" variable="type">
+            <argument name="something_int" type="int"/>
+            <argument name="something_bool" type="bool"/>
+            <argument name="something_float" type="float"/>
+            <argument name="something_string" type="string"/>
+        </constructor>
     </constructors>
     <setup>
         //Setup 2, Electric Boogaloo
