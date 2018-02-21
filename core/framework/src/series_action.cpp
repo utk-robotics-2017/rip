@@ -4,15 +4,16 @@ namespace rip
 {
     namespace framework
     {
-        SeriesAction::SeriesAction(const std::vector<std::shared_ptr<Action> >& actions)
-            : m_actions(actions)
+        SeriesAction::SeriesAction(const std::string& name, const std::vector<std::shared_ptr<Action> >& actions)
+            : Action(name)
+            , m_actions(actions)
             , m_current(0)
             , m_previous(-1)
         {}
 
         bool SeriesAction::isFinished()
         {
-            return m_current == m_actions.size();
+            return m_current == static_cast<int>(m_actions.size());
         }
 
         void SeriesAction::setup(nlohmann::json& state) {}

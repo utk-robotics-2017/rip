@@ -45,6 +45,8 @@ namespace rip
         public:
             Spine() = default;
 
+            ~Spine();
+
             /**
              * @brief Attempts to connect to all the devices specified. Defaults to attempting all
              *        if none are provided.

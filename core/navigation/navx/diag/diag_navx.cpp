@@ -1,7 +1,7 @@
 #include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
-#include <navx.h>
+#include <navx/navx.h>
 #include <chrono>
 #include <thread>
 #include <iomanip>

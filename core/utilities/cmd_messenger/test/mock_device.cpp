@@ -1,3 +1,7 @@
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+// Totally acceptable for a mock to have unused parameters
+
 #include "mock_device.hpp"
 
 namespace rip
@@ -52,3 +56,4 @@ namespace rip
         }
     }
 }
+#pragma GCC diagnostic pop

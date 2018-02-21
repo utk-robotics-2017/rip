@@ -31,19 +31,13 @@ namespace rip
         class Subsystem
         {
         public:
-            Subsystem(const std::string& name)
-                : m_name(name)
-            {}
+            Subsystem(const std::string& name);
 
-            void setName(const std::string& name)
-            {
-                m_name = name;
-            }
+            virtual ~Subsystem();
 
-            std::string name() const
-            {
-                return m_name;
-            }
+            void setName(const std::string& name);
+
+            std::string name() const;
 
             virtual bool diagnostic() = 0;
             virtual void stop() = 0;

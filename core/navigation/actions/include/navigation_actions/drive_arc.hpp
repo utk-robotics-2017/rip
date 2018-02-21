@@ -15,6 +15,8 @@ namespace rip
             {
             public:
 
+
+
                 /**
                 * Returns whether or not the action has finished execution.
                 */
