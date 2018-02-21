@@ -40,7 +40,7 @@ namespace rip
                 m_start_time = std::chrono::duration_cast< std::chrono::milliseconds >(
                                    std::chrono::system_clock::now().time_since_epoch()).count() * units::ms;
                 motorcontrollers::MotorDynamics dynamics;
-                dynamics.setVelocity(m_speed);
+                dynamics.setSpeed(m_speed);
                 m_drivetrain->drive(dynamics);
             }
 
