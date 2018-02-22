@@ -6,6 +6,7 @@ extern "C"
     #include "gpio.h"
 }
 #include "peripherycpp/exceptions.hpp"
+#include "peripherycpp/device.hpp"
 
 namespace rip
 {
@@ -13,7 +14,7 @@ namespace rip
     namespace peripherycpp
     {
 
-        class Gpio
+        class Gpio : public Device
         {
             public:
 
@@ -21,13 +22,13 @@ namespace rip
                  * open
                  * @param pin  the Linux GPIO pin number for the pin being opened.
                  * @param direction  an integer corresponding to the direction the GPIO pin is being opened (it will be converted to an enum).
-                 * @brief  Open the sysfs GPIO corresponding to the specified pin, with the specified direction.
+                 * @brief  Inherited driver function that simply calls open_pri.
                  */
                 void open(unsigned int pin, int direction);
 
                 /**
                  * read
-                 * @brief  Read the state of the GPIO and return it.
+                 * @brief  Inherited driver function that simply calls read_pri.
                  * @return  a bool describing the state of the GPIO.
                  */
                 bool read();
@@ -35,21 +36,21 @@ namespace rip
                 /**
                  * write
                  * @param value  the value that will be used to set the state of the GPIO.
-                 * @brief  Set the state of the GPIO to value.
+                 * @brief  Inherited driver function that simply calls write_pri.
                  */
                 void write(bool value);
 
                 /**
                  * poll
                  * @param timeout_ms  what it does depends on the value. If it is positive, it is a timeout in milliseconds. If 0, it is a non-blocking poll. If negative, it is a blocking poll.
-                 * @brief  Poll a GPIO for the edge event configured with gpio_set_edge.
+                 * @brief  Inherited driver function that simply calls poll_pri.
                  * @return  1 on success, 0 on timeout
                  */
                 int poll(int timeout_ms);
 
                 /**
                  * close
-                 * @brief  Close the sysfs GPIO.
+                 * @brief  Inherited driver function that simply calls close_pri.
                  */
                 void close();
 
@@ -97,7 +98,7 @@ namespace rip
 
                 /**
                  * fd
-                 * @brief  Return the file descriptor (for the underlying sysfs GPIO "value" file) of the GPIO handle.
+                 * @brief  Inherited driver function that simply calls fd_pri.
                  * @return  the file descriptor of the GPIO handle.
                  */
                 int fd();
@@ -105,12 +106,63 @@ namespace rip
                 /**
                  * toString
                  * @param len  the length of the returned string.
-                 * @brief  Return a string representation of the GPIO handle.
+                 * @brief  Inherited driver function that simply calls toString_pri.
                  * @return  a string representation of the GPIO handle.
                  */
                 std::string toString(size_t len);
 
             private:
+                /**
+                 * open_pri
+                 * @param pin  the Linux GPIO pin number for the pin being opened.
+                 * @param direction  an integer corresponding to the direction the GPIO pin is being opened (it will be converted to an enum).
+                 * @brief  Open the sysfs GPIO corresponding to the specified pin, with the specified direction.
+                 */
+                void open_pri(unsigned int pin, int direction);
+
+                /**
+                 * read_pri
+                 * @brief  Read the state of the GPIO and return it.
+                 * @return  a bool describing the state of the GPIO.
+                 */
+                bool read_pri();
+
+                /**
+                 * write_pri
+                 * @param value  the value that will be used to set the state of the GPIO.
+                 * @brief  Set the state of the GPIO to value.
+                 */
+                void write_pri(bool value);
+
+                /**
+                 * poll_pri
+                 * @param timeout_ms  what it does depends on the value. If it is positive, it is a timeout in milliseconds. If 0, it is a non-blocking poll. If negative, it is a blocking poll.
+                 * @brief  Poll a GPIO for the edge event configured with gpio_set_edge.
+                 * @return  1 on success, 0 on timeout
+                 */
+                int poll_pri(int timeout_ms);
+
+                /**
+                 * close_pri
+                 * @brief  Close the sysfs GPIO.
+                 */
+                void close_pri();
+                
+                 /**
+                 * fd_pri
+                 * @brief  Return the file descriptor (for the underlying sysfs GPIO "value" file) of the GPIO handle.
+                 * @return  the file descriptor of the GPIO handle.
+                 */
+                int fd_pri();
+
+                /**
+                 * toString_pri
+                 * @param len  the length of the returned string.
+                 * @brief  Return a string representation of the GPIO handle.
+                 * @return  a string representation of the GPIO handle.
+                 */
+                std::string toString_pri(size_t len);
+
                 /**
                  * checkError
                  * @param err_code An int error code from Periphery GPIO

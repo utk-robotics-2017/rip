@@ -6,6 +6,7 @@ extern "C"
     #include "i2c.h"
 }
 #include "peripherycpp/exceptions.hpp"
+#include "peripherycpp/device.hpp"
 #include <vector>
 #include <string>
 
@@ -15,14 +16,14 @@ namespace rip
     namespace peripherycpp
     {
 
-        class I2c
+        class I2c : public Device
         {
             public:
 
                 /**
                  * open
                  * @param path  the path to the desired i2c-dev device.
-                 * @brief  Open the i2c-dev device at the specified path.
+                 * @brief  Inherited driver function that simply calls open_pri
                  */
                 void open(const std::string path);
 
@@ -37,13 +38,13 @@ namespace rip
 
                 /**
                  * close
-                 * @brief  Close the i2c-dev device.
+                 * @brief  Inherited driver function that simply calls close_pri
                  */
                 void close();
 
                 /**
                  * fd
-                 * @brief  Return the file descriptor (for the underlying i2c-dev device) of the I2C handle.
+                 * @brief  Inherited driver function that simply calls fd_pri.
                  * @return  the file descriptor of the I2C handle.
                  */
                 int fd();
@@ -51,12 +52,40 @@ namespace rip
                 /**
                  * toString
                  * @param len  the size of the string to be returned.
-                 * @brief  Return a string representation of the I2C handle.
+                 * @brief  Inherited driver function that simply calls toString_pri
                  * @return  the string representation of the I2C handle.
                  */
                 std::string toString(size_t len);
 
             private:
+
+                /**
+                 * open_pri
+                 * @param path  the path to the desired i2c-dev device.
+                 * @brief  Open the i2c-dev device at the specified path.
+                 */
+                void open_pri(const std::string path);
+                
+                 /**
+                 * close_pri
+                 * @brief  Close the i2c-dev device.
+                 */
+                void close_pri();
+
+                /**
+                 * fd_pri
+                 * @brief  Return the file descriptor (for the underlying i2c-dev device) of the I2C handle.
+                 * @return  the file descriptor of the I2C handle.
+                 */
+                int fd_pri();
+
+                /**
+                 * toString_pri
+                 * @param len  the size of the string to be returned.
+                 * @brief  Return a string representation of the I2C handle.
+                 * @return  the string representation of the I2C handle.
+                 */
+                std::string toString_pri(size_t len);
 
                 /**
                  * checkError
