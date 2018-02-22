@@ -1,4 +1,4 @@
-#include "code.hpp"
+#include "arduino_gen/code.hpp"
 
 #include <sstream>
 #include <regex>
@@ -9,7 +9,7 @@
 #include <fmt/format.h>
 #include <tinyxml2.h>
 
-#include "exceptions.hpp"
+#include "arduino_gen/exceptions.hpp"
 
 namespace rip
 {

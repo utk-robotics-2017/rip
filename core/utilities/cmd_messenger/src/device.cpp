@@ -18,7 +18,7 @@
  *   \$$$$$$     \$$    \$$   \$$       \$$   \$$ \$$$$$$ \$$
  */
 
-#include "device.hpp"
+#include "cmd_messenger/device.hpp"
 
 namespace rip
 {

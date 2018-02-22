@@ -1,3 +1,5 @@
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated"
 #include "stp1.hh"
 #include "tools.hh"
 
@@ -54,3 +56,4 @@ namespace stp
         return os;
     }
 }
+#pragma GCC diagnostic pop

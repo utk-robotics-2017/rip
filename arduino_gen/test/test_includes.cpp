@@ -1,6 +1,6 @@
-#include "includes.hpp"
-#include "exceptions.hpp"
-#include "xml_utils.hpp"
+#include "arduino_gen/includes.hpp"
+#include "arduino_gen/exceptions.hpp"
+#include "arduino_gen/xml_utils.hpp"
 
 #include <tinyxml2.h>
 #include <gtest/gtest.h>
@@ -32,7 +32,7 @@ namespace rip
                 Includes includes(includesElement);
                 std::vector<std::string> includes_vec = includes.GetIncludes();
 
-                EXPECT_EQ(includes_vec.size(), 0);
+                EXPECT_EQ(includes_vec.size(), 0u);
             }
 
             TEST(Includes, SingleInclude)

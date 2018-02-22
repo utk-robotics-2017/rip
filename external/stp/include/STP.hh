@@ -1,4 +1,8 @@
 #pragma once
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated"
+
 #include "stp1.hh"
 #include "stp3.hh"
 #include "stp7.hh"
@@ -122,3 +126,4 @@ namespace stp
         double xtarget; ///< target position
     };
 }
+#pragma GCC diagnostic pop

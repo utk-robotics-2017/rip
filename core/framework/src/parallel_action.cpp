@@ -1,63 +1,48 @@
-#include "parallel_action.hpp"
+#include "framework/parallel_action.hpp"
 
 namespace rip
 {
-
-    ParallelAction::ParallelAction(const std::vector<std::shared_ptr<Action> >& actions)
-        : m_actions(actions)
-    {}
-
-    bool ParallelAction::isFinished()
+    namespace framework
     {
-        for (std::shared_ptr<Action> action : m_actions)
+        ParallelAction::ParallelAction(const std::string& name, const std::vector<std::shared_ptr<Action> >& actions)
+            : Action(name)
+            , m_actions(actions)
+        {}
+
+        bool ParallelAction::isFinished()
         {
-            if (!action->isFinished())
+            for (std::shared_ptr<Action> action : m_actions)
             {
-                return false;
+                if (!action->isFinished())
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        void ParallelAction::update(nlohmann::json& state)
+        {
+            for (std::shared_ptr<Action> action : m_actions)
+            {
+                action->update(state);
             }
         }
-        return true;
-    }
 
-    void ParallelAction::update()
-    {
-        for (std::shared_ptr<Action> action : m_actions)
+        void ParallelAction::setup(nlohmann::json& state)
         {
-            action->update();
+            for (std::shared_ptr<Action> action : m_actions)
+            {
+                action->setup(state);
+            }
         }
-    }
 
-    void ParallelAction::setup()
-    {
-        for (std::shared_ptr<Action> action : m_actions)
+        void ParallelAction::teardown(nlohmann::json& state)
         {
-            action->setup();
-        }
-    }
-
-    void ParallelAction::teardown()
-    {
-        for (std::shared_ptr<Action> action : m_actions)
-        {
-            action->teardown();
-        }
-    }
-
-    nlohmann::json ParallelAction::save() const
-    {
-        nlohmann::json j;
-        for (std::shared_ptr<Action> action : m_actions)
-        {
-            j.push_back(action->save());
-        }
-        return j;
-    }
-
-    void ParallelAction::restore(const nlohmann::json& state)
-    {
-        for (int i = 0, end = m_actions.size(); i < end; i++)
-        {
-            m_actions[i]->restore(state[i]);
+            for (std::shared_ptr<Action> action : m_actions)
+            {
+                action->teardown(state);
+            }
         }
     }
 

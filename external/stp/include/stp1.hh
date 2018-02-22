@@ -1,4 +1,7 @@
 #pragma once
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated"
 #include "stp_base.hh"
 #include <iostream>
 
@@ -57,3 +60,4 @@ namespace stp
     };
 
 }
+#pragma GCC diagnostic pop

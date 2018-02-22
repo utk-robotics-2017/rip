@@ -1,6 +1,6 @@
-#include "command.hpp"
-#include "exceptions.hpp"
-#include "xml_utils.hpp"
+#include "arduino_gen/command.hpp"
+#include "arduino_gen/exceptions.hpp"
+#include "arduino_gen/xml_utils.hpp"
 
 #include <tinyxml2.h>
 #include <gtest/gtest.h>
@@ -180,7 +180,7 @@ namespace rip
                     "\t}\n"
                     "\t// Proper indentation is semi-important\n"
                     "\t// Even on the second line\n"
-                    "\tcmdMessenger.sendBindCmd(kAcknowledge, No);\n"
+                    "\tcmdMessenger.sendBinCmd(kAcknowledge, No);\n"
                     "}\n");
             }
 
@@ -209,7 +209,7 @@ namespace rip
                     "\t\treturn;\n"
                     "\t}\n"
                     "\t// All i'm saying, is that I need an index-num\n"
-                    "\tcmdMessenger.sendBindCmd(kAcknowledge, Easter);\n"
+                    "\tcmdMessenger.sendBinCmd(kAcknowledge, Easter);\n"
                     "}\n");
             }
 
@@ -233,7 +233,7 @@ namespace rip
                 ASSERT_EQ(command->callback(1),
                     "void Picky() {\n"
                     "\t// That other guy is too needy, I don't need an index-num\n"
-                    "\tcmdMessenger.sendBindCmd(kAcknowledge, Not);\n"
+                    "\tcmdMessenger.sendBinCmd(kAcknowledge, Not);\n"
                     "}\n");
             }
 
@@ -267,7 +267,7 @@ namespace rip
                     "\t\treturn;\n"
                     "\t}\n"
                     "\t// Got your nose!\n"
-                    "\tcmdMessenger.sendBindCmd(kAcknowledge, Jurassic);\n"
+                    "\tcmdMessenger.sendBinCmd(kAcknowledge, Jurassic);\n"
                     "}\n");
             }
 
@@ -306,7 +306,7 @@ namespace rip
                     "\t\treturn;\n"
                     "\t}\n"
                     "\t// I should probably do something with \"a\" and \"b\"\n"
-                    "\tcmdMessenger.sendBindCmd(kAcknowledge, ACleverId);\n"
+                    "\tcmdMessenger.sendBinCmd(kAcknowledge, ACleverId);\n"
                     "}\n");
             }
 
@@ -336,10 +336,10 @@ namespace rip
                     "\t}\n"
                     "\tint cloud;\n"
                     "\tcloud = 9;\n"
-                    "\tcmdMessenger.sendBindCmd(kAcknowledge, Euphoria);\n"
+                    "\tcmdMessenger.sendBinCmd(kAcknowledge, Euphoria);\n"
                     "\tcmdMessenger.sendCmdStart(EuphoriaResult);\n"
-                    "\tcmdMessenger.sendBinArg(cloud);\n"
-                    "\tcmdMeessenger.sendCmdEnd();\n"
+                    "\tcmdMessenger.sendCmdBinArg(cloud);\n"
+                    "\tcmdMessenger.sendCmdEnd();\n"
                     "}\n");
             }
 
@@ -372,11 +372,11 @@ namespace rip
                     "\tint NotAsBadAsOne;\n"
                     "\tTheLoneliestNumber = 1;\n"
                     "\tNotAsBadAsOne = 2;\n"
-                    "\tcmdMessenger.sendBindCmd(kAcknowledge, ThreeDog);\n"
+                    "\tcmdMessenger.sendBinCmd(kAcknowledge, ThreeDog);\n"
                     "\tcmdMessenger.sendCmdStart(ThreeDogResult);\n"
-                    "\tcmdMessenger.sendBinArg(TheLoneliestNumber);\n"
-                    "\tcmdMessenger.sendBinArg(NotAsBadAsOne);\n"
-                    "\tcmdMeessenger.sendCmdEnd();\n"
+                    "\tcmdMessenger.sendCmdBinArg(TheLoneliestNumber);\n"
+                    "\tcmdMessenger.sendCmdBinArg(NotAsBadAsOne);\n"
+                    "\tcmdMessenger.sendCmdEnd();\n"
                     "}\n");
             }
 
@@ -411,10 +411,10 @@ namespace rip
                     "\t}\n"
                     "\tchar out;\n"
                     "\tout = in;\n"
-                    "\tcmdMessenger.sendBindCmd(kAcknowledge, kEcho);\n"
+                    "\tcmdMessenger.sendBinCmd(kAcknowledge, kEcho);\n"
                     "\tcmdMessenger.sendCmdStart(kEchoResult);\n"
-                    "\tcmdMessenger.sendBinArg(out);\n"
-                    "\tcmdMeessenger.sendCmdEnd();\n"
+                    "\tcmdMessenger.sendCmdBinArg(out);\n"
+                    "\tcmdMessenger.sendCmdEnd();\n"
                     "}\n");
             }
 
@@ -458,10 +458,10 @@ namespace rip
                     "\trv = 1;\n"
                     "\tfor (int i = 0; i < n; i++)\n"
                     "\t    rv *= x;\n"
-                    "\tcmdMessenger.sendBindCmd(kAcknowledge, kExponent);\n"
+                    "\tcmdMessenger.sendBinCmd(kAcknowledge, kExponent);\n"
                     "\tcmdMessenger.sendCmdStart(kExponentResult);\n"
-                    "\tcmdMessenger.sendBinArg(rv);\n"
-                    "\tcmdMeessenger.sendCmdEnd();\n"
+                    "\tcmdMessenger.sendCmdBinArg(rv);\n"
+                    "\tcmdMessenger.sendCmdEnd();\n"
                     "}\n");
             }
 
@@ -497,11 +497,11 @@ namespace rip
                     "\tint rv1;\n"
                     "\tint rv2;\n"
                     "\t// Make two outputs from one input\n"
-                    "\tcmdMessenger.sendBindCmd(kAcknowledge, kOneToTwo);\n"
+                    "\tcmdMessenger.sendBinCmd(kAcknowledge, kOneToTwo);\n"
                     "\tcmdMessenger.sendCmdStart(kOneToTwoResult);\n"
-                    "\tcmdMessenger.sendBinArg(rv1);\n"
-                    "\tcmdMessenger.sendBinArg(rv2);\n"
-                    "\tcmdMeessenger.sendCmdEnd();\n"
+                    "\tcmdMessenger.sendCmdBinArg(rv1);\n"
+                    "\tcmdMessenger.sendCmdBinArg(rv2);\n"
+                    "\tcmdMessenger.sendCmdEnd();\n"
                     "}\n");
             }
 
@@ -544,11 +544,11 @@ namespace rip
                     "\tint remainder;\n"
                     "\tquotient = a / b;\n"
                     "\tremainder = a % b;\n"
-                    "\tcmdMessenger.sendBindCmd(kAcknowledge, kDivide);\n"
+                    "\tcmdMessenger.sendBinCmd(kAcknowledge, kDivide);\n"
                     "\tcmdMessenger.sendCmdStart(kDivideResult);\n"
-                    "\tcmdMessenger.sendBinArg(quotient);\n"
-                    "\tcmdMessenger.sendBinArg(remainder);\n"
-                    "\tcmdMeessenger.sendCmdEnd();\n"
+                    "\tcmdMessenger.sendCmdBinArg(quotient);\n"
+                    "\tcmdMessenger.sendCmdBinArg(remainder);\n"
+                    "\tcmdMessenger.sendCmdEnd();\n"
                     "}\n");
             }
         }

@@ -1,12 +1,12 @@
-#include "appendage_factory.hpp"
+#include "appendages/appendage_factory.hpp"
 
 #include <fmt/format.h>
 
 // Appendages
-#include "digital_input.hpp"
-#include "analog_input.hpp"
+#include "appendages/digital_input.hpp"
+#include "appendages/analog_input.hpp"
 
-#include "appendages_exceptions.hpp"
+#include "appendages/exceptions.hpp"
 
 namespace rip
 {
@@ -34,9 +34,9 @@ namespace rip
         }
 
         void AppendageFactory::registerAppendage(const std::string& type, std::function<std::shared_ptr<Appendage>(const nlohmann::json&,
-                                                                                          const std::map<std::string, int>&,
-                                                                                          std::shared_ptr<cmdmessenger::Device>)
-                                                 > constructor)
+                const std::map<std::string, int>&,
+                std::shared_ptr<cmdmessenger::Device>)
+                > constructor)
         {
             m_constructors[type] = constructor;
         }

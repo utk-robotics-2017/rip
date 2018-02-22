@@ -1,5 +1,5 @@
-#include "appendage.hpp"
-#include "exceptions.hpp"
+#include "arduino_gen/appendage.hpp"
+#include "arduino_gen/exceptions.hpp"
 
 #include <gtest/gtest.h>
 #include <googletest_rip_macros.hpp>
@@ -187,6 +187,49 @@ namespace rip
 
                 RIP_ASSERT_NO_THROW(std::make_shared<Appendage>(j, appendage_map));
 
+            }
+
+            TEST(Appendage_core_config, getCoreJson)
+            {
+                nlohmann::json j;
+                j["label"] = "whatever";
+                j["type"] = "something";
+                j["pin"] = 1;
+
+                std::multimap<std::string, std::shared_ptr<Appendage>> appendage_map;
+                std::shared_ptr<Appendage> appendage;
+
+                RIP_ASSERT_NO_THROW(appendage = std::make_shared<Appendage>(j, appendage_map, "", false));
+
+                ASSERT_EQ(appendage->getCoreJson(0).dump(4),
+                    "{\n"
+                    "    \"index\": 0,\n"
+                    "    \"label\": \"whatever\",\n"
+                    "    \"type\": \"something\"\n"
+                    "}"
+                );
+            }
+
+            TEST(Appendage_core_config, getCoreJson2)
+            {
+                nlohmann::json j;
+                j["label"] = "something";
+                j["type"] = "whatever";
+                j["pin"] = 2;
+                j["not"] = "used";
+
+                std::multimap<std::string, std::shared_ptr<Appendage>> appendage_map;
+                std::shared_ptr<Appendage> appendage;
+
+                RIP_ASSERT_NO_THROW(appendage = std::make_shared<Appendage>(j, appendage_map, "", false));
+
+                ASSERT_EQ(appendage->getCoreJson(7).dump(4),
+                    "{\n"
+                    "    \"index\": 7,\n"
+                    "    \"label\": \"something\",\n"
+                    "    \"type\": \"whatever\"\n"
+                    "}"
+                );
             }
         }
     }

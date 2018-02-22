@@ -1,10 +1,10 @@
-#include "servo.hpp"
+#include "appendages/servo.hpp"
 
 #include <utility>
 #include <tuple>
 #include <memory>
 
-#include <cmd_messenger.hpp>
+#include <cmd_messenger/cmd_messenger.hpp>
 
 namespace rip
 {

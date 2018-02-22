@@ -18,7 +18,7 @@
  *   \$$$$$$     \$$    \$$   \$$       \$$   \$$ \$$$$$$ \$$
  */
 
-#include "command.hpp"
+#include "cmd_messenger/command.hpp"
 
 namespace rip
 {

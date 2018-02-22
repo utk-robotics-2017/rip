@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 set -e
 
-cd build
+pushd build
 
 # Checks if it compiles
-make -j4
+make -j$(nproc )
 
 if [[ $2 ]]; then
     BRANCH=$1
@@ -12,39 +12,50 @@ else
     BRANCH=$3
 fi
 
-# Runs cpp check
-if [[ $BRANCH == "arduino_gen/"* ]]; then
-    cd arduino_gen
+function test_arduino_gen() {
+    pushd arduino_gen
     ./arduino_gen_test
-    cd ../../arduino_gen
-elif [[ $BRANCH == "pathfinder/"* ]]; then
-    cd pathfinder
-    ./pathfinder_test
-    cd ../../core/navigation/pathfinder
-elif [[ $BRANCH == "roboclaw/"* ]]; then
-    cd roboclaw
-    ./roboclaw_test
-    cd ../../utilities/roboclaw
-elif [[ $BRANCH == "cmd_messenger/"* ]]; then
-    cd cmd_messenger
-    ./cmd_messenger_test
-    cd ../../utilities/cmd_messenger
-elif [[ $BRANCH == "pathman/"* ]]; then
-    cd pathman
-    ./pathman_test
-    cd ../../utilities/pathman
-elif [[ $BRANCH == "navx/"* ]]; then
-    cd navx
-    ./navx_test
-    cd ../../core/navigation/navx
-elif [[ $BRANCH == "communication/"* ]]; then
-    cd communication
-    ./communication_test
-    cd ../../core/communication
-elif [[ $BRANCH == "appendages/"* ]]; then
-    cd appendages
-    ./appendages_test
-    cd ../../appendages
-fi
+    popd
+}
 
-cppcheck src/*.cpp include/*.hpp
+function test_motor_controllers() {
+    pushd core/motor_controllers
+    ./motor_controllers_test
+    popd
+}
+
+function test_cmd_messenger() {
+    pushd core/utilities/cmd_messenger
+    ./cmd_messenger_test
+    popd
+}
+
+function test_peripherycpp() {
+    pushd core/utilities/peripherycpp
+    ./peripherycpp_test
+    popd
+}
+
+case $BRANCH in
+  arduino_gen*)
+    test_arduino_gen
+    ;;
+  roboclaw*)
+    test_motor_controllers
+    ;;
+  cmd_messenger*)
+    test_cmd_messenger
+    ;;
+  periphery*)
+    test_peripherycpp
+    ;;
+  *)
+    test_arduino_gen
+    test_cmd_messenger
+    test_peripherycpp
+    test_motor_controllers
+    ;;
+esac
+
+### Done with tests
+popd

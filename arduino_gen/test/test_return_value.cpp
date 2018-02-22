@@ -1,5 +1,5 @@
-#include "return_value.hpp"
-#include "exceptions.hpp"
+#include "arduino_gen/return_value.hpp"
+#include "arduino_gen/exceptions.hpp"
 
 #include <tinyxml2.h>
 #include <gtest/gtest.h>
@@ -171,7 +171,7 @@ namespace rip
                 ASSERT_EQ(retval->getName(), "var");
 
                 ASSERT_EQ(retval->declare(), "\tint var;\n");
-                ASSERT_EQ(retval->send(), "\tcmdMessenger.sendBinArg(var);\n");
+                ASSERT_EQ(retval->send(), "\tcmdMessenger.sendCmdBinArg(var);\n");
             }
 
             TEST(ReturnValue_declare_send, char_thing)
@@ -189,7 +189,7 @@ namespace rip
                 ASSERT_EQ(retval->getName(), "thing");
 
                 ASSERT_EQ(retval->declare(), "\tchar thing;\n");
-                ASSERT_EQ(retval->send(), "\tcmdMessenger.sendBinArg(thing);\n");
+                ASSERT_EQ(retval->send(), "\tcmdMessenger.sendCmdBinArg(thing);\n");
             }
         }
     }

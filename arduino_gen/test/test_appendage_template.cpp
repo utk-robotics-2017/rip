@@ -1,8 +1,8 @@
-#include "appendage.hpp"
-#include "command.hpp"
-#include "appendage_template.hpp"
-#include "exceptions.hpp"
-#include "xml_utils.hpp"
+#include "arduino_gen/appendage.hpp"
+#include "arduino_gen/command.hpp"
+#include "arduino_gen/appendage_template.hpp"
+#include "arduino_gen/exceptions.hpp"
+#include "arduino_gen/xml_utils.hpp"
 
 #include <tinyxml2.h>
 #include <gtest/gtest.h>
@@ -41,7 +41,7 @@ namespace rip
                 EXPECT_EQ(appendageTemplate->GetConstructors(), nullptr);
                 EXPECT_EQ(appendageTemplate->GetSetup(), nullptr);
                 EXPECT_EQ(appendageTemplate->GetLoop(), nullptr);
-                EXPECT_EQ(appendageTemplate->GetCommands().size(), 0);
+                EXPECT_EQ(appendageTemplate->GetCommands().size(), 0u);
             }
 
             TEST(AppendageTemplate_constructor, includes)

@@ -2,10 +2,15 @@
     <includes>
         <include standard="false">Servo.h</include>
     </includes>
-    <constructors type="Servo" variable="servo">
+    <constructors>
+        <constructor type="Servo" variable="servos">
+        </constructor>
+        <constructor type="unsigned char" variable="servo_pins" type-is-class="false">
+            <argument name="pin" type="int" />
+        </constructor>
     </constructors>
     <setup>
-        servo.attach($pin$);
+        servos[$i$].attach($pin$);
     </setup>
     <loop>
         // Servo pin: $pin$

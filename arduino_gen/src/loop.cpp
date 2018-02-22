@@ -1,4 +1,4 @@
-#include "loop.hpp"
+#include "arduino_gen/loop.hpp"
 
 #include <regex>
 #include <set>
@@ -6,8 +6,8 @@
 #include <tinyxml2.h>
 #include <fmt/format.h>
 
-#include "appendage.hpp"
-#include "exceptions.hpp"
+#include "arduino_gen/appendage.hpp"
+#include "arduino_gen/exceptions.hpp"
 
 namespace rip
 {
@@ -20,11 +20,13 @@ namespace rip
 
         std::string Loop::toString(std::vector< std::shared_ptr<Appendage> > appendages)
         {
-            std::string appendage_loop = getCode();
+            std::string rv = "";
             std::regex replace_regex("\\$(\\w+)\\$");
 
             for(std::shared_ptr<Appendage> appendage : appendages)
             {
+                std::string appendage_loop = getCode();
+
                 std::sregex_iterator reg_begin = std::sregex_iterator(appendage_loop.begin(), appendage_loop.end(),
                                                  replace_regex);
                 std::sregex_iterator reg_end = std::sregex_iterator();
@@ -55,9 +57,16 @@ namespace rip
                         str_iter = appendage_loop.find(replacee);
                     }
                 }
+
+                rv += appendage_loop + "\n";
             }
 
-            return appendage_loop;
+            if (rv.size() > 0)
+            {
+                rv.pop_back();
+            }
+
+            return rv;
         }
     } // namespace arduinogen
 }
