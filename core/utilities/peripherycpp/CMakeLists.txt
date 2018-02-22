@@ -29,6 +29,7 @@ if(ENABLE_TESTING)
     file(GLOB_RECURSE ${PROJECT_NAME}_TEST_DATA "test/data/*")
 
     # Copy test data to outdir/test
+    include(FileOutputs)
     make_outputs(${CMAKE_CURRENT_SOURCE_DIR} "${${PROJECT_NAME}_TEST_DATA}" ${CMAKE_CURRENT_BINARY_DIR} testDataOutputs)
 
     # Create cmd_messneger_test executable, set to c++11, link cmd_messenger library and google test libraries
