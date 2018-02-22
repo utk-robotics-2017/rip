@@ -29,21 +29,10 @@ if(ENABLE_TESTING)
     file(GLOB_RECURSE ${PROJECT_NAME}_TEST_DATA "test/data/*")
 
     # Copy test data to outdir/test
-    set(copiedTestData "")
-    foreach(TestDataFile ${${PROJECT_NAME}_TEST_DATA})
-        file(RELATIVE_PATH name ${CMAKE_CURRENT_SOURCE_DIR} ${TestDataFile})
-        add_custom_command(
-            OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${name}
-            COMMAND ${CMAKE_COMMAND} -E copy_if_different ${TestDataFile} ${CMAKE_CURRENT_BINARY_DIR}/${name}
-            DEPENDS ${TestDataFile}
-            COMMENT "Copying ${name}"
-            VERBATIM
-            )
-        list(APPEND copiedTestData ${CMAKE_CURRENT_BINARY_DIR}/${name})
-    endforeach()
+    make_outputs(${CMAKE_CURRENT_SOURCE_DIR} "${${PROJECT_NAME}_TEST_DATA}" ${CMAKE_CURRENT_BINARY_DIR} testDataOutputs)
 
     # Create cmd_messneger_test executable, set to c++11, link cmd_messenger library and google test libraries
-    add_executable(${PROJECT_NAME}_test ${${PROJECT_NAME}_TEST_SOURCES} ${copiedTestData})
+    add_executable(${PROJECT_NAME}_test ${${PROJECT_NAME}_TEST_SOURCES} ${testDataOutputs})
     set_property(TARGET ${PROJECT_NAME}_test PROPERTY CXX_STANDARD 11)
     target_link_libraries(${PROJECT_NAME}_test ${PROJECT_NAME})
     target_link_libraries(${PROJECT_NAME}_test gmock gtest googletest_rip_macros)
