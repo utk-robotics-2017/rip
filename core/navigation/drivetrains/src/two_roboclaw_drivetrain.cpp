@@ -9,7 +9,10 @@ namespace rip
     {
         namespace drivetrains
         {
-            TwoRoboclawDrivetrain::TwoRoboclawDrivetrain(const std::string& name, std::shared_ptr<TwoRoboclawDrivetrain::Roboclaw> left, std::shared_ptr<TwoRoboclawDrivetrain::Roboclaw> right, std::shared_ptr<TwoRoboclawDrivetrain::NavX> navx)
+            TwoRoboclawDrivetrain::TwoRoboclawDrivetrain(const std::string& name,
+                std::shared_ptr<TwoRoboclawDrivetrain::Roboclaw> left,
+                std::shared_ptr<TwoRoboclawDrivetrain::Roboclaw> right,
+                std::shared_ptr<TwoRoboclawDrivetrain::NavX> navx)
                 : Drivetrain(name)
                 , m_left(left)
                 , m_right(right)

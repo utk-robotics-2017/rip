@@ -23,7 +23,8 @@ namespace rip
                 using NavX = navx::NavX;
                 using MotorDynamics = motorcontrollers::MotorDynamics;
             public:
-                TwoRoboclawDrivetrain(const std::string& name, std::shared_ptr<Roboclaw> left, std::shared_ptr<Roboclaw> right, std::shared_ptr<NavX> navx = nullptr);
+                TwoRoboclawDrivetrain(const std::string& name, std::shared_ptr<Roboclaw> left,
+                     std::shared_ptr<Roboclaw> right, std::shared_ptr<NavX> navx = nullptr);
 
                 ~TwoRoboclawDrivetrain();
 
@@ -45,7 +46,8 @@ namespace rip
                  *
                  * all range from [-1.0, 1.0]
                  */
-                virtual void drive(double front_left, double front_right, double back_left, double back_rightk) override;
+                virtual void drive(double front_left, double front_right, double back_left,
+                     double back_rightk) override;
 
                 /**
                  * Single command to all motors
@@ -60,7 +62,8 @@ namespace rip
                 /**
                  * Command four wheels separately
                  */
-                virtual void drive(const MotorDynamics& front_left, const MotorDynamics& front_right, const MotorDynamics& back_left, const MotorDynamics& back_right) override;
+                virtual void drive(const MotorDynamics& front_left, const MotorDynamics& front_right,
+                     const MotorDynamics& back_left, const MotorDynamics& back_right) override;
 
 
                 virtual void stop() override;

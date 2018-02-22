@@ -6,7 +6,25 @@ namespace rip
     {
         namespace actions
         {
+            TurnToAngle::isFinished()
+            {
 
+            }
+
+            TurnToAngle::update()
+            {
+
+            }
+
+            TurnToAngle::setup()
+            {
+
+            }
+
+            TurnToAngle::teardown()
+            {
+
+            }
         }
     }
 }
