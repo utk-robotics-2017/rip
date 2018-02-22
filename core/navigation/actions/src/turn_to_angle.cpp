@@ -55,6 +55,9 @@ namespace rip
                 {
                     m_speed *= -1;
                 }
+                misc::Logger::getInstance()->debug(fmt::format("wheel linear speed (in/s): {}"
+                , (m_speed * m_c2wRadius / units::rad).to(units::in / units::s)));
+                
                 dynamicsLeft.setSpeed(m_speed * m_c2wRadius / units::rad);
                 dynamicsRight.setSpeed(-1 * m_speed * m_c2wRadius / units::rad);
                 m_drivetrain->drive(dynamicsLeft, dynamicsRight);

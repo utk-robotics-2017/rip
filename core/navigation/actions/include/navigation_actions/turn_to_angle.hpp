@@ -21,12 +21,13 @@ namespace rip
                 /**
                  * turns to angle, relative to current angle, by driving
                  * wheels in opposite directions at the same speed.
-                 * @param name       [description]
-                 * @param drivetrain [description]
-                 * @param speed      [description]
-                 * @param angle      [description]
-                 * @param navx       [description]
-                 * @param radius     [description]
+                 * @param name       name of action
+                 * @param drivetrain drive train
+                 * @param speed      angular velocity of turn
+                 * @param angle      how many degrees t
+                 * @param navx       pointer to navx
+                 * @param radius     distance between wheel and the center of
+                 *  the robot (top down)
                  */
                 TurnToAngle(const std::string& name,
                     std::shared_ptr<drivetrains::Drivetrain> drivetrain,
