@@ -6,6 +6,7 @@
 #include <memory>
 #include <string>
 #include <units/units.hpp>
+#include <json.hpp>
 
 namespace rip
 {
@@ -37,6 +38,7 @@ namespace rip
              * @author Scott & UTK IEEE Robotics.
              */
             using namespace rip;
+
             class NavX
             {
             public:
@@ -755,6 +757,15 @@ namespace rip
 
                 uint8_t getActualUpdateRateInternal(uint8_t update_rate);
             };
+
+            /**
+             * Creates & returns a pointer to a navX object, constructed based on parameters
+             * inside json. Used in RIP subsystem creation
+             * @param  config json parameters for navX construction
+             * @return       shared ptr to navX object
+             */
+            static std::shared_ptr<NavX> makeNavX(const nlohmann::json& config);
+
         } // navx
     } // navigation
 } // rip
