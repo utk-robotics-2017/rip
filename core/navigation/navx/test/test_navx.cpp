@@ -12,14 +12,54 @@ namespace rip
         {
             namespace tests
             {
+                using NavX = fakes::FakeNavX;
+
                 TEST(NavX, SerialConstructor1)
                 {
                     // do me
+                    //serial initialization
+                    //serial port id
+                    //common init
+                    //navx internal
+                    //offset tracker
+                    //silly names not allowed
+                    ASSERT_THROW(std::make_shared<NavX>("cheese burger"), SerialOpen);
                 }
 
                 TEST(NavX, SerialConstructor2)
                 {
-                    //
+                    /*
+                    NavX(std::string serial_port_id,
+                    NavX::serialDataType data_type, uint8_t update_rate_hz);
+                     */
+                    //proper baudrate
+                    //proper update rate
+                    //proper serial data type
+                }
+
+                TEST(SerialIO, Constructor)
+                {
+
+                }
+
+                TEST(NavXInternal, Constructor)
+                {
+
+                }
+
+                TEST(OffsetTracker, Constructor)
+                {
+
+                }
+
+                TEST(InertialDataIntegrator, Constructor)
+                {
+
+                }
+
+                TEST(ContinuousAngleTracker, Constructor)
+                {
+
                 }
 
                 TEST(NavX, zeroYaw)

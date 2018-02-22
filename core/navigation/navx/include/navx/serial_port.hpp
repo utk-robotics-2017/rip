@@ -12,6 +12,8 @@
 #include <thread>
 #include <chrono>
 #include <stdint.h>
+#include <fmt/format.h>
+#include <navx/exceptions.hpp>
 
 namespace rip
 {
@@ -40,15 +42,15 @@ namespace rip
                     init(baudRate, id);
                 }
 
+                SerialPort()
+                {}
+
                 void init(int baudRate, std::string id)
                 {
                     int USB = open(id.c_str(), O_RDWR| O_NOCTTY);
                     if(USB < 0)
                     {
-                        //TODO: RIP exception handling
-                        std::cerr << "Could not open " << id.c_str() << " as a TTY:";
-                        perror("");
-                        throw std::runtime_error("");
+                        throw SerialOpen(fmt::format("Could not open {} as a tty", id.c_str()));
                     }
 
                     memset(&tty, 0, sizeof(tty));
@@ -71,9 +73,11 @@ namespace rip
                     cfmakeraw(&tty);
                     this->fd = USB;
                     tcflush(this->fd, TCIOFLUSH);
-                    //TODO: exception. handling.
-                    if(tcsetattr(USB,TCSANOW,&tty) != 0) std::cout << "Failed to initialize serial." << std::endl;
 
+                    if(tcsetattr(USB,TCSANOW,&tty) != 0)
+                    {
+                        throw SerialOpen("valid TTY, but failed to open. check flags and baudrate");
+                    }
                 }
 
                 void setReadBufferSize(int size)
@@ -108,7 +112,9 @@ namespace rip
                     {
                         n_written = ::write(this->fd, &data[spot], length);
                         if(n_written > 0)
+                        {
                             spot += n_written;
+                        }
                     } while(data[spot-1] != terminationChar);
                 }
 
@@ -149,7 +155,7 @@ namespace rip
 
                     if(n < 0)
                     {
-                        //TODO: replace this garbage serial library
+                        //TODO: spdlog
                         std::cout << "Error reading: " << strerror(errno) << std::endl;
                     }
                     else if(n == 0) {

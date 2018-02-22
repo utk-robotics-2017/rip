@@ -11,7 +11,7 @@ set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
 if(ENABLE_TESTING)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage")
 endif()
-target_link_libraries(${PROJECT_NAME} units spdlog periphery pthread misc)
+target_link_libraries(${PROJECT_NAME} units spdlog periphery pthread misc fmt)
 target_include_directories(${PROJECT_NAME} PUBLIC include)
 
 if(ENABLE_DIAG)

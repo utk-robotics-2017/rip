@@ -13,9 +13,22 @@ namespace rip
         {
             namespace fakes
             {
-                class FakeNavX : SerialPort
+                class FakeNavX : NavX, SerialPort
                 {
                 public:
+                    /**
+                     * [FakeNavX description]
+                     * @param device [description]
+                     */
+                    FakeNavX(std::string serial_port_id);
+                    /**
+                     * [FakeNavX description]
+                     * @param serial_port_id [description]
+                     * @param data_type      [description]
+                     * @param update_rate_hz [description]
+                     */
+                    FakeNavX(std::string serial_port_id, NavX::serialDataType data_type,
+                         uint8_t update_rate_hz);
                     /**
                      * overrides SerialIO read function.
                      * @param  data raw data
