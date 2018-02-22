@@ -4,7 +4,7 @@ set -e
 pushd build
 
 # Checks if it compiles
-make -j4
+make -j$(nproc )
 
 if [[ $2 ]]; then
     BRANCH=$1
@@ -18,9 +18,9 @@ function test_arduino_gen() {
     popd
 }
 
-function test_roboclaw() {
-    pushd core/roboclaw
-    ./roboclaw_test
+function test_motor_controllers() {
+    pushd core/motor_controllers
+    ./motor_controllers_test
     popd
 }
 
@@ -30,19 +30,30 @@ function test_cmd_messenger() {
     popd
 }
 
+function test_peripherycpp() {
+    pushd core/utilities/peripherycpp
+    ./peripherycpp_test
+    popd
+}
+
 case $BRANCH in
   arduino_gen*)
     test_arduino_gen
     ;;
   roboclaw*)
-    test_roboclaw
+    test_motor_controllers
     ;;
   cmd_messenger*)
     test_cmd_messenger
     ;;
+  periphery*)
+    test_peripherycpp
+    ;;
   *)
     test_arduino_gen
     test_cmd_messenger
+    test_peripherycpp
+    test_motor_controllers
     ;;
 esac
 

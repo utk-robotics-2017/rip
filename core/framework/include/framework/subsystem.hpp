@@ -21,31 +21,41 @@
 #define SUBSYSTEM_HPP
 
 #include <string>
+#include <ostream>
+#include <istream>
 
 namespace rip
 {
-    namespace core
+    namespace framework
     {
-        namespace framework
+        class Subsystem
         {
-            class Subsystem
-            {
-            public:
-                Subsystem(const std::string& name)
-                    : m_name(name)
-                {}
+        public:
+            Subsystem(const std::string& name);
 
-                std::string name() const
-                {
-                    return m_name;
-                }
+            virtual ~Subsystem();
 
-                virtual bool diagnostic() = 0;
-                virtual void stop() = 0;
-            private:
-                std::string m_name;
-            };
-        }
+            void setName(const std::string& name);
+
+            std::string name() const;
+
+            virtual bool diagnostic() = 0;
+            virtual void stop() = 0;
+
+            /*
+                        void setDiagOut(std::ostream output)
+                        {
+                            m_diag_output = output;
+                        }
+
+                        void setDiagIn(std::istream input)
+                        {
+                            m_diag_input = input;
+                        }
+                        */
+        private:
+            std::string m_name;
+        };
     }
 }
 

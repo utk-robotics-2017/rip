@@ -225,5 +225,16 @@ namespace rip
                 }
             }
         }
+
+        nlohmann::json Appendage::getCoreJson(int index) const
+        {
+            nlohmann::json json;
+
+            json["type"] = m_data["type"];
+            json["label"] = m_data["label"];
+            json["index"] = index;
+
+            return json;
+        }
     }
 }

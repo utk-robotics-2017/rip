@@ -11,7 +11,7 @@ set_property(TARGET _${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
 if(ENABLE_TESTING)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage -DTESTING")
 endif()
-target_link_libraries(_${PROJECT_NAME} fmt json spdlog tinyxml2 cppfs exceptions_base)
+target_link_libraries(_${PROJECT_NAME} fmt json spdlog tinyxml2 cppfs misc)
 target_link_libraries(_${PROJECT_NAME} gtest)
 target_include_directories(_${PROJECT_NAME} PUBLIC include)
 
@@ -24,7 +24,7 @@ make_appendage_json_outputs(${CMAKE_CURRENT_BINARY_DIR}/appendages appendage_jso
 # Create arduino_gen executable, set to c++11, and link arduino_gen library
 add_executable(${PROJECT_NAME} "src/main.cpp" ${code_template} ${appendage_xml_outputs} ${appendage_json_outputs})
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
-target_link_libraries(${PROJECT_NAME} _${PROJECT_NAME})
+target_link_libraries(${PROJECT_NAME} _${PROJECT_NAME} args fmt)
 
 
 if(ENABLE_TESTING)
@@ -40,9 +40,4 @@ if(ENABLE_TESTING)
     set_property(TARGET ${PROJECT_NAME}_test PROPERTY CXX_STANDARD 11)
     target_link_libraries(${PROJECT_NAME}_test _${PROJECT_NAME})
     target_link_libraries(${PROJECT_NAME}_test gmock gtest googletest_rip_macros)
-
-    if(CMAKE_COMPILER_IS_GNUCXX)
-        include(CodeCoverage)
-        setup_target_for_coverage(${PROJECT_NAME}_coverage ${PROJECT_NAME}_test coverage)
-    endif()
 endif()

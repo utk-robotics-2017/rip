@@ -24,47 +24,50 @@
 
 namespace rip
 {
-    namespace core
+    namespace framework
     {
-        namespace framework
+        /**
+         * Abstract Action Base class
+         */
+        class Action
         {
-            /**
-             * Abstract Action Base class
-             */
-            class Action
+        public:
+            Action(const std::string& name)
+                : m_name(name)
+            {}
+
+            std::string name() const
             {
-            public:
-                /**
-                 * Returns whether or not the action has finished execution.
-                 */
-                virtual bool isFinished() = 0;
+                return m_name;
+            }
 
-                /**
-                 * Iteratively called until {@see Action#isFinished()} returns true
-                 */
-                virtual void update() = 0;
+            void setName(const std::string& name)
+            {
+                m_name = name;
+            }
 
-                /**
-                 * Run once before the main code
-                 */
-                virtual void setup() = 0;
+            /**
+             * Returns whether or not the action has finished execution.
+             */
+            virtual bool isFinished() = 0;
 
-                /**
-                 * Run once after finished
-                 */
-                virtual void teardown() = 0;
+            /**
+             * Iteratively called until {@see Action#isFinished()} returns true
+             */
+            virtual void update(nlohmann::json& state) = 0;
 
-                /**
-                 * Returns the state which can be used in case of a crash
-                 */
-                virtual nlohmann::json save() const = 0;
+            /**
+             * Run once before the main code
+             */
+            virtual void setup(nlohmann::json& state) = 0;
 
-                /**
-                 * Restores the action to state
-                 */
-                virtual void restore(const nlohmann::json& state) = 0;
-            };
-        }
+            /**
+             * Run once after finished
+             */
+            virtual void teardown(nlohmann::json& state) = 0;
+        protected:
+            std::string m_name;
+        };
     }
 }
 

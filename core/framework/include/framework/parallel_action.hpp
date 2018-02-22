@@ -27,60 +27,47 @@
 
 namespace rip
 {
-    namespace core
+    namespace framework
     {
-        namespace framework
+        /**
+         * Composite action
+         */
+        class ParallelAction : public Action
         {
+        public:
             /**
-             * Composite action
+             * Constructor
+             *
+             * @param name Name of the action
+             * @param actions A list of actions to be completed at the same time
              */
-            class ParallelAction : public Action
-            {
-            public:
-                /**
-                 * Constructor
-                 *
-                 * @param actions A list of actions to be completed at the same time
-                 */
-                ParallelAction(const std::vector< std::shared_ptr<Action> >& actions);
+            ParallelAction(const std::string& name, const std::vector< std::shared_ptr<Action> >& actions);
 
-                /**
-                 * Returns whether or not this action is finished
-                 *
-                 * @note Finishes when ALL internal actions are finished
-                 */
-                virtual bool isFinished() override;
+            /**
+             * Returns whether or not this action is finished
+             *
+             * @note Finishes when ALL internal actions are finished
+             */
+            virtual bool isFinished() override;
 
-                /**
-                 * Updates all the internal actions
-                 */
-                virtual void update() override;
+            /**
+             * Updates all the internal actions
+             */
+            virtual void update(nlohmann::json& state) override;
 
-                /**
-                 * Sets up all the internal actions
-                 */
-                virtual void setup() override;
+            /**
+             * Sets up all the internal actions
+             */
+            virtual void setup(nlohmann::json& state) override;
 
-                /**
-                 * Tears down all the internal actions
-                 */
-                virtual void teardown() override;
+            /**
+             * Tears down all the internal actions
+             */
+            virtual void teardown(nlohmann::json& state) override;
 
-                /**
-                 * Returns the saved state of each of the internal actions
-                 * @return [description]
-                 */
-                virtual nlohmann::json save() const override;
-
-                /**
-                 * Restores each of the internal actions
-                 */
-                virtual void restore(const nlohmann::json& state) override;
-
-            private:
-                std::vector< std::shared_ptr<Action> > m_actions;
-            };
-        }
+        private:
+            std::vector< std::shared_ptr<Action> > m_actions;
+        };
     }
 }
 

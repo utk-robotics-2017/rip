@@ -1,5 +1,7 @@
 <appendage-template>
-    <constructors type="Type" variable="type">
-        <argument name="something" type="int"/>
+    <constructors>
+        <constructor type="Type" variable="type">
+            <argument name="something" type="int"/>
+        </constructor>
     </constructors>
 </appendage-template>

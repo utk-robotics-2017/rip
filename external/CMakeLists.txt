@@ -1,10 +1,8 @@
 cmake_minimum_required(VERSION 3.1)
 
-message("Building utilities")
-project(utils)
+message("Building third party libraries")
 
 # 3rd party
-message("Building 3rd party utilities")
 add_subdirectory(googletest)
 add_subdirectory(fmt)
 add_subdirectory(json)
@@ -15,7 +13,9 @@ add_subdirectory(cppfs)
 add_subdirectory(clipper)
 add_subdirectory(stp)
 add_subdirectory(serial)
+add_subdirectory(args)
+add_subdirectory(optional-lite)
 
 # custom
-message("Building custom utilities")
+message("Building custom addons")
 add_subdirectory(googletest_rip_macros)

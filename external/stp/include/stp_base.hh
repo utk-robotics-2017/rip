@@ -1,4 +1,7 @@
 #pragma once
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-parameter"
 #include <stdexcept>
 #include <string>
 
@@ -23,3 +26,4 @@ namespace stp
         throw(std::logic_error) = 0;
     };
 }
+#pragma GCC diagnostic pop

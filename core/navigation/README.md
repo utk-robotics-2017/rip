@@ -10,5 +10,8 @@ Created by Robert Haschke, Erik Weitnauter, and Helge Ritter for their paper "On
 
 Provides first-, second-, and third-order online trajectory planning.
 
-
 ## Path Planner
+
+Two planners are included:
+ - Spline planner
+ - TEB planner (Timed Elastic Band)
