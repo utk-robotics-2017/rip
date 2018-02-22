@@ -26,11 +26,17 @@ namespace rip
             TEST(Gpio_open, bad_direction)
             {
                 Gpio g;
-                unsigned int pin = 50;
+                unsigned int pin = 5;
                 ASSERT_THROW(g.open(pin, 5), ArgError);
             }
 
-            TEST(Gpio_open, 
+            TEST(Gpio_open, bad_pinnum)
+            {
+                Gpio g;
+                int pin -1;
+                 
+            }
+ 
         }
 
     }
