@@ -11,6 +11,7 @@
 #include <stdexcept>
 #include <thread>
 #include <chrono>
+#include <stdint.h>
 
 namespace rip
 {
@@ -121,13 +122,13 @@ namespace rip
                 virtual int read(char *data, int size)
                 {
                     int n = 0, loc = 0;
-                    char buf = '\0';
+                    uint8_t buf = '\0';
                     memset(data, '\0', size);
                     //error tracks number of errors
                     do
                     {
                         n = ::read(this->fd, &buf, 1);
-                        sprintf(&data[loc], "%c", buf);
+                        snprintf(&data[loc], size, "%u", buf);
                         loc += n;
 
                         if(n == 0) err++;

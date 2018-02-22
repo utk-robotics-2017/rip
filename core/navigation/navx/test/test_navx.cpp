@@ -2,7 +2,7 @@
 #include <gtest/gtest.h>
 
 #include <navx/exceptions.hpp>
-#include "mock_navx.hpp"
+#include "fake_navx.hpp"
 
 namespace rip
 {

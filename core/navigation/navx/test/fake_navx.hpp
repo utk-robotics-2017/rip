@@ -1,5 +1,5 @@
-#ifndef MOCK_NAVX_HPP
-#define MOCK_NAVX_HPP
+#ifndef FAKE_NAVX_HPP
+#define FAKE_NAVX_HPP
 #include <navx/navx.hpp>
 #include <vector>
 #include <stdint.h>
@@ -11,16 +11,11 @@ namespace rip
     {
         namespace navx
         {
-            namespace mocks
+            namespace fakes
             {
-                class MockNavX : SerialPort
+                class FakeNavX : SerialPort
                 {
                 public:
-                    /**
-                     * sets the data to be sent to navX code
-                     * @param response raw byte data to be passed
-                     */
-                    void setResponse(char *response);
                     /**
                      * overrides SerialIO read function.
                      * @param  data raw data
@@ -29,19 +24,29 @@ namespace rip
                      */
                     int read(char *data, int size) override;
                     /**
-                     * last response
+                     * [getWritten description]
                      * @return [description]
                      */
-                    std::vector<uint8_t> getLastResponse();
+                    const std::vector<char>* getWritten();
+                    /**
+                     * [write description]
+                     * @param data   [description]
+                     * @param length [description]
+                     */
                     void write(char *data, int length) override;
 
+                    /**
+                     * [setResponse description]
+                     * @param data [description]
+                     */
+                    void setResponse(std::vector<char> data);
                 private:
-                    std::vector<uint8_t> m_response;
-                    std::vector<uint8_t> m_lastResponse;
+                    std::vector<char> m_response;
+                    std::vector<char> m_written;
                 };
             }
         }
     }
 }
 
-#endif //MOCK_NAVX_HPP
+#endif //FAKE_NAVX_HPP
