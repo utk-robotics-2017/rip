@@ -1,12 +1,10 @@
 FROM robobenklein/home:latest
 # $LUSER is user with 901:901 from home image
 
-RUN sudo apt-get -y update
-RUN sudo apt-get -y install \
-      cmake g++ 
-
 # deps for rip build
-RUN sudo apt-get -y install \
+RUN sudo install_clean \
+      cmake g++ \
+      doxygen \
       libssh2-1-dev \
       lcov \
       libssl-dev \
@@ -25,7 +23,13 @@ RUN cmake ..
 RUN make -j$(nproc --ignore=1 )
 RUN sudo make install
 
-#COPY --chown=901:901 . /home/${LUSER}/code/rip
+# Create a new robot user:
+USER root
+ENV RUSER=dogcow
+RUN groupadd -r ${RUSER} -g 902
+RUN useradd -m -u 902 -r -g 902 ${RUSER}
+RUN adduser ${RUSER} sudo
+USER ${RUSER}
+WORKDIR /home/${RUSER}
+RUN bash ~robo/code/configs/provision.sh
 
-#WORKDIR /home/${LUSER}/code/rip
-WORKDIR /home/${LUSER}
