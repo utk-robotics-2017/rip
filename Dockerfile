@@ -1,8 +1,8 @@
 FROM utkrobotics/rip_deps:latest
-# $LUSER is user with 901:901 from home image
+# $RUSER is user with 902:902 from rip_deps
 
 # copy in RIP source code
-COPY . /home/${LUSER}/code/rip
-RUN sudo chown -R 901:901 /home/${LUSER}/code/rip
+COPY . /home/${RUSER}/code/rip
+RUN sudo chown -R 902:902 /home/${RUSER}
 
-WORKDIR /home/${LUSER}/code/rip
+WORKDIR /home/${RUSER}/code/rip
