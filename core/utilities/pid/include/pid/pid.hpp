@@ -35,12 +35,11 @@ namespace rip
             void setParams(const double p, const double i, const double d);
 
             /**
-             * Constructor
+             * getParams
              *
              * @return A tuple of the three PID parameters in order (p, i, d)
              */
             std::tuple<double, double, double> getParams();
-
 
             /**
              * setTarget
@@ -64,6 +63,13 @@ namespace rip
              * @return The updated output control signal
              */
             double update(double val);
+
+            /**
+             * reset
+             *
+             * @brief Resets the internal error calculation
+             */
+            void reset();
 
         private:
             double m_p;

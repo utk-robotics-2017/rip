@@ -51,5 +51,12 @@ namespace rip
             // Return the sum of the PID components
             return p_term + i_term + d_term;
         }
+
+        void PidController::reset()
+        {
+            m_accum_error = 0;
+            m_last_error = 0;
+            m_last_time = std::chrono::high_resolution_clock::now();
+        }
     }
 }
