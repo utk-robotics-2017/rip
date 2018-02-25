@@ -14,6 +14,7 @@ namespace rip
     {
         namespace actions
         {
+            //currently depends on differential drivetrain
             using NavX = navx::NavX;
             class TurnToAngle : public framework::Action
             {
@@ -32,7 +33,7 @@ namespace rip
                 TurnToAngle(const std::string& name,
                     std::shared_ptr<drivetrains::Drivetrain> drivetrain,
                     const units::AngularVelocity& speed, const units::Angle& angle,
-                    std::shared_ptr<NavX> navx, units::Distance radius);
+                    std::shared_ptr<NavX> navx, units::Distance& radius);
                 /**
                 * Returns whether or not the action has finished execution.
                 * Returns true when navX reports change in angle that was

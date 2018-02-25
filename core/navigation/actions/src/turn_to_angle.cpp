@@ -11,7 +11,7 @@ namespace rip
             TurnToAngle::TurnToAngle(const std::string& name,
                 std::shared_ptr<drivetrains::Drivetrain> drivetrain,
                 const units::AngularVelocity& speed, const units::Angle& angle,
-                std::shared_ptr<NavX> navx, units::Distance radius)
+                std::shared_ptr<NavX> navx, units::Distance& radius)
                  : Action(name)
                  , m_drivetrain(drivetrain)
                  , m_speed(speed)
@@ -57,7 +57,7 @@ namespace rip
                 }
                 misc::Logger::getInstance()->debug(fmt::format("wheel linear speed (in/s): {}"
                 , (m_speed * m_c2wRadius / units::rad).to(units::in / units::s)));
-                
+
                 dynamicsLeft.setSpeed(m_speed * m_c2wRadius / units::rad);
                 dynamicsRight.setSpeed(-1 * m_speed * m_c2wRadius / units::rad);
                 m_drivetrain->drive(dynamicsLeft, dynamicsRight);

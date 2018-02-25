@@ -44,9 +44,11 @@ namespace rip
                 m_right->drive(32767 * right);
             }
 
-            void TwoRoboclawDrivetrain::drive(double front_left, double front_right, double back_left, double back_right)
+            void TwoRoboclawDrivetrain::drive(double front_left, double front_right, double back_left,
+                double back_right)
             {
-                if (std::abs(front_left) > 1 || std::abs(front_right) > 1 || std::abs(back_left) > 1 || std::abs(back_right) > 1)
+                if (std::abs(front_left) > 1 || std::abs(front_right) > 1 || std::abs(back_left) > 1 ||
+                std::abs(back_right) > 1)
                 {
                     throw OutOfRangeException("out of range");
                 }
@@ -70,7 +72,8 @@ namespace rip
                 m_right->setDynamics(right);
             }
 
-            void TwoRoboclawDrivetrain::drive(const MotorDynamics& front_left, const MotorDynamics& front_right, const MotorDynamics& back_left, const MotorDynamics& back_right)
+            void TwoRoboclawDrivetrain::drive(const MotorDynamics& front_left, const MotorDynamics& front_right,
+                 const MotorDynamics& back_left, const MotorDynamics& back_right)
             {
                 m_left->setDynamics(Roboclaw::Motor::kM1, front_left);
                 m_right->setDynamics(Roboclaw::Motor::kM1, front_right);
@@ -78,6 +81,125 @@ namespace rip
                 m_left->setDynamics(Roboclaw::Motor::kM2, back_left);
                 m_right->setDynamics(Roboclaw::Motor::kM2, back_right);
 
+            }
+
+            std::vector<units::Distance> TwoRoboclawDrivetrain::readEncoders(const std::vector<Motor>& motors)
+            {
+                std::vector<units::Distance> data;
+                for(int i=0; i<motors.size(); i++)
+                {
+                    switch(motors[i])
+                    {
+                        case kFrontLeft:
+                        {
+                            data.push_back(m_left->readEncoder(Roboclaw::Motor::kM1));
+                        }
+                        case kFrontRight:
+                        {
+                            data.push_back(m_right->readEncoder(Roboclaw::Motor::kM1));
+                        }
+                        case kBackLeft:
+                        {
+                            data.push_back(m_left->readEncoder(Roboclaw::Motor::kM2));
+                        }
+                        case kBackRight:
+                        {
+                            data.push_back(m_right->readEncoder(Roboclaw::Motor::kM2));
+                        }
+                        default:
+                        {
+                            throw InvalidMotorException("Invalid motor");
+                        }
+                    }
+                }
+                return data;
+            }
+
+            units::Distance TwoRoboclawDrivetrain::readEncoder(const Motor& motor)
+            {
+                switch(motor)
+                {
+                    case kFrontLeft:
+                    {
+                        return m_left->readEncoder(Roboclaw::Motor::kM1);
+                    }
+                    case kFrontRight:
+                    {
+                        return m_right->readEncoder(Roboclaw::Motor::kM1));
+                    }
+                    case kBackLeft:
+                    {
+                        return m_left->readEncoder(Roboclaw::Motor::kM2));
+                    }
+                    case kBackRight:
+                    {
+                        return m_right->readEncoder(Roboclaw::Motor::kM2));
+                    }
+                    default:
+                    {
+                        throw InvalidMotorException("Invalid motor");
+                    }
+                }
+            }
+
+            std::vector<units::Velocity> TwoRoboclawDrivetrain::readEncoderVelocities(
+                const std::vector<Motor>& motors)
+            {
+                std::vector<units::Velocity> data;
+                for(int i=0; i<motors.size(); i++)
+                {
+                    switch(motors[i])
+                    {
+                        case kFrontLeft:
+                        {
+                            data.push_back(m_left->readEncoderVelocity(Roboclaw::Motor::kM1));
+                        }
+                        case kFrontRight:
+                        {
+                            data.push_back(m_right->readEncoderVelocity(Roboclaw::Motor::kM1));
+                        }
+                        case kBackLeft:
+                        {
+                            data.push_back(m_left->readEncoderVelocity(Roboclaw::Motor::kM2));
+                        }
+                        case kBackRight:
+                        {
+                            data.push_back(m_right->readEncoderVelocity(Roboclaw::Motor::kM2));
+                        }
+                        default:
+                        {
+                            throw InvalidMotorException("Invalid motor")
+                        }
+                    }
+                }
+                return data;
+            }
+
+            units::Velocity TwoRoboclawDrivetrain::readEncoderVelocity(const Motor& motor)
+            {
+                switch(motor)
+                {
+                    case kFrontLeft:
+                    {
+                        return m_left->readEncoderVelocity(Roboclaw::Motor::kM1);
+                    }
+                    case kFrontRight:
+                    {
+                        return m_right->readEncoderVelocity(Roboclaw::Motor::kM1));
+                    }
+                    case kBackLeft:
+                    {
+                        return m_left->readEncoderVelocity(Roboclaw::Motor::kM2));
+                    }
+                    case kBackRight:
+                    {
+                        return m_right->readEncoderVelocity(Roboclaw::Motor::kM2));
+                    }
+                    default:
+                    {
+                        throw InvalidMotorException("Invalid motor");
+                    }
+                }
             }
 
             void TwoRoboclawDrivetrain::stop()
@@ -89,6 +211,7 @@ namespace rip
             bool TwoRoboclawDrivetrain::diagnostic()
             {
                 // todo
+                return 0;
             }
         }
     }//subsystem

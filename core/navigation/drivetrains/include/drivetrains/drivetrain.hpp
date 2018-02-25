@@ -15,6 +15,18 @@ namespace rip
              */
             class Drivetrain : public framework::Subsystem
             {
+                enum class Motor
+                {
+                    //4 motor drivetrain 
+                    kFrontLeft,
+                    kFrontRight,
+                    kBackLeft,
+                    kBackRight,
+                    //2 motor drive train
+                    kLeft,
+                    kRight
+                }; // enum class Motor
+
                 using MotorDynamics = motorcontrollers::MotorDynamics;
             public:
                 Drivetrain(const std::string& name)
@@ -55,8 +67,28 @@ namespace rip
                 /**
                  * Command four wheels separately
                  */
-                virtual void drive(const MotorDynamics& front_left, const MotorDynamics& front_right, 
+                virtual void drive(const MotorDynamics& front_left, const MotorDynamics& front_right,
                     const MotorDynamics& back_left, const MotorDynamics& back_right) = 0;
+
+                /**
+                 * Reads encoders for every motor you tell it to read, reports back in respective
+                 * order
+                 */
+                virtual std::vector<units::Distance> readEncoders(const std::vector<Motor>& motors) = 0;
+                /**
+                 * reads the encoder for one motor
+                 */
+                virtual units::Distance readEncoder(const Motor& motor) = 0;
+                /**
+                 * Reads encoder velocity for every motor you tell it to read, reports back in respective
+                 * order
+                 * @param motors list of motors to read
+                 */
+                virtual std::vector<units::Velocity> readEncoderVelocities(const std::vector<Motor>& motors) = 0;
+                /**
+                 * reads the encoder for one motor
+                 */
+                virtual units::Velocity readEncoderVelocity(const Motor& motor) = 0;
             };
         }
     }
