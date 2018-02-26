@@ -25,7 +25,7 @@ namespace rip
                  * @param direction  0 means left turn. 1 means right turn
                  * @param drivetrain pointer to differential drivetrain.
                  * @param speed      angular velocity for the turn
-                 * @param angle      between
+                 * @param angle      angle to tunr
                  * @param radius     radius size of arc turn
                  * @param axleLength width between left and right wheels.
                  */
@@ -47,7 +47,7 @@ namespace rip
                  */
                 DriveArc(const std::string& name, bool direction,
                     std::shared_ptr<drivetrains::Drivetrain> drivetrain,
-                    const units::AngularVelocity& speed, const units::Distance& arcLength,
+                    const units::Velocity& speed, const units::Distance& arcLength,
                     units::Distance& radius, units::Distance& axleLength);
                 /**
                 * Returns whether or not the action has finished execution.
@@ -73,15 +73,16 @@ namespace rip
                 virtual void teardown(nlohmann::json& state) override;
 
             private:
-                units::Angle m_angle;
+                bool m_direction;
                 std::shared_ptr<drivetrains::Drivetrain> m_drivetrain;
+                units::AngularVelocity m_angularSpeed;
+                units::Velocity m_linearSpeed;
+                units::Angle m_angle;
                 /**
                  * radius is distance from center of robot/differential drivetrain
                  * to center of circle of arc (ICC)
                  */
-                units::Distance m_axleLength, m_radius, m_arcLength, m_traveled, m_init;
-                units::AngularVelocity m_speed;
-                bool m_direction;
+                units::Distance m_arcLength, m_radius, m_axleLength, m_traveled, m_init;
             };
         }
     }
