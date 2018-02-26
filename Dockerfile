@@ -3,6 +3,6 @@ FROM utkrobotics/rip_deps:latest
 
 # copy in RIP source code
 COPY . /home/${LUSER}/code/rip
-RUN sudo chown -R ${LUSER}:${LUSER} /home/${LUSER}
+RUN sudo chown -R 901:901 /home/${LUSER}/code/rip
 
 WORKDIR /home/${LUSER}/code/rip

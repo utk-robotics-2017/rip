@@ -22,7 +22,7 @@ WORKDIR /home/${LUSER}/code/g2o
 RUN mkdir build
 WORKDIR /home/${LUSER}/code/g2o/build
 RUN cmake ..
-RUN make -j$(nprocs --ignore=1 )
+RUN make -j$(nproc --ignore=1 )
 RUN sudo make install
 
 #COPY --chown=901:901 . /home/${LUSER}/code/rip
