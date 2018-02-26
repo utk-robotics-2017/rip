@@ -15,9 +15,16 @@ namespace rip
              */
             class Drivetrain : public framework::Subsystem
             {
+
+                using MotorDynamics = motorcontrollers::MotorDynamics;
+            public:
+                Drivetrain(const std::string& name)
+                    : Subsystem(name)
+                {}
+                    
                 enum class Motor
                 {
-                    //4 motor drivetrain 
+                    //4 motor drivetrain
                     kFrontLeft,
                     kFrontRight,
                     kBackLeft,
@@ -26,12 +33,6 @@ namespace rip
                     kLeft,
                     kRight
                 }; // enum class Motor
-
-                using MotorDynamics = motorcontrollers::MotorDynamics;
-            public:
-                Drivetrain(const std::string& name)
-                    : Subsystem(name)
-                {}
 
                 /**
                  * Drive all the motors

@@ -90,19 +90,19 @@ namespace rip
                 {
                     switch(motors[i])
                     {
-                        case kFrontLeft:
+                        case Motor::kFrontLeft:
                         {
                             data.push_back(m_left->readEncoder(Roboclaw::Motor::kM1));
                         }
-                        case kFrontRight:
+                        case Motor::kFrontRight:
                         {
                             data.push_back(m_right->readEncoder(Roboclaw::Motor::kM1));
                         }
-                        case kBackLeft:
+                        case Motor::kBackLeft:
                         {
                             data.push_back(m_left->readEncoder(Roboclaw::Motor::kM2));
                         }
-                        case kBackRight:
+                        case Motor::kBackRight:
                         {
                             data.push_back(m_right->readEncoder(Roboclaw::Motor::kM2));
                         }
@@ -119,21 +119,21 @@ namespace rip
             {
                 switch(motor)
                 {
-                    case kFrontLeft:
+                    case Motor::kFrontLeft:
                     {
                         return m_left->readEncoder(Roboclaw::Motor::kM1);
                     }
-                    case kFrontRight:
+                    case Motor::kFrontRight:
                     {
-                        return m_right->readEncoder(Roboclaw::Motor::kM1));
+                        return m_right->readEncoder(Roboclaw::Motor::kM1);
                     }
-                    case kBackLeft:
+                    case Motor::kBackLeft:
                     {
-                        return m_left->readEncoder(Roboclaw::Motor::kM2));
+                        return m_left->readEncoder(Roboclaw::Motor::kM2);
                     }
-                    case kBackRight:
+                    case Motor::kBackRight:
                     {
-                        return m_right->readEncoder(Roboclaw::Motor::kM2));
+                        return m_right->readEncoder(Roboclaw::Motor::kM2);
                     }
                     default:
                     {
@@ -150,25 +150,25 @@ namespace rip
                 {
                     switch(motors[i])
                     {
-                        case kFrontLeft:
+                        case Motor::kFrontLeft:
                         {
                             data.push_back(m_left->readEncoderVelocity(Roboclaw::Motor::kM1));
                         }
-                        case kFrontRight:
+                        case Motor::kFrontRight:
                         {
                             data.push_back(m_right->readEncoderVelocity(Roboclaw::Motor::kM1));
                         }
-                        case kBackLeft:
+                        case Motor::kBackLeft:
                         {
                             data.push_back(m_left->readEncoderVelocity(Roboclaw::Motor::kM2));
                         }
-                        case kBackRight:
+                        case Motor::kBackRight:
                         {
                             data.push_back(m_right->readEncoderVelocity(Roboclaw::Motor::kM2));
                         }
                         default:
                         {
-                            throw InvalidMotorException("Invalid motor")
+                            throw InvalidMotorException("Invalid motor");
                         }
                     }
                 }
@@ -179,21 +179,21 @@ namespace rip
             {
                 switch(motor)
                 {
-                    case kFrontLeft:
+                    case Motor::kFrontLeft:
                     {
                         return m_left->readEncoderVelocity(Roboclaw::Motor::kM1);
                     }
-                    case kFrontRight:
+                    case Motor::kFrontRight:
                     {
-                        return m_right->readEncoderVelocity(Roboclaw::Motor::kM1));
+                        return m_right->readEncoderVelocity(Roboclaw::Motor::kM1);
                     }
-                    case kBackLeft:
+                    case Motor::kBackLeft:
                     {
-                        return m_left->readEncoderVelocity(Roboclaw::Motor::kM2));
+                        return m_left->readEncoderVelocity(Roboclaw::Motor::kM2);
                     }
-                    case kBackRight:
+                    case Motor::kBackRight:
                     {
-                        return m_right->readEncoderVelocity(Roboclaw::Motor::kM2));
+                        return m_right->readEncoderVelocity(Roboclaw::Motor::kM2);
                     }
                     default:
                     {

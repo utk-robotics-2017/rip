@@ -18,7 +18,7 @@ namespace rip
                 , m_radius(radius)
                 , m_axleLength(axleLength)
             {
-                m_arcLength = angle * radius;
+                m_arcLength = angle.to(units::rad) * radius;
             }
 
             DriveArc::DriveArc(const std::string& name, bool direction,
@@ -33,12 +33,13 @@ namespace rip
                 , m_radius(radius)
                 , m_axleLength(axleLength)
             {
-                m_angle = arcLength / radius;
+                m_angle = arcLength / radius * units::rad;
             }
 
             bool DriveArc::isFinished()
             {
-                return m_arcLength >=
+                m_traveled = readAverageDistance();
+                return m_arcLength >= (m_traveled - m_init);
             }
 
             void DriveArc::update(nlohmann::json& state)
@@ -49,12 +50,27 @@ namespace rip
 
             void DriveArc::setup(nlohmann::json& state)
             {
-                m_traveled = m_drivetrain
+                std::vector<units::Distance> dist;
+                m_init = readAverageDistance();
+            }
+
+            units::Distance DriveArc::readAverageDistance()
+            {
+                units::Distance sum=0;
+                std::vector<units::Distance> dist = m_drivetrain->readEncoders({Motor::kFrontLeft,
+                    Motor::kFrontLeft, Motor::kFrontRight, Motor::kBackLeft, Motor::kBackRight});
+                for(int i=0; i<static_cast<int>(dist.size()); i++)
+                {
+                    sum += dist[i];
+                }
+                sum /= dist.size();
+                return sum;
             }
 
             void DriveArc::teardown(nlohmann::json& state)
             {
                 // todo
+                m_drivetrain->stop();
             }
         }
     }

@@ -17,7 +17,7 @@ namespace rip
             /**
              * Abstract base class for the drive train
              */
-            class TwoRoboclawDrivetrain : public Drivetrain
+            class OneRoboclawDrivetrain : public Drivetrain
             {
                 using Roboclaw = motorcontrollers::roboclaw::Roboclaw;
                 using NavX = navx::NavX;
