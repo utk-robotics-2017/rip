@@ -33,8 +33,8 @@ namespace rip
             TEST(Gpio_open, bad_pinnum)
             {
                 Gpio g;
-                int pin -1;
-                 
+                int pin = -1;
+                ASSERT_THROW(g.open(pin, 0), ExportError); 
             }
  
         }
