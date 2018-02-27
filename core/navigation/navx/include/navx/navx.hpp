@@ -7,6 +7,7 @@
 #include <string>
 #include <units/units.hpp>
 #include <json.hpp>
+#include <framework/subsystem.hpp>
 
 namespace rip
 {
@@ -39,7 +40,7 @@ namespace rip
              */
             using namespace rip;
 
-            class NavX
+            class NavX : public framework::Subsystem
             {
             public:
 
@@ -747,6 +748,13 @@ namespace rip
                  */
 
                 int getRequestedUpdateRate();
+
+                /**
+                 * Subsystem abstract Implementation
+                 */
+                virtual void stop() override;
+        
+                virtual bool diagnostic() override;
 
                 void close();
 
