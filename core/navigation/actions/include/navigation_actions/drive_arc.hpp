@@ -32,7 +32,7 @@ namespace rip
                 DriveArc(const std::string& name, bool direction,
                     std::shared_ptr<drivetrains::Drivetrain> drivetrain,
                     const units::AngularVelocity& speed, const units::Angle& angle,
-                    units::Distance& radius, units::Distance& axleLength);
+                    const units::Distance& radius, const units::Distance& axleLength);
 
                 /**
                  * Drives the robot in an arc with specified radius, arc length,
@@ -48,7 +48,7 @@ namespace rip
                 DriveArc(const std::string& name, bool direction,
                     std::shared_ptr<drivetrains::Drivetrain> drivetrain,
                     const units::Velocity& speed, const units::Distance& arcLength,
-                    units::Distance& radius, units::Distance& axleLength);
+                    const units::Distance& radius, const units::Distance& axleLength);
                 /**
                 * Returns whether or not the action has finished execution.
                 */
