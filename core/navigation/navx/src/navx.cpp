@@ -318,6 +318,7 @@ namespace rip
             {
                 if (navx_internal->isBoardYawResetSupported())
                 {
+                    yaw_angle_tracker->reset();
                     io->zeroYaw();
                 }
                 else
@@ -740,20 +741,20 @@ namespace rip
             {
                 close();
             }
-            
+
             bool NavX::diagnostic()
             {
                 //todo
                 return 0;
             }
-            
+
             std::shared_ptr<NavX> NavX::makeNavX(const nlohmann::json& config)
             {
                 std::string device = config["device"];
                 return std::make_shared<NavX>(device);
             }
 
- 
+
         }
     }
 }
