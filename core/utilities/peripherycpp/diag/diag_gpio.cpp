@@ -9,7 +9,7 @@ int main(int argc, char **argv)
     g.open(2, 0);
     g.write(1);
     g.close();
-    g.open(2, 1);
+    g.open(3, 1);
     bool tmp = g.read();
     unsigned int pnum = g.pin();
     int psuc = g.poll(50);
