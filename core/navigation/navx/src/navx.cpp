@@ -15,6 +15,8 @@
 #include "navx/offset_tracker.hpp"
 #include "navx/continuous_angle_tracker.hpp"
 #include "navx/serial_io.hpp"
+#include <misc/logger.hpp>
+#include <fmt/format.h>
 
 namespace rip
 {
@@ -283,8 +285,11 @@ namespace rip
             NavX::NavX(std::string serial_port_id)
                 :Subsystem("")
             {
+
                 setName("navx");
                 serialInit(serial_port_id, serialDataType::kProcessedData, NAVX_DEFAULT_UPDATE_RATE_HZ);
+                misc::Logger::getInstance()->debug(fmt::format("navx constructed, device: {}"
+                , serial_port_id)); 
             }
 
             units::Angle NavX::getPitch()
@@ -740,20 +745,20 @@ namespace rip
             {
                 close();
             }
-            
+
             bool NavX::diagnostic()
             {
                 //todo
                 return 0;
             }
-            
+
             std::shared_ptr<NavX> NavX::makeNavX(const nlohmann::json& config)
             {
                 std::string device = config["device"];
                 return std::make_shared<NavX>(device);
             }
 
- 
+
         }
     }
 }
