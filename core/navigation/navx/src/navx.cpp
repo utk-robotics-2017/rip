@@ -128,7 +128,7 @@ namespace rip
                     navx->displacement[1] = navx_update.disp_y;
                     navx->displacement[2] = navx_update.disp_z;
 
-                    navx->yaw_angle_tracker->nextAngle((navx->getYaw())());
+                    navx->yaw_angle_tracker->nextAngle((navx->getYaw()).to(units::deg));
                     navx->last_sensor_timestamp = sensor_timestamp;
                 }
 

@@ -14,7 +14,7 @@ endif()
 target_link_libraries(${PROJECT_NAME} framework units spdlog periphery pthread)
 target_include_directories(${PROJECT_NAME} PUBLIC include)
 
-if(ENABLE_DIAG)
+if(ENABLE_TESTING)
 	file(GLOB_RECURSE ${PROJECT_NAME}_DIAG_SOURCES "diag/*.cpp")
 	add_executable(${PROJECT_NAME}_diag ${${PROJECT_NAME}_DIAG_SOURCES})
 	set_property(TARGET ${PROJECT_NAME}_diag PROPERTY CXX_STANDARD 11)
