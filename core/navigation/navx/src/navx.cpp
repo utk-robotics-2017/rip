@@ -15,6 +15,7 @@
 #include "navx/offset_tracker.hpp"
 #include "navx/continuous_angle_tracker.hpp"
 #include "navx/serial_io.hpp"
+
 namespace rip
 {
     namespace navigation
@@ -30,12 +31,6 @@ namespace rip
             static const uint32_t   DEFAULT_SPI_BITRATE                 = 500000;
             static const uint8_t    NAVX_MXP_I2C_ADDRESS                = 0x32;
             static const float      QUATERNION_HISTORY_SECONDS          = 5.0f;
-
-            std::shared_ptr<NavX> makeNavX(const nlohmann::json& config)
-            {
-                std::string device = config["device"];
-                return std::make_shared<NavX>(device);
-            }
 
             class NavXInternal : public IIOCompleteNotification, public IBoardCapabilities
             {
@@ -745,12 +740,20 @@ namespace rip
             {
                 close();
             }
-
+            
             bool NavX::diagnostic()
             {
                 //todo
                 return 0;
             }
+            
+            std::shared_ptr<NavX> NavX::makeNavX(const nlohmann::json& config)
+            {
+                std::string device = config["device"];
+                return std::make_shared<NavX>(device);
+            }
+
+ 
         }
     }
 }

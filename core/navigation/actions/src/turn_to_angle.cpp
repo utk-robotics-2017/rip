@@ -11,7 +11,7 @@ namespace rip
             TurnToAngle::TurnToAngle(const std::string& name,
                 std::shared_ptr<drivetrains::Drivetrain> drivetrain,
                 const units::AngularVelocity& speed, const units::Angle& angle,
-                std::shared_ptr<NavX> navx, units::Distance& radius)
+                std::shared_ptr<NavX> navx, const units::Distance& radius)
                  : Action(name)
                  , m_drivetrain(drivetrain)
                  , m_speed(speed)
@@ -23,6 +23,8 @@ namespace rip
             bool TurnToAngle::isFinished()
             {
                 units::Angle currentAngle = m_navx->getAngle();
+		                        misc::Logger::getInstance()->debug(fmt::format("degrees turned: {}",            m_currentAngle.to(units::deg)));
+		//misc::Logger::getInstance()->debug(fmt::format("angular velocity: {}", m_navx->getRate().to(units::rev / units::minute)));
 
                 if(m_desiredAngle >= 0)
                 {
@@ -51,7 +53,7 @@ namespace rip
                 {
                     m_speed *= -1;
                 }
-                if(m_desiredAngle < 0)
+                if(m_desiredAngle() < 0)
                 {
                     m_speed *= -1;
                 }
