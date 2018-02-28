@@ -9,7 +9,7 @@ namespace rip
             DriveArc::DriveArc(const std::string& name, bool direction,
                 std::shared_ptr<drivetrains::Drivetrain> drivetrain,
                 const units::AngularVelocity& speed, const units::Angle& angle,
-                units::Distance& radius, units::Distance& axleLength)
+                const units::Distance& radius, const units::Distance& axleLength)
                 : Action(name)
                 , m_direction(direction)
                 , m_drivetrain(drivetrain)
@@ -25,7 +25,7 @@ namespace rip
             DriveArc::DriveArc(const std::string& name, bool direction,
                 std::shared_ptr<drivetrains::Drivetrain> drivetrain,
                 const units::Velocity& speed, const units::Distance& arcLength,
-                units::Distance& radius, units::Distance& axleLength)
+                const units::Distance& radius, const units::Distance& axleLength)
                 : Action(name)
                 , m_direction(direction)
                 , m_drivetrain(drivetrain)
