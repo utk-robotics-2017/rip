@@ -89,6 +89,11 @@ namespace rip
             {
                 return this->last_rate;
             }
+
+            void ContinuousAngleTracker::reset()
+            {
+                this->zero_crossing_count = 0;
+            }
         }
     }
 }

@@ -323,6 +323,7 @@ namespace rip
             {
                 if (navx_internal->isBoardYawResetSupported())
                 {
+                    yaw_angle_tracker->reset();
                     io->zeroYaw();
                 }
                 else
