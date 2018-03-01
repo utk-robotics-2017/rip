@@ -2,7 +2,7 @@
  * RegisterIOI2C.h
  *
  *  Created on: Jul 29, 2015
- *      Author: Scott
+ *      Author: Scott, IEEE Robotics UTK
  */
 
 #ifndef SRC_REGISTERIOI2C_H_
