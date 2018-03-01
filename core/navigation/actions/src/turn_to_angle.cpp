@@ -1,6 +1,7 @@
 #include "navigation_actions/turn_to_angle.hpp"
 #include <misc/logger.hpp>
 #include <fmt/format.h>
+#include <navigation_actions/exceptions.hpp>
 
 namespace rip
 {
@@ -23,17 +24,16 @@ namespace rip
             bool TurnToAngle::isFinished()
             {
                 units::Angle currentAngle = m_navx->getAngle();
-		                        misc::Logger::getInstance()->debug(fmt::format("degrees turned: {}",            m_currentAngle.to(units::deg)));
-		//misc::Logger::getInstance()->debug(fmt::format("angular velocity: {}", m_navx->getRate().to(units::rev / units::minute)));
 
-                if(m_desiredAngle >= 0)
+                if(m_priorAngle() != currentAngle())
                 {
-                    return currentAngle >= m_desiredAngle;
+                    misc::Logger::getInstance()->debug(fmt::format("degrees turned: {}"
+                    , currentAngle.to(units::deg) - m_init.to(units::deg)));
                 }
-                else
-                {
-                    return currentAngle <= m_desiredAngle;
-                }
+                m_priorAngle = currentAngle;
+
+                return std::abs(currentAngle.to(units::rad) - m_init.to(units::rad)) >= std::abs(m_desiredAngle.to(units::rad));
+
             }
 
             void TurnToAngle::update(nlohmann::json& state)
@@ -44,18 +44,14 @@ namespace rip
             void TurnToAngle::setup(nlohmann::json& state)
             {
                 //initial angle
-                misc::Logger::getInstance()->debug("setting yaw offset");
                 m_navx->zeroYaw();
                 motorcontrollers::MotorDynamics dynamicsLeft, dynamicsRight;
                 misc::Logger::getInstance()->debug(fmt::format("in place turn intended angular velocity (rev/min): {}"
                 , m_speed.to(units::rev / units::minute)));
-                if(m_speed() < 0)
-                {
-                    m_speed *= -1;
-                }
+
                 if(m_desiredAngle() < 0)
                 {
-                    m_speed *= -1;
+                    throw OutofBoundsException("degrees should be positive. Sign of velocity determines turning direction");
                 }
                 misc::Logger::getInstance()->debug(fmt::format("wheel linear speed (in/s): {}"
                 , (m_speed * m_c2wRadius / units::rad).to(units::in / units::s)));

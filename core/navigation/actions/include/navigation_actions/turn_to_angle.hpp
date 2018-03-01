@@ -57,7 +57,7 @@ namespace rip
                 units::AngularVelocity m_speed;
                 std::shared_ptr<drivetrains::Drivetrain> m_drivetrain;
                 std::shared_ptr<NavX> m_navx;
-                units::Angle m_desiredAngle, m_currentAngle, m_init;
+                units::Angle m_desiredAngle, m_priorAngle, m_init;
                 units::Distance m_c2wRadius;
             };
         }

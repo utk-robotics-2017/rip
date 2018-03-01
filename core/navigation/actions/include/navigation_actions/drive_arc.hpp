@@ -13,11 +13,11 @@ namespace rip
     {
         namespace actions
         {
-            using Motor = rip::navigation::drivetrains::Drivetrain::Motor;
             class DriveArc : public framework::Action
             {
             public:
-
+                using Motor = rip::navigation::drivetrains::Drivetrain::Motor;
+            
                 /**
                  * Drives the robot in an arc with specified radius, angular distance,
                  * angular velocity for the turn

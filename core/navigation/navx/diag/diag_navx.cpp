@@ -24,7 +24,7 @@ int main(int argc, char *argv[]) {
     printf("Initializing\n\n");
 
 
-    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    //std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
     std::cout << "Pitch  |  Roll  |  Yaw  |  X-Accel  | Y-Accel  |  Z-Accel  |  Time  |" << std::endl;
 
@@ -34,7 +34,7 @@ int main(int argc, char *argv[]) {
         std::cout << "   " << com.getAngle() << "     " <<com.getWorldLinearAccelX().to(units::AccelerationOfGravity) << "     ";
         std::cout << com.getWorldLinearAccelY().to(units::AccelerationOfGravity) << "       " << com.getWorldLinearAccelZ().to(units::AccelerationOfGravity) << "      ";
         std::cout << com.getLastSensorTimestamp() << "      " << '\r' << std::flush;
-        std::this_thread::sleep_for(std::chrono::milliseconds(125));
+        //std::this_thread::sleep_for(std::chrono::milliseconds(125));
         if(sflag)
         {
             sflag = 0;

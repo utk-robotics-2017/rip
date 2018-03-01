@@ -82,9 +82,9 @@ namespace rip
 
             units::Distance DriveArc::readAverageDistance()
             {
+                std::vector<Motor> motors = {Motor::kFrontLeft, Motor::kFrontRight, Motor::kBackLeft, Motor::kBackRight};
                 units::Distance sum=0;
-                std::vector<units::Distance> dist = m_drivetrain->readEncoders({Motor::kFrontLeft,
-                    Motor::kFrontLeft, Motor::kFrontRight, Motor::kBackLeft, Motor::kBackRight});
+                std::vector<units::Distance> dist = m_drivetrain->readEncoders(motors);
                 for(int i=0; i<static_cast<int>(dist.size()); i++)
                 {
                     sum += dist[i];
