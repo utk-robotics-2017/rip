@@ -9,15 +9,15 @@
 #define SRC_REGISTERIO_H_
 
 #include <stdint.h>
-#include "IIOProvider.h"
-#include "IRegisterIO.h"
-#include "IMUProtocol.h"
-#include "AHRSProtocol.h"
-#include "IBoardCapabilities.h"
-#include "IIOCompleteNotification.h"
-#include "WPILib.h"
+#include <navx/iio_provider.hpp>
+#include <navx/i_register_io.hpp>
+#include <navx/imu_protocol.hpp>
+#include <navx/navx_protocol.hpp>
+#include <navx/i_board_capabilities.hpp>
+#include <navx/iio_complete_notification.hpp>
 
-class RegisterIO : public IIOProvider {
+class RegisterIO : public IIOProvider
+{
 private:
     IRegisterIO *io_provider;
     uint8_t update_rate_hz;

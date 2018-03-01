@@ -2,8 +2,7 @@
 #ifndef SRC_SERIALIO_H_
 #define SRC_SERIALIO_H_
 
-
-#include "serial_port.hpp"
+#include <peripherycpp/serial.hpp>
 #include "iio_provider.hpp"
 #include <stdint.h>
 #include <string.h>
@@ -11,6 +10,7 @@
 #include "imu_protocol.hpp"
 #include "iio_complete_notification.hpp"
 #include "i_board_capabilities.hpp"
+
 namespace rip
 {
     namespace navigation
@@ -20,7 +20,7 @@ namespace rip
             class SerialIO : public IIOProvider
             {
                 std::string serial_port_id;
-                SerialPort* serial_port;
+                peripherycpp::Serial* serial_port;
                 uint8_t next_integration_control_action;
                 bool signal_transmit_integration_control;
                 bool signal_retransmit_stream_config;

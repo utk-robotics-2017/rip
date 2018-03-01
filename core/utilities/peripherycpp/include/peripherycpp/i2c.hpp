@@ -5,7 +5,7 @@ extern "C"
 {
     #include "i2c.h"
 }
-#include "peripherycpp/exceptions.hpp"
+#include <peripherycpp/exceptions.hpp>
 #include <vector>
 #include <string>
 
