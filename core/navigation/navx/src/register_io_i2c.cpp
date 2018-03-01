@@ -5,7 +5,7 @@
  *      Author: Scott
  */
 
-#include <RegisterIOI2C.h>
+#include <navx/register_io_i2c.hpp>
 #include <support/mutex.h>
 
 static wpi::mutex imu_mutex;
@@ -54,4 +54,3 @@ bool RegisterIO_I2C::Shutdown() {
 void RegisterIO_I2C::EnableLogging(bool enable) {
 	trace = enable;
 }
-

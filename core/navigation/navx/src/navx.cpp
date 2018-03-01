@@ -289,7 +289,7 @@ namespace rip
                 setName("navx");
                 serialInit(serial_port_id, serialDataType::kProcessedData, NAVX_DEFAULT_UPDATE_RATE_HZ);
                 misc::Logger::getInstance()->debug(fmt::format("navx constructed, device: {}"
-                , serial_port_id)); 
+                , serial_port_id));
             }
 
             units::Angle NavX::getPitch()
@@ -758,8 +758,6 @@ namespace rip
                 std::string device = config["device"];
                 return std::make_shared<NavX>(device);
             }
-
-
         }
     }
 }
