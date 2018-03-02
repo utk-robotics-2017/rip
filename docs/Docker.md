@@ -2,9 +2,11 @@
 
 How to use Docker to manage building and testing RIP.
 
+Linux users also have access to the docker build script, build-docker.sh in the rip directory 
+
 ## Installing Docker
 
-You need to be using a Linux system in order to use Docker, on Ubuntu 
+You can apt install docker.io, but this is out of date. The CE version is recommended.
 
 If you're on Ubuntu there are docker packages available in the multiverse, but the CE version from [the official website](https://docs.docker.com/install/linux/docker-ce/ubuntu/) will perform much better and offers newer features.
 

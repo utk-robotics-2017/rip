@@ -13,7 +13,9 @@ There are two ways to deal with the dependencies of RIP.
 2. Install the packages natively on your local machine.
 
 ### Docker
-See the [Docker Readme](Docker.md).
+Docker builds a container with all RIP dependencies and external libraries.
+See the [Docker Readme](docs/Docker.md).
+
 
 ### Native Install
 RIP requires several dependencies -- namely Eigen 3, Suitesparse, G2O, CMake, and GCC/G++ 4.9+. RIP GUIs require QT5.
