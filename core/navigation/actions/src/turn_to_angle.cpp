@@ -2,8 +2,6 @@
 #include <misc/logger.hpp>
 #include <fmt/format.h>
 #include <navigation_actions/exceptions.hpp>
-#include <chrono>
-#include <thread>
 
 namespace rip
 {
@@ -27,16 +25,16 @@ namespace rip
             {
                 units::Angle currentAngle = m_navx->getAngle();
 
-                if(m_priorAngle() != currentAngle())
+                /*if(m_priorAngle() != currentAngle())
                 {
                     misc::Logger::getInstance()->debug(fmt::format("degrees turned: {}"
                     , currentAngle.to(units::deg) - m_init.to(units::deg)));
                     misc::Logger::getInstance()->debug(fmt::format("current: {}"
                     , currentAngle.to(units::deg)));
-                }
+                }*/
                 m_priorAngle = currentAngle;
-                misc::Logger::getInstance()->debug(fmt::format("degrees turned: {}"
-                , std::abs(currentAngle.to(units::deg) - m_init.to(units::deg))));
+                //misc::Logger::getInstance()->debug(fmt::format("degrees turned: {}"
+                //, std::abs(currentAngle.to(units::deg) - m_init.to(units::deg))));
                 return std::abs(currentAngle.to(units::deg) - m_init.to(units::deg)) >= std::abs(m_desiredAngle.to(units::deg));
             }
 
@@ -48,8 +46,7 @@ namespace rip
             void TurnToAngle::setup(nlohmann::json& state)
             {
                 //initial angle
-                std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-                m_init = m_navx->getYaw();
+                m_init = m_navx->getAngle();
                 motorcontrollers::MotorDynamics dynamicsLeft, dynamicsRight;
                 misc::Logger::getInstance()->debug(fmt::format("in place turn intended angular velocity (rev/min): {}"
                 , m_speed.to(units::rev / units::minute)));

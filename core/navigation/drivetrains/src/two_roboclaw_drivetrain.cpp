@@ -2,6 +2,8 @@
 #include <motor_controllers/motor_dynamics.hpp>
 #include <drivetrains/exceptions.hpp>
 #include <cmath>
+#include <fmt/format.h>
+#include <iostream>
 
 namespace rip
 {
@@ -86,29 +88,36 @@ namespace rip
             std::vector<units::Distance> TwoRoboclawDrivetrain::readEncoders(const std::vector<Motor>& motors)
             {
                 std::vector<units::Distance> data;
-                for(int i=0; i<motors.size(); i++)
+                for(uint i=0; i<motors.size(); i++)
                 {
+                    std::cout << std::endl << static_cast<int>(motors[i]) << std::endl;
+
                     switch(motors[i])
                     {
+
                         case Motor::kFrontLeft:
                         {
                             data.push_back(m_left->readEncoder(Roboclaw::Motor::kM1));
+                            break;
                         }
                         case Motor::kFrontRight:
                         {
                             data.push_back(m_right->readEncoder(Roboclaw::Motor::kM1));
+                            break;
                         }
                         case Motor::kBackLeft:
                         {
                             data.push_back(m_left->readEncoder(Roboclaw::Motor::kM2));
+                            break;
                         }
                         case Motor::kBackRight:
                         {
                             data.push_back(m_right->readEncoder(Roboclaw::Motor::kM2));
+                            break;
                         }
                         default:
                         {
-                            throw InvalidMotorException("Invalid motor");
+                            throw InvalidMotorException(fmt::format("Invalid motor, parameter {}", i+1));
                         }
                     }
                 }
@@ -146,7 +155,7 @@ namespace rip
                 const std::vector<Motor>& motors)
             {
                 std::vector<units::Velocity> data;
-                for(int i=0; i<motors.size(); i++)
+                for(uint i=0; i<motors.size(); i++)
                 {
                     switch(motors[i])
                     {
@@ -168,7 +177,7 @@ namespace rip
                         }
                         default:
                         {
-                            throw InvalidMotorException("Invalid motor");
+                            throw InvalidMotorException(fmt::format("Invalid motor, parameter {}", i+1));
                         }
                     }
                 }

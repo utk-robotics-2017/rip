@@ -41,7 +41,8 @@ namespace rip
             bool DriveArc::isFinished()
             {
                 m_traveled = readAverageDistance();
-                return m_arcLength >= (m_traveled - m_init);
+
+                return m_arcLength <= (m_traveled - m_init);
             }
 
             void DriveArc::update(nlohmann::json& state)
@@ -55,6 +56,8 @@ namespace rip
                 std::vector<units::Distance> dist;
                 units::Velocity v1, v2;
                 m_init = readAverageDistance();
+                misc::Logger::getInstance()->debug(fmt::format("arc turn intended linear velocity(in/s): {}"
+                , m_linearSpeed.to(units::in / units::s)));
 
                 misc::Logger::getInstance()->debug(fmt::format("initial(offset) distance(ft): {}", m_init.to(units::ft)));
                 motorcontrollers::MotorDynamics dynamicsLeft, dynamicsRight;
@@ -65,8 +68,18 @@ namespace rip
                 misc::Logger::getInstance()->debug(fmt::format("arc turn intended linear velocity(in/s): {}"
                 , m_linearSpeed.to(units::in / units::s)));
 
+                misc::Logger::getInstance()->debug(fmt::format("arc turn intended linear distance (in): {}"
+                , m_arcLength.to(units::in)));
+
                 v1 = m_angularSpeed * (m_radius + m_axleLength/2 ) / units::rad;
                 v2 = m_angularSpeed * (m_radius - m_axleLength/2 ) / units::rad;
+
+                misc::Logger::getInstance()->debug(fmt::format("arc turn outer motor linear velocity (in/s): {}"
+                , v1.to(units::in / units::s)));
+
+                misc::Logger::getInstance()->debug(fmt::format("arc turn outer motor linear velocity (in/s): {}"
+                , v2.to(units::in / units::s)));
+
                 if(!m_direction) // left turn
                 {
                     dynamicsLeft.setSpeed(v2);
