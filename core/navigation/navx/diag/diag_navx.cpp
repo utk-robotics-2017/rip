@@ -24,7 +24,7 @@ int main(int argc, char *argv[]) {
     printf("Initializing\n\n");
 
 
-    //std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
     std::cout << "Pitch  |  Roll  |  Yaw  |  X-Accel  | Y-Accel  |  Z-Accel  |  Time  |" << std::endl;
 

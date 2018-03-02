@@ -2,6 +2,8 @@
 #include <misc/logger.hpp>
 #include <fmt/format.h>
 #include <navigation_actions/exceptions.hpp>
+#include <chrono>
+#include <thread>
 
 namespace rip
 {
@@ -29,11 +31,13 @@ namespace rip
                 {
                     misc::Logger::getInstance()->debug(fmt::format("degrees turned: {}"
                     , currentAngle.to(units::deg) - m_init.to(units::deg)));
+                    misc::Logger::getInstance()->debug(fmt::format("current: {}"
+                    , currentAngle.to(units::deg)));
                 }
                 m_priorAngle = currentAngle;
-
-                return std::abs(currentAngle.to(units::rad) - m_init.to(units::rad)) >= std::abs(m_desiredAngle.to(units::rad));
-
+                misc::Logger::getInstance()->debug(fmt::format("degrees turned: {}"
+                , std::abs(currentAngle.to(units::deg) - m_init.to(units::deg))));
+                return std::abs(currentAngle.to(units::deg) - m_init.to(units::deg)) >= std::abs(m_desiredAngle.to(units::deg));
             }
 
             void TurnToAngle::update(nlohmann::json& state)
@@ -44,7 +48,8 @@ namespace rip
             void TurnToAngle::setup(nlohmann::json& state)
             {
                 //initial angle
-                m_navx->zeroYaw();
+                std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+                m_init = m_navx->getYaw();
                 motorcontrollers::MotorDynamics dynamicsLeft, dynamicsRight;
                 misc::Logger::getInstance()->debug(fmt::format("in place turn intended angular velocity (rev/min): {}"
                 , m_speed.to(units::rev / units::minute)));
@@ -55,6 +60,8 @@ namespace rip
                 }
                 misc::Logger::getInstance()->debug(fmt::format("wheel linear speed (in/s): {}"
                 , (m_speed * m_c2wRadius / units::rad).to(units::in / units::s)));
+                misc::Logger::getInstance()->debug(fmt::format("init: {}"
+                , m_init.to(units::deg)));
 
                 dynamicsLeft.setSpeed(m_speed * m_c2wRadius / units::rad);
                 dynamicsRight.setSpeed(-1 * m_speed * m_c2wRadius / units::rad);

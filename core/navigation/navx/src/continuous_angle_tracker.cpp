@@ -93,6 +93,9 @@ namespace rip
             void ContinuousAngleTracker::reset()
             {
                 this->zero_crossing_count = 0;
+                this->last_angle = 0.0f;
+                this->last_rate = 0;
+                this->first_sample = false;
             }
         }
     }

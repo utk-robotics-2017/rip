@@ -289,7 +289,7 @@ namespace rip
                 setName("navx");
                 serialInit(serial_port_id, serialDataType::kProcessedData, NAVX_DEFAULT_UPDATE_RATE_HZ);
                 misc::Logger::getInstance()->debug(fmt::format("navx constructed, device: {}"
-                , serial_port_id)); 
+                , serial_port_id));
             }
 
             units::Angle NavX::getPitch()
@@ -323,11 +323,12 @@ namespace rip
             {
                 if (navx_internal->isBoardYawResetSupported())
                 {
-                    yaw_angle_tracker->reset();
                     io->zeroYaw();
+                    yaw_angle_tracker->reset();
                 }
                 else
                 {
+                    yaw_angle_tracker->reset();
                     yaw_offset_tracker->setOffset();
                 }
             }
