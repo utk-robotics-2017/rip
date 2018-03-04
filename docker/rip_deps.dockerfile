@@ -3,7 +3,8 @@ FROM robobenklein/home:latest
 
 # deps for rip build
 RUN sudo install_clean \
-      cmake g++ \
+      cmake g++ git curl \
+      xz-utils fakeroot automake \
       doxygen \
       libssh2-1-dev \
       lcov \
@@ -11,17 +12,6 @@ RUN sudo install_clean \
       libqt5opengl5-dev \
       libeigen3-dev \
       libsuitesparse-dev
-
-# Install g2o
-COPY ./g2o /home/${LUSER}/code/g2o
-RUN sudo chown -R ${LUSER}:${LUSER} /home/${LUSER}
-
-WORKDIR /home/${LUSER}/code/g2o
-RUN mkdir build
-WORKDIR /home/${LUSER}/code/g2o/build
-RUN cmake ..
-RUN make -j$(nproc --ignore=1 )
-RUN sudo make install
 
 # Create a new robot user:
 USER root
@@ -32,4 +22,15 @@ RUN adduser ${RUSER} sudo
 USER ${RUSER}
 WORKDIR /home/${RUSER}
 RUN bash ~robo/code/configs/provision.sh
+
+# Install g2o
+COPY external/g2o /home/${RUSER}/code/g2o
+RUN sudo chown -R ${RUSER}:${RUSER} /home/${RUSER}
+
+WORKDIR /home/${RUSER}/code/g2o
+RUN mkdir build
+WORKDIR /home/${RUSER}/code/g2o/build
+RUN cmake ..
+RUN make -j$(nproc --ignore=1 )
+RUN sudo make install
 

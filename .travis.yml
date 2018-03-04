@@ -16,7 +16,7 @@ install:
 
 before_script:
   # get cached images from
-  - docker build --tag rip_ci .
+  - docker build --tag rip_ci -f docker/rip.dockerfile .
 #  - ./travis/before_script.sh $TRAVIS_BRANCH $TRAVIS_PULL_REQUEST $TRAVIS_PULL_REQUEST_BRANCH
 #  - ./travis/compile_g2o.sh
 # start the container persistence:
