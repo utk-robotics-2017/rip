@@ -33,10 +33,7 @@
 #include "motor_controllers/motor_dynamics.hpp"
 #include "motor_controllers/roboclaw/pid_parameters.hpp"
 #include "motor_controllers/roboclaw/config.hpp"
-extern "C"
-{
-#include "serial.h"
-}
+#include "peripherycpp/serial.hpp"
 
 namespace rip
 {
@@ -685,22 +682,6 @@ namespace rip
 //////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////// Serial /////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////
-                /* Wrappers for some of periphery's C serial methods.
-                These are probably going to be phased out when we find a better
-                home for them, but they can stay here for now <3 */
-                virtual void write(serial_t* serial, std::vector<uint8_t> command, size_t len);
-
-                virtual uint8_t read(serial_t* serial, units::Time timeout_ms);
-
-                void open(serial_t* serial, std::string device, uint32_t baudrate);
-
-                void open(serial_t* serial, std::string device,
-                          uint32_t baudrate, unsigned int databits,
-                          serial_parity_t parity, unsigned int stopbits,
-                          bool xonxoff, bool rtscts);
-
-                void close(serial_t* serial);
-
                 /**
                  * @brief Sends N bytes to the roboclaw
                  *
@@ -727,8 +708,8 @@ namespace rip
                         command.push_back(static_cast<uint8_t>(crc >> 8));
                         command.push_back(static_cast<uint8_t>(crc));
 
-                        write(&m_serial, command, command.size());
-                        data = read(&m_serial, m_timeout);
+                        m_serial.write(command);
+                        data = m_serial.read(static_cast<size_t> (1), static_cast<int> (m_timeout.to(units::ms)))[0];
                         if (data == returnFF())
                         {
                             return;
@@ -787,9 +768,9 @@ namespace rip
                 double m_ticks_per_rev;
                 units::Distance m_wheel_radius;
                 //serial members
-                const char* m_device;
+                std::string m_device;
                 uint32_t m_baudrate;
-                serial_t m_serial;
+                peripherycpp::Serial m_serial;
                 //advanced
                 unsigned int m_databits, m_stopbits;
                 bool m_xonxoff, m_rtscts;

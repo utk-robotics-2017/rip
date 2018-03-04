@@ -46,13 +46,13 @@ namespace rip
              * @param  timeout_ms length of timeout period in ms
              * @return            vector of bytes
              */
-            std::vector<uint8_t> read(size_t len, int timeout_ms);
+            virtual std::vector<uint8_t> read(size_t len, int timeout_ms);
             /**
              * write
              * @brief writes data
              * @param data vector of bytes to be written
              */
-            void write(std::vector<uint8_t> data);
+            virtual void write(std::vector<uint8_t> data);
 
             /**
              * flush

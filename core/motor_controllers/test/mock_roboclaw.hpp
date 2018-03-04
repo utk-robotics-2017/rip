@@ -2,6 +2,7 @@
 #define MOCK_ROBOCLAW_HPP
 
 #include "motor_controllers/roboclaw/roboclaw.hpp"
+#include "peripherycpp/serial.hpp"
 
 namespace rip
 {
@@ -11,7 +12,7 @@ namespace rip
         {
             namespace mocks
             {
-                class MockRoboclaw : public Roboclaw
+                class MockRoboclaw : public Roboclaw , public rip::peripherycpp::Serial
                 {
                 public:
 
@@ -25,8 +26,8 @@ namespace rip
                     uint8_t returnFF() override;
                     std::vector<uint8_t> readN(uint8_t n, Command cmd) override;
                     //size_t read(uint8_t *buffer, size_t size) override;
-                    void write(serial_t* m_serial, std::vector<uint8_t> command, size_t len) override;
-                    uint8_t read(serial_t* serial, units::Time timeout_ms) override;
+                    void write(std::vector<uint8_t> data) override;
+                    std::vector<uint8_t> read(size_t len, int timeout_ms) override;
                     std::vector<uint8_t> getLastCmd();
                     std::string getLastSent();
                     void printResponse();

@@ -28,16 +28,15 @@ namespace rip
                 {
                     return m_cresponse;
                 }
-
-                void MockRoboclaw::write(serial_t* m_serial, std::vector<uint8_t> command, size_t len)
+                void MockRoboclaw::write(std::vector<uint8_t> data)
                 {
-                    m_last_cmd = command;
+                    m_last_cmd = data;
                 }
-                uint8_t MockRoboclaw::read(serial_t* serial, units::Time timeout_ms)
+                std::vector<uint8_t> MockRoboclaw::read(size_t len, int timeout_ms)
                 {
-                    return 0;
+		    std::vector<uint8_t> tmp = {0};
+                    return tmp;
                 }
-
                 void MockRoboclaw::setBytes(size_t bytes)
                 {
                     m_bytes = bytes;

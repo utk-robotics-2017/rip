@@ -49,8 +49,7 @@ namespace rip
                     m_ticks_per_rev = config.at("ticks_per_rev");
                     m_wheel_radius = config.at("wheel_radius");
                     //serial
-                    std::string temp = config.at("device");
-                    m_device = temp.c_str();
+                    m_device = config.at("device");
                     m_baudrate = config.at("baudrate");
                     if (config.find("advanced serial options") != config.end())
                     {
@@ -65,12 +64,12 @@ namespace rip
                 {
                     if (config.find("advanced serial options") != config.end())
                     {
-                        open(&m_serial, m_device, m_baudrate, m_databits, m_parity,
+                        m_serial.open(m_device, m_baudrate, m_databits, m_parity,
                              m_stopbits, m_xonxoff, m_rtscts);
                     }
                     else
                     {
-                        open(&m_serial, m_device, m_baudrate);
+                        m_serial.open(m_device, m_baudrate);
                     }
                 }
                 else
@@ -83,7 +82,7 @@ namespace rip
                 if(!m_faking)
                 {
                     stop();
-                    serial_close(&m_serial);
+                    m_serial.close();
                 }
             }
 
@@ -174,7 +173,8 @@ namespace rip
 
                 if (max.to(units::V) < 6 || max.to(units::V) > 34)
                 {
-                    // throw OutOfRange(fmt::format("Maximum logic battery voltage of {} is out of the 6V-34V range", max.to(units::V)));
+                    // throw OutOfRange(
+                    // fmt::format("Maximum logic battery voltage of {} is out of the 6V-34V range", max.to(units::V)));
                 }
                 if (min() >= max())
                 {
@@ -358,23 +358,23 @@ namespace rip
                     {
                         crcUpdate(command[i]);
                     }
-                    write(&m_serial, command, command.size());
+                    m_serial.write(command);
 
                     for (uint8_t i = 0; i < 48; i++)
                     {
                         if (data != -1)
                         {
-                            data = read(&m_serial, m_timeout);
+                            data = m_serial.read(static_cast<size_t> (1), static_cast<int> (m_timeout.to(units::ms)))[0];
                             version += data;
                             crcUpdate(version[i]);
                             if (version[i] == 0)
                             {
                                 uint16_t ccrc;
-                                data = read(&m_serial, m_timeout);
+                                data = m_serial.read(static_cast<size_t> (1), static_cast<int> (m_timeout.to(units::ms)))[0];
                                 if (data != -1)
                                 {
                                     ccrc = static_cast<uint16_t>(data) << 8;
-                                    data = read(&m_serial, m_timeout);
+                                    data = m_serial.read(static_cast<size_t> (1), static_cast<int> (m_timeout.to(units::ms)))[0];
 
                                     if (data != -1)
                                     {
@@ -704,13 +704,13 @@ namespace rip
                         crcUpdate(command[i]);
                     }
 
-                    write(&m_serial, command, command.size());
+                    m_serial.write(command);
 
                     std::vector<uint8_t> response;
                     uint8_t data;
                     for (uint8_t i = 0; i < n; i++)
                     {
-                        data = read(&m_serial, m_timeout);
+                        data = m_serial.read(static_cast<size_t> (1), static_cast<int> (m_timeout.to(units::ms)))[0];
                         crcUpdate(data);
                         response.push_back(data);
                         if (data == -1)
@@ -722,11 +722,11 @@ namespace rip
                     if (data != -1)
                     {
                         uint16_t ccrc;
-                        data = read(&m_serial, m_timeout);
+                        data = m_serial.read(static_cast<size_t> (1), static_cast<int> (m_timeout.to(units::ms)))[0];
                         if (data != -1)
                         {
                             ccrc = static_cast<uint16_t>(data) << 8;
-                            data = read(&m_serial, m_timeout);
+                            data = m_serial.read(static_cast<size_t> (1), static_cast<int> (m_timeout.to(units::ms)))[0];
                             if (data != -1)
                             {
                                 ccrc |= data;
@@ -740,44 +740,6 @@ namespace rip
                 }
 
                 throw ReadFailure();
-            }
-
-            void Roboclaw::write(serial_t* serial, std::vector<uint8_t> command, size_t len)
-            {
-                if (serial_write(serial, &command[0], len) < 0)
-                {
-                    throw CommandFailure(serial_errmsg(serial));
-                }
-            }
-
-            uint8_t Roboclaw::read(serial_t* serial, units::Time timeout)
-            {
-                uint8_t data;
-                if (serial_read(serial, &data, 1, static_cast<int>(timeout())) < 0)
-                {
-                    throw ReadFailure(serial_errmsg(serial));
-                }
-                return data;
-            }
-
-            void Roboclaw::open(serial_t* serial, std::string device,
-                                uint32_t baudrate, unsigned int databits,
-                                serial_parity_t parity, unsigned int stopbits,
-                                bool xonxoff, bool rtscts)
-            {
-                if (serial_open_advanced(serial, device.c_str(), baudrate, databits, parity,
-                                         stopbits, xonxoff, rtscts) < 0)
-                {
-                    throw SerialOpenFail(serial_errmsg(serial));
-                }
-            }
-
-            void Roboclaw::open(serial_t* serial, std::string device, uint32_t baudrate)
-            {
-                if (serial_open(serial, device.c_str(), baudrate) < 0)
-                {
-                    throw SerialOpenFail(serial_errmsg(serial));
-                }
             }
 
 //////////////////////////////////////////////////////////////////////////////////////////////
