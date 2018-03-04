@@ -6,7 +6,7 @@
 #include <thread>
 #include <iomanip>
 #include <signal.h>
-#include <fmt/format.hpp>
+#include <fmt/format.h>
 #include <misc/logger.hpp>
 
 volatile sig_atomic_t sflag = 0;
@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
             break;
         }
     }
-    std::cout("\nExit Caught... Closing device.\n");
+    std::cout << "\nExit Caught... Closing device.\n";
 
     return 0;
 }

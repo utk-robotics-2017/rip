@@ -276,17 +276,14 @@ namespace rip
             };
 
             NavX::NavX(std::string serial_port_id, NavX::serialDataType data_type, uint8_t update_rate_hz)
-                :Subsystem("")
+                :Subsystem("navx")
             {
-                setName("navx");
                 serialInit(serial_port_id, data_type, update_rate_hz);
             }
 
             NavX::NavX(std::string serial_port_id)
-                :Subsystem("")
+                :Subsystem("navx")
             {
-
-                setName("navx");
                 serialInit(serial_port_id, serialDataType::kProcessedData, NAVX_DEFAULT_UPDATE_RATE_HZ);
                 misc::Logger::getInstance()->debug(fmt::format("navx constructed, device: {}"
                 , serial_port_id));

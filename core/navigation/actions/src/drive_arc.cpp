@@ -9,40 +9,58 @@ namespace rip
             DriveArc::DriveArc(const std::string& name, bool direction,
                 std::shared_ptr<drivetrains::Drivetrain> drivetrain,
                 const units::AngularVelocity& speed, const units::Angle& angle,
-                const units::Distance& radius, const units::Distance& axleLength)
+                const units::Distance& radius, const units::Distance& axle_length)
                 : Action(name)
                 , m_direction(direction)
                 , m_drivetrain(drivetrain)
-                , m_angularSpeed(speed)
+                , m_angular_speed(speed)
                 , m_angle(angle)
                 , m_radius(radius)
-                , m_axleLength(axleLength)
+                , m_axle_length(axle_length)
             {
-                m_arcLength = angle.to(units::rad) * radius;
-                m_linearSpeed = radius * speed / units::rad;
+                m_arc_length = angle.to(units::rad) * radius;
+                m_linear_speed = radius * speed / units::rad;
             }
 
             DriveArc::DriveArc(const std::string& name, bool direction,
                 std::shared_ptr<drivetrains::Drivetrain> drivetrain,
-                const units::Velocity& speed, const units::Distance& arcLength,
-                const units::Distance& radius, const units::Distance& axleLength)
+                const units::Velocity& speed, const units::Distance& arc_length,
+                const units::Distance& radius, const units::Distance& axle_length)
                 : Action(name)
                 , m_direction(direction)
                 , m_drivetrain(drivetrain)
-                , m_linearSpeed(speed)
-                , m_arcLength(arcLength)
+                , m_linear_speed(speed)
+                , m_arc_length(arc_length)
                 , m_radius(radius)
-                , m_axleLength(axleLength)
+                , m_axle_length(axle_length)
             {
-                m_angle = arcLength / radius * units::rad;
-                m_angularSpeed = speed / radius * units::rad;
+                m_angle = arc_length / radius * units::rad;
+                m_angular_speed = speed / radius * units::rad;
+            }
+
+            DriveArc::DriveArc(const std::string& name, bool direction,
+                std::shared_ptr<drivetrains::Drivetrain> drivetrain,
+                const units::Velocity& speed, const units::Distance& arc_length,
+                const units::Distance& radius, const units::Distance& axle_length,
+                std::shared_ptr<NavX> navx)
+                : Action(name)
+                , m_direction(direction)
+                , m_drivetrain(drivetrain)
+                , m_linear_speed(speed)
+                , m_arc_length(arc_length)
+                , m_radius(radius)
+                , m_axle_length(axle_length)
+                , m_navx(navx)
+            {
+                m_angle = arc_length / radius * units::rad;
+                m_angular_speed = speed / radius * units::rad;
             }
 
             bool DriveArc::isFinished()
             {
                 m_traveled = readAverageDistance();
 
-                return m_arcLength <= (m_traveled - m_init);
+                return m_arc_length <= (m_traveled - m_init);
             }
 
             void DriveArc::update(nlohmann::json& state)
@@ -55,24 +73,39 @@ namespace rip
             {
                 std::vector<units::Distance> dist;
                 units::Velocity v1, v2;
+
+                if(m_arc_length <= 0)
+                {
+                    throw OutofBoundsException("arc_length should be greater than 0");
+                }
+                if(m_radius < m_axle_length)
+                {
+                    throw OutofBoundsException("radius should be greater than the axle length");
+                }
+                if(m_axle_length <= 0)
+                {
+                    throw OutofBoundsException("axle length should be positive");
+                }
+
                 m_init = readAverageDistance();
+
                 misc::Logger::getInstance()->debug(fmt::format("arc turn intended linear velocity(in/s): {}"
-                , m_linearSpeed.to(units::in / units::s)));
+                , m_linear_speed.to(units::in / units::s)));
 
                 misc::Logger::getInstance()->debug(fmt::format("initial(offset) distance(ft): {}", m_init.to(units::ft)));
                 motorcontrollers::MotorDynamics dynamicsLeft, dynamicsRight;
 
                 misc::Logger::getInstance()->debug(fmt::format("arc turn intended angular velocity (rev/min): {}"
-                , m_angularSpeed.to(units::rev / units::minute)));
+                , m_angular_speed.to(units::rev / units::minute)));
 
                 misc::Logger::getInstance()->debug(fmt::format("arc turn intended linear velocity(in/s): {}"
-                , m_linearSpeed.to(units::in / units::s)));
+                , m_linear_speed.to(units::in / units::s)));
 
                 misc::Logger::getInstance()->debug(fmt::format("arc turn intended linear distance (in): {}"
-                , m_arcLength.to(units::in)));
+                , m_arc_length.to(units::in)));
 
-                v1 = m_angularSpeed * (m_radius + m_axleLength/2 ) / units::rad;
-                v2 = m_angularSpeed * (m_radius - m_axleLength/2 ) / units::rad;
+                v1 = m_angular_speed * (m_radius + m_axle_length/2 ) / units::rad;
+                v2 = m_angular_speed * (m_radius - m_axle_length/2 ) / units::rad;
 
                 misc::Logger::getInstance()->debug(fmt::format("arc turn outer motor linear velocity (in/s): {}"
                 , v1.to(units::in / units::s)));

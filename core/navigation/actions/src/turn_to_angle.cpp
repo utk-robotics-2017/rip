@@ -24,17 +24,7 @@ namespace rip
             bool TurnToAngle::isFinished()
             {
                 units::Angle currentAngle = m_navx->getAngle();
-
-                /*if(m_priorAngle() != currentAngle())
-                {
-                    misc::Logger::getInstance()->debug(fmt::format("degrees turned: {}"
-                    , currentAngle.to(units::deg) - m_init.to(units::deg)));
-                    misc::Logger::getInstance()->debug(fmt::format("current: {}"
-                    , currentAngle.to(units::deg)));
-                }*/
                 m_priorAngle = currentAngle;
-                //misc::Logger::getInstance()->debug(fmt::format("degrees turned: {}"
-                //, std::abs(currentAngle.to(units::deg) - m_init.to(units::deg))));
                 return std::abs(currentAngle.to(units::deg) - m_init.to(units::deg)) >= std::abs(m_desiredAngle.to(units::deg));
             }
 
@@ -51,9 +41,13 @@ namespace rip
                 misc::Logger::getInstance()->debug(fmt::format("in place turn intended angular velocity (rev/min): {}"
                 , m_speed.to(units::rev / units::minute)));
 
-                if(m_desiredAngle() < 0)
+                if(m_desiredAngle() <= 0)
                 {
                     throw OutofBoundsException("degrees should be positive. Sign of velocity determines turning direction");
+                }
+                if(m_c2wRadius <= 0)
+                {
+                    throw OutofBoundsException("wheel radius should be positive");
                 }
                 misc::Logger::getInstance()->debug(fmt::format("wheel linear speed (in/s): {}"
                 , (m_speed * m_c2wRadius / units::rad).to(units::in / units::s)));

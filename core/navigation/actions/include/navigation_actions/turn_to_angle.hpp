@@ -35,6 +35,19 @@ namespace rip
                     const units::AngularVelocity& speed, const units::Angle& angle,
                     std::shared_ptr<NavX> navx, const units::Distance& radius);
                 /**
+                 * encoder based turn to angle
+                 * @param name       action name
+                 * @param drivetrain drivetrain
+                 * @param speed      angular velocity of turn
+                 * @param angle      how far to turn
+                 * @param radius     half of axle length
+                 */
+                TurnToAngle(const std::string& name,
+                    std::shared_ptr<drivetrains::Drivetrain> drivetrain,
+                    const units::AngularVelocity& speed,
+                    const units::Angle& angle,
+                    const units::Distance& radius);
+                /**
                 * Returns whether or not the action has finished execution.
                 * Returns true when navX reports change in angle that was
                 * requested
