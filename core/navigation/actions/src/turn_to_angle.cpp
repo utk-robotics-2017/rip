@@ -25,6 +25,8 @@ namespace rip
             {
                 units::Angle currentAngle = m_navx->getAngle();
                 m_priorAngle = currentAngle;
+                misc::Logger::getInstance()->debug(fmt::format("current angle: {}"
+                , currentAngle.to(units::deg)));
                 return std::abs(currentAngle.to(units::deg) - m_init.to(units::deg)) >= std::abs(m_desiredAngle.to(units::deg));
             }
 
@@ -36,7 +38,12 @@ namespace rip
             void TurnToAngle::setup(nlohmann::json& state)
             {
                 //initial angle
+
                 m_init = m_navx->getAngle();
+                do
+                {
+                    m_init = m_navx->getAngle();
+                } while(m_init.to(units::deg) == 0);
                 motorcontrollers::MotorDynamics dynamicsLeft, dynamicsRight;
                 misc::Logger::getInstance()->debug(fmt::format("in place turn intended angular velocity (rev/min): {}"
                 , m_speed.to(units::rev / units::minute)));
@@ -61,6 +68,8 @@ namespace rip
 
             void TurnToAngle::teardown(nlohmann::json& state)
             {
+                misc::Logger::getInstance()->debug(fmt::format("degrees turned: {}"
+                , (m_priorAngle - m_init).to(units::deg)));
                 m_drivetrain->stop();
             }
         }

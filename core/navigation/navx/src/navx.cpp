@@ -321,11 +321,11 @@ namespace rip
                 if (navx_internal->isBoardYawResetSupported())
                 {
                     io->zeroYaw();
-                    yaw_angle_tracker->reset();
+                    //yaw_angle_tracker->reset();
                 }
                 else
                 {
-                    yaw_angle_tracker->reset();
+                    //yaw_angle_tracker->reset();
                     yaw_offset_tracker->setOffset();
                 }
             }
