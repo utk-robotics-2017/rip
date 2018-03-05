@@ -9,6 +9,14 @@ namespace rip
 {
     namespace peripherycpp
     {
+        I2c::I2c()
+        {}
+
+        I2c::I2c(const std::string path)
+        {
+            open(path);
+        }
+        
         void I2c::open(const std::string path)
         {
             checkError(i2c_open(&m_i2c, path.c_str()));

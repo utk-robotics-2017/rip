@@ -16,12 +16,24 @@ namespace rip
         class Gpio
         {
             public:
-
+                /**
+                 * default constructor
+                 */
+                Gpio();
+                /**
+                 * constructor that opens a pin for reading
+                 * @param pin       the Linux GPIO pin number for the pin being opened.
+                 * @param direction direction  an integer corresponding to the direction the
+                 *  GPIO pin is being opened (it will be converted to an enum).
+                 */
+                Gpio(unsigned int pin, int direction);
                 /**
                  * open
                  * @param pin  the Linux GPIO pin number for the pin being opened.
-                 * @param direction  an integer corresponding to the direction the GPIO pin is being opened (it will be converted to an enum).
-                 * @brief  Open the sysfs GPIO corresponding to the specified pin, with the specified direction.
+                 * @param direction  an integer corresponding to the direction the GPIO pin is being
+                 *  opened (it will be converted to an enum).
+                 * @brief  Open the sysfs GPIO corresponding to the specified pin, with the
+                 * specified direction.
                  */
                 void open(unsigned int pin, int direction);
 
@@ -41,7 +53,9 @@ namespace rip
 
                 /**
                  * poll
-                 * @param timeout_ms  what it does depends on the value. If it is positive, it is a timeout in milliseconds. If 0, it is a non-blocking poll. If negative, it is a blocking poll.
+                 * @param timeout_ms  what it does depends on the value. If it is positive, it
+                 * is a timeout in milliseconds. If 0, it is a non-blocking poll. If negative,
+                 * it is a blocking poll.
                  * @brief  Poll a GPIO for the edge event configured with gpio_set_edge.
                  * @return  1 on success, 0 on timeout
                  */

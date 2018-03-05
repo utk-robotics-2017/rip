@@ -6,6 +6,21 @@ namespace rip
     namespace peripherycpp
     {
 
+        Serial::Serial()
+        {}
+
+        Serial::Serial(std::string device, unsigned int baudrate)
+        {
+            open(device, baudrate);
+        }
+
+        Serial::Serial(std::string device, unsigned int baudrate, unsigned int databits,
+                  int parity, unsigned int stopbits,
+                  bool xonxoff, bool rtscts)
+        {
+            open(device, baudrate, databits, parity, stopbits, xonxoff, rtscts);
+        }
+
         void Serial::open(std::string device, unsigned int baudrate)
         {
             checkError(serial_open(&m_serial, device.c_str(), baudrate));

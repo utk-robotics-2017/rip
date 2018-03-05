@@ -5,6 +5,20 @@ namespace rip
 {
     namespace peripherycpp
     {
+        Spi::Spi()
+        {}
+
+        Spi::Spi(const std::string path, unsigned int mode, uint32_t max_speed)
+        {
+            open(path, mode, max_speed);
+        }
+
+        Spi::Spi(const std::string path, unsigned int mode, uint32_t max_speed,
+            int bit_order, uint8_t bits_per_word, uint8_t extra_flags)
+        {
+            openAdvanced(path, mode, max_speed, bit_order, bits_per_word, extra_flags);
+        }
+
         void Spi::open(const std::string path, unsigned int mode, uint32_t max_speed)
         {
             checkError(spi_open(&m_spi, path.c_str(), mode, max_speed));
