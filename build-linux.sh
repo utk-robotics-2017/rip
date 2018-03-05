@@ -17,11 +17,11 @@ cmake .. \
   $@
 #
 
-nprocs="$(nproc --ignore=2)"
+nprocs="$(nproc --ignore=1)"
 
 trap '' ERR
 make_retval=1
-make -j$nprocs
+make -j$(nproc --ignore=1) -l$(nproc --ignore=2)
 make_retval=$?
 trap 'SIGNAL=$?;cleanup' ERR
 
