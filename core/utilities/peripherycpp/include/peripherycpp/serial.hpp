@@ -17,6 +17,32 @@ namespace rip
         {
         public:
             /**
+             * Default constructor
+             */
+            Serial();
+            /**
+             * Constructor with device and baudrate
+             * @param device   tty device at the specified path (e.g. "/dev/ttyUSB0")
+             * @param baudrate device baudrate (ie, 115200).
+             */
+            Serial(std::string device, unsigned int baudrate);
+            /**
+             * Advanced open constructor
+             * @param device   tty device at the specified path (e.g. "/dev/ttyUSB0")
+             * @param baudrate baudrate device baudrate (ie, 115200).
+             * @param databits databits can be 5, 6, 7, or 8
+             * @param parity   parity can be PARITY_NONE, PARITY_ODD, or PARITY_EVEN
+             * @param stopbits can be 1 or 2
+             * @param xonxoff  software flow control settings
+             * @param rtscts   hardware flow control settings
+             * @brief Open the tty device at the specified path (e.g. "/dev/ttyUSB0"),
+             * with the specified baudrate, data bits, parity, stop bits, software flow control (xonxoff),
+             * and hardware flow control (rtscts) settings.
+             */
+            Serial(std::string device, unsigned int baudrate, unsigned int databits,
+                      int parity, unsigned int stopbits,
+                      bool xonxoff, bool rtscts);
+            /**
              * open(No Params)
              * @param device   tty device at the specified path (e.g. "/dev/ttyUSB0")
              * @param baudrate device baudrate (ie, 115200).

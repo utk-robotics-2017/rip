@@ -7,6 +7,13 @@ namespace rip
 
     namespace peripherycpp
     {
+        Mmio::Mmio()
+        {}
+
+        Mmio::Mmio(uintptr_t base, size_t size)
+        {
+            open(base, size);
+        }
 
         void Mmio::open(uintptr_t base, size_t size)
         {

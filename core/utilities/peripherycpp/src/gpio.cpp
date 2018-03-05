@@ -4,6 +4,13 @@ namespace rip
 {
     namespace peripherycpp
     {
+        Gpio::Gpio()
+        {}
+
+        Gpio::Gpio(unsigned int pin, int direction)
+        {
+            open(pin, direction);
+        }
         void Gpio::open(unsigned int pin, int direction)
         {
             gpio_direction_t dir;
