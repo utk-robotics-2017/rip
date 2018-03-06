@@ -1,5 +1,5 @@
 FROM utkrobotics/rip_deps:latest
-# RUSER 902:902
+# FROM RUSER 902:902
 
 USER root
 
@@ -22,13 +22,16 @@ ENV ARCH=arm \
     SYSROOT=$RPXC_ROOT/sysroot
 
 WORKDIR $SYSROOT
-RUN curl -Ls https://github.com/sdhibit/docker-rpi-raspbian/raw/master/raspbian.2015.05.05.tar.xz \
-    | tar -xJf - \
- && curl -Ls https://github.com/resin-io-projects/armv7hf-debian-qemu/raw/master/bin/qemu-arm-static \
-    > $SYSROOT/$QEMU_PATH \
- && chmod +x $SYSROOT/$QEMU_PATH \
- && mkdir -p $SYSROOT/build \
- && chroot $SYSROOT $QEMU_PATH /bin/sh -c '\
+ARG pi_image
+ENV PI_IMAGE=${pi_image}
+COPY rpi_images/${PI_IMAGE} /tmp/raspi-img.tar.xz
+RUN cat /tmp/raspi-img.tar.xz \
+    | tar -xJf -
+RUN curl -fsSL https://github.com/resin-io-projects/armv7hf-debian-qemu/raw/master/bin/qemu-arm-static \
+    > $SYSROOT/$QEMU_PATH
+RUN chmod +x $SYSROOT/$QEMU_PATH
+RUN mkdir -p $SYSROOT/build
+RUN chroot $SYSROOT $QEMU_PATH /bin/sh -c '\
         echo "deb http://archive.raspbian.org/raspbian jessie firmware" \
             >> /etc/apt/sources.list \
         && apt-get update \
@@ -40,7 +43,7 @@ RUN curl -Ls https://github.com/sdhibit/docker-rpi-raspbian/raw/master/raspbian.
                 symlinks \
         && symlinks -cors /'
 
-COPY image/ /
+COPY rpi/ /
 
 WORKDIR /build
 ENTRYPOINT [ "/rpxc/entrypoint.sh" ]

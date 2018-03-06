@@ -91,3 +91,5 @@ bin/
 doc/
 .idea/
 cmake-build-debug/
+
+docker/rpi_images
