@@ -59,5 +59,11 @@ namespace rip
 
             return rv;
         }
+
+        void LinearDigitalFilter::reset()
+        {
+            m_inputs.reset();
+            m_outputs.reset();
+        }
     }
 }

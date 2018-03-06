@@ -67,6 +67,11 @@ namespace rip
             return (m_setpoint - m_previous_setpoint) / dt.count();
         }
 
+        double PidController::error() const
+        {
+            return m_error;
+        }
+
         void PidController::setSetpoint(double setpoint)
         {
             m_setpoint = clamp(setpoint, m_minimum_input, m_maximum_input);
