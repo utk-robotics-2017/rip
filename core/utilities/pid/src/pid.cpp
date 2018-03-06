@@ -1,5 +1,7 @@
 #include "pid/pid.hpp"
 
+#include <misc/logger.hpp>
+
 #include <cmath>
 
 namespace rip
@@ -171,6 +173,8 @@ namespace rip
                 std::chrono::duration<double, std::milli> dt = time_now - m_last_time;
 
                 double input = m_input->get();
+                misc::Logger::getInstance()->debug("Input: {}", input);
+
                 PidInput::Type type = m_input->type();
 
                 // Storage for function inputs
@@ -199,6 +203,7 @@ namespace rip
                 }
 
                 m_result = clamp(m_result, m_minimum_output, m_maximum_output);
+                misc::Logger::getInstance()->debug("Result: {}", m_result);
                 if (m_enabled)
                 {
                     m_output->set(m_result);
