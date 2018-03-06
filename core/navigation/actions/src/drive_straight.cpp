@@ -13,7 +13,8 @@ namespace rip
                 , m_distance(distance)
                 , m_speed(speed)
                 , m_drivetrain(drivetrain)
-                , m_pid(new pid::PidController(m_navx.get(), this, p, i , d))
+                , m_navx(navx)
+                , m_pid(new pid::PidController(navx.get(), this, p, i , d))
             {}
 
             DriveStraight::DriveStraight(const std::string& name, std::shared_ptr<drivetrains::Drivetrain> drivetrain, std::shared_ptr<navx::NavX> navx,
@@ -23,7 +24,8 @@ namespace rip
                 , m_time(time)
                 , m_speed(speed)
                 , m_drivetrain(drivetrain)
-                , m_pid(new pid::PidController(m_navx.get(), this, p, i , d))
+                , m_navx(navx)
+                , m_pid(new pid::PidController(navx.get(), this, p, i , d))
             {}
 
             bool DriveStraight::isFinished()

@@ -90,6 +90,8 @@ namespace rip
                 return std::fabs(err) < m_tolerance;
             case ToleranceType::kNoTolerance:
                 return false;
+            default:
+                assert(false);
             }
             return false;
         }
