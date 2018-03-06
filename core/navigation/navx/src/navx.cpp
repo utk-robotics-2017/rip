@@ -251,6 +251,11 @@ namespace rip
                     navx->selftest_status = board_state.selftest_status;
                 }
 
+                void yawResetComplete()
+                {
+                    navx->yaw_angle_tracker->reset();
+                }
+
                 /***********************************************************/
                 /* IBoardCapabilities Interface Implementation        */
                 /***********************************************************/
@@ -276,17 +281,14 @@ namespace rip
             };
 
             NavX::NavX(std::string serial_port_id, NavX::serialDataType data_type, uint8_t update_rate_hz)
-                :Subsystem("")
+                :Subsystem("navx")
             {
-                setName("navx");
                 serialInit(serial_port_id, data_type, update_rate_hz);
             }
 
             NavX::NavX(std::string serial_port_id)
-                :Subsystem("")
+                :Subsystem("navx")
             {
-
-                setName("navx");
                 serialInit(serial_port_id, serialDataType::kProcessedData, NAVX_DEFAULT_UPDATE_RATE_HZ);
                 misc::Logger::getInstance()->debug(fmt::format("navx constructed, device: {}"
                 , serial_port_id));
@@ -490,7 +492,22 @@ namespace rip
                 ::pthread_t trd;
                 ::pthread_create(&trd, NULL, NavX::threadFunc, io);
             }
+            /*
+            void NavX::spiInit( SPI::Port spi_port_id, uint32_t bitrate, uint8_t update_rate_hz)
+            {
+                commonInit(update_rate_hz);
+                io = new RegisterIO(new RegisterIO_SPI(new SPI(spi_port_id), bitrate), update_rate_hz, ahrs_internal, ahrs_internal);
+                task = new std::thread(NavX::ThreadFunc, io);
+            }
 
+            void NavX::i2cInit(I2C::Port i2c_port_id, uint8_t update_rate_hz)
+            {
+                commonInit(update_rate_hz);
+                io = new RegisterIO(new RegisterIO_I2C(new I2C(i2c_port_id, NAVX_MXP_I2C_ADDRESS)), update_rate_hz, ahrs_internal, ahrs_internal);
+                task = new std::thread(AHRS::ThreadFunc, io);
+            }
+
+            */
             void NavX::commonInit(uint8_t update_rate_hz)
             {
 

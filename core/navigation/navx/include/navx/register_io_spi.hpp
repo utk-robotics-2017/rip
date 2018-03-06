@@ -17,12 +17,13 @@ namespace rip
     {
         namespace navx
         {
+
             static const int MAX_SPI_MSG_LENGTH = 256;
 
             class RegisterIO_SPI: public IRegisterIO
             {
             public:
-                RegisterIO_SPI(SPI *port, uint32_t bitrate);
+                RegisterIO_SPI(peripherycpp::Spi *port, uint32_t bitrate);
                 virtual ~RegisterIO_SPI() {}
                 bool init();
                 bool write(uint8_t address, uint8_t value );
@@ -30,7 +31,7 @@ namespace rip
                 bool shutdown();
                 void enableLogging(bool enable);
             private:
-                SPI *port;
+                peripherycpp::Spi port;
                 uint32_t bitrate;
                 uint8_t rx_buffer[MAX_SPI_MSG_LENGTH];
                 bool trace;

@@ -753,9 +753,9 @@ namespace rip
                  * Subsystem abstract Implementation
                  */
                 virtual void stop() override;
-        
+
                 virtual bool diagnostic() override;
-                
+
                 /**
                  * Creates & returns a pointer to a navX object, constructed based on parameters
                  * inside json. Used in RIP subsystem creation
@@ -768,6 +768,8 @@ namespace rip
 
             private:
                 void serialInit(std::string serial_port_id, NavX::serialDataType data_type, uint8_t update_rate_hz);
+                //void spiInit(SPI::Port spi_port_id, uint32_t bitrate, uint8_t update_rate_hz);
+                //void i2cInit(I2C::Port i2c_port_id, uint8_t update_rate_hz);
                 void commonInit(uint8_t update_rate_hz);
                 static void* threadFunc(void* threadarg);
 

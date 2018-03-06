@@ -9,48 +9,58 @@
 #define SRC_REGISTERIO_H_
 
 #include <stdint.h>
-#include <navx/iio_provider.hpp>
-#include <navx/i_register_io.hpp>
-#include <navx/imu_protocol.hpp>
-#include <navx/navx_protocol.hpp>
-#include <navx/i_board_capabilities.hpp>
-#include <navx/iio_complete_notification.hpp>
+#include "iio_provider.hpp"
+#include "i_register_io.hpp"
+#include "imu_protocol.hpp"
+#include "navx_protocol.hpp"
+#include "i_board_capabilities.hpp"
+#include "iio_complete_notification.hpp"
+#include <ctime>
 
-class RegisterIO : public IIOProvider
+namespace rip
 {
-private:
-    IRegisterIO *io_provider;
-    uint8_t update_rate_hz;
-    bool stop;
-    IMUProtocol::GyroUpdate raw_data_update;
-    AHRSProtocol::AHRSUpdate ahrs_update;
-    AHRSProtocol::AHRSPosUpdate ahrspos_update;
-    IIOCompleteNotification *notify_sink;
-    IIOCompleteNotification::BoardState board_state;
-    AHRSProtocol::BoardID board_id;
-    IBoardCapabilities *board_capabilities;
-    double last_update_time;
-    int byte_count;
-    int update_count;
-    long last_sensor_timestamp;
-public:
-    RegisterIO( IRegisterIO *io_provider,
-                uint8_t update_rate_hz,
-                IIOCompleteNotification *notify_sink,
-                IBoardCapabilities *board_capabilities  );
-    bool   IsConnected();
-    double GetByteCount();
-    double GetUpdateCount();
-    void   SetUpdateRateHz(uint8_t update_rate);
-    void   ZeroYaw();
-    void   ZeroDisplacement();
-    void   Run();
-    void   Stop();
-    void   EnableLogging(bool enable);
-    virtual ~RegisterIO();
-private:
-    bool   GetConfiguration();
-    void   GetCurrentData();
-};
+    namespace navigation
+    {
+        namespace navx
+        {
+            class RegisterIO : public IIOProvider
+            {
+            private:
+                IRegisterIO *io_provider;
+                uint8_t update_rate_hz;
+                IMUProtocol::GyroUpdate raw_data_update;
+                NavXProtocol::NavXUpdate navx_update;
+                NavXProtocol::NavXPosUpdate navxpos_update;
+                IIOCompleteNotification *notify_sink;
+                IIOCompleteNotification::BoardState board_state;
+                NavXProtocol::BoardID board_id;
+                IBoardCapabilities *board_capabilities;
+                double last_update_time;
+                int byte_count;
+                bool stop;
+                int update_count;
+                long last_sensor_timestamp;
+            public:
+                RegisterIO(IRegisterIO *io_provider,
+                            uint8_t update_rate_hz,
+                            IIOCompleteNotification *notify_sink,
+                            IBoardCapabilities *board_capabilities);
+                bool   isConnected();
+                double getByteCount();
+                double getUpdateCount();
+                void   getUpdateRateHz(uint8_t update_rate);
+                void   zeroYaw();
+                void   zeroDisplacement();
+                void   run();
+                //void   stop();
+                void   enableLogging(bool enable);
+                virtual ~RegisterIO();
+            private:
+                bool   getConfiguration();
+                void   getCurrentData();
+            };
+        }
+    }
+}
 
 #endif /* SRC_REGISTERIO_H_ */

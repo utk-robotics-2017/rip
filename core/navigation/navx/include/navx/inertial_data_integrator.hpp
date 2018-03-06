@@ -8,7 +8,8 @@ namespace rip
     {
         namespace navx
         {
-            class InertialDataIntegrator {
+            class InertialDataIntegrator
+            {
                 float last_velocity[2];
                 float displacement[2];
 

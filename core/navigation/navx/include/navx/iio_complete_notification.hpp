@@ -31,6 +31,7 @@ namespace rip
                 virtual void setRawData(IMUProtocol::GyroUpdate& raw_data_update, long sensor_timestamp) = 0;
                 virtual void setBoardID(NavXProtocol::BoardID& board_id) = 0;
                 virtual void setBoardState(BoardState& board_state) = 0;
+                virtual void yawResetComplete() = 0;
             };
         }
     }
