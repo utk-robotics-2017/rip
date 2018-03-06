@@ -36,6 +36,11 @@ namespace rip
                 int pin = -1;
                 ASSERT_THROW(g.open(pin, 0), ExportError); 
             }
+
+            TEST(Gpio_open, bad_pin_dir_preserve)
+            {
+                
+            }
  
         }
 
