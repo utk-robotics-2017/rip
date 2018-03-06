@@ -30,20 +30,22 @@ This is the Dockerfile in the root of the repo.
 
 It's based off the `rip_deps` image so it will have everything needed to build already installed.
 
-Upon building this container image, it will copy all the source code from your current directory into the container and set up an environment ready to run the build.
+Upon building this container image, it will copy all the source code from your code directory into the container and set up an environment ready to run the build.
 
-To build the interactive container:
-
-```
-docker build --tag utkrobotics/rip:$(git symbolic-ref HEAD|cut -d'/' -f3-|sed -e 's;/;_;') .
-```
-
-This will create an image `utkrobotics/rip:yourbranch` which we can then run and create an instance of:
+To build the interactive container you can use the interactive docker build script:
 
 ```
+./build-docker.sh
+```
+
+You can use the prompts from the script to build everything needed for RIP, and optionally you can run the container.
+
+If you want to do so manually, or maintain the state of the container when you exit it:
+
+```bash
 # --rm : removes the container when you exit it
 # -t -i : creates an interactive container
-# zsh -l : the command to run inside the container (use whatever your preferred shell is)
+# zsh -l : the command to run inside the container (use whatever your preferred shell is, or specify a command)
 docker run --rm -t -i utkrobotics/rip:$(git symbolic-ref HEAD|cut -d'/' -f3-|sed -e 's;/;_;') zsh -l
 ```
 
@@ -51,7 +53,7 @@ Now that you're inside the container, you can immediately build it, mess around,
 
 Normally, what I do is:
 
-```
+```bash
 # build dat stuff
 ./build-linux.sh
 # runs the built unit tests
