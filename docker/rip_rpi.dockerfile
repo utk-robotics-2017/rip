@@ -6,7 +6,7 @@ USER root
 # Here is where we hardcode the toolchain decision.
 ENV HOST=arm-linux-gnueabihf \
     TOOLCHAIN=gcc-linaro-arm-linux-gnueabihf-raspbian-x64 \
-    RPXC_ROOT=/home/${RUSER}/rpxc
+    RPXC_ROOT=/rpxc
 #    TOOLCHAIN=arm-rpi-4.9.3-linux-gnueabihf \
 #    TOOLCHAIN=gcc-linaro-arm-linux-gnueabihf-raspbian-x64 \
 

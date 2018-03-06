@@ -92,4 +92,4 @@ doc/
 .idea/
 cmake-build-debug/
 
-docker/rpi_images
+docker/rpi_images/*
