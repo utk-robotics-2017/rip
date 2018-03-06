@@ -18,6 +18,30 @@ namespace rip
         {
             public:
                 /**
+                 * default constructor
+                 */
+                Spi();
+                /**
+                 * Constructor that opens spi interface
+                 * @param path      the path for the spidev device
+                 * @param mode      the SPI mode that the spidev device will be opened in
+                 * @param max_speed the max speed (in Hz) for the spidev device.
+                 */
+                Spi(const std::string path, unsigned int mode, uint32_t max_speed);
+                /**
+                 * Spi constructor, openadvanced
+                 * @param path  the path for the spidev device
+                 * @param mode the SPI mode that the spidev device will be opened in
+                 * @param max_speed  the max speed (in Hz) for the spidev device.
+                 * @param bit_order  an int representing the bit order (MSB or LSB first).
+                 * @param bits_per_word  the number of bits per word
+                 * @param extra_flags  any additional flags
+                 * @brief  Open the spidev device at the specified path, with the specified SPI mode,
+                 * max speed, bit order, bits per word, and extra flags.
+                 */
+                Spi(const std::string path, unsigned int mode, uint32_t max_speed,
+                        int bit_order, uint8_t bits_per_word, uint8_t extra_flags);
+                /**
                  * open
                  * @param path  the path for the spidev device
                  * @param mode  the SPI mode that the spidev device will be opened in
@@ -36,7 +60,7 @@ namespace rip
                  * @param bit_order  an int representing the bit order (MSB or LSB first).
                  * @param bits_per_word  the number of bits per word
                  * @param extra_flags  any additional flags
-                 * @breif  Open the spidev device at the specified path, with the specified SPI mode,
+                 * @brief  Open the spidev device at the specified path, with the specified SPI mode,
                  * max speed, bit order, bits per word, and extra flags.
                  */
                 void openAdvanced(const std::string path, unsigned int mode, uint32_t max_speed,

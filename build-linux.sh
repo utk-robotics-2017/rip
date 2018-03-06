@@ -17,7 +17,7 @@ cmake .. \
   $@
 #
 
-nprocs="$(nproc --ignore=1)"
+nprocs="$(nproc --ignore=2)"
 
 trap '' ERR
 make_retval=1

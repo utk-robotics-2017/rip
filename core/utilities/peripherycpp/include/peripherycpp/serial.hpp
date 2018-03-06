@@ -17,6 +17,32 @@ namespace rip
         {
         public:
             /**
+             * Default constructor
+             */
+            Serial();
+            /**
+             * Constructor with device and baudrate
+             * @param device   tty device at the specified path (e.g. "/dev/ttyUSB0")
+             * @param baudrate device baudrate (ie, 115200).
+             */
+            Serial(std::string device, unsigned int baudrate);
+            /**
+             * Advanced open constructor
+             * @param device   tty device at the specified path (e.g. "/dev/ttyUSB0")
+             * @param baudrate baudrate device baudrate (ie, 115200).
+             * @param databits databits can be 5, 6, 7, or 8
+             * @param parity   parity can be PARITY_NONE, PARITY_ODD, or PARITY_EVEN
+             * @param stopbits can be 1 or 2
+             * @param xonxoff  software flow control settings
+             * @param rtscts   hardware flow control settings
+             * @brief Open the tty device at the specified path (e.g. "/dev/ttyUSB0"),
+             * with the specified baudrate, data bits, parity, stop bits, software flow control (xonxoff),
+             * and hardware flow control (rtscts) settings.
+             */
+            Serial(std::string device, unsigned int baudrate, unsigned int databits,
+                      int parity, unsigned int stopbits,
+                      bool xonxoff, bool rtscts);
+            /**
              * open(No Params)
              * @param device   tty device at the specified path (e.g. "/dev/ttyUSB0")
              * @param baudrate device baudrate (ie, 115200).
@@ -48,9 +74,33 @@ namespace rip
              */
             std::vector<uint8_t> read(size_t len, int timeout_ms);
             /**
+             * buffer/c style alternative
+             * @param buf        buffer to be read into
+             * @param size       number of bytes
+             * @param timeout_ms time before timeout
+             */
+            void read(uint8_t* buf, size_t size, int timeout_ms);
+            /**
+             * reads using a char* buf
+             * @param buf        buffer to be read into
+             * @param size       number of bytes
+             * @param timeout_ms time before timeout
+             */
+            void read(char* buf, size_t size, int timeout_ms);
+            /**
+             * writes an array of uint8_t
+             * @param data [description]
+             */
+            void write(uint8_t* data, size_t size);
+            /**
              * write
-             * @brief writes data
+             * @brief writes char* data
              * @param data vector of bytes to be written
+             */
+            void write(char* data, size_t size);
+            /**
+             * [write description]
+             * @param data [description]
              */
             void write(std::vector<uint8_t> data);
 
@@ -150,6 +200,12 @@ namespace rip
              * @brief  Set the parity on the underlying tty device.
              */
             void setParity(int parity);
+
+            /**
+             * @brief Sets the stop bits for the transmission.
+             * @param stopbits signals end to transmission frame, can be 1 or 2
+             */
+            void setStopBits(unsigned int stopbits);
 
             /**
              * setxOnxOff
