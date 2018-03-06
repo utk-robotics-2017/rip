@@ -194,6 +194,11 @@ namespace rip
             checkError(serial_set_parity(&m_serial, cpar));
         }
 
+        void Serial::setStopBits(unsigned int stopbits)
+        {
+                checkError(serial_set_stopbits(&m_serial, stopbits));
+        }
+
         void Serial::setxOnxOff(bool enabled)
         {
             checkError(serial_set_xonxoff(&m_serial, enabled));

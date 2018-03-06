@@ -202,6 +202,12 @@ namespace rip
             void setParity(int parity);
 
             /**
+             * @brief Sets the stop bits for the transmission.
+             * @param stopbits signals end to transmission frame, can be 1 or 2
+             */
+            void setStopBits(unsigned int stopbits);
+
+            /**
              * setxOnxOff
              * @param enabled  a bool representing the software flow control
              * @brief  Set the software flow control on the underlying tty device.
