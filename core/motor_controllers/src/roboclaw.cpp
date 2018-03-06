@@ -362,7 +362,7 @@ namespace rip
 
                     for (uint8_t i = 0; i < 48; i++)
                     {
-                        if (data != -1)
+                        if (data != 0xff)
                         {
                             data = m_serial.read(static_cast<size_t> (1), static_cast<int> (m_timeout.to(units::ms)))[0];
                             version += data;
@@ -371,12 +371,12 @@ namespace rip
                             {
                                 uint16_t ccrc;
                                 data = m_serial.read(static_cast<size_t> (1), static_cast<int> (m_timeout.to(units::ms)))[0];
-                                if (data != -1)
+                                if (data != 0xff)
                                 {
                                     ccrc = static_cast<uint16_t>(data) << 8;
                                     data = m_serial.read(static_cast<size_t> (1), static_cast<int> (m_timeout.to(units::ms)))[0];
 
-                                    if (data != -1)
+                                    if (data != 0xff)
                                     {
                                         ccrc |= data;
                                         if (crcGet() == ccrc)
@@ -689,12 +689,6 @@ namespace rip
 //////////////////////////////////////////////////////////////////////////////////////////////
             std::vector<uint8_t> Roboclaw::readN(uint8_t n, Command cmd)
             {
-                uint8_t crc;
-
-                uint8_t value = 0;
-                uint8_t trys = kMaxRetries;
-                int16_t data;
-
                 std::vector<uint8_t> command = {m_address, static_cast<uint8_t>(cmd)};
                 for (uint8_t try_ = 0; try_ < kMaxRetries; try_++)
                 {
@@ -713,21 +707,21 @@ namespace rip
                         data = m_serial.read(static_cast<size_t> (1), static_cast<int> (m_timeout.to(units::ms)))[0];
                         crcUpdate(data);
                         response.push_back(data);
-                        if (data == -1)
+                        if (data == 0xff)
                         {
                             continue;
                         }
                     }
 
-                    if (data != -1)
+                    if (data != 0xff)
                     {
                         uint16_t ccrc;
                         data = m_serial.read(static_cast<size_t> (1), static_cast<int> (m_timeout.to(units::ms)))[0];
-                        if (data != -1)
+                        if (data != 0xff)
                         {
                             ccrc = static_cast<uint16_t>(data) << 8;
                             data = m_serial.read(static_cast<size_t> (1), static_cast<int> (m_timeout.to(units::ms)))[0];
-                            if (data != -1)
+                            if (data != 0xff)
                             {
                                 ccrc |= data;
                                 if (crcGet() == ccrc)
@@ -907,6 +901,7 @@ namespace rip
             bool Roboclaw::diagnostic()
             {
                 // todo
+                return 0;
             }
 
             void Roboclaw::crcUpdate(uint8_t data)
