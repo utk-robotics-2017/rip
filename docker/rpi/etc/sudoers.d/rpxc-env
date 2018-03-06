@@ -1,0 +1,3 @@
+# pass environment vars for rpxc
+Defaults env_keep += "SYSROOT"
+Defaults env_keep += "QEMU_PATH"
