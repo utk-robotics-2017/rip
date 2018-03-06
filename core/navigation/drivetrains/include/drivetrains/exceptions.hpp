@@ -9,7 +9,18 @@ namespace rip
     {
         namespace drivetrains
         {
+            /**
+             * Provided value is out of range
+             * @param OutOfRangeException [description]
+             */
             NEW_EX(OutOfRangeException)
+            /**
+             * attempt to use a motor that does not exist,
+             * ie requesting encoder informoation from back right motor in a 2 wheel configuration
+             * @param InvalidEncoderRequest [description]
+             */
+            NEW_EX(InvalidMotorException)
+
         }
     }
 }

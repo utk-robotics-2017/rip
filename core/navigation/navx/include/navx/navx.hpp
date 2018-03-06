@@ -7,6 +7,8 @@
 #include <string>
 #include <units/units.hpp>
 #include <json.hpp>
+#include <framework/subsystem.hpp>
+#include <pid/pid_input.hpp>
 
 namespace rip
 {
@@ -39,7 +41,7 @@ namespace rip
              */
             using namespace rip;
 
-            class NavX
+            class NavX : public framework::Subsystem, public pid::PidInput
             {
             public:
 
@@ -182,14 +184,16 @@ namespace rip
                  * the X Axis.
                  * @return The current pitch value in degrees(-180 to 180).
                  */
-                units::Angle getPitch();
+                units::Angle getPitch() const;
+
                 /**
                  * Returns the current roll value(in degrees, from -180 to 180)
                  * reported by the sensor.  Roll is a measure of rotation around
                  * the X Axis.
                  * @return The current roll value in degrees(-180 to 180).
                  */
-                units::Angle getRoll();
+                units::Angle getRoll() const;
+
                 /**
                  * Returns the current yaw value(in degrees, from -180 to 180)
                  * reported by the sensor.  Yaw is a measure of rotation around
@@ -200,7 +204,8 @@ namespace rip
                  * invoking the zeroYaw() method.
                  * @return The current yaw value in degrees(-180 to 180).
                  */
-                units::Angle getYaw();
+                units::Angle getYaw() const;
+
                 /**
                  * Returns the current tilt-compensated compass heading
                  * value(in degrees, from 0 to 360) reported by the sensor.
@@ -215,7 +220,8 @@ namespace rip
                  * was generated.
                  * @return The current tilt-compensated compass heading, in degrees(0-360).
                  */
-                units::Angle getCompassHeading();
+                units::Angle getCompassHeading() const;
+
                 /**
                  * Sets the user-specified yaw offset to the current
                  * yaw value reported by the sensor.
@@ -224,7 +230,8 @@ namespace rip
                  * subtracted from subsequent yaw values reported by
                  * the getYaw() method.
                  */
-                void   zeroYaw();
+                void zeroYaw();
+
                 /**
                  * Returns true if the sensor is currently performing automatic
                  * gyro/accelerometer calibration.  Automatic calibration occurs
@@ -241,7 +248,7 @@ namespace rip
                  * @return Returns true if the sensor is currently automatically
                  * calibrating the gyro and accelerometer sensors.
                  */
-                bool   isCalibrating();
+                bool isCalibrating() const;
                 /**
                  * Indicates whether the sensor is currently connected
                  * to the host computer.  A connection is considered established
@@ -250,7 +257,7 @@ namespace rip
                  * @return Returns true if a valid update has been recently received
                  * from the sensor.
                  */
-                bool   isConnected();
+                bool isConnected() const;
                 /**
                  * Returns the count in bytes of data received from the
                  * sensor.  This could can be useful for diagnosing
@@ -261,14 +268,16 @@ namespace rip
                  * misconfiguration.
                  * @return The number of bytes received from the sensor.
                  */
-                double getByteCount();
+                double getByteCount() const;
+
                 /**
                  * Returns the count of valid updates which have
                  * been received from the sensor.  This count should increase
                  * at the same rate indicated by the configured update rate.
                  * @return The number of valid updates received from the sensor.
                  */
-                double getUpdateCount();
+                double getUpdateCount() const;
+
                 /**
                  * Returns the sensor timestamp corresponding to the
                  * last sample retrieved from the sensor.  Note that this
@@ -278,7 +287,8 @@ namespace rip
                  * are used.
                  * @return The sensor timestamp corresponding to the current NAVX sensor data.
                  */
-                long   getLastSensorTimestamp();
+                long getLastSensorTimestamp() const;
+
                 /**
                  * Returns the current linear acceleration in the X-axis(in G).
                  *<p>
@@ -290,7 +300,8 @@ namespace rip
                  *<p>
                  * @return Current world linear acceleration in the X-axis(in G).
                  */
-                units::Acceleration getWorldLinearAccelX();
+                units::Acceleration getWorldLinearAccelX() const;
+
                 /**
                  * Returns the current linear acceleration in the Y-axis(in G).
                  *<p>
@@ -302,7 +313,8 @@ namespace rip
                  *<p>
                  * @return Current world linear acceleration in the Y-axis(in G).
                  */
-                units::Acceleration getWorldLinearAccelY();
+                units::Acceleration getWorldLinearAccelY() const;
+
                 /**
                  * Returns the current linear acceleration in the Z-axis(in G).
                  *<p>
@@ -314,7 +326,8 @@ namespace rip
                  *<p>
                  * @return Current world linear acceleration in the Z-axis(in G).
                  */
-                units::Acceleration getWorldLinearAccelZ();
+                units::Acceleration getWorldLinearAccelZ() const;
+
                 /**
                  * Indicates if the sensor is currently detecting motion,
                  * based upon the X and Y-axis world linear acceleration values.
@@ -323,7 +336,8 @@ namespace rip
                  *<p>
                  * @return Returns true if the sensor is currently detecting motion.
                  */
-                bool   isMoving();
+                bool isMoving() const;
+
                 /**
                  * Indicates if the sensor is currently detecting yaw rotation,
                  * based upon whether the change in yaw over the last second
@@ -335,7 +349,7 @@ namespace rip
                  *<p>
                  * @return Returns true if the sensor is currently detecting motion.
                  */
-                bool   isRotating();
+                bool isRotating() const;
                 /**
                  * Returns the current barometric pressure, based upon calibrated readings
                  * from the onboard pressure sensor.  This value is in units of millibar.
@@ -344,7 +358,7 @@ namespace rip
                  * whether this value is valid, see isAltitudeValid().
                  * @return Returns current barometric pressure(navX Aero only).
                  */
-                units::Pressure getBarometricPressure();
+                units::Pressure getBarometricPressure() const;
                 /**
                  * Returns the current altitude, based upon calibrated readings
                  * from a barometric pressure sensor, and the currently-configured
@@ -357,7 +371,8 @@ namespace rip
                  * @return Returns current altitude in meters(as long as the sensor includes
                  * an installed on-board pressure sensor).
                  */
-                units::Distance getAltitude();
+                units::Distance getAltitude() const;
+
                 /**
                  * Indicates whether the current altitude(and barometric pressure) data is
                  * valid. This value will only be true for a sensor with an onboard
@@ -368,7 +383,7 @@ namespace rip
                  *<p>
                  * @return Returns true if a working pressure sensor is installed.
                  */
-                bool   isAltitudeValid();
+                bool isAltitudeValid() const;
                 /**
                  * Returns the "fused"(9-axis) heading.
                  *<p>
@@ -384,7 +399,8 @@ namespace rip
                  * has recently rotated less than the Compass Noise Bandwidth(~2 degrees).
                  * @return Fused Heading in Degrees(range 0-360)
                  */
-                units::Angle  getFusedHeading();
+                units::Angle  getFusedHeading() const;
+
                 /**
                  * Indicates whether the current magnetic field strength diverges from the
                  * calibrated value for the earth's magnetic field by more than the currently-
@@ -394,7 +410,8 @@ namespace rip
                  * not yet been calibrated; see isMagnetometerCalibrated().
                  * @return true if a magnetic disturbance is detected(or the magnetometer is uncalibrated).
                  */
-                bool   isMagneticDisturbance();
+                bool   isMagneticDisturbance() const;
+
                 /**
                  * Indicates whether the magnetometer has been calibrated.
                  *<p>
@@ -406,7 +423,7 @@ namespace rip
                  *<p>
                  * @return Returns true if magnetometer calibration has been performed.
                  */
-                bool   isMagnetometerCalibrated();
+                bool   isMagnetometerCalibrated() const;
                 /* Unit Quaternions */
 
                 /**
@@ -421,7 +438,8 @@ namespace rip
                  * For more information on Quaternions and their use, please see this <a href=https://en.wikipedia.org/wiki/Quaternions_and_spatial_rotation>definition</a>.
                  * @return Returns the imaginary portion(W) of the quaternion.
                  */
-                float  getQuaternionW();
+                float  getQuaternionW() const;
+
                 /**
                  * Returns the real portion(X axis) of the Orientation Quaternion which
                  * fully describes the current sensor orientation with respect to the
@@ -434,7 +452,8 @@ namespace rip
                  * For more information on Quaternions and their use, please see this <a href=https://en.wikipedia.org/wiki/Quaternions_and_spatial_rotation>description</a>.
                  * @return Returns the real portion(X) of the quaternion.
                  */
-                float  getQuaternionX();
+                float  getQuaternionX() const;
+
                 /**
                  * Returns the real portion(X axis) of the Orientation Quaternion which
                  * fully describes the current sensor orientation with respect to the
@@ -450,7 +469,8 @@ namespace rip
                  *
                  * @return Returns the real portion(X) of the quaternion.
                  */
-                float  getQuaternionY();
+                float  getQuaternionY() const;
+
                 /**
                  * Returns the real portion(X axis) of the Orientation Quaternion which
                  * fully describes the current sensor orientation with respect to the
@@ -466,12 +486,14 @@ namespace rip
                  *
                  * @return Returns the real portion(X) of the quaternion.
                  */
-                float  getQuaternionZ();
+                float  getQuaternionZ() const;
+
                 /**
                  * Zeros the displacement integration variables.   Invoke this at the moment when
                  * integration begins.
                  */
                 void   resetDisplacement();
+
                 /**
                  * Each time new linear acceleration samples are received, this function should be invoked.
                  * This function transforms acceleration in G to meters/sec^2, then converts this value to
@@ -489,7 +511,8 @@ namespace rip
                  * resulting velocities are not known to be very accurate.
                  * @return Current Velocity(in meters/squared).
                  */
-                units::Velocity getVelocityX();
+                units::Velocity getVelocityX() const;
+
                 /**
                  * Returns the velocity(in meters/sec) of the Y axis [Experimental].
                  *
@@ -498,7 +521,8 @@ namespace rip
                  * resulting velocities are not known to be very accurate.
                  * @return Current Velocity(in meters/squared).
                  */
-                units::Velocity getVelocityY();
+                units::Velocity getVelocityY() const;
+
                 /**
                  * Returns the velocity(in meters/sec) of the Z axis [Experimental].
                  *
@@ -507,7 +531,8 @@ namespace rip
                  * resulting velocities are not known to be very accurate.
                  * @return Current Velocity(in meters/squared).
                  */
-                units::Velocity getVelocityZ();
+                units::Velocity getVelocityZ()  const;
+
                 /**
                  * Returns the displacement(in meters) of the X axis since resetDisplacement()
                  * was last invoked [Experimental].
@@ -518,7 +543,8 @@ namespace rip
                  * increases quickly as time progresses.
                  * @return Displacement since last reset(in meters).
                  */
-                units::Distance getDisplacementX();
+                units::Distance getDisplacementX() const;
+
                 /**
                  * Returns the displacement(in meters) of the Y axis since resetDisplacement()
                  * was last invoked [Experimental].
@@ -529,7 +555,8 @@ namespace rip
                  * increases quickly as time progresses.
                  * @return Displacement since last reset(in meters).
                  */
-                units::Distance getDisplacementY();
+                units::Distance getDisplacementY() const;
+
                 /**
                  * Returns the displacement(in meters) of the Z axis since resetDisplacement()
                  * was last invoked [Experimental].
@@ -540,7 +567,8 @@ namespace rip
                  * increases quickly as time progresses.
                  * @return Displacement since last reset(in meters).
                  */
-                units::Distance getDisplacementZ();
+                units::Distance getDisplacementZ() const;
+
                 /**
                  * Returns the total accumulated yaw angle(Z Axis, in degrees)
                  * reported by the sensor.
@@ -557,7 +585,8 @@ namespace rip
                  * in degrees. This heading is based on integration of the returned rate
                  * from the Z-axis(yaw) gyro.
                  */
-                units::Angle getAngle();
+                units::Angle getAngle() const;
+
                 /**
                  * Return the rate of rotation of the yaw(Z-axis) gyro, in degrees per second.
                  *<p>
@@ -566,7 +595,8 @@ namespace rip
                  * @return The current rate of change in yaw angle(in degrees per second)
                  */
 
-                units::AngularVelocity getRate();
+                units::AngularVelocity getRate() const;
+
                 /**
                  * Reset the Yaw gyro.
                  *<p>
@@ -583,7 +613,8 @@ namespace rip
                  *<p>
                  * @return Returns the current rotation rate(in degrees/sec).
                  */
-                float  getRawGyroX();
+                float  getRawGyroX() const;
+
                 /**
                  * Returns the current raw(unprocessed) Y-axis gyro rotation rate(in degrees/sec).  NOTE:  this
                  * value is un-processed, and should only be accessed by advanced users.
@@ -592,7 +623,8 @@ namespace rip
                  *<p>
                  * @return Returns the current rotation rate(in degrees/sec).
                  */
-                float  getRawGyroY();
+                float  getRawGyroY() const;
+
                 /**
                  * Returns the current raw(unprocessed) Z-axis gyro rotation rate(in degrees/sec).  NOTE:  this
                  * value is un-processed, and should only be accessed by advanced users.
@@ -601,7 +633,8 @@ namespace rip
                  *<p>
                  * @return Returns the current rotation rate(in degrees/sec).
                  */
-                float  getRawGyroZ();
+                float  getRawGyroZ() const;
+
                 /**
                  * Returns the current raw(unprocessed) X-axis acceleration rate(in G).  NOTE:  this
                  * value is unprocessed, and should only be accessed by advanced users.  This raw value
@@ -611,7 +644,7 @@ namespace rip
                  *<p>
                  * @return Returns the current acceleration rate(in G).
                  */
-                float  getRawAccelX();
+                float  getRawAccelX() const;
                 /**
                  * Returns the current raw(unprocessed) Y-axis acceleration rate(in G).  NOTE:  this
                  * value is unprocessed, and should only be accessed by advanced users.  This raw value
@@ -621,7 +654,8 @@ namespace rip
                  *<p>
                  * @return Returns the current acceleration rate(in G).
                  */
-                float  getRawAccelY();
+                float  getRawAccelY() const;
+
                 /**
                  * Returns the current raw(unprocessed) Z-axis acceleration rate(in G).  NOTE:  this
                  * value is unprocessed, and should only be accessed by advanced users.  This raw value
@@ -631,7 +665,8 @@ namespace rip
                  *<p>
                  * @return Returns the current acceleration rate(in G).
                  */
-                float  getRawAccelZ();
+                float  getRawAccelZ() const;
+
                 /**
                  * Returns the current raw(unprocessed) X-axis magnetometer reading(in uTesla).  NOTE:
                  * this value is unprocessed, and should only be accessed by advanced users.  This raw value
@@ -641,7 +676,7 @@ namespace rip
                  *<p>
                  * @return Returns the mag field strength(in uTesla).
                  */
-                float  getRawMagX();
+                float  getRawMagX() const;
                 /**
                  * Returns the current raw(unprocessed) Y-axis magnetometer reading(in uTesla).  NOTE:
                  * this value is unprocessed, and should only be accessed by advanced users.  This raw value
@@ -651,7 +686,7 @@ namespace rip
                  *<p>
                  * @return Returns the mag field strength(in uTesla).
                  */
-                float  getRawMagY();
+                float  getRawMagY() const;
                 /**
                  * Returns the current raw(unprocessed) Z-axis magnetometer reading(in uTesla).  NOTE:
                  * this value is unprocessed, and should only be accessed by advanced users.  This raw value
@@ -661,7 +696,7 @@ namespace rip
                  *<p>
                  * @return Returns the mag field strength(in uTesla).
                  */
-                float  getRawMagZ();
+                float  getRawMagZ() const;
                 /**
                  * Returns the current temperature(in degrees centigrade) reported by
                  * the sensor's gyro/accelerometer circuit.
@@ -671,7 +706,7 @@ namespace rip
                  *<p>
                  * @return The current temperature(in degrees centigrade).
                  */
-                units::Temperature getTempC();
+                units::Temperature getTempC() const;
                 /**
                  * Returns information regarding which sensor board axis(X,Y or Z) and
                  * direction(up/down) is currently configured to report Yaw(Z) angle
@@ -684,7 +719,7 @@ namespace rip
                  *<p>
                  * @return The currently-configured board yaw axis/direction.
                  */
-                NavX::BoardYawAxis getBoardYawAxis();
+                NavX::BoardYawAxis getBoardYawAxis() const;
                 /**
                  * Returns the version number of the firmware currently executing
                  * on the sensor.
@@ -695,7 +730,7 @@ namespace rip
                  *<p>
                  * @return The firmware version in the format [MajorVersion].[MinorVersion]
                  */
-                std::string getFirmwareVersion();
+                std::string getFirmwareVersion() const;
                 /**
                  * Registers a callback interface.  This interface
                  * will be called back when new data is available,
@@ -732,7 +767,7 @@ namespace rip
                  *(cycles per second).
                  */
 
-                int getActualUpdateRate();
+                int getActualUpdateRate() const;
                 /**
                  * Returns the currently requested update rate.
                  * rate.  Note that not every update rate can actually be realized,
@@ -746,7 +781,24 @@ namespace rip
                  *(cycles per second).
                  */
 
-                int getRequestedUpdateRate();
+                int getRequestedUpdateRate() const;
+
+                /**
+                 * Subsystem abstract Implementation
+                 */
+                virtual void stop() override;
+        
+                virtual bool diagnostic() override;
+
+                virtual double get() override;
+                
+                /**
+                 * Creates & returns a pointer to a navX object, constructed based on parameters
+                 * inside json. Used in RIP subsystem creation
+                 * @param  config json parameters for navX construction
+                 * @return       shared ptr to navX object
+                 */
+                static std::shared_ptr<NavX> makeNavX(const nlohmann::json& config);
 
                 void close();
 
@@ -755,17 +807,8 @@ namespace rip
                 void commonInit(uint8_t update_rate_hz);
                 static void* threadFunc(void* threadarg);
 
-                uint8_t getActualUpdateRateInternal(uint8_t update_rate);
+                uint8_t getActualUpdateRateInternal(uint8_t update_rate) const;
             };
-
-            /**
-             * Creates & returns a pointer to a navX object, constructed based on parameters
-             * inside json. Used in RIP subsystem creation
-             * @param  config json parameters for navX construction
-             * @return       shared ptr to navX object
-             */
-            static std::shared_ptr<NavX> makeNavX(const nlohmann::json& config);
-
         } // navx
     } // navigation
 } // rip

@@ -11,10 +11,12 @@ set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
 if(ENABLE_TESTING)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage")
 endif()
-target_link_libraries(${PROJECT_NAME} units spdlog periphery pthread)
+target_link_libraries(${PROJECT_NAME} framework units spdlog periphery pthread misc pid)
 target_include_directories(${PROJECT_NAME} PUBLIC include)
-
-if(ENABLE_DIAG)
+if(ENABLE_TESTING)
+    target_link_libraries(${PROJECT_NAME} gcov)
+endif()
+if(ENABLE_TESTING)
 	file(GLOB_RECURSE ${PROJECT_NAME}_DIAG_SOURCES "diag/*.cpp")
 	add_executable(${PROJECT_NAME}_diag ${${PROJECT_NAME}_DIAG_SOURCES})
 	set_property(TARGET ${PROJECT_NAME}_diag PROPERTY CXX_STANDARD 11)
@@ -28,21 +30,11 @@ if(ENABLE_TESTING)
     file(GLOB_RECURSE ${PROJECT_NAME}_TEST_DATA "test/data/*")
 
     # Copy test data to outdir/test
-    set(copiedTestData "")
-    foreach(TestDataFile ${${PROJECT_NAME}_TEST_DATA})
-        file(RELATIVE_PATH name ${CMAKE_CURRENT_SOURCE_DIR} ${TestDataFile})
-        add_custom_command(
-            OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${name}
-            COMMAND ${CMAKE_COMMAND} -E copy_if_different ${TestDataFile} ${CMAKE_CURRENT_BINARY_DIR}/${name}
-            DEPENDS ${TestDataFile}
-            COMMENT "Copying ${name}"
-            VERBATIM
-           )
-        list(APPEND copiedTestData ${CMAKE_CURRENT_BINARY_DIR}/${name})
-    endforeach()
+    include(FileOutputs)
+    make_outputs(${CMAKE_CURRENT_SOURCE_DIR} "${${PROJECT_NAME}_TEST_DATA}" ${CMAKE_CURRENT_BINARY_DIR} testDataOutputs)
 
     # Create arduino_gen_test executable, set to c++11, link navx library and google test libraries
-    add_executable(${PROJECT_NAME}_test ${${PROJECT_NAME}_TEST_SOURCES} ${copiedTestData})
+    add_executable(${PROJECT_NAME}_test ${${PROJECT_NAME}_TEST_SOURCES} ${testDataOutputs})
     set_property(TARGET ${PROJECT_NAME}_test PROPERTY CXX_STANDARD 11)
     target_link_libraries(${PROJECT_NAME}_test ${PROJECT_NAME})
     target_link_libraries(${PROJECT_NAME}_test gmock gtest googletest_rip_macros)

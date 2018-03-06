@@ -1,62 +1,253 @@
 #include "pid/pid.hpp"
 
+#include <cmath>
+
 namespace rip
 {
-    namespace utilities
+    namespace pid
     {
 
-        void PidController::setParams(double p, double i, double d)
+        template <typename T>
+        T clamp(T value, T min, T max)
+        {
+            return std::max(min, std::min(max, value));
+        }
+
+        PidController::PidController(PidInput* input, PidOutput* output, const double p, const double i, const double d, const double f)
+            : m_original_input(input)
+            , m_output(output)
+            , m_p(p)
+            , m_i(i)
+            , m_d(d)
+            , m_f(f)
+            , m_setpoint(0)
+            , m_previous_error(0)
+            , m_total_error(0)
+            , m_last_time(std::chrono::high_resolution_clock::now())
+            , m_setpoint_time(std::chrono::high_resolution_clock::now())
+        {
+            m_filter = LinearDigitalFilter::movingAverage(m_original_input, 1);
+            m_input = &m_filter;
+        }
+
+        void PidController::setGains(const double p, const double i, const double d)
         {
             m_p = p;
             m_i = i;
             m_d = d;
         }
 
-        std::tuple<double, double, double> PidController::getParams()
+        void PidController::setGains(const double p, const double i, const double d, const double f)
         {
-            return std::make_tuple(m_p, m_i, m_d);
+            m_p = p;
+            m_i = i;
+            m_d = d;
+            m_f = f;
         }
 
-        double PidController::getTarget()
+        std::tuple<double, double, double, double> PidController::gains() const
         {
-            return m_target;
+            return std::make_tuple(m_p, m_i, m_d, m_f);
         }
 
-        void PidController::setTarget(double target)
+        double PidController::setpoint() const
         {
-            m_target = target;
+            return m_setpoint;
         }
 
-        double PidController::update(double val)
+        double PidController::get() const
         {
-            // Calculate the change in time since the last update loop
+            return m_result;
+        }
+
+        double PidController::deltaSetpoint() const
+        {
             std::chrono::high_resolution_clock::time_point time_now = std::chrono::high_resolution_clock::now();
-            std::chrono::duration<double, std::milli> dt = time_now - m_last_time;
-            m_last_time = time_now;
+            std::chrono::duration<double, std::milli> dt = time_now - m_setpoint_time;
+            return (m_setpoint - m_previous_setpoint) / dt.count();
+        }
 
-            // Calculate the error
-            double error = m_target - val;
+        void PidController::setSetpoint(double setpoint)
+        {
+            m_setpoint = clamp(setpoint, m_minimum_input, m_maximum_input);
+        }
 
-            // Proportional Term (K_p * e(t))
-            double p_term = m_p * error;
+        bool PidController::onTarget() const
+        {
+            double err = error();
+            switch (m_tolerance_type)
+            {
+            case ToleranceType::kPercent:
+                return std::fabs(err) < m_tolerance / 100.0 * m_input_range;
+            case ToleranceType::kAbsolute:
+                return std::fabs(err) < m_tolerance;
+            case ToleranceType::kNoTolerance:
+                return false;
+            }
+            return false;
+        }
 
-            // Integral Term (K_i * [e(t) dt from 0 to t])
-            m_accum_error += error;
-            double i_term = m_i * m_accum_error;
+        void PidController::setContinuous(bool continuous)
+        {
+            m_continuous = continuous;
+        }
 
-            // Derivative Term (K_d * de(t)/dt)
-            double d_term = m_d * ((error - m_last_error) / dt.count());
-            m_last_error = error;
+        void PidController::setInputRange(double min, double max)
+        {
+            m_minimum_input = min;
+            m_maximum_input = max;
+            m_input_range = max - min;
+            setSetpoint(m_setpoint);
+        }
 
-            // Return the sum of the PID components
-            return p_term + i_term + d_term;
+        void PidController::setOutputRange(double min, double max)
+        {
+            m_minimum_output = min;
+            m_maximum_output = max;
+        }
+
+        void PidController::enable()
+        {
+            m_enabled = true;
+        }
+
+        void PidController::disable()
+        {
+            m_enabled = false;
+            m_output->set(0);
+        }
+
+        bool PidController::isEnabled() const
+        {
+            return m_enabled;
+        }
+
+
+        /**
+         * Set the percentage error which is considered tolerable
+         * for use with @{PidController#onTarget}
+         */
+        void PidController::setTolerance(double percent)
+        {
+            m_tolerance_type = ToleranceType::kPercent;
+            m_tolerance = percent;
+        }
+
+        /**
+         * Set the absolute error which is considered tolerable
+         * for use with @{PidController#onTarget}
+         */
+        void PidController::setAbsoluteTolerance(double value)
+        {
+            m_tolerance_type = ToleranceType::kAbsolute;
+            m_tolerance = value;
+        }
+
+        /**
+         * Set the percentage error which is considered tolerable
+         * for use with @{PidController#onTarget}
+         */
+        void PidController::setPercentTolerance(double percent)
+        {
+            m_tolerance_type = ToleranceType::kPercent;
+            m_tolerance = percent;
+        }
+
+        void PidController::calculate()
+        {
+            if (m_original_input == nullptr || m_output == nullptr)
+            {
+                return;
+            }
+
+            if (m_enabled)
+            {
+                std::chrono::high_resolution_clock::time_point time_now = std::chrono::high_resolution_clock::now();
+                std::chrono::duration<double, std::milli> dt = time_now - m_last_time;
+
+                double input = m_input->get();
+                PidInput::Type type = m_input->type();
+
+                // Storage for function inputs
+                m_f = calculateFeedForward();
+
+                // Storage for function input-outputs
+                double error = continuousError(m_setpoint - input);
+
+                if (type == PidInput::Type::kRate)
+                {
+                    if (m_p != 0)
+                    {
+                        m_total_error = clamp(m_total_error + error, m_minimum_output / m_p, m_maximum_output / m_p);
+                    }
+
+                    m_result = m_d * error + m_p * m_total_error + m_f;
+                }
+                else
+                {
+                    if (m_i != 0)
+                    {
+                        m_total_error = clamp(m_total_error + error, m_minimum_output / m_i, m_maximum_output / m_i);
+                    }
+
+                    m_result = m_p * error + m_i * m_total_error + m_d * (error - m_previous_error)  / (dt.count() / 1000.0) + m_f;
+                }
+
+                m_result = clamp(m_result, m_minimum_output, m_maximum_output);
+                if (m_enabled)
+                {
+                    m_output->set(m_result);
+                }
+
+                m_last_time = time_now;
+                m_previous_error = m_error;
+                m_error = error;
+            }
+        }
+
+        double PidController::calculateFeedForward()
+        {
+            if (m_input->type() == PidInput::Type::kRate)
+            {
+                return m_f * setpoint();
+            }
+            else
+            {
+                double temp = m_f * deltaSetpoint();
+                m_previous_setpoint = m_setpoint;
+                m_setpoint_time = std::chrono::high_resolution_clock::now();
+                return temp;
+            }
+        }
+
+        double PidController::continuousError(double error) const
+        {
+            if (m_continuous && m_input_range != 0)
+            {
+                error = std::fmod(error, m_input_range);
+                if (std::fabs(error) > m_input_range / 2)
+                {
+                    if (error > 0)
+                    {
+                        return error - m_input_range;
+                    }
+                    else
+                    {
+                        return error + m_input_range;
+                    }
+                }
+            }
+            return m_error;
         }
 
         void PidController::reset()
         {
-            m_accum_error = 0;
-            m_last_error = 0;
+            disable();
+            m_total_error = 0;
+            m_previous_error = 0;
+            m_result = 0;
             m_last_time = std::chrono::high_resolution_clock::now();
+            m_setpoint_time = std::chrono::high_resolution_clock::now();
         }
     }
 }
