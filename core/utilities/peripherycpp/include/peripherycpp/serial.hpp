@@ -74,9 +74,33 @@ namespace rip
              */
             std::vector<uint8_t> read(size_t len, int timeout_ms);
             /**
+             * buffer/c style alternative
+             * @param buf        buffer to be read into
+             * @param size       number of bytes
+             * @param timeout_ms time before timeout
+             */
+            void read(uint8_t* buf, size_t size, int timeout_ms);
+            /**
+             * reads using a char* buf
+             * @param buf        buffer to be read into
+             * @param size       number of bytes
+             * @param timeout_ms time before timeout
+             */
+            void read(char* buf, size_t size, int timeout_ms);
+            /**
+             * writes an array of uint8_t
+             * @param data [description]
+             */
+            void write(uint8_t* data, size_t size);
+            /**
              * write
-             * @brief writes data
+             * @brief writes char* data
              * @param data vector of bytes to be written
+             */
+            void write(char* data, size_t size);
+            /**
+             * [write description]
+             * @param data [description]
              */
             void write(std::vector<uint8_t> data);
 
