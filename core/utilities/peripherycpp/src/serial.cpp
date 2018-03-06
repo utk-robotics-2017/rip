@@ -53,9 +53,29 @@ namespace rip
             return data;
         }
 
+        void Serial::read(char* buf, size_t size, int timeout_ms)
+        {
+            checkError(serial_read(&m_serial, (uint8_t*)buf , size, timeout_ms));
+        }
+
+        void Serial::read(uint8_t* buf, size_t size, int timeout_ms)
+        {
+            checkError(serial_read(&m_serial, buf, size, timeout_ms));
+        }
+
         void Serial::write(std::vector<uint8_t> data)
         {
             checkError(serial_write(&m_serial, data.data(), data.size()));
+        }
+
+        void Serial::write(uint8_t* data, size_t size)
+        {
+            checkError(serial_write(&m_serial, data, size));
+        }
+
+        void Serial::write(char* data, size_t size)
+        {
+            checkError(serial_write(&m_serial, (uint8_t*)data, size));
         }
 
         void Serial::flush()
@@ -172,6 +192,11 @@ namespace rip
             }
 
             checkError(serial_set_parity(&m_serial, cpar));
+        }
+
+        void Serial::setStopBits(unsigned int stopbits)
+        {
+                checkError(serial_set_stopbits(&m_serial, stopbits));
         }
 
         void Serial::setxOnxOff(bool enabled)
