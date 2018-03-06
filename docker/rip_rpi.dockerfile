@@ -41,6 +41,7 @@ RUN chroot $SYSROOT $QEMU_PATH /bin/sh -c '\
         && DEBIAN_FRONTEND=noninteractive apt-get install -y \
                 libc6-dev \
                 symlinks \
+                bash zsh \
         && symlinks -cors /'
 
 COPY rpi/ /

@@ -5,12 +5,23 @@ pushd ..
 
 eval $(resize)
 
+if command -v whiptail; then
+  PROMPTER=whiptail
+else
+  if command -v dialog; then
+    PROMPTER=dialog
+  else
+    echo "Please install whiptail or dialog first!"
+    exit 1
+  fi
+fi
+
 function git_branch_norm() {
   git symbolic-ref HEAD | cut -d'/' -f3- | sed -e 's;/;_;'
 }
 
 function prompt_docker_vtag() {
-  DOCKER_VTAG=$(whiptail --title "rip_deps docker tag" \
+  DOCKER_VTAG=$($PROMPTER --title "rip_deps docker tag" \
       --menu "Choose the tag to use for utkrobotics/rip_deps:???" \
       $(( LINES - 4 )) $(( COLUMNS - 18 )) $(( $LINES - 12 )) \
       "$DOCKER_VTAG" "Current set VTAG." \
@@ -32,7 +43,7 @@ stdbuf -o0 grep -e '^Step' | \
 stdbuf -o0 cut -d ' ' -f2,4- | \
 stdbuf -o0 sed 's;/; ;1' | \
 stdbuf -o0 awk '{pc=100*($1/$2);i=int(pc);print "XXX\n" i "\n" $0 "\nXXX"}' | \
-whiptail --title "Building rip_deps:${DOCKER_VTAG} container" --gauge "Starting Docker Build..." $(( LINES - 4 )) $(( COLUMNS - 18 )) $(( $LINES - 12 ))
+$PROMPTER --title "Building rip_deps:${DOCKER_VTAG} container" --gauge "Starting Docker Build..." $(( LINES - 4 )) $(( COLUMNS - 18 )) $(( $LINES - 12 ))
 
 popd
 popd

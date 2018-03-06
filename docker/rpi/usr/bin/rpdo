@@ -1,7 +1,7 @@
-#!/bin/sh
+#!/bin/bash
 
 # cd into $SYSROOT so that $PWD is inside the chroot
-cd $SYSROOT
+pushd $SYSROOT
 
 # Execute raspbian binaries using the qemu-arm-static emulator, while chrooted
 # to the sysroot.
@@ -10,9 +10,11 @@ cd $SYSROOT
 if [ -z "$RPXC_UID" ]; then
     echo "CHROOT into sysroot ${SYSROOT} using qemu @${QEMU_PATH}"
     chroot "${SYSROOT}" \
-        "${QEMU_PATH}" /bin/sh -c "cd /build && $*"
+        "${QEMU_PATH}" /bin/sh
 else
     echo "CHROOT as userpsec ${RPXC_UID} into sysroot ${SYSROOT} using qemu @${QEMU_PATH}"
     sudo -E chroot --userspec ${RPXC_UID}:${RPXC_GID} "${SYSROOT}" \
-        "${QEMU_PATH}" /bin/sh -c "cd /build && $*"
+        "${QEMU_PATH}" /bin/sh
 fi
+
+popd
