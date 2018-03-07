@@ -25,8 +25,6 @@ namespace rip
          
                 virtual void read(uint8_t* buf, size_t size, int timeout_ms) = 0;
          
-                virtual void read(uint8_t* buf, size_t size, int timeout_ms) = 0;
-         
                 virtual void read(char* buf, size_t size, int timeout_ms) = 0;
          
                 virtual void write(uint8_t* data, size_t size) = 0;

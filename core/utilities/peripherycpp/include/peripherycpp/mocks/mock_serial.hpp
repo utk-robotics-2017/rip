@@ -18,8 +18,6 @@ namespace rip
 
                     MOCK_METHOD3(read, void(uint8_t* buf, size_t size, int timeout_ms));
 
-                    MOCK_METHOD3(read, void(uint8_t* buf, size_t size, int timeout_ms));
-
                     MOCK_METHOD3(read, void(char* buf, size_t size, int timeout_ms));
 
                     MOCK_METHOD2(write, void(uint8_t* data, size_t size));
