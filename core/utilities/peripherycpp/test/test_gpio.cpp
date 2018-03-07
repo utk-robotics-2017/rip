@@ -6,7 +6,7 @@
 #include <gmock/gmock.h>
 #include <googletest_rip_macros.hpp>
 
-using MockGpio = rip::peripherycpp::mock::MockAbsGpio
+using MockGpio = rip::peripherycpp::mock::MockAbsGpio;
 using Gpio = rip::peripherycpp::Gpio;
 using ArgError = rip::peripherycpp::GpioArgError;
 using ExportError = rip::peripherycpp::GpioExportError;
@@ -17,6 +17,8 @@ using SetDirError = rip::peripherycpp::GpioSetDirectionError;
 using GetDirError = rip::peripherycpp::GpioGetDirectionError;
 using SetEdgeError = rip::peripherycpp::GpioSetEdgeError;
 using GetEdgeError = rip::peripherycpp::GpioGetEdgeError;
+
+using ::testing::Throw;
 
 namespace rip
 {
@@ -29,8 +31,7 @@ namespace rip
             TEST(Gpio_open, bad_direction)
             {
                 MockGpio mock;
-                EXPECT_CALL(mock, open(5, 5))
-                    .WillOnce(Throw(ArgError));
+                //EXPECT_CALL(mock, open(5, 5)).WillOnce(Throw(ArgError));
                 unsigned int pin = 5;
                 Gpio g(&mock);
                 ASSERT_THROW(g.open(pin, 5), ArgError);
@@ -39,8 +40,7 @@ namespace rip
             TEST(Gpio_open, bad_pinnum)
             {
                 MockGpio mock;
-                EXPECT_CALL(mock, open(-1, 0))
-                    .WillOnce(Throw(ExportError));
+                //EXPECT_CALL(mock, open(-1, 0)).WillOnce(Throw(ExportError));
                 int pin = -1;
                 Gpio g(&mock);
                 ASSERT_THROW(g.open(pin, 0), ExportError); 
