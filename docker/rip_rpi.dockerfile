@@ -22,9 +22,10 @@ ENV ARCH=arm \
     SYSROOT=$RPXC_ROOT/sysroot
 
 WORKDIR $SYSROOT
+# Place PI debootstrap images into external/rpi_images/*.tar.xz
 ARG pi_image
 ENV PI_IMAGE=${pi_image}
-COPY docker/rpi_images/${PI_IMAGE} /tmp/raspi-img.tar.xz
+COPY external/rpi_images/${PI_IMAGE} /tmp/raspi-img.tar.xz
 # extract the raspi debootstrap image into our chroot
 RUN cat /tmp/raspi-img.tar.xz \
     | tar -xJf -
