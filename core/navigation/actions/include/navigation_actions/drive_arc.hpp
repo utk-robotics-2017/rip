@@ -8,6 +8,8 @@
 #include <drivetrains/drivetrain.hpp>
 #include <navx/navx.hpp>
 #include "exceptions.hpp"
+#include <chrono>
+
 
 namespace rip
 {
@@ -15,11 +17,11 @@ namespace rip
     {
         namespace actions
         {
+            using Motor = rip::navigation::drivetrains::Drivetrain::Motor;
             using NavX = navx::NavX;
             class DriveArc : public framework::Action
             {
             public:
-                using Motor = rip::navigation::drivetrains::Drivetrain::Motor;
 
                 /**
                  * Drives the robot in an arc with specified radius, angular distance,
@@ -32,10 +34,11 @@ namespace rip
                  * @param radius     radius size of arc turn
                  * @param axle_length width between left and right wheels.
                  */
-                DriveArc(const std::string& name, bool direction,
+                DriveArc(const std::string& name, bool right,
                     std::shared_ptr<drivetrains::Drivetrain> drivetrain,
                     const units::AngularVelocity& speed, const units::Angle& angle,
-                    const units::Distance& radius, const units::Distance& axle_length);
+                    const units::Distance& radius, const units::Distance& axle_length,
+                    std::shared_ptr<NavX> navx);
 
                 /**
                  * Drives the robot in an arc with specified radius, arc length,
@@ -48,27 +51,11 @@ namespace rip
                  * @param radius     radius size of arc turn
                  * @param axle_length width between left and right wheels.
                  */
-                DriveArc(const std::string& name, bool direction,
-                    std::shared_ptr<drivetrains::Drivetrain> drivetrain,
-                    const units::Velocity& speed, const units::Distance& arc_length,
-                    const units::Distance& radius, const units::Distance& axle_length);
-                /**
-                 * drivearc. but with a navx.
-                 * @param name        action name
-                 * @param direction   direction to turn
-                 * @param drivetrain  drivetrain
-                 * @param speed       linear speed (units)
-                 * @param arc_length  linear distance to drive
-                 * @param radius      radius to turn around
-                 * @param axle_length length of axle base
-                 * @param navx        ptr to navx
-                 */
-                DriveArc(const std::string& name, bool direction,
+                DriveArc(const std::string& name, bool right,
                     std::shared_ptr<drivetrains::Drivetrain> drivetrain,
                     const units::Velocity& speed, const units::Distance& arc_length,
                     const units::Distance& radius, const units::Distance& axle_length,
                     std::shared_ptr<NavX> navx);
-
                 /**
                 * Returns whether or not the action has finished execution.
                 */
@@ -93,17 +80,23 @@ namespace rip
                 virtual void teardown(nlohmann::json& state) override;
 
             private:
-                bool m_direction;
+                bool m_right;
                 std::shared_ptr<drivetrains::Drivetrain> m_drivetrain;
                 units::AngularVelocity m_angular_speed;
                 units::Velocity m_linear_speed;
                 units::Angle m_angle;
                 std::shared_ptr<NavX> m_navx;
+                const double k_dead_zone = 0.0001; //percent
                 /**
                  * radius is distance from center of robot/differential drivetrain
                  * to center of circle of arc (ICC)
                  */
-                units::Distance m_arc_length, m_radius, m_axle_length, m_traveled, m_init;
+                units::Distance m_arc_length, m_radius, m_axle_length, m_traveled, m_init_dist;
+                units::Angle m_init_angle;
+                std::chrono::time_point<std::chrono::system_clock> m_start_time;
+                units::Velocity m_velocity_inner, m_velocity_outer;
+                std::array<units::Velocity, 2> m_adjusted_speeds;
+
             };
         }
     }
