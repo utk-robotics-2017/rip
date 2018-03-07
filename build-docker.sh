@@ -1,34 +1,15 @@
 #!/bin/bash
 
-if command -v whiptail; then
-  PROMPTER=whiptail
-else
-  if command -v dialog; then
-    PROMPTER=dialog
-  else
-    echo "Please install whiptail or dialog first!"
-    exit 1
-  fi
-fi
-
-function git_branch_norm() {
-  git symbolic-ref HEAD | cut -d'/' -f3- | sed -e 's;/;_;'
-}
-
+set -E
 pushd "$(dirname "$0")"
 
-eval $(resize)
+source docker/core.sh
 
-function prompt_docker_vtag() {
-  DOCKER_VTAG=$($PROMPTER --title "rip docker tag" \
-      --menu "Choose the tag to use for utkrobotics/rip:???" \
-      $(( LINES - 4 )) $(( COLUMNS - 18 )) $(( $LINES - 12 )) \
-      "$DOCKER_VTAG" "Current set DOCKER_VTAG." \
-      "latest" "utkrobotics/rip:latest" \
-      "$(git_branch_norm)" "Current git branch norm" \
-      3>&1 1>&2 2>&3
-  )
-}
+$PROMPTER --title "Choose Action" \
+  --menu "What do you want?" \
+  $(( LINES - 4 )) $(( COLUMNS - 18 )) $(( $LINES - 12 )) \
+  "start_rpi" "Start a Raspberry Pi emulation container." \
+  "start_rip"
 
 DOCKER_VTAG=${DOCKER_VTAG:-$(git_branch_norm)}
 prompt_docker_vtag
@@ -61,3 +42,4 @@ else
 fi
 
 popd
+set +E

@@ -2,4 +2,5 @@ build
 .travis.yml
 build-docker.sh
 .git
-docker
+docker/
+!docker/rpi

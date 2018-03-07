@@ -4,19 +4,30 @@ PREVDIR="$(pwd)"
 
 # cd into $SYSROOT so that $PWD is inside the chroot
 pushd $SYSROOT
-
+retval=1
 # Execute raspbian binaries using the qemu-arm-static emulator, while chrooted
 # to the sysroot.
 # If we're running as the $RPXC_USER we need to sudo to root to perform the
 # chroot, and then drop back down to the user afterwards.
-if [ -z "$RPXC_UID" ]; then
+
+if [ -z "$RPXC_UID" ]; then # we have privs
     echo "CHROOT into sysroot ${SYSROOT} using qemu @${QEMU_PATH}"
-    chroot "${SYSROOT}" \
-      "${QEMU_PATH}" /bin/sh -c "cd $PREVDIR && $*"
-else
+    if [[ $PREVDIR != /rpxc/sysroot* ]]; then
+      chroot "${SYSROOT}" \
+        "${QEMU_PATH}" /bin/sh -c "cd $PREVDIR && $*"
+      retval=$?
+    else
+      chroot "${SYSROOT}" \
+        "${QEMU_PATH}" /bin/sh -c "$*"
+      retval=$?
+    fi
+else # use sudo for access without privs
     echo "CHROOT as userpsec ${RPXC_UID} into sysroot ${SYSROOT} using qemu @${QEMU_PATH}"
     sudo -E chroot --userspec ${RPXC_UID}:${RPXC_GID} "${SYSROOT}" \
       "${QEMU_PATH}" /bin/sh -c "cd $PREVDIR && $*"
+    retval=$?
 fi
 
 popd
+
+return $retval
