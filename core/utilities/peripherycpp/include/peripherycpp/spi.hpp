@@ -51,7 +51,7 @@ namespace rip
                 virtual std::string toString(size_t len) = 0;
         };
 
-        class Spi
+        class Spi : public AbsSpi
         {
             public:
                 /**
