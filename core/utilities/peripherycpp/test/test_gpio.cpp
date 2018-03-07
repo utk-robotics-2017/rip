@@ -1,6 +1,6 @@
 #include "peripherycpp/exceptions.hpp"
 #include "peripherycpp/gpio.hpp"
-#include "peripherycpp/mock/mock_gpio.hpp"
+#include "peripherycpp/mock_gpio.hpp"
 
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
