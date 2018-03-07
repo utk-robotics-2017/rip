@@ -26,7 +26,14 @@ namespace rip
                 , m_drivetrain(drivetrain)
                 , m_navx(navx)
                 , m_pid(new pid::PidController(navx.get(), this, p, i , d))
-            {}
+            {
+                m_pid->setSetpoint(0);
+                m_pid->setTolerance(10);
+                m_navx->setType(pid::PidInput::Type::kDisplacement);
+                m_pid->setContinuous(true);
+                m_pid->setInputRange(-180 * units::deg(), 180 * units::deg());
+                m_pid->setOutputRange(-2 * units::in(), 2 * units::in());
+            }
 
             bool DriveStraight::isFinished()
             {
@@ -34,7 +41,7 @@ namespace rip
                 {
                     std::chrono::time_point<std::chrono::system_clock> current = std::chrono::system_clock::now();
                     units::Time diff = std::chrono::duration_cast<std::chrono::milliseconds>(current - m_start_time).count() * units::ms;
-                    misc::Logger::getInstance()->debug("Diff time: {}", diff.to(units::s));
+                    // misc::Logger::getInstance()->debug("Diff time: {}", diff.to(units::s));
                     return  diff >= m_time;
                 }
                 else
@@ -46,8 +53,8 @@ namespace rip
 
             void DriveStraight::update(nlohmann::json& state)
             {
-                // todo: change velocities based on heading
                 m_pid->calculate();
+                std::this_thread::sleep_for(std::chrono::milliseconds(10));
             }
 
             void DriveStraight::set(double value)
@@ -66,6 +73,7 @@ namespace rip
                 motorcontrollers::MotorDynamics dynamics;
                 dynamics.setSpeed(m_speed);
                 m_drivetrain->drive(dynamics);
+                m_pid->enable();
             }
 
             void DriveStraight::teardown(nlohmann::json& state)

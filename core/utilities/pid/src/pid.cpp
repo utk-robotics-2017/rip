@@ -23,6 +23,11 @@ namespace rip
             , m_d(d)
             , m_f(f)
             , m_setpoint(0)
+            , m_minimum_input(-1.0)
+            , m_maximum_input(1.0)
+            , m_input_range(2.0)
+            , m_minimum_output(-1.0)
+            , m_maximum_output(1.0)
             , m_previous_error(0)
             , m_total_error(0)
             , m_last_time(std::chrono::high_resolution_clock::now())
@@ -166,6 +171,9 @@ namespace rip
         {
             if (m_original_input == nullptr || m_output == nullptr)
             {
+
+                misc::Logger::getInstance()->debug_if(m_original_input == nullptr, "Input null");
+                misc::Logger::getInstance()->debug_if(m_output == nullptr, "Output null");
                 return;
             }
 
@@ -182,9 +190,12 @@ namespace rip
                 // Storage for function inputs
                 m_f = calculateFeedForward();
 
+                misc::Logger::getInstance()->debug("F: {}", m_f);
+
+
                 // Storage for function input-outputs
                 double error = continuousError(m_setpoint - input);
-
+                misc::Logger::getInstance()->debug("Error: {}", error);
                 if (type == PidInput::Type::kRate)
                 {
                     if (m_p != 0)
@@ -249,7 +260,7 @@ namespace rip
                     }
                 }
             }
-            return m_error;
+            return error;
         }
 
         void PidController::reset()

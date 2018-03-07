@@ -713,21 +713,21 @@ namespace rip
                         data = read(&m_serial, m_timeout);
                         crcUpdate(data);
                         response.push_back(data);
-                        if (data == -1)
+                        if (data == 0xff)
                         {
                             continue;
                         }
                     }
 
-                    if (data != -1)
+                    if (data != 0xff)
                     {
                         uint16_t ccrc;
                         data = read(&m_serial, m_timeout);
-                        if (data != -1)
+                        if (data != 0xff)
                         {
                             ccrc = static_cast<uint16_t>(data) << 8;
                             data = read(&m_serial, m_timeout);
-                            if (data != -1)
+                            if (data != 0xff)
                             {
                                 ccrc |= data;
                                 if (crcGet() == ccrc)

@@ -1,7 +1,7 @@
 #include "pid/linear_digital_filter.hpp"
 
 #include <assert.h>
-#include <math.h>
+#include <cmath>
 
 namespace rip
 {
