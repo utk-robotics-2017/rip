@@ -24,7 +24,7 @@ ENV ARCH=arm \
 WORKDIR $SYSROOT
 ARG pi_image
 ENV PI_IMAGE=${pi_image}
-COPY rpi_images/${PI_IMAGE} /tmp/raspi-img.tar.xz
+COPY docker/rpi_images/${PI_IMAGE} /tmp/raspi-img.tar.xz
 # extract the raspi debootstrap image into our chroot
 RUN cat /tmp/raspi-img.tar.xz \
     | tar -xJf -
@@ -44,14 +44,28 @@ RUN chroot $SYSROOT $QEMU_PATH /bin/sh -c '\
 RUN chroot $SYSROOT $QEMU_PATH /bin/sh -c '\
  DEBIAN_FRONTEND=noninteractive apt-get install -y \
   libc6-dev symlinks \
-  libeigen3-dev libsuitesparse-dev \
+  libeigen3-dev libsuitesparse-dev qt5-default \
   bash zsh git vim tmux \
   cmake lcov g++ time libssh-dev unzip \
  && symlinks -cors / \
  && apt-get clean'
 
-COPY rpi/ /
+COPY docker/rpi/ /
+RUN mkdir -p $SYSROOT/tmp
+COPY external/g2o $SYSROOT/tmp/
+RUN mkdir -p $SYSROOT/tmp/g2o/build
+WORKDIR $SYSROOT/tmp/g2o/build
+# ARM doesn't support SSE things and g2o's cmake can't detect that because /proc isn't mapped for ARM
+RUN rpdo cmake .. -LA -DDISABLE_SSE2:BOOL=ON -DDISABLE_SSE3:BOOL=ON -DDISABLE_SSE4_1:BOOL=ON -DDISABLE_SSE4_2:BOOL=ON -DDISABLE_SSE4_A:BOOL=ON
+RUN rpdo make -j$(nproc --ignore=1)
+RUN rpdo make install
+RUN rm -rf $SYSROOT/tmp/g2o
+
+# requires a /dev mounted 'mount --bind /dev /rpxc/sysroot/dev'
+# mounts require '--cap-add=SYS_ADMIN --security-opt apparmor:unconfined' args to docker run
+#RUN install-raspbian python3
 
 RUN mkdir -p $SYSROOT/workdir
 WORKDIR /workdir
 ENTRYPOINT [ "/rpxc/entrypoint.sh" ]
+
