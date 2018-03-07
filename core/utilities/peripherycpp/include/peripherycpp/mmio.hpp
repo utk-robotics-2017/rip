@@ -14,6 +14,39 @@ namespace rip
 
     namespace peripherycpp
     {
+
+        class AbsMmio
+        {
+            public:
+                virtual ~Mmio() {}
+
+                virtual void open(uintptr_t base, size_t size) = 0;
+
+                virtual uint32_t read32(uintptr_t offset) = 0;
+
+                virtual uint16_t read16(uintptr_t offset) = 0;
+
+                virtual uint8_t read8(uintptr_t offset) = 0;
+
+                virtual std::vector<uint8_t> read(uintptr_t offset, size_t len) = 0;
+
+                virtual void write32(uintptr_t offset, uint32_t value) = 0;
+
+                virtual void write16(uintptr_t offset, uint16_t value) = 0;
+
+                virtual void write8(uintptr_t offset, uint8_t value) = 0;
+
+                virtual void write(uintptr_t offset, std::vector<uint8_t> &buf) = 0;
+
+                virtual void close() = 0;
+
+                virtual uintptr_t base() = 0;
+
+                virtual size_t size() = 0;
+
+                virtual std::string toString(size_t len) = 0;
+        };
+
         class Mmio
         {
             public:
