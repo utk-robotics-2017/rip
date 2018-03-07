@@ -18,7 +18,7 @@ namespace rip
         class AbsMmio
         {
             public:
-                virtual ~Mmio() {}
+                virtual ~AbsMmio() {}
 
                 virtual void open(uintptr_t base, size_t size) = 0;
 
