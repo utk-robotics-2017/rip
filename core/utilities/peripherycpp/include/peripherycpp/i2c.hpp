@@ -15,7 +15,26 @@ namespace rip
     namespace peripherycpp
     {
 
-        class I2c
+        class AbsI2c
+        {
+            public:
+                virtual ~I2c() {}
+
+                //I2c(const std::string path);
+
+                virtual void open(const std::string path) = 0;
+
+                virtual void transfer(std::vector< std::vector<uint8_t> > msg_data, std::vector<int> flags, size_t count) = 0;
+
+                virtual void close() = 0;
+
+                virtual int fd() = 0;
+
+                virtual std::string toString(size_t len) = 0;
+
+        };
+
+        class I2c : public AbsI2c
         {
             public:
                 /**
