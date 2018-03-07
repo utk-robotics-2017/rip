@@ -6,7 +6,7 @@
 #include <gmock/gmock.h>
 #include <googletest_rip_macros.hpp>
 
-using MockGpio = rip::peripherycpp::mock::MockGpio
+using MockGpio = rip::peripherycpp::mock::MockAbsGpio
 using Gpio = rip::peripherycpp::Gpio;
 using ArgError = rip::peripherycpp::GpioArgError;
 using ExportError = rip::peripherycpp::GpioExportError;
