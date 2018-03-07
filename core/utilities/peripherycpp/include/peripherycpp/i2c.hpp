@@ -18,7 +18,7 @@ namespace rip
         class AbsI2c
         {
             public:
-                virtual ~I2c() {}
+                virtual ~AbsI2c() {}
 
                 //I2c(const std::string path);
 
