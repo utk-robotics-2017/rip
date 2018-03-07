@@ -13,7 +13,41 @@ namespace rip
     namespace peripherycpp
     {
 
-        class Gpio
+        class AbsGpio
+        {
+            public:
+
+                virtual ~AbsGpio() {}
+
+                virtual void open(unsigned int pin, int direction) = 0;
+
+                virtual bool read() = 0;
+
+                virtual void write(bool value) = 0;
+
+                virtual int poll(int timeout_ms) = 0;
+
+                virtual void close() = 0;
+
+                virtual bool supportsInterrupts() = 0;
+
+                virtual int getDirection() = 0;
+
+                virtual int getEdge() = 0;
+
+                virtual void setDirection(int direction) = 0;
+
+                virtual void setEdge(int edge) = 0;
+
+                virtual unsigned int pin() = 0;
+
+                virtual int fd() = 0;
+
+                virtual std::string toString(size_t len) = 0;
+
+        };
+
+        class Gpio : public AbsGpio
         {
             public:
                 /**
