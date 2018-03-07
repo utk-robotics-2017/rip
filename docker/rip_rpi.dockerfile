@@ -36,9 +36,10 @@ RUN chroot $SYSROOT $QEMU_PATH /bin/sh -c '\
  echo "deb http://mirrordirector.raspbian.org/raspbian/ jessie main contrib non-free rpi" > /etc/apt/sources.list \
  && echo "deb http://archive.raspberrypi.org/debian/ jessie main ui" >> /etc/apt/sources.list \
  && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 82B129927FA3303E \
+ && apt-get clean \
  && apt-get update \
  && DEBIAN_FRONTEND=noninteractive apt-get install -y apt-utils \
- && DEBIAN_FRONTEND=noninteractive dpkg-reconfigure apt-utils \
+ && DEBIAN_FRONTEND=noninteractive dpkg --configure -a \
  && DEBIAN_FRONTEND=noninteractive apt-get upgrade -y '
 RUN chroot $SYSROOT $QEMU_PATH /bin/sh -c '\
  DEBIAN_FRONTEND=noninteractive apt-get install -y \
