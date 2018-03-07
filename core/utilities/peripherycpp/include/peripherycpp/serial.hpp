@@ -17,67 +17,58 @@ namespace rip
         class AbsSerial
         {
             public:
-                virtual ~AbsSerial() {};
+                virtual ~AbsSerial() {}
 
-                virtual AbsSerial() {};
+                virtual void open(std::string device, unsigned int baudrate) = 0;
 
-                virtual AbsSerial(std::string device, unsigned int baudrate) {};
+                virtual std::vector<uint8_t> read(size_t len, int timeout_ms) = 0;
+         
+                virtual void read(uint8_t* buf, size_t size, int timeout_ms) = 0;
+         
+                virtual void read(uint8_t* buf, size_t size, int timeout_ms) = 0;
+         
+                virtual void read(char* buf, size_t size, int timeout_ms) = 0;
+         
+                virtual void write(uint8_t* data, size_t size) = 0;
+         
+                virtual void write(char* data, size_t size) = 0;
+         
+                virtual void write(std::vector<uint8_t> data) = 0;
+         
+                virtual void flush() = 0;
+         
+                virtual unsigned int outputWaiting() = 0;
+         
+                virtual unsigned int inputWaiting() = 0;
+         
+                virtual bool poll(int timeout_ms) = 0;
+         
+                virtual void close() = 0;
+         
+                virtual uint32_t getBaudrate() = 0;
+         
+                virtual unsigned int getDatabits() = 0;
+         
+                virtual int getParity() = 0;
+         
+                virtual unsigned int getStopbits() = 0;
+         
+                virtual bool getxOnxOff() = 0;
+         
+                virtual bool getRtscts() = 0;
+         
+                virtual void setBaudrate(uint32_t baudrate) = 0;
+         
+                virtual void setDatabits(unsigned int databits) = 0;
+         
+                virtual void setParity(int parity) = 0;
+         
+                virtual void setStopBits(unsigned int stopbits) = 0;
+         
+                virtual void setxOnxOff(bool enabled) = 0;
 
-                virtual AbsSerial(std::string device, unsigned int baudrate, unsigned int databits,
-                               int parity, unsigned int stopbits,
-                               bool xonxoff, bool rtscts) {}; 
-
-
-                virtual void open(std::string device, unsigned int baudrate) {} = 0;
-
-                virtual std::vector<uint8_t> read(size_t len, int timeout_ms) {} = 0;
-         
-                virtual void read(uint8_t* buf, size_t size, int timeout_ms) {} = 0;
-         
-                virtual void read(uint8_t* buf, size_t size, int timeout_ms) {} = 0;
-         
-                virtual void read(char* buf, size_t size, int timeout_ms) {} = 0;
-         
-                virtual void write(uint8_t* data, size_t size) {} = 0;
-         
-                virtual void write(char* data, size_t size) {} = 0;
-         
-                virtual void write(std::vector<uint8_t> data) {} = 0;
-         
-                virtual void flush() {} = 0;
-         
-                virtual unsigned int outputWaiting() {} = 0;
-         
-                virtual unsigned int inputWaiting() {} = 0;
-         
-                virtual bool poll(int timeout_ms) {} = 0;
-         
-                virtual void close() {} = 0;
-         
-                virtual uint32_t getBaudrate() {} = 0;
-         
-                virtual unsigned int getDatabits() {} = 0;
-         
-                virtual int getParity() {} = 0;
-         
-                virtual unsigned int getStopbits() {} = 0;
-         
-                virtual bool getxOnxOff() {} = 0;
-         
-                virtual bool getRtscts() {} = 0;
-         
-                virtual void setBaudrate(uint32_t baudrate) {} = 0;
-         
-                virtual void setDatabits(unsigned int databits) {} = 0;
-         
-                virtual void setParity(int parity) {} = 0;
-         
-                virtual void setStopBits(unsigned int stopbits) {} = 0;
-         
-                virtual void setxOnxOff(bool enabled) {} = 0;
-
-                virtual void setRtscts(bool enabled) {} = 0;
-        }
+                virtual void setRtscts(bool enabled) = 0;
+        };
 
         class Serial : public AbsSerial
         {
