@@ -13,6 +13,43 @@ namespace rip
 
     namespace peripherycpp
     {
+        class AbsSpi
+        {
+            public:
+                virtual ~AbsSpi() {}
+
+                virtual void open(const std::string path, unsigned int mode, uint32_t max_speed) = 0;
+
+                virtual void openAdvanced(const std::string path, unsigned int mode, uint32_t max_speed, int bit_order, uint8_t bits_per_word, uint8_t extra_flags) = 0;
+
+                virtual void transfer(const uint8_t *txbuf, uint8_t *rxbuf, size_t len) = 0;
+     
+                virtual void close() = 0;
+     
+                virtual unsigned int getMode() = 0;
+     
+                virtual uint32_t getMaxSpeed() = 0;
+     
+                virtual int getBitOrder() = 0;
+     
+                virtual uint8_t getBitsPerWord() = 0;
+     
+                virtual uint8_t getExtraFlags() = 0;
+     
+                virtual void setMode(unsigned int mode) = 0;
+     
+                virtual void setMaxSpeed(uint32_t max_speed) = 0;
+     
+                virtual void setBitOrder(int bit_order) = 0;
+     
+                virtual void setBitsPerWord(uint8_t bits_per_word) = 0;
+     
+                virtual void setExtraFlags(uint8_t extra_flags) = 0;
+     
+                virtual int fd() = 0;
+
+                virtual std::string toString(size_t len) = 0;
+        };
 
         class Spi
         {
@@ -45,7 +82,7 @@ namespace rip
                  * open
                  * @param path  the path for the spidev device
                  * @param mode  the SPI mode that the spidev device will be opened in
-                 * @param max_speed  the max speed (in Hz) for the spidev device.
+                * @param max_speed  the max speed (in Hz) for the spidev device.
                  * @brief  Open the spidev device at the specified path, with the specifed mode
                  * specified max speed (in Hz), and the defaults of MSB_FIRST bit order, and
                  * 8 bits per word.
