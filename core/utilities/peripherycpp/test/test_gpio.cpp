@@ -1,9 +1,12 @@
 #include "peripherycpp/exceptions.hpp"
 #include "peripherycpp/gpio.hpp"
+#include "peripherycpp/mock/mock_gpio.hpp"
 
 #include <gtest/gtest.h>
+#include <gmock/gmock.h>
 #include <googletest_rip_macros.hpp>
 
+using MockGpio = rip::peripherycpp::mock::MockGpio
 using Gpio = rip::peripherycpp::Gpio;
 using ArgError = rip::peripherycpp::GpioArgError;
 using ExportError = rip::peripherycpp::GpioExportError;
@@ -25,23 +28,24 @@ namespace rip
         {
             TEST(Gpio_open, bad_direction)
             {
-                Gpio g;
+                MockGpio mock;
+                EXPECT_CALL(mock, open(5, 5))
+                    .WillOnce(Throw(ArgError));
                 unsigned int pin = 5;
+                Gpio g(&mock);
                 ASSERT_THROW(g.open(pin, 5), ArgError);
             }
 
             TEST(Gpio_open, bad_pinnum)
             {
-                Gpio g;
+                MockGpio mock;
+                EXPECT_CALL(mock, open(-1, 0))
+                    .WillOnce(Throw(ExportError));
                 int pin = -1;
+                Gpio g(&mock);
                 ASSERT_THROW(g.open(pin, 0), ExportError); 
             }
 
-            TEST(Gpio_open, bad_pin_dir_preserve)
-            {
-                
-            }
- 
         }
 
     }
