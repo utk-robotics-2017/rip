@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/zsh
 
 set -E
 pushd "$(dirname "$0")"
@@ -16,6 +16,7 @@ RIPPROG=$($PROMPTER --title "Choose Action" \
   3>&1 1>&2 2>&3
 )
 
+if [ -n "$RIPPROG" ]; then
 case $RIPPROG in
   run_rpi)
     # go to the user's working dir and run the container there.
@@ -23,9 +24,10 @@ case $RIPPROG in
     popd
     $ABSPATH_RPXC --image "$RPXC_IMAGE" \
       --args "--rm \
-        --mount type=tmpfs,dst=${RPXC_SYSROOT}/dev,rw,dev \
-        --mount type=devpts,dst=${RPXC_SYSROOT}/dev/pts \
+        --tmpfs=${RPXC_SYSROOT}/dev:rw,dev \
         --mount type=tmpfs,dst=${RPXC_SYSROOT}/dev/shm \
+        --mount type=bind,src=/dev/pts,dst=/dev/pts \
+        --mount type=bind,src=/dev/pts,dst=${RPXC_SYSROOT}/dev/pts \
       " -- \
       $(basename $SHELL )
     pushd "$(dirname "$0")"
@@ -54,15 +56,17 @@ case $RIPPROG in
     fi
 
     ;;
+  build_rip_deps)
+    echo "Building rip_deps container..."
+    DOCKER_VTAG=latest ./docker/rip_deps.sh
+    ;;
   cancel)
     echo "I'm a very busy shell script, next time try not to waste my time? Thanks!"
     ;;
   *)
-    echo -e "\033[0;31m Option not implemented!\033[0;0m"
+    echo -e "\033[0;31m Option not implemented: $RIPPROG!\033[0;0m"
 esac
-
-  echo "Building rip_deps container..."
-  DOCKER_VTAG=latest ./docker/rip_deps.sh
+fi
 
 popd
 set +E

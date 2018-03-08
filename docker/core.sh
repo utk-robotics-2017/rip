@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if command -v whiptail; then
+if command -v whiptail >/dev/null 2>&1; then
   PROMPTER=whiptail
 else
   if command -v dialog; then
