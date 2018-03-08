@@ -8,6 +8,8 @@ extern "C"
 #include "peripherycpp/exceptions.hpp"
 #include <cstdint>
 #include <vector>
+#include <misc/logger.hpp>
+#include <fmt/format.h>
 
 namespace rip
 {

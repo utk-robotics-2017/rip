@@ -9,21 +9,11 @@ namespace rip
         Serial::Serial()
         {}
 
-        Serial::Serial(std::string device, unsigned int baudrate)
-        {
-            open(device, baudrate);
-        }
-
         Serial::Serial(std::string device, unsigned int baudrate, unsigned int databits,
                   int parity, unsigned int stopbits,
                   bool xonxoff, bool rtscts)
         {
             open(device, baudrate, databits, parity, stopbits, xonxoff, rtscts);
-        }
-
-        void Serial::open(std::string device, unsigned int baudrate)
-        {
-            checkError(serial_open(&m_serial, device.c_str(), baudrate));
         }
 
         void Serial::open(std::string device, unsigned int baudrate, unsigned int databits,
@@ -44,6 +34,16 @@ namespace rip
             }
             checkError(serial_open_advanced(&m_serial, device.c_str(), baudrate,
                           databits, cpar,stopbits, xonxoff, rtscts));
+
+            misc::Logger::getInstance()->debug(fmt::format("Device {} successfully open", device));
+
+            m_device = device;
+            m_baudrate = baudrate;
+            m_databits = databits;
+            m_parity = parity;
+            m_stopbits = stopbits;
+            m_xonxoff = xonxoff;
+            m_rtscts = rtscts;
         }
 
         std::vector<uint8_t> Serial::read(size_t len, int timeout_ms)
@@ -207,6 +207,12 @@ namespace rip
         void Serial::setRtscts(bool enabled)
         {
             checkError(serial_set_rtscts(&m_serial, enabled));
+        }
+
+        void Serial::reset()
+        {
+            close();
+            open(m_device, m_baudrate, m_databits, m_parity, m_stopbits, m_xonxoff, m_rtscts);
         }
 
         void Serial::checkError(int err_code)

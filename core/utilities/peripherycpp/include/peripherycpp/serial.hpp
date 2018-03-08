@@ -3,6 +3,8 @@
 #include <string>
 #include <vector>
 #include "peripherycpp/exceptions.hpp"
+#include <misc/logger.hpp>
+#include <fmt/format.h>
 
 extern "C"
 {
@@ -21,12 +23,6 @@ namespace rip
              */
             Serial();
             /**
-             * Constructor with device and baudrate
-             * @param device   tty device at the specified path (e.g. "/dev/ttyUSB0")
-             * @param baudrate device baudrate (ie, 115200).
-             */
-            Serial(std::string device, unsigned int baudrate);
-            /**
              * Advanced open constructor
              * @param device   tty device at the specified path (e.g. "/dev/ttyUSB0")
              * @param baudrate baudrate device baudrate (ie, 115200).
@@ -39,16 +35,9 @@ namespace rip
              * with the specified baudrate, data bits, parity, stop bits, software flow control (xonxoff),
              * and hardware flow control (rtscts) settings.
              */
-            Serial(std::string device, unsigned int baudrate, unsigned int databits,
-                      int parity, unsigned int stopbits,
-                      bool xonxoff, bool rtscts);
-            /**
-             * open(No Params)
-             * @param device   tty device at the specified path (e.g. "/dev/ttyUSB0")
-             * @param baudrate device baudrate (ie, 115200).
-             * @brief
-             */
-            void open(std::string device, unsigned int baudrate);
+            Serial(std::string device, unsigned int baudrate, unsigned int databits=8,
+                      int parity=0, unsigned int stopbits=1,
+                      bool xonxoff=0, bool rtscts=0);
             /**
              * open
              * @param device   tty device at the specified path (e.g. "/dev/ttyUSB0")
@@ -62,9 +51,9 @@ namespace rip
              * with the specified baudrate, data bits, parity, stop bits, software flow control (xonxoff),
              * and hardware flow control (rtscts) settings.
              */
-            void open(std::string device, unsigned int baudrate, unsigned int databits,
-                      int parity, unsigned int stopbits,
-                      bool xonxoff, bool rtscts);
+            void open(std::string device, unsigned int baudrate, unsigned int databits=8,
+                      int parity=0, unsigned int stopbits=1,
+                      bool xonxoff=0, bool rtscts=0);
             /**
              * read
              * @brief Reads len number of bytes via serial
@@ -220,7 +209,10 @@ namespace rip
              * @brief  Set the hardware flow control on the underlying tty device.
              */
             void setRtscts(bool enabled);
-
+            /**
+             * Reset. Closes and reopens the device.
+             */
+            void reset();
         private:
             /**
              * checkError
@@ -230,7 +222,11 @@ namespace rip
             void checkError(int err_code);
 
             serial_t m_serial;
-
+            std::string m_device;
+            unsigned int m_baudrate, m_databits;
+            int m_parity;
+            unsigned int m_stopbits;
+            bool m_xonxoff, m_rtscts;
         };
     }
 }

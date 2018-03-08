@@ -6,6 +6,8 @@ extern "C"
     #include "gpio.h"
 }
 #include "peripherycpp/exceptions.hpp"
+#include <misc/logger.hpp>
+#include <fmt/format.h>
 
 namespace rip
 {
