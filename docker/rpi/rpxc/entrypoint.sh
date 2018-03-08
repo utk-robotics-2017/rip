@@ -5,7 +5,7 @@
 
 # /dev should be mounted as a tmpfs by docker like
 # --tmpfs=${RPXC_SYSROOT}/dev:rw,dev
-chroot "$SYSROOT" "$QEMU_PATH" /bin/sh -c '\
+chroot "$SYSROOT" "$QEMU_PATH" /bin/bash -c '\
  mknod -m 622 /dev/console c 5 1 \
  && mknod -m 666 /dev/null c 1 3 \
  && mknod -m 666 /dev/zero c 1 5 \
