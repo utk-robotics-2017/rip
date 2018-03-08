@@ -210,8 +210,8 @@ esac
 #
 echo "Running docker image: $FINAL_IMAGE"
 docker run -i -t --rm \
-    -v $PWD:/workdir \
-    -v $PWD:/rpxc/sysroot/workdir \
+    -v "$PWD":/workdir \
+    -v "$PWD":/rpxc/sysroot/workdir \
     $USER_IDS \
     $FINAL_ARGS \
     $FINAL_IMAGE "$@"
