@@ -7,7 +7,7 @@ pushd "$SELFDIR"
 source docker/core.sh
 
 # thing to execute in container
-DEF_EXEC="$(basename $SHELL )"
+DEF_EXEC=("${SHELL}")
 
 while [[ "$1" != "" ]] ; do
   case $1 in
@@ -44,7 +44,7 @@ RIPPROG=$($PROMPTER --title "Choose Action" \
 fi
 
 if [ -n "$RIPPROG" ]; then
-echo "Container command: ‘$DEF_EXEC’"
+  echo "Container command: ‘${(j: Ø :)DEF_EXEC}’"
 echo "( $0 -- <cmd> <args> to change it )"
 case $RIPPROG in
   run_rpi)
@@ -57,7 +57,7 @@ case $RIPPROG in
         --mount type=tmpfs,dst=${RPXC_SYSROOT}/dev/shm \
         --mount type=bind,src=/dev/pts,dst=/dev/pts \
         --mount type=bind,src=/dev/pts,dst=${RPXC_SYSROOT}/dev/pts \
-      " -- ${DEF_EXEC}
+        " -- ${DEF_EXEC}
     pushd "$SELFDIR"
     ;;
   new_rip)
