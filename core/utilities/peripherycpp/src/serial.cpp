@@ -35,7 +35,7 @@ namespace rip
             checkError(serial_open_advanced(&m_serial, device.c_str(), baudrate,
                           databits, cpar,stopbits, xonxoff, rtscts));
 
-            misc::Logger::getInstance()->debug(fmt::format("Device {} successfully open", device));
+            misc::Logger::getInstance()->debug(fmt::format("Serial device {} successfully open", device));
 
             m_device = device;
             m_baudrate = baudrate;

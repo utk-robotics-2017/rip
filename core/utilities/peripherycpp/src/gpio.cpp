@@ -24,6 +24,7 @@ namespace rip
                 default: throw GpioArgError("direction must be in the range [0, 4].");
             }
             checkError(gpio_open(&m_gpio, pin, dir));
+            misc::Logger::getInstance()->debug(fmt::format("Pin {} successfully open", pin));
             return;
         }
 
