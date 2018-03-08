@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/zsh
 
 PREVDIR="$(pwd)"
 
@@ -18,18 +18,18 @@ if [[ -z "$RPXC_UID" ]] || [[ $UID == 0 ]]; then # don't set uid
     if [[ $PREVDIR == ${SYSROOT}* ]]; then # switch the cd
       chrootdebug
       chroot "${SYSROOT}" \
-        "${QEMU_PATH}" /bin/sh -c "cd ${PREVDIR#$SYSROOT} && $*"
+        "${QEMU_PATH}" /bin/sh -c "cd ${PREVDIR#$SYSROOT} && $@"
       retval=$?
     else
       chrootdebug
       chroot "${SYSROOT}" \
-        "${QEMU_PATH}" /bin/sh -c "cd $PREVDIR && $*"
+        "${QEMU_PATH}" /bin/sh -c "cd $PREVDIR && $@"
       retval=$?
     fi
 else # use sudo for access without privs
     chrootdebug
     sudo -E chroot --userspec ${RPXC_UID}:${RPXC_GID} "${SYSROOT}" \
-      "${QEMU_PATH}" /bin/sh -c "cd $PREVDIR && $*"
+      "${QEMU_PATH}" /bin/sh -c "cd $PREVDIR && $@"
     retval=$?
 fi
 

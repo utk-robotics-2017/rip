@@ -1,10 +1,38 @@
 #!/bin/zsh
 
 set -E
-pushd "$(dirname "$0")"
+SELFDIR="$(dirname "$0")"
+pushd $SELFDIR
 
 source docker/core.sh
 
+# thing to execute in container
+DEF_EXEC="$(basename $SHELL )"
+
+while [[ "$1" != "" ]] ; do
+  case $1 in
+    --rpi)
+      RIPPROG=run_rpi
+      ;;
+    --)
+      shift
+      if [[ "$1" != "" ]]; then
+        DEF_EXEC="$@"
+      fi
+      break
+      ;;
+    *)
+      echo "Unknown option: $1"
+      exit 1
+      ;;
+  esac
+  shift
+done
+
+echo "Container command: ‘$DEF_EXEC’"
+echo "( $0 -- <cmd> <args> to change it )"
+
+if [ -z "$RIPPROG" ]; then
 RIPPROG=$($PROMPTER --title "Choose Action" \
   --menu "What do you want?" \
   $(( LINES - 4 )) $(( COLUMNS - 18 )) $(( $LINES - 12 )) \
@@ -16,6 +44,7 @@ RIPPROG=$($PROMPTER --title "Choose Action" \
   "cancel" "Do nothing." \
   3>&1 1>&2 2>&3
 )
+fi
 
 if [ -n "$RIPPROG" ]; then
 case $RIPPROG in
@@ -29,9 +58,8 @@ case $RIPPROG in
         --mount type=tmpfs,dst=${RPXC_SYSROOT}/dev/shm \
         --mount type=bind,src=/dev/pts,dst=/dev/pts \
         --mount type=bind,src=/dev/pts,dst=${RPXC_SYSROOT}/dev/pts \
-      " -- \
-      $(basename $SHELL )
-    pushd "$(dirname "$0")"
+      " -- $DEF_EXEC
+    pushd $SELFDIR
     ;;
   new_rip)
 
@@ -50,10 +78,10 @@ case $RIPPROG in
     
     if ($PROMPTER --title "Start container?" --yesno "Start an interactive session in the docker container?" 8 68) then
       echo "    Running docker container for branch $(git_branch_norm)"
-      docker run --rm -t -i utkrobotics/rip:$(git_branch_norm) $(basename $SHELL)
+      docker run --rm -t -i utkrobotics/rip:$(git_branch_norm) $DEF_EXEC
     else
       echo "    To run the container:"
-      echo -e "            \033[0;96mdocker run --rm -t -i utkrobotics/rip:$(git_branch_norm) $(basename $SHELL)\033[0;0m"
+      echo -e "            \033[0;96mdocker run --rm -t -i utkrobotics/rip:$(git_branch_norm) $DEF_EXEC\033[0;0m"
     fi
 
     ;;

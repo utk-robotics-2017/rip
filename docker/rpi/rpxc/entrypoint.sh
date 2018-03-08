@@ -32,7 +32,7 @@ if [[ -n $RPXC_UID ]] && [[ -n $RPXC_GID ]]; then
     useradd -o -m -d $RPXC_HOME -g $RPXC_GID -u $RPXC_UID $RPXC_USER 2> /dev/null
 
     # Run the command as the specified user/group.
-    HOME=$RPXC_HOME exec chpst -u :$RPXC_UID:$RPXC_GID "$@"
+    HOME=$RPXC_HOME exec chpst -u :$RPXC_UID:$RPXC_GID -- $@
 else
     # Just run the command as root.
     exec "$@"
