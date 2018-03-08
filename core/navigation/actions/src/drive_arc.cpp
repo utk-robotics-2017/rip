@@ -62,6 +62,16 @@ namespace rip
                  * Time: seconds
                  * Angle: degrees
                  */
+		if(!m_right)
+		{
+		    motors[0] = Motor::kFrontLeft;
+		    motors[1] = Motor::kFrontRight;
+		}
+		else
+		{
+		    motors[0] = Motor::kFrontRight;
+		    motors[1] = Motor::kFrontLeft;
+		}
                 // get actual state and expected state in pairs
                 state[this->name()] = {
                     {"encoderDistance", {
@@ -208,7 +218,7 @@ namespace rip
             {
                 units::Distance sum=0;
                 std::vector<units::Distance> dist = m_drivetrain->readEncoders({Motor::kFrontLeft,
-                    Motor::kFrontLeft, Motor::kFrontRight, Motor::kBackLeft, Motor::kBackRight});
+                     Motor::kFrontRight, Motor::kBackLeft, Motor::kBackRight});
                 for(int i=0; i<static_cast<int>(dist.size()); i++)
                 {
                     sum += dist[i];
