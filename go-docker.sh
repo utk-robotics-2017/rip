@@ -29,9 +29,6 @@ while [[ "$1" != "" ]] ; do
   shift
 done
 
-echo "Container command: ‘$DEF_EXEC’"
-echo "( $0 -- <cmd> <args> to change it )"
-
 if [ -z "$RIPPROG" ]; then
 RIPPROG=$($PROMPTER --title "Choose Action" \
   --menu "What do you want?" \
@@ -47,6 +44,8 @@ RIPPROG=$($PROMPTER --title "Choose Action" \
 fi
 
 if [ -n "$RIPPROG" ]; then
+echo "Container command: ‘$DEF_EXEC’"
+echo "( $0 -- <cmd> <args> to change it )"
 case $RIPPROG in
   run_rpi)
     # go to the user's working dir and run the container there.
