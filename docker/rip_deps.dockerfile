@@ -29,3 +29,4 @@ RUN cmake ..
 RUN make -j$(nproc --ignore=1 ) # building g2o might take awhile...
 RUN sudo make install
 
+# vim: set syntax=dockerfile:

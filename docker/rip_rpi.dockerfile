@@ -51,22 +51,25 @@ RUN chroot $SYSROOT $QEMU_PATH /bin/sh -c '\
  && symlinks -cors / \
  && apt-get clean'
 
-COPY docker/rpi/ /
 RUN mkdir -p $SYSROOT/tmp
-COPY external/g2o $SYSROOT/tmp/
-RUN mkdir -p $SYSROOT/tmp/g2o/build
-WORKDIR $SYSROOT/tmp/g2o/build
+COPY external/g2o $SYSROOT/tmp/g2o
 # ARM doesn't support SSE things and g2o's cmake can't detect that because /proc isn't mapped for ARM
-RUN rpdo cmake .. -LA -DDISABLE_SSE2:BOOL=ON -DDISABLE_SSE3:BOOL=ON -DDISABLE_SSE4_1:BOOL=ON -DDISABLE_SSE4_2:BOOL=ON -DDISABLE_SSE4_A:BOOL=ON
-RUN rpdo make -j$(nproc --ignore=1)
-RUN rpdo make install
-RUN rm -rf $SYSROOT/tmp/g2o
+RUN chroot $SYSROOT $QEMU_PATH /bin/sh -c '\
+ cd /tmp/g2o \
+ && mkdir build \
+ && cd build \
+ && cmake .. -LA -DDO_SSE_AUTODETECT=OFF -DDISABLE_SSE2:BOOL=ON -DDISABLE_SSE3:BOOL=ON -DDISABLE_SSE4_1:BOOL=ON -DDISABLE_SSE4_2:BOOL=ON -DDISABLE_SSE4_A:BOOL=ON \
+ && make -j$(nproc --ignore=1) \
+ && make install \
+ && symlinks -cors /'
 
 # requires a /dev mounted 'mount --bind /dev /rpxc/sysroot/dev'
 # mounts require '--cap-add=SYS_ADMIN --security-opt apparmor:unconfined' args to docker run
 #RUN install-raspbian python3
 
+COPY docker/rpi/ /
 RUN mkdir -p $SYSROOT/workdir
 WORKDIR /workdir
-ENTRYPOINT [ "/rpxc/entrypoint.sh" ]
+ENTRYPOINT [ "/sbin/my_init", "/rpxc/entrypoint.sh" ]
 
+# vim: set syntax=dockerfile:

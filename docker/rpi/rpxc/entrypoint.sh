@@ -3,12 +3,6 @@
 # This is the entrypoint script for the dockerfile. Executed in the
 # container at runtime.
 
-if [[ $# == 0 ]]; then
-    # Presumably the image has been run directly, so help the user get started.
-    cat /rpxc/rpxc
-    exit 0
-fi
-
 # If we are running docker natively, we want to create a user in the container
 # with the same UID and GID as the user on the host machine, so that any files
 # created are owned by that user. Without this they are all owned by root.

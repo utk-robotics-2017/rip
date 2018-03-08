@@ -11,6 +11,10 @@ else
   fi
 fi
 
+RPXC_SCRIPT_LOCATION=${RPXC_SCRIPT_LOCATION:-'./docker/rpi/rpxc/rpxc'}
+RPXC_IMAGE=${RPXC_IMAGE:-'utkrobotics/rip_rpi:latest'}
+RPXC_SYSROOT=${RPXC_SYSROOT:-'/rpxc/sysroot'}
+
 function git_branch_norm() {
   git symbolic-ref HEAD | cut -d'/' -f3- | sed -e 's;/;_;'
 }
