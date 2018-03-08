@@ -1,6 +1,6 @@
 build
 .travis.yml
-build-docker.sh
+go-docker.sh
 .git
 docker/
 !docker/rpi

@@ -30,6 +30,10 @@ function prompt_docker_vtag() { # "title" "description"
       "$(git_branch_norm)" "Use current git branch as tag." \
       3>&1 1>&2 2>&3
   )
+  if [ $? -ne 0 ]; then
+    return 1
+  fi
   echo "DOCKER_VTAG=$DOCKER_VTAG"
+  return 0
 }
 

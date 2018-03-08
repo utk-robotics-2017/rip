@@ -70,6 +70,6 @@ RUN chroot $SYSROOT $QEMU_PATH /bin/sh -c '\
 COPY docker/rpi/ /
 RUN mkdir -p $SYSROOT/workdir
 WORKDIR /workdir
-ENTRYPOINT [ "/sbin/my_init", "/rpxc/entrypoint.sh" ]
+ENTRYPOINT [ "/sbin/my_init", "--", "/rpxc/entrypoint.sh" ]
 
 # vim: set syntax=dockerfile:

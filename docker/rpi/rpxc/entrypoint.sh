@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/zsh
 
 # This is the entrypoint script for the dockerfile. Executed in the
 # container at runtime with root privileges.
@@ -35,5 +35,5 @@ if [[ -n $RPXC_UID ]] && [[ -n $RPXC_GID ]]; then
     HOME=$RPXC_HOME exec chpst -u :$RPXC_UID:$RPXC_GID -- $@
 else
     # Just run the command as root.
-    exec "$@"
+    exec $@
 fi
