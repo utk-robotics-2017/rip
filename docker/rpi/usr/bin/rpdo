@@ -14,22 +14,24 @@ function chrootdebug() {
   echo -e "\033[0;94mCHROOT\033[0;37m as uid\033[0;31m${RPXC_UID:-$UID}\033[0;37m into \033[0;96m${SYSROOT}\033[0;37m; cd \033[0;96m${PREVDIR#$SYSROOT}\033[0;0m"
 }
 
+COMMAND="$@"
+
 if [[ -z "$RPXC_UID" ]] || [[ $UID == 0 ]]; then # don't set uid
     if [[ $PREVDIR == ${SYSROOT}* ]]; then # switch the cd
       chrootdebug
       chroot "${SYSROOT}" \
-        "${QEMU_PATH}" /bin/sh -c "cd ${PREVDIR#$SYSROOT} && $@"
+        "${QEMU_PATH}" /bin/sh -c "cd ${PREVDIR#$SYSROOT} && $COMMAND"
       retval=$?
     else
       chrootdebug
       chroot "${SYSROOT}" \
-        "${QEMU_PATH}" /bin/sh -c "cd $PREVDIR && $@"
+        "${QEMU_PATH}" /bin/sh -c "cd $PREVDIR && $COMMAND"
       retval=$?
     fi
 else # use sudo for access without privs
     chrootdebug
     sudo -E chroot --userspec ${RPXC_UID}:${RPXC_GID} "${SYSROOT}" \
-      "${QEMU_PATH}" /bin/sh -c "cd $PREVDIR && $@"
+      "${QEMU_PATH}" /bin/sh -c "cd $PREVDIR && $COMMAND"
     retval=$?
 fi
 
