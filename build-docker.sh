@@ -11,6 +11,7 @@ RIPPROG=$($PROMPTER --title "Choose Action" \
   "run_rpi" "Start a Raspberry Pi emulation container mounted to your working dir." \
   "new_rip" "Build and run a new RIP container with the current local RIP codebase." \
   "build_rip_deps" "Build the rip_deps base dependency image." \
+  "update_rpi" "Pull latest rip_rpi image from the dockerhub." \
   "build_rip_rpi" "Build the rip_rpi Pi emulator and dependency container." \
   "cancel" "Do nothing." \
   3>&1 1>&2 2>&3
@@ -55,6 +56,9 @@ case $RIPPROG in
       echo -e "            \033[0;96mdocker run --rm -t -i utkrobotics/rip:$(git_branch_norm) $(basename $SHELL)\033[0;0m"
     fi
 
+    ;;
+  update_rpi)
+    docker pull $RPXC_IMAGE
     ;;
   build_rip_deps)
     echo "Building rip_deps container..."
