@@ -6,6 +6,7 @@
 #include <cppfs/fs.h>
 #include <cppfs/FileHandle.h>
 
+#include "misc/exception_base.hpp"
 #include "arduino_gen/arduino_gen.hpp"
 
 int main(int argc, char* argv[])
@@ -96,7 +97,7 @@ int main(int argc, char* argv[])
     {
         ag.readConfig(args::get(config));
     }
-    catch (std::exception e)
+    catch (rip::utilities::ExceptionBase e)
     {
         std::cerr << "ArduinoGen failed to read the config file.\n" << e.what() << std::endl;
         return EXIT_FAILURE;
@@ -106,7 +107,7 @@ int main(int argc, char* argv[])
     {
         ag.generateOutput(!args::get(noCopy));
     }
-    catch (std::exception e)
+    catch (rip::utilities::ExceptionBase e)
     {
         std::cerr << "ArduinoGen failed to generate the output.\n" << e.what() << std::endl;
         return EXIT_FAILURE;
