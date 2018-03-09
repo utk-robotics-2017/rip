@@ -686,14 +686,14 @@ namespace rip
                  * wraps peripherycpp for unit testing
                  * @param data vector of bytes
                  */
-                void write(std::vector<uint8_t> data);
+                virtual void write(std::vector<uint8_t> data);
                 /**
                  * wraps peripherycpp for unit testing
                  * @param  len        # of bytes
                  * @param  timeout_ms timeout
                  * @return            vector of bytes
                  */
-                std::vector<uint8_t> read(size_t len, int timeout_ms)
+                virtual std::vector<uint8_t> read(size_t len, int timeout_ms);
                 /**
                  * @brief Sends N bytes to the roboclaw
                  *
@@ -721,8 +721,8 @@ namespace rip
                         command.push_back(static_cast<uint8_t>(crc >> 8));
                         command.push_back(static_cast<uint8_t>(crc));
 
-                        m_serial.write(command);
-                        data = m_serial.read(static_cast<size_t> (1), static_cast<int> (m_timeout.to(units::ms)))[0];
+                        write(command);
+                        data = read(static_cast<size_t> (1), static_cast<int> (m_timeout.to(units::ms)))[0];
                         if (data == returnFF())
                         {
                             return;

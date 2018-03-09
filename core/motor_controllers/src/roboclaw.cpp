@@ -77,6 +77,7 @@ namespace rip
                     m_faking = true;
                 }
             }
+
             Roboclaw::~Roboclaw()
             {
                 if(!m_faking)
@@ -358,23 +359,23 @@ namespace rip
                     {
                         crcUpdate(command[i]);
                     }
-                    m_serial.write(command);
+                    write(command);
 
                     for (uint8_t i = 0; i < 48; i++)
                     {
                         if (data != 0xff)
                         {
-                            data = m_serial.read(static_cast<size_t> (1), static_cast<int> (m_timeout.to(units::ms)))[0];
+                            data = read(static_cast<size_t> (1), static_cast<int> (m_timeout.to(units::ms)))[0];
                             version += data;
                             crcUpdate(version[i]);
                             if (version[i] == 0)
                             {
                                 uint16_t ccrc;
-                                data = m_serial.read(static_cast<size_t> (1), static_cast<int> (m_timeout.to(units::ms)))[0];
+                                data = read(static_cast<size_t> (1), static_cast<int> (m_timeout.to(units::ms)))[0];
                                 if (data != 0xff)
                                 {
                                     ccrc = static_cast<uint16_t>(data) << 8;
-                                    data = m_serial.read(static_cast<size_t> (1), static_cast<int> (m_timeout.to(units::ms)))[0];
+                                    data = read(static_cast<size_t> (1), static_cast<int> (m_timeout.to(units::ms)))[0];
 
                                     if (data != 0xff)
                                     {
@@ -690,50 +691,63 @@ namespace rip
             std::vector<uint8_t> Roboclaw::readN(uint8_t n, Command cmd)
             {
                 std::vector<uint8_t> command = {m_address, static_cast<uint8_t>(cmd)};
-                for (uint8_t try_ = 0; try_ < kMaxRetries; try_++)
+                for(uint resets=0; resets < 1; resets++)
                 {
-                    crcClear();
-                    for (uint8_t i = 0; i < command.size(); i++)
+                    for (uint8_t try_ = 0; try_ < kMaxRetries; try_++)
                     {
-                        crcUpdate(command[i]);
-                    }
-
-                    m_serial.write(command);
-
-                    std::vector<uint8_t> response;
-                    uint8_t data;
-                    for (uint8_t i = 0; i < n; i++)
-                    {
-                        data = m_serial.read(static_cast<size_t> (1), static_cast<int> (m_timeout.to(units::ms)))[0];
-                        crcUpdate(data);
-                        response.push_back(data);
-                        if (data == 0xff)
+                        crcClear();
+                        for (uint8_t i = 0; i < command.size(); i++)
                         {
-                            continue;
+                            crcUpdate(command[i]);
                         }
-                    }
 
-                    if (data != 0xff)
-                    {
-                        uint16_t ccrc;
-                        data = m_serial.read(static_cast<size_t> (1), static_cast<int> (m_timeout.to(units::ms)))[0];
+                        write(command);
+
+                        std::vector<uint8_t> response;
+                        uint8_t data;
+                        for (uint8_t i = 0; i < n; i++)
+                        {
+                            data = read(static_cast<size_t> (1), static_cast<int> (m_timeout.to(units::ms)))[0];
+                            crcUpdate(data);
+                            response.push_back(data);
+                            if (data == 0xff)
+                            {
+                                continue;
+                            }
+                        }
+
                         if (data != 0xff)
                         {
-                            ccrc = static_cast<uint16_t>(data) << 8;
-                            data = m_serial.read(static_cast<size_t> (1), static_cast<int> (m_timeout.to(units::ms)))[0];
+                            uint16_t ccrc;
+                            data = read(static_cast<size_t> (1), static_cast<int> (m_timeout.to(units::ms)))[0];
                             if (data != 0xff)
                             {
-                                ccrc |= data;
-                                if (crcGet() == ccrc)
+                                ccrc = static_cast<uint16_t>(data) << 8;
+                                data = read(static_cast<size_t> (1), static_cast<int> (m_timeout.to(units::ms)))[0];
+                                if (data != 0xff)
                                 {
-                                    return response;
+                                    ccrc |= data;
+                                    if (crcGet() == ccrc)
+                                    {
+                                        return response;
+                                    }
                                 }
                             }
                         }
                     }
+                    m_serial.reset();
                 }
-
                 throw ReadFailure();
+            }
+
+            std::vector<uint8_t> Roboclaw::read(size_t len, int timeout_ms)
+            {
+                return m_serial.read(len, timeout_ms);
+            }
+
+            void Roboclaw::write(std::vector<uint8_t> data)
+            {
+                m_serial.write(data);
             }
 
 //////////////////////////////////////////////////////////////////////////////////////////////

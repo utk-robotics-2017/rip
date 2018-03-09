@@ -75,7 +75,6 @@ namespace rip
                     testClaw->setcResponse(response);
                     //CRC check failure throws command failure
                     testClaw->setBytes(55);
-                    testClaw->drive(Roboclaw::Motor::kM1, Roboclaw::kFullSpeedForward);
                     ASSERT_THROW(testClaw->drive(Roboclaw::Motor::kM1, Roboclaw::kFullSpeedForward), CommandFailure);
                     testClaw->setBytes(0);
                     //sends correct message: addr, 32 or 33, duty, CRC
