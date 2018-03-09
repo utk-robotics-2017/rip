@@ -683,6 +683,18 @@ namespace rip
 ///////////////////////////////////////// Serial /////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////
                 /**
+                 * wraps peripherycpp for unit testing
+                 * @param data vector of bytes
+                 */
+                void write(std::vector<uint8_t> data);
+                /**
+                 * wraps peripherycpp for unit testing
+                 * @param  len        # of bytes
+                 * @param  timeout_ms timeout
+                 * @return            vector of bytes
+                 */
+                std::vector<uint8_t> read(size_t len, int timeout_ms)
+                /**
                  * @brief Sends N bytes to the roboclaw
                  *
                  * @tparam Args The types of the arguments
@@ -694,9 +706,10 @@ namespace rip
                 template<typename... Args>
                 void writeN(Args... args)
                 {
+                    uint8_t data;
                     std::vector<uint8_t> command = {m_address};
                     argsToVector<0, Args...>(command, std::make_tuple(args...));
-                    uint8_t data;
+
                     for (int try_ = 0; try_ < kMaxRetries; try_++)
                     {
                         crcClear();

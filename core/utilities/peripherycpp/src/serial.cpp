@@ -62,11 +62,11 @@ namespace rip
         {
             checkError(serial_read(&m_serial, buf, size, timeout_ms));
         }
-
+        /*
         void Serial::write(std::vector<uint8_t> data)
         {
             checkError(serial_write(&m_serial, data.data(), data.size()));
-        }
+        }*/
 
         void Serial::write(uint8_t* data, size_t size)
         {

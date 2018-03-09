@@ -12,7 +12,7 @@ namespace rip
         {
             namespace mocks
             {
-                class MockRoboclaw : public Roboclaw , public rip::peripherycpp::Serial
+                class MockRoboclaw : public Roboclaw
                 {
                 public:
 
