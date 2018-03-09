@@ -8,6 +8,8 @@ extern "C"
 #include "peripherycpp/exceptions.hpp"
 #include <cstdint>
 #include <vector>
+#include <misc/logger.hpp>
+#include <fmt/format.h>
 
 namespace rip
 {
@@ -17,7 +19,16 @@ namespace rip
         class Mmio
         {
             public:
-
+                /**
+                 * default constructor
+                 */
+                Mmio();
+                /**
+                 * Constructor that opens on object creation
+                 * @param base the base address where the physical memory will be mapped.
+                 * @param size size of mapping
+                 */
+                Mmio(uintptr_t base, size_t size);
                 /**
                  * open
                  * @param base  the base address where the physical memory will be mapped.

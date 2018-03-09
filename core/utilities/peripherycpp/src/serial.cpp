@@ -6,9 +6,14 @@ namespace rip
     namespace peripherycpp
     {
 
-        void Serial::open(std::string device, unsigned int baudrate)
+        Serial::Serial()
+        {}
+
+        Serial::Serial(std::string device, unsigned int baudrate, unsigned int databits,
+                  int parity, unsigned int stopbits,
+                  bool xonxoff, bool rtscts)
         {
-            checkError(serial_open(&m_serial, device.c_str(), baudrate));
+            open(device, baudrate, databits, parity, stopbits, xonxoff, rtscts);
         }
 
         void Serial::open(std::string device, unsigned int baudrate, unsigned int databits,
@@ -29,6 +34,16 @@ namespace rip
             }
             checkError(serial_open_advanced(&m_serial, device.c_str(), baudrate,
                           databits, cpar,stopbits, xonxoff, rtscts));
+
+            misc::Logger::getInstance()->debug(fmt::format("Serial device {} successfully open", device));
+
+            m_device = device;
+            m_baudrate = baudrate;
+            m_databits = databits;
+            m_parity = parity;
+            m_stopbits = stopbits;
+            m_xonxoff = xonxoff;
+            m_rtscts = rtscts;
         }
 
         std::vector<uint8_t> Serial::read(size_t len, int timeout_ms)
@@ -38,9 +53,29 @@ namespace rip
             return data;
         }
 
+        void Serial::read(char* buf, size_t size, int timeout_ms)
+        {
+            checkError(serial_read(&m_serial, (uint8_t*)buf , size, timeout_ms));
+        }
+
+        void Serial::read(uint8_t* buf, size_t size, int timeout_ms)
+        {
+            checkError(serial_read(&m_serial, buf, size, timeout_ms));
+        }
+
         void Serial::write(std::vector<uint8_t> data)
         {
             checkError(serial_write(&m_serial, data.data(), data.size()));
+        }
+
+        void Serial::write(uint8_t* data, size_t size)
+        {
+            checkError(serial_write(&m_serial, data, size));
+        }
+
+        void Serial::write(char* data, size_t size)
+        {
+            checkError(serial_write(&m_serial, (uint8_t*)data, size));
         }
 
         void Serial::flush()
@@ -159,6 +194,11 @@ namespace rip
             checkError(serial_set_parity(&m_serial, cpar));
         }
 
+        void Serial::setStopBits(unsigned int stopbits)
+        {
+                checkError(serial_set_stopbits(&m_serial, stopbits));
+        }
+
         void Serial::setxOnxOff(bool enabled)
         {
             checkError(serial_set_xonxoff(&m_serial, enabled));
@@ -167,6 +207,12 @@ namespace rip
         void Serial::setRtscts(bool enabled)
         {
             checkError(serial_set_rtscts(&m_serial, enabled));
+        }
+
+        void Serial::reset()
+        {
+            close();
+            open(m_device, m_baudrate, m_databits, m_parity, m_stopbits, m_xonxoff, m_rtscts);
         }
 
         void Serial::checkError(int err_code)

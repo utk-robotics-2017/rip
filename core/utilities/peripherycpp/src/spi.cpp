@@ -5,9 +5,24 @@ namespace rip
 {
     namespace peripherycpp
     {
+        Spi::Spi()
+        {}
+
+        Spi::Spi(const std::string path, unsigned int mode, uint32_t max_speed)
+        {
+            open(path, mode, max_speed);
+        }
+
+        Spi::Spi(const std::string path, unsigned int mode, uint32_t max_speed,
+            int bit_order, uint8_t bits_per_word, uint8_t extra_flags)
+        {
+            openAdvanced(path, mode, max_speed, bit_order, bits_per_word, extra_flags);
+        }
+
         void Spi::open(const std::string path, unsigned int mode, uint32_t max_speed)
         {
             checkError(spi_open(&m_spi, path.c_str(), mode, max_speed));
+            misc::Logger::getInstance()->debug(fmt::format("Device {} successfully open", path));
         }
 
         void Spi::openAdvanced(const std::string path, unsigned int mode, uint32_t max_speed,
@@ -24,6 +39,7 @@ namespace rip
             }
             checkError(spi_open_advanced(&m_spi, path.c_str(), mode, max_speed, bo,
                                          bits_per_word, extra_flags));
+            misc::Logger::getInstance()->debug(fmt::format("Device {} successfully open", path));
         }
 
         void Spi::transfer(const uint8_t *txbuf, uint8_t *rxbuf, size_t len)

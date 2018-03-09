@@ -7,10 +7,19 @@ namespace rip
 
     namespace peripherycpp
     {
+        Mmio::Mmio()
+        {}
+
+        Mmio::Mmio(uintptr_t base, size_t size)
+        {
+            open(base, size);
+        }
 
         void Mmio::open(uintptr_t base, size_t size)
         {
             checkError(mmio_open(&m_mmio, base, size));
+            misc::Logger::getInstance()->debug("MMIO successfully opened");
+
         }
 
         uint32_t Mmio::read32(uintptr_t offset)

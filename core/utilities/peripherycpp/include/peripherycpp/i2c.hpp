@@ -8,6 +8,8 @@ extern "C"
 #include "peripherycpp/exceptions.hpp"
 #include <vector>
 #include <string>
+#include <misc/logger.hpp>
+#include <fmt/format.h>
 
 namespace rip
 {
@@ -18,7 +20,15 @@ namespace rip
         class I2c
         {
             public:
-
+                /**
+                 * default constructor
+                 */
+                I2c();
+                /**
+                 * constructor that opens given path
+                 * @param path the path to the desired i2c-dev device.
+                 */
+                I2c(const std::string path);
                 /**
                  * open
                  * @param path  the path to the desired i2c-dev device.

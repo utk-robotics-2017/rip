@@ -9,9 +9,18 @@ namespace rip
 {
     namespace peripherycpp
     {
+        I2c::I2c()
+        {}
+
+        I2c::I2c(const std::string path)
+        {
+            open(path);
+        }
+
         void I2c::open(const std::string path)
         {
             checkError(i2c_open(&m_i2c, path.c_str()));
+            misc::Logger::getInstance()->debug(fmt::format("I2C device {} successfully open", path));
         }
 
         void I2c::transfer(std::vector< std::vector<uint8_t> > msg_data, std::vector<int> flags, size_t count)
