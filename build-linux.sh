@@ -20,7 +20,6 @@ while [[ "$1" != "" ]]; do
       else
         echo "No $(pwd)/build/ to remove."
       fi
-      shift
       ;;
     "--no-cd"|"-n")
       echo "Building project: $(pwd)"
@@ -51,7 +50,7 @@ cmake .. \
 #
 
 # test if system has more than 1GB of RAM
-if (( $(cat /proc/meminfo | grep MemTotal | cut -d ' ' -f2- | tr -d ' [A-Za-z]' ) /1000 /1000 )); then
+if [[ ! -a /proc/meminfo ]] || (( $(cat /proc/meminfo | grep MemTotal | cut -d ' ' -f2- | tr -d ' [A-Za-z]' ) /1000 /1000 )); then
   nprocs="$(nproc --ignore=1)"
 else
   # system does not have enough RAM for more than 1 thread :<
