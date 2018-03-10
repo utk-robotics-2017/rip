@@ -14,52 +14,65 @@ Once installed, be sure to do whatever group management to your account so that 
 
 ## The Dependency Dockerfile
 
-Right now there are two dockerfiles, one that builds the dependencies (onto an Ubuntu base), and one that copies the source code of RIP.
+All of the useful RIP images are built from this one dependency image, which installs things like G2O and packages needed. You normally won't need to build this yourself.
 
-The dependency image is sourced from `external/Dockerfile` and is built automatically by dockerhub, as `utkrobotics/rip_deps`.
-
-To pull the latest deps image:
+To pull the latest deps image from dockerhub:
 
 ```docker pull utkrobotics/rip_deps```
 
-This includes g2o, eigen, suitesparse, etc, whatever is needed to build.
+This includes g2o, eigen, suitesparse, etc, whatever is needed to build RIP, so that you don't need to do the setup yourself.
 
-## The building / interactive Dockerfile
+## The interactive Dockerfiles
 
-This is the Dockerfile in the root of the repo.
+Since the RPI docker update, there are now two dockerfiles used for working with RIP builds interactively.
 
-It's based off the `rip_deps` image so it will have everything needed to build already installed.
+The easiest way to spin these up is to use the `./go-docker.sh` script which will handle everything for you.
 
-Upon building this container image, it will copy all the source code from your code directory into the container and set up an environment ready to run the build.
+### The Raspberry Pi emulating build
 
-To build the interactive container you can use the interactive docker build script:
+The option `rip_rpi` is a docker container that has a Raspi emulator installed, along with a virtual chroot and installed Pi dependencies.
 
-```
-./build-docker.sh
-```
+Building this image normally takes a very long time, so it's recommended that you pull it from dockerhub instead, using the `update_rip_rpi` option in `go-docker.sh`.
 
-You can use the prompts from the script to build everything needed for RIP, and optionally you can run the container.
+Once you have the image locally, you can use the `go-docker.sh` script to start the container wherever you want. Whatever your current working directory is (`pwd`) the script will mount that into the container at `/workdir`. (Note: you shouldn't run the container outside of the `go-docker.sh` script since the container wouldn't be set up correctly.)
 
-If you want to do so manually, or maintain the state of the container when you exit it:
+A shortcut to the rip_rpi container is to specify an entry command to the script:
 
 ```bash
-# --rm : removes the container when you exit it
-# -t -i : creates an interactive container
-# zsh -l : the command to run inside the container (use whatever your preferred shell is, or specify a command)
-docker run --rm -t -i utkrobotics/rip:$(git symbolic-ref HEAD|cut -d'/' -f3-|sed -e 's;/;_;') zsh -l
+# by default <command> is set to your $SHELL
+./go-docker.sh --rpi -- <command> <args>
 ```
 
-Now that you're inside the container, you can immediately build it, mess around, do whatever, because everything you do inside the container is removed when you exit it, and it never affects the code outside the container.
-
-Normally, what I do is:
+For example, if you just wanted to one-off the container to get a compiled Raspi build:
 
 ```bash
-# build dat stuff
-./build-linux.sh
-# runs the built unit tests
-./travis/script.sh
+# `rpdo` runs the command on the ARM pi emulator inside the chroot (raspberry pi do)
+./go-docker.sh --rpi -- rpdo ./build-linux.sh
 ```
 
-While you're in the container, feel free to do whatever you want, `rm -rf *`, or anything. Just remember if you make changes that you want to keep inside the container, you should make those same changes again outside the container on your local git repo.
+And you don't have to stop at just RIP, after all, it's just a library. You can use the `go-docker.sh` script from anywhere else as well!
 
-If you've made changed to your local git repo, you should run the build command again to update the image with your new changes.
+Example: compiling hugo and deploying it to a robot.
+
+```bash
+# cd to hugo's repo
+# use the path to the dockerscript:
+./rip/go-docker.sh --rpi
+# (inside the container)
+# `--no-cd` builds the current directory project instead of RIP
+rpdo ./rip/build-linux.sh --no-cd
+exit
+# outside container
+# we now have a build/ that has been built for a Raspberry pi!
+scp -r build/ <pi> # or whatever you want to do to copy it over
+```
+
+### The 'blast-area' build (normal x86 / travis builds)
+
+The normal rip image copies your current RIP source code into the image when it is built, and does not mount the working directory.
+
+This is more useful when you have a radical idea you want to test, try out a failure or other non-ideal condition, or just want to otherwise test something without having it affect your current working directory of code.
+
+In this container, there's no Raspberry Pi emulator, it only contains what is needed on x86_64 linux builds.
+
+This is the build that travis currently uses to perform unit tests and coverage reports. The way it's used here is that the container is started once without the `--rm` flag so that multiple commands can be run on one instance of the container, using docker's exec tool.

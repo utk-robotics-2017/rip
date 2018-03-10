@@ -1,29 +1,44 @@
 #!/bin/zsh
 set -E
-pushd "$(dirname "$0")"
 
-case "$1" in
-  "--clean")
-    if [ -d build ]; then
-      echo "Removing $(dirname "$0")/build/"
-      rm -r $(dirname "$0")/build/
-    else
-      echo "No $(dirname "$0")/build/ to remove."
-    fi
-    shift
-    ;;
-  "--help")
-    echo "$0 [--clean|--help] <extra args are passed to cmake>"
-    popd
-    exit 0
-    ;;
-esac
+while [[ "$1" != "" ]]; do
+  case "$1" in
+    "--help"|"-h")
+      echo "$0 <script args> <extra args are passed to cmake>"
+      popd
+      exit 0
+      ;;
+    "--")
+      # stop parsing args and let cmake take the rest
+      shift
+      break
+      ;;
+    "--clean"|"-c")
+      if [ -d build ]; then
+        echo "Removing $(pwd)/build/"
+        rm -r "$(pwd)/build/"
+      else
+        echo "No $(pwd)/build/ to remove."
+      fi
+      shift
+      ;;
+    "--no-cd"|"-n")
+      echo "Building project: $(pwd)"
+      NO_CD="true"
+      ;;
+  esac
+  shift
+done
+
+if [ -z "$NO_CD" ]; then
+  # push into own dir
+  pushd "$(dirname "$0" )"
+fi
 
 mkdir -p build
 pushd build
 
 cleanup() {
-  popd;popd;
   exit $SIGNAL;
 }
 
@@ -32,7 +47,7 @@ trap 'cleanup' SIGINT
 
 cmake .. \
   -DENABLE_TESTING=on \
-  $@
+  "$@"
 #
 
 # test if system has more than 1GB of RAM
