@@ -26,7 +26,7 @@
 #include <tuple>
 #include <json.hpp>
 #include <fmt/format.h>
-
+#include <misc/logger.hpp>
 #include <units/units.hpp>
 #include <framework/subsystem.hpp>
 

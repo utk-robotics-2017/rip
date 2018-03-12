@@ -19,6 +19,8 @@ namespace rip
         void Serial::open(std::string device, unsigned int baudrate, unsigned int databits,
                           int parity, unsigned int stopbits, bool xonxoff, bool rtscts)
         {
+            misc::Logger::getInstance()->debug(fmt::format("Serial device {} opening", device));
+
             serial_parity_t cpar;
             if (parity == 0)
             {

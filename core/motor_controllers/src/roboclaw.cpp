@@ -736,6 +736,8 @@ namespace rip
                         }
                     }
                     m_serial.reset();
+                    misc::Logger::getInstance()->debug(fmt::format("Serial device {} reset due to a read failure", m_device));
+
                 }
                 throw ReadFailure();
             }
