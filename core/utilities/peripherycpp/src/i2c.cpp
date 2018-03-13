@@ -16,14 +16,40 @@ namespace rip
         {
             open(path);
         }
-        
+
         void I2c::open(const std::string path)
         {
             checkError(i2c_open(&m_i2c, path.c_str()));
         }
 
+        uint8_t I2c::read_byte(uint8_t addr)
+        {
+
+        }
+
+        std::vector<uint8_t> I2c::read(uint8_t addr, uint32_t len)
+        {
+
+        }
+
+        void I2c::write_byte(uint8_t addr, uint8_t byte)
+        {
+            struct i2c_msg *msg = new struct i2c_msg;
+            uint8_t buf[2] = {addr, byte};
+            *msg = { .addr = EEPROM_I2C_ADDR, .flags = 0, .len = 1, .buf = buf };
+            int err = i2c_transfer(&m_i2c, msg, 1);
+            delete [] msgs;
+            checkError(err);
+        }
+
+        void I2c::write(uint8_t addr, const std::vector<uint8_t>& data)
+        {
+
+        }
+
         void I2c::transfer(std::vector< std::vector<uint8_t> > msg_data, std::vector<int> flags, size_t count)
         {
+            //first
             /* Notes about this function:
              * 1) `msg_data` stores the data that will be transfered. It must be a vector of
              *        vectors of uint8_t's to allow for determining the amount of data being

@@ -12,6 +12,8 @@
 #include <fmt/format.h>
 #include "i_register_io.hpp"
 #include <peripherycpp/i2c.hpp>
+#include <vector>
+
 namespace rip
 {
     namespace navigation

@@ -33,6 +33,31 @@ namespace rip
                  * @brief  Open the i2c-dev device at the specified path.
                  */
                 void open(const std::string path);
+                /**
+                 * Simplified read method
+                 * @param  addr i2c address to read from
+                 * @param  len  # of bytes to read
+                 * @return      vector of bytes
+                 */
+                std::vector<uint8_t> read(uint8_t addr, size_t len);
+                /**
+                 * reads one byte from a given i2c address
+                 * @param  addr address of device to read from
+                 * @return      a byte
+                 */
+                uint8_t read_byte(uint8_t addr);
+                /**
+                 * Writes a vector of bytes to an i2c device
+                 * @param addr address of i2c device
+                 * @param data const by reference vector of bytes to write
+                 */
+                void write(uint8_t addr, const std::vector<uint8_t>& data);
+                /**
+                 * Writes a single byte to a given i2c address
+                 * @param addr address to write to
+                 * @param byte byte to write
+                 */
+                void write_byte(uint8_t addr, uint8_t byte)
 
                 /**
                  * transfer

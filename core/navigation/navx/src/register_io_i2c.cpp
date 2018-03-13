@@ -2,7 +2,7 @@
  * RegisterIOI2C.cpp
  *
  *  Created on: Jul 29, 2015
- *      Author: Scott
+ *      Author: Scott, IEEE robotics
  */
 
 #include <navx/register_io_i2c.hpp>
@@ -13,8 +13,8 @@ namespace rip
     {
         namespace navx
         {
-            /*
-            RegisterIO_I2C::RegisterIO_I2C(I2C* port)
+
+            RegisterIO_I2C::RegisterIO_I2C(peripherycpp::I2c* port)
             {
                 this->port = port;
                 this->trace = false;
@@ -67,7 +67,7 @@ namespace rip
             {
             	trace = enable;
             }
-            */
+
         }
     }
 }
