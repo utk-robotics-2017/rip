@@ -61,10 +61,12 @@ namespace rip
                         m_parity = config.at("parity");
                     }
                 }
-                if (config.find("faking") == config.end())
+                m_faking = !(config.find("faking") == config.end());
+                if(m_faking)
                 {
                     if (config.find("advanced serial options") != config.end())
                     {
+                        m_advanced_serial = true;
                         open(&m_serial, m_device, m_baudrate, m_databits, m_parity,
                              m_stopbits, m_xonxoff, m_rtscts);
                     }
@@ -72,10 +74,6 @@ namespace rip
                     {
                         open(&m_serial, m_device, m_baudrate);
                     }
-                }
-                else
-                {
-                    m_faking = true;
                 }
             }
             Roboclaw::~Roboclaw()
@@ -694,51 +692,68 @@ namespace rip
                 uint8_t value = 0;
                 uint8_t trys = kMaxRetries;
                 int16_t data;
+                uint8_t max_reset = 2;
 
                 std::vector<uint8_t> command = {m_address, static_cast<uint8_t>(cmd)};
-                for (uint8_t try_ = 0; try_ < kMaxRetries; try_++)
+                for(uint8_t reset = 0; reset < max_reset; reset++)
                 {
-                    crcClear();
-                    for (uint8_t i = 0; i < command.size(); i++)
+                    for (uint8_t try_ = 0; try_ < kMaxRetries; try_++)
                     {
-                        crcUpdate(command[i]);
-                    }
-
-                    write(&m_serial, command, command.size());
-
-                    std::vector<uint8_t> response;
-                    uint8_t data;
-                    for (uint8_t i = 0; i < n; i++)
-                    {
-                        data = read(&m_serial, m_timeout);
-                        crcUpdate(data);
-                        response.push_back(data);
-                        if (data == -1)
+                        crcClear();
+                        for (uint8_t i = 0; i < command.size(); i++)
                         {
-                            continue;
+                            crcUpdate(command[i]);
                         }
-                    }
 
-                    if (data != -1)
-                    {
-                        uint16_t ccrc;
-                        data = read(&m_serial, m_timeout);
+                        write(&m_serial, command, command.size());
+
+                        std::vector<uint8_t> response;
+                        uint8_t data;
+                        for (uint8_t i = 0; i < n; i++)
+                        {
+                            data = read(&m_serial, m_timeout);
+                            crcUpdate(data);
+                            response.push_back(data);
+                            if (data == -1)
+                            {
+                                continue;
+                            }
+                        }
+
                         if (data != -1)
                         {
-                            ccrc = static_cast<uint16_t>(data) << 8;
+                            uint16_t ccrc;
                             data = read(&m_serial, m_timeout);
                             if (data != -1)
                             {
-                                ccrc |= data;
-                                if (crcGet() == ccrc)
+                                ccrc = static_cast<uint16_t>(data) << 8;
+                                data = read(&m_serial, m_timeout);
+                                if (data != -1)
                                 {
-                                    return response;
+                                    ccrc |= data;
+                                    if (crcGet() == ccrc)
+                                    {
+                                        return response;
+                                    }
                                 }
                             }
                         }
                     }
+                    misc::Logger::getInstance()->debug(fmt::format("Serial read failure on device {}, attempting reset...", m_device));
+                    if(!m_faking)
+                    {
+                        serial_close(&m_serial);
+                        if(m_advanced_serial)
+                        {
+                            open(&m_serial, m_device, m_baudrate, m_databits, m_parity,
+                                 m_stopbits, m_xonxoff, m_rtscts);
+                        }
+                        else
+                        {
+                            open(&m_serial, m_device, m_baudrate);
+                        }
+                    }
                 }
-
                 throw ReadFailure();
             }
 

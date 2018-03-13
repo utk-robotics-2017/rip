@@ -26,7 +26,7 @@
 #include <tuple>
 #include <json.hpp>
 #include <fmt/format.h>
-
+#include <misc/logger.hpp>
 #include <units/units.hpp>
 #include <framework/subsystem.hpp>
 
@@ -793,7 +793,7 @@ namespace rip
                 //advanced
                 unsigned int m_databits, m_stopbits;
                 bool m_xonxoff, m_rtscts;
-                bool m_faking = false;
+                bool m_faking = false, m_advanced_serial = false;
                 serial_parity_t m_parity;
                 //TODO: support advanced serial opening
 
