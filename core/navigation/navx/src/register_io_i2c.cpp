@@ -13,7 +13,7 @@ namespace rip
     {
         namespace navx
         {
-
+            /*
             RegisterIO_I2C::RegisterIO_I2C(peripherycpp::I2c* port)
             {
                 this->port = port;
@@ -27,7 +27,9 @@ namespace rip
 
             bool RegisterIO_I2C::write(uint8_t address, uint8_t value )
             {
-            	bool aborted = port->write(address | 0x80, value);
+                std::vector< std::vector<uint8_t> > msg_data;
+                msg_data[0][]
+            	bool aborted = port->transfer(address | 0x80, value);
                 //if (aborted && trace) printf("navX-MXP I2C Write error\n");
                 return !aborted;
             }
@@ -42,9 +44,8 @@ namespace rip
                 while (len > 0)
                 {
                     int read_len = (len > MAX_WPILIB_I2C_READ_BYTES) ? MAX_WPILIB_I2C_READ_BYTES : len;
-                    if (!port->write(first_address + buffer_offset, read_len) &&
-                        !port->readOnly(read_len, read_buffer))
-                        {
+                    if(!port->write(first_address + buffer_offset, read_len))
+                    {
                         memcpy(buffer + buffer_offset, read_buffer, read_len);
                         buffer_offset += read_len;
                         len -= read_len;
@@ -65,9 +66,9 @@ namespace rip
 
             void RegisterIO_I2C::enableLogging(bool enable)
             {
-            	trace = enable;
+            	//trace = enable;
             }
-
+            */
         }
     }
 }

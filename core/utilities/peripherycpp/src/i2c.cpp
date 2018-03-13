@@ -27,7 +27,7 @@ namespace rip
 
         }
 
-        std::vector<uint8_t> I2c::read(uint8_t addr, uint32_t len)
+        std::vector<uint8_t> I2c::read(uint8_t addr, size_t len)
         {
 
         }
@@ -38,7 +38,7 @@ namespace rip
             uint8_t buf[2] = {addr, byte};
             *msg = { .addr = EEPROM_I2C_ADDR, .flags = 0, .len = 1, .buf = buf };
             int err = i2c_transfer(&m_i2c, msg, 1);
-            delete [] msgs;
+            delete [] msg;
             checkError(err);
         }
 

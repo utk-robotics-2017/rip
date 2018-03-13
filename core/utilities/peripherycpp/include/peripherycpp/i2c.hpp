@@ -57,7 +57,7 @@ namespace rip
                  * @param addr address to write to
                  * @param byte byte to write
                  */
-                void write_byte(uint8_t addr, uint8_t byte)
+                void write_byte(uint8_t addr, uint8_t byte);
 
                 /**
                  * transfer
