@@ -49,39 +49,55 @@ namespace rip
                     m_ticks_per_rev = config.at("ticks_per_rev");
                     m_wheel_radius = config.at("wheel_radius");
                     //serial
-                    std::string temp = config.at("device");
-                    m_device = temp.c_str();
+                    m_device = config.at("device");
                     m_baudrate = config.at("baudrate");
                     if (config.find("advanced serial options") != config.end())
                     {
+			serial_parity cpar;
+			int par = config.at("parity");
+			if (parity == 0)
+            	{
+                cpar = PARITY_NONE;
+           	 }
+           	 else if (parity == 1)
+           	 {
+               	 cpar = PARITY_ODD;
+           	 }
+            	else
+           	 {
+              		  cpar = PARITY_EVEN;
+           	 }
                         m_databits = config.at("databits");
                         m_stopbits = config.at("stopbits");
                         m_xonxoff = config.at("xonxoff");
                         m_rtscts = config.at("rtscts");
-                        m_parity = config.at("parity");
+                        m_parity = cpar;
                     }
                 }
-                m_faking = !(config.find("faking") == config.end());
-                if(m_faking)
+                if (config.find("faking") == config.end())
                 {
                     if (config.find("advanced serial options") != config.end())
                     {
-                        m_advanced_serial = true;
-                        open(&m_serial, m_device, m_baudrate, m_databits, m_parity,
+                        m_serial.open(m_device, m_baudrate, m_databits, m_parity,
                              m_stopbits, m_xonxoff, m_rtscts);
                     }
                     else
                     {
-                        open(&m_serial, m_device, m_baudrate);
+                        m_serial.open(m_device, m_baudrate);
                     }
                 }
+                else
+                {
+                    m_faking = true;
+                }
             }
+
             Roboclaw::~Roboclaw()
             {
                 if(!m_faking)
                 {
                     stop();
-                    serial_close(&m_serial);
+                    m_serial.close();
                 }
             }
 
@@ -93,8 +109,6 @@ namespace rip
             {
                 Command cmd;
                 switch (motor)
-                {
-                    case Motor::kM1:
                         cmd = Command::kM1Duty;
                         break;
                     case Motor::kM2:
@@ -1029,45 +1043,3 @@ namespace rip
                     throw BadJson("Not enough config values, min size: " + std::to_string(7));
                 }
 
-                for (int i = 1; i < 5; i++)
-                {
-                    if (testcfg[vars[i]] < 0.0)
-                    {
-                        throw OutOfRange(vars[i] + " should be a positive value");
-                    }
-                }
-                if (testcfg["baudrate"] < 0)
-                {
-                    throw OutOfRange("baudrate should be positive.");
-                }
-                if (testcfg["wheel_radius"] == 0)
-                {
-                    throw OutOfRange("wheel radius cannot = 0");
-                }
-                try
-                {
-                    setName(testcfg["name"]);
-                    m_address = testcfg.at("address").get<uint8_t>();
-                    m_timeout = testcfg.at("timeout");
-                    m_ticks_per_rev = testcfg.at("ticks_per_rev");
-                    m_wheel_radius = testcfg.at("wheel_radius");
-                    std::string temp = testcfg.at("device");
-                    m_device = temp.c_str();
-                    m_baudrate = testcfg.at("baudrate");
-                    if (testcfg.find("advanced serial options") != testcfg.end())
-                    {
-                        m_databits = testcfg.at("databits");
-                        m_stopbits = testcfg.at("stopbits");
-                        m_xonxoff = testcfg.at("xonxoff");
-                        m_rtscts = testcfg.at("rtscts");
-                        m_parity = testcfg.at("parity");
-                    }
-                }
-                catch (...)
-                {
-                    throw BadJson("Failed to set 1 or more values");
-                }
-            }
-        }
-    }
-}
