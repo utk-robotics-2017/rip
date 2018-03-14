@@ -53,11 +53,25 @@ namespace rip
                     m_baudrate = config.at("baudrate");
                     if (config.find("advanced serial options") != config.end())
                     {
+			serial_parity cpar;
+			int par = config.at("parity");
+			if (parity == 0)
+            		{
+                		cpar = PARITY_NONE;
+            		}
+            		else if (parity == 1)
+            		{
+                		cpar = PARITY_ODD;
+            		}
+           		 else
+           		 {
+                		cpar = PARITY_EVEN;
+           		}
                         m_databits = config.at("databits");
                         m_stopbits = config.at("stopbits");
                         m_xonxoff = config.at("xonxoff");
                         m_rtscts = config.at("rtscts");
-                        m_parity = config.at("parity");
+                        m_parity = cpar;
                     }
                 }
                 if (config.find("faking") == config.end())
