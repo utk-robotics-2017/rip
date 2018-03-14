@@ -6,3 +6,5 @@ COPY . /home/${RUSER}/code/rip
 RUN sudo chown -R 902:902 /home/${RUSER}
 
 WORKDIR /home/${RUSER}/code/rip
+
+# vim: set syntax=dockerfile:
