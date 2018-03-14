@@ -76,7 +76,7 @@ namespace rip
                     }
                 }
                 m_faking = !(config.find("faking") == config.end());
-                if(m_faking)
+                if(!m_faking)
                 {
                     if (config.find("advanced serial options") != config.end())
                     {
