@@ -58,7 +58,21 @@ namespace rip
                         m_stopbits = config.at("stopbits");
                         m_xonxoff = config.at("xonxoff");
                         m_rtscts = config.at("rtscts");
-                        m_parity = config.at("parity");
+                        int parity = config.at("parity");
+                        serial_parity_t cpar;
+                        if (parity == 0)
+                        {
+                            cpar = PARITY_NONE;
+                        }
+                        else if (parity == 1)
+                        {
+                            cpar = PARITY_ODD;
+                        }
+                        else
+                        {
+                            cpar = PARITY_EVEN;
+                        }
+                        m_parity = cpar;
                     }
                 }
                 m_faking = !(config.find("faking") == config.end());
@@ -360,7 +374,7 @@ namespace rip
 
                     for (uint8_t i = 0; i < 48; i++)
                     {
-                        if (data != -1)
+                        if (data != 0xFF)
                         {
                             data = read(&m_serial, m_timeout);
                             version += data;
@@ -369,12 +383,12 @@ namespace rip
                             {
                                 uint16_t ccrc;
                                 data = read(&m_serial, m_timeout);
-                                if (data != -1)
+                                if (data != 0xFF)
                                 {
                                     ccrc = static_cast<uint16_t>(data) << 8;
                                     data = read(&m_serial, m_timeout);
 
-                                    if (data != -1)
+                                    if (data != 0xFF)
                                     {
                                         ccrc |= data;
                                         if (crcGet() == ccrc)
@@ -687,11 +701,6 @@ namespace rip
 //////////////////////////////////////////////////////////////////////////////////////////////
             std::vector<uint8_t> Roboclaw::readN(uint8_t n, Command cmd)
             {
-                uint8_t crc;
-
-                uint8_t value = 0;
-                uint8_t trys = kMaxRetries;
-                int16_t data;
                 uint8_t max_reset = 2;
 
                 std::vector<uint8_t> command = {m_address, static_cast<uint8_t>(cmd)};
@@ -714,21 +723,21 @@ namespace rip
                             data = read(&m_serial, m_timeout);
                             crcUpdate(data);
                             response.push_back(data);
-                            if (data == -1)
+                            if (data == 0xFF)
                             {
                                 continue;
                             }
                         }
 
-                        if (data != -1)
+                        if (data != 0xFF)
                         {
                             uint16_t ccrc;
                             data = read(&m_serial, m_timeout);
-                            if (data != -1)
+                            if (data != 0xFF)
                             {
                                 ccrc = static_cast<uint16_t>(data) << 8;
                                 data = read(&m_serial, m_timeout);
-                                if (data != -1)
+                                if (data != 0xFF)
                                 {
                                     ccrc |= data;
                                     if (crcGet() == ccrc)
@@ -960,6 +969,7 @@ namespace rip
             bool Roboclaw::diagnostic()
             {
                 // todo
+                return 0;
             }
 
             void Roboclaw::crcUpdate(uint8_t data)
@@ -1060,7 +1070,21 @@ namespace rip
                         m_stopbits = testcfg.at("stopbits");
                         m_xonxoff = testcfg.at("xonxoff");
                         m_rtscts = testcfg.at("rtscts");
-                        m_parity = testcfg.at("parity");
+                        int parity = testcfg.at("parity");
+                        serial_parity_t cpar;
+                        if (parity == 0)
+                        {
+                            cpar = PARITY_NONE;
+                        }
+                        else if (parity == 1)
+                        {
+                            cpar = PARITY_ODD;
+                        }
+                        else
+                        {
+                            cpar = PARITY_EVEN;
+                        }
+                        m_parity = cpar;
                     }
                 }
                 catch (...)
