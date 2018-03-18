@@ -24,6 +24,7 @@
 #include <array>
 #include <vector>
 #include <tuple>
+#include <thread>
 #include <json.hpp>
 #include <fmt/format.h>
 #include <misc/logger.hpp>
@@ -663,6 +664,7 @@ namespace rip
                 virtual void stop() override;
 
                 virtual bool diagnostic() override;
+                static std::mutex global_lock;
 
             private:
                 static const uint8_t kMaxRetries = 10;

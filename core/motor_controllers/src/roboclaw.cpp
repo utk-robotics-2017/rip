@@ -703,6 +703,9 @@ namespace rip
 //////////////////////////////////////////////////////////////////////////////////////////////
             std::vector<uint8_t> Roboclaw::readN(uint8_t n, Command cmd)
             {
+                // todo: don't do this --- just trying something out
+                std::lock_guard<std::mutex> lock(Roboclaw::global_lock);
+
                 uint8_t max_reset = 2;
 
                 std::vector<uint8_t> command = {m_address, static_cast<uint8_t>(cmd)};
@@ -777,6 +780,7 @@ namespace rip
 
                     throw CommandFailure(serial_errmsg(serial));
                 }
+                serial_flush(serial);
             }
 
             uint8_t Roboclaw::read(serial_t* serial, units::Time timeout)
