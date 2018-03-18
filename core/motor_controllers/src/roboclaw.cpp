@@ -53,20 +53,20 @@ namespace rip
                     m_baudrate = config.at("baudrate");
                     if (config.find("advanced serial options") != config.end())
                     {
-			serial_parity cpar;
-			int par = config.at("parity");
-			if (parity == 0)
-            		{
-                		cpar = PARITY_NONE;
-            		}
-            		else if (parity == 1)
-            		{
-                		cpar = PARITY_ODD;
-            		}
-           		 else
-           		 {
-                		cpar = PARITY_EVEN;
-           		}
+                        serial_parity cpar;
+                        int parity = config.at("parity");
+                        if (parity == 0)
+                        {
+                            cpar = PARITY_NONE;
+                        }
+                        else if (parity == 1)
+                        {
+                            cpar = PARITY_ODD;
+                        }
+                        else
+                        {
+                            cpar = PARITY_EVEN;
+                        }
                         m_databits = config.at("databits");
                         m_stopbits = config.at("stopbits");
                         m_xonxoff = config.at("xonxoff");
@@ -1033,6 +1033,20 @@ namespace rip
                         m_xonxoff = testcfg.at("xonxoff");
                         m_rtscts = testcfg.at("rtscts");
                         m_parity = testcfg.at("parity");
+                        serial_parity cpar;
+                        int parity = testcfg.at("parity");
+                        if (parity == 0)
+                        {
+                            cpar = PARITY_NONE;
+                        }
+                        else if (parity == 1)
+                        {
+                            cpar = PARITY_ODD;
+                        }
+                        else
+                        {
+                            cpar = PARITY_EVEN;
+                        }
                     }
                 }
                 catch (...)
