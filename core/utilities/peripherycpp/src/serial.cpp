@@ -16,9 +16,17 @@ namespace rip
             open(device, baudrate, databits, parity, stopbits, xonxoff, rtscts);
         }
 
+        Serial::~Serial()
+        {
+            close();
+            devices_open[m_device] = false;
+        }
+
         void Serial::open(std::string device, unsigned int baudrate, unsigned int databits,
                           int parity, unsigned int stopbits, bool xonxoff, bool rtscts)
         {
+            misc::Logger::getInstance()->debug(fmt::format("Serial device {} opening", device));
+
             serial_parity_t cpar;
             if (parity == 0)
             {
@@ -36,7 +44,7 @@ namespace rip
                           databits, cpar,stopbits, xonxoff, rtscts));
 
             misc::Logger::getInstance()->debug(fmt::format("Serial device {} successfully open", device));
-
+            devices_open[device] = true;
             m_device = device;
             m_baudrate = baudrate;
             m_databits = databits;

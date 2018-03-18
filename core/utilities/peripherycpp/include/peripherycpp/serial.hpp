@@ -5,6 +5,8 @@
 #include "peripherycpp/exceptions.hpp"
 #include <misc/logger.hpp>
 #include <fmt/format.h>
+#include <json.hpp>
+#include <memory>
 
 extern "C"
 {
@@ -15,6 +17,24 @@ namespace rip
 {
     namespace peripherycpp
     {
+        std::map<std::string, bool> devices_open;
+        static bool isOpen(std::string device)
+        {
+            if(devices_open.find(device) != devices_open.end())
+            {
+                return devices_open[device];
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
+        static std::shared_ptr<Serial> makeSerial(const nlohmann::json& config)
+        {
+
+        }
+
         class Serial
         {
         public:
@@ -22,6 +42,11 @@ namespace rip
              * Default constructor
              */
             Serial();
+            /**
+             * Destructor
+             */
+            ~Serial();
+
             /**
              * Advanced open constructor
              * @param device   tty device at the specified path (e.g. "/dev/ttyUSB0")
@@ -61,7 +86,7 @@ namespace rip
              * @param  timeout_ms length of timeout period in ms
              * @return            vector of bytes
              */
-            std::vector<uint8_t> read(size_t len, int timeout_ms);
+            virtual std::vector<uint8_t> read(size_t len, int timeout_ms);
             /**
              * buffer/c style alternative
              * @param buf        buffer to be read into
@@ -91,7 +116,7 @@ namespace rip
              * [write description]
              * @param data [description]
              */
-            void write(std::vector<uint8_t> data);
+            virtual void write(std::vector<uint8_t> data);
 
             /**
              * flush
