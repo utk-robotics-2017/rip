@@ -45,7 +45,8 @@ namespace rip
                     setName(config["name"]);
                     //required parameters
                     m_address = config.at("address").get<uint8_t>();
-                    m_timeout = config.at("timeout");
+                    m_timeout = config.at("timeout") * units::ms;
+
                     m_ticks_per_rev = config.at("ticks_per_rev");
                     m_wheel_radius = config.at("wheel_radius");
                     //serial
@@ -75,8 +76,8 @@ namespace rip
                         m_parity = cpar;
                     }
                 }
-                m_faking = !(config.find("faking") == config.end());
-                if(m_faking)
+                m_faking = (config.find("faking") != config.end());
+                if(!m_faking)
                 {
                     if (config.find("advanced serial options") != config.end())
                     {
@@ -748,9 +749,10 @@ namespace rip
                             }
                         }
                     }
-                    misc::Logger::getInstance()->debug(fmt::format("Serial read failure on device {}, attempting reset...", m_device));
                     if(!m_faking)
                     {
+                        misc::Logger::getInstance()->debug(fmt::format("Serial read failure on device {}, attempting reset...", m_device));
+                        serial_flush(&m_serial);
                         serial_close(&m_serial);
                         if(m_advanced_serial)
                         {
@@ -770,6 +772,8 @@ namespace rip
             {
                 if (serial_write(serial, &command[0], len) < 0)
                 {
+                    misc::Logger::getInstance()->debug(fmt::format("Serial write failure on device {}", m_device));
+
                     throw CommandFailure(serial_errmsg(serial));
                 }
             }
@@ -777,8 +781,10 @@ namespace rip
             uint8_t Roboclaw::read(serial_t* serial, units::Time timeout)
             {
                 uint8_t data;
-                if (serial_read(serial, &data, 1, static_cast<int>(timeout())) < 0)
+                if (serial_read(serial, &data, 1, static_cast<int>(timeout.to(units::ms))) < 0)
                 {
+                    misc::Logger::getInstance()->debug(fmt::format("Serial read failure on device {}", m_device));
+
                     throw ReadFailure(serial_errmsg(serial));
                 }
                 return data;
@@ -792,6 +798,8 @@ namespace rip
                 if (serial_open_advanced(serial, device.c_str(), baudrate, databits, parity,
                                          stopbits, xonxoff, rtscts) < 0)
                 {
+                    misc::Logger::getInstance()->debug(fmt::format("Serial open failure on device {}", m_device));
+
                     throw SerialOpenFail(serial_errmsg(serial));
                 }
             }
@@ -800,6 +808,8 @@ namespace rip
             {
                 if (serial_open(serial, device.c_str(), baudrate) < 0)
                 {
+                    misc::Logger::getInstance()->debug(fmt::format("Serial open failure on device {}", m_device));
+
                     throw SerialOpenFail(serial_errmsg(serial));
                 }
             }
@@ -1058,7 +1068,8 @@ namespace rip
                 {
                     setName(testcfg["name"]);
                     m_address = testcfg.at("address").get<uint8_t>();
-                    m_timeout = testcfg.at("timeout");
+                    m_timeout = testcfg.at("timeout") * units::ms;
+                    misc::Logger::getInstance()->debug(fmt::format("Roboclaw timeout in ms = {}", m_timeout.to(units::ms)));
                     m_ticks_per_rev = testcfg.at("ticks_per_rev");
                     m_wheel_radius = testcfg.at("wheel_radius");
                     std::string temp = testcfg.at("device");

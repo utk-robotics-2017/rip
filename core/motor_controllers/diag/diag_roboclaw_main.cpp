@@ -1,4 +1,4 @@
-#pragma GCC diagnostic push                                                   
+#pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 #pragma GCC diagnostic ignored "-Wswitch-default"
@@ -24,22 +24,24 @@ int main(int argc, char** argv)
     //make serial stuff
     nlohmann::json config1 =
     {
+        {"name", "clawRight"},
         {"address", 0x80},
         {"timeout", 1000},
         {"ticks_per_rev", 3591.84},
         {"wheel_radius", (2.875 / 2.0)* rip::units::in},
         {"device", "/dev/ttyAMA0"},
-        {"baudrate", 115200}
+        {"baudrate", 38400}
     };
     nlohmann::json config2 = config1;
     config2["address"] = 0x81;
+    config2["name"] = "clawLeft";
 
     Roboclaw testClawLeft(config2);
     Roboclaw testClawRight(config1);
     std::vector<Roboclaw*> claws = {&testClawLeft, &testClawRight};
 
-    diag::Diag diagTool(claws);
-    diagTool.start();
+    //diag::Diag diagTool(claws);
+    //diagTool.start();
     /*
     MotorDynamics dynamics, stop;
     stop.setSpeed(0);
@@ -60,7 +62,12 @@ int main(int argc, char** argv)
     testClawLeft.setDynamics(dynamics);
     testClawRight.setDynamics(stop, false);
     testClawLeft.setDynamics(stop, false);
-
+    */
+    while(1)
+    {
+        std::cout << testClawLeft.readEncodersRaw()[0] << std::endl;
+        //std::cout << testClawRight.readEncodersRaw()[0] << std::endl;
+    }
     //std::cout << "ticks m1 left " << testClawLeft.readEncoderRaw(Roboclaw::Motor::kM1) << std::endl;
     /*
     testClawRight.resetEncoders();

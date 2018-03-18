@@ -90,7 +90,6 @@ namespace rip
                 std::vector<units::Distance> data;
                 for(uint i=0; i<motors.size(); i++)
                 {
-                    std::cout << std::endl << static_cast<int>(motors[i]) << std::endl;
 
                     switch(motors[i])
                     {
