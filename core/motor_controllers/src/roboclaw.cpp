@@ -29,6 +29,9 @@ namespace rip
     {
         namespace roboclaw
         {
+
+			std::mutex Roboclaw::global_lock;
+
             Roboclaw::Roboclaw(const nlohmann::json& config, bool test)
                 : Subsystem("")
             {
@@ -50,8 +53,7 @@ namespace rip
                     m_ticks_per_rev = config.at("ticks_per_rev");
                     m_wheel_radius = config.at("wheel_radius");
                     //serial
-                    std::string temp = config.at("device");
-                    m_device = temp.c_str();
+                    m_device = config.at("device"); 
                     m_baudrate = config.at("baudrate");
                     if (config.find("advanced serial options") != config.end())
                     {
@@ -1077,8 +1079,7 @@ namespace rip
                     misc::Logger::getInstance()->debug(fmt::format("Roboclaw timeout in ms = {}", m_timeout.to(units::ms)));
                     m_ticks_per_rev = testcfg.at("ticks_per_rev");
                     m_wheel_radius = testcfg.at("wheel_radius");
-                    std::string temp = testcfg.at("device");
-                    m_device = temp.c_str();
+                    m_device = testcfg.at("device");
                     m_baudrate = testcfg.at("baudrate");
                     if (testcfg.find("advanced serial options") != testcfg.end())
                     {
