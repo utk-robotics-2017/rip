@@ -1,5 +1,6 @@
 # Prerequisites
 *.d
+!*.d/
 
 # Compiled Object files
 *.slo
@@ -87,7 +88,8 @@ Thumbs.db
 *.pyc
 
 build/
-bin/
 doc/
 .idea/
 cmake-build-debug/
+
+docker/rpi_images/*.tar.xz
