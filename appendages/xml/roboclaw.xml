@@ -1,0 +1,90 @@
+<appendage-template>
+    <includes>
+        <include standard="false">RoboClaw.h</include>
+    </includes>
+    <constructors>
+        <constructor type="RoboClaw" variable="roboclaws">
+			<argument name="serial" type="string_literal" prefix="&amp;" />
+			<argument name="timeout" type="int" value="10000" />
+        </constructor>
+    </constructors>
+    <setup>
+        roboclaws[$i$].begin($baudrate$);
+    </setup>
+    <commands>
+		<command id="kSetSpeed" name="SetSpeed">
+			<parameter type="uint8_t" name="address" />
+			<parameter type="uint32_t" name="speed1" />
+			<parameter type="uint32_t" name="speed2" />
+			<code>
+				if (!roboclaws[indexNum].SpeedM1M2(address, speed1, speed2)) // TODO: Check return value
+				{
+					cmdMessenger.sendBinCmd(kError, kSetSpeed);
+				}
+			</code>
+		</command>
+		<command id="kSetSpeedAccel" name="SetSpeedAccel">
+			<parameter type="uint8_t" name="address" />
+			<parameter type="uint32_t" name="accel" />
+			<parameter type="uint32_t" name="speed1" />
+			<parameter type="uint32_t" name="speed2" />
+			<code>
+				if (!roboclaws[indexNum].SpeedAccelM1M2(address, accel, speed1, speed2)) // TODO: Check return value
+				{
+					cmdMessenger.sendBinCmd(kError, kSetSpeedAccel);
+				}
+			</code>
+		</command>
+		<command id="kReadEncoders" name="ReadEncoders">
+			<parameter type="uint8_t" name="address" />
+			<return-value type="uint32_t" name="enc1" />
+			<return-value type="uint32_t" name="enc2" />
+			<code>
+				if (!roboclaws[indexNum].ReadEncoders(address, enc1, enc2)) // TODO: Check return value
+				{
+					cmdMessenger.sendBinCmd(kError, kReadEncoders);
+				}
+			</code>
+		</command>
+		<command id="kSetDuty" name="SetDuty">
+			<parameter type="uint8_t" name="address" />
+			<parameter type="uint16_t" name="duty1" />
+			<parameter type="uint16_t" name="duty2" />
+			<code>
+				if (!roboclaws[indexNum].DutyM1M2(address, duty1, duty2)) // TODO: Check return value
+				{
+					cmdMessenger.sendBinCmd(kError, kSetDuty);
+				}
+			</code>
+		</command>
+		<command id="kSetVelocityPID" name="SetVelocityPID">
+			<parameter type="uint8_t" name="address" />
+			<parameter type="uint8_t" name="motor" />
+			<parameter type="float" name="Kp" />
+			<parameter type="float" name="Ki" />
+			<parameter type="float" name="Kd" />
+			<parameter type="uint32_t" name="qpps" />
+			<code>
+				bool result;
+				
+				switch (motor)
+				{
+					case 1:
+						result = roboclaws[indexNum].SetM1VelocityPID(address, Kp, Ki, Kd, qpps);
+						break;
+					case 2:
+						result = roboclaws[indexNum].SetM2VelocityPID(address, Kp, Ki, Kd, qpps);
+						break;
+					default:
+						result = false;
+						break;
+				}
+				
+				if (!result) // TODO: Double check return values
+				{
+					cmdMessenger.sendBinCmd(kError, kSetVelocityPID);
+				}
+			</code>
+		</command>
+    </commands>
+</appendage-template>

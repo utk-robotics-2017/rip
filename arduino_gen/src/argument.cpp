@@ -27,10 +27,30 @@ namespace rip
                 m_value = "";
             }
 
+			m_prefix = "";
+			m_suffix = "";
+			if (m_type == "string_literal")
+			{
+				try
+				{
+					m_prefix = getAttribute("prefix")->Value();
+				}
+				catch (AttributeException)
+				{ }
+
+				try
+				{
+					m_suffix = getAttribute("suffix")->Value();
+				}
+				catch (AttributeException)
+				{ }
+			}
+
             if(m_type != "float" &&
                m_type != "int" &&
                m_type != "bool" &&
-               m_type != "string")
+               m_type != "string" &&
+			   m_type != "string_literal")
             {
                 throw AttributeException(fmt::format("Constructor argument unknown type on line number {}",
                                                      xml->GetLineNum()));
@@ -53,13 +73,13 @@ namespace rip
 
         std::string Argument::toString(std::shared_ptr<Appendage> appendage) const
         {
-            if (appendage->has(m_name))
-            {
-                if(!appendage->isType(m_name, m_type))
-                {
-                    // TODO(Andrew): throw exception
-                }
-                return appendage->getString(m_name);
+			if (appendage->has(m_name))
+			{
+				if (!appendage->isType(m_name, m_type == "string_literal" ? "string" : m_type))
+				{
+					// TODO(Andrew): throw exception
+				}
+				return m_prefix + appendage->getString(m_name) + m_suffix;
             }
             else
             {
