@@ -6,6 +6,8 @@
 #include <memory>
 #include <string>
 #include <units/units.hpp>
+#include <json.hpp>
+#include <framework/subsystem.hpp>
 
 namespace rip
 {
@@ -37,7 +39,8 @@ namespace rip
              * @author Scott & UTK IEEE Robotics.
              */
             using namespace rip;
-            class NavX
+
+            class NavX : public framework::Subsystem
             {
             public:
 
@@ -745,6 +748,21 @@ namespace rip
                  */
 
                 int getRequestedUpdateRate();
+
+                /**
+                 * Subsystem abstract Implementation
+                 */
+                virtual void stop() override;
+        
+                virtual bool diagnostic() override;
+                
+                /**
+                 * Creates & returns a pointer to a navX object, constructed based on parameters
+                 * inside json. Used in RIP subsystem creation
+                 * @param  config json parameters for navX construction
+                 * @return       shared ptr to navX object
+                 */
+                static std::shared_ptr<NavX> makeNavX(const nlohmann::json& config);
 
                 void close();
 

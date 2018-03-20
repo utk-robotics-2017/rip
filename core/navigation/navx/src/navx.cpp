@@ -2,6 +2,7 @@
 #include <spdlog/spdlog.h>
 #include <sstream>
 #include <string>
+#include <memory>
 #include <iomanip>
 #include <navx/navx.hpp>
 #include <navx/navx_protocol.hpp>
@@ -14,6 +15,9 @@
 #include "navx/offset_tracker.hpp"
 #include "navx/continuous_angle_tracker.hpp"
 #include "navx/serial_io.hpp"
+#include <misc/logger.hpp>
+#include <fmt/format.h>
+
 namespace rip
 {
     namespace navigation
@@ -126,7 +130,7 @@ namespace rip
                     navx->displacement[1] = navx_update.disp_y;
                     navx->displacement[2] = navx_update.disp_z;
 
-                    navx->yaw_angle_tracker->nextAngle((navx->getYaw())());
+                    navx->yaw_angle_tracker->nextAngle((navx->getYaw()).to(units::deg));
                     navx->last_sensor_timestamp = sensor_timestamp;
                 }
 
@@ -272,13 +276,17 @@ namespace rip
             };
 
             NavX::NavX(std::string serial_port_id, NavX::serialDataType data_type, uint8_t update_rate_hz)
+                :Subsystem("navx")
             {
                 serialInit(serial_port_id, data_type, update_rate_hz);
             }
 
             NavX::NavX(std::string serial_port_id)
+                :Subsystem("navx")
             {
                 serialInit(serial_port_id, serialDataType::kProcessedData, NAVX_DEFAULT_UPDATE_RATE_HZ);
+                misc::Logger::getInstance()->debug(fmt::format("navx constructed, device: {}"
+                , serial_port_id));
             }
 
             units::Angle NavX::getPitch()
@@ -313,9 +321,11 @@ namespace rip
                 if (navx_internal->isBoardYawResetSupported())
                 {
                     io->zeroYaw();
+                    //yaw_angle_tracker->reset();
                 }
                 else
                 {
+                    //yaw_angle_tracker->reset();
                     yaw_offset_tracker->setOffset();
                 }
             }
@@ -729,6 +739,25 @@ namespace rip
             {
                 io->stop();
             }
+
+            void NavX::stop()
+            {
+                close();
+            }
+
+            bool NavX::diagnostic()
+            {
+                //todo
+                return 0;
+            }
+
+            std::shared_ptr<NavX> NavX::makeNavX(const nlohmann::json& config)
+            {
+                std::string device = config["device"];
+                return std::make_shared<NavX>(device);
+            }
+
+
         }
     }
 }

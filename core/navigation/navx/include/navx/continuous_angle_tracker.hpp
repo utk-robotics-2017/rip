@@ -25,6 +25,7 @@ namespace rip
                 void nextAngle(float newAngle);
                 double getAngle();
                 double getRate();
+                void reset();
             };
         }
     }
