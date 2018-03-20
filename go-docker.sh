@@ -91,6 +91,22 @@ case $RIPPROG in
     echo "Building rip_deps container..."
     DOCKER_VTAG=latest ./docker/rip_deps.sh
     ;;
+  build_rip_rpi)
+    if ($PROMPTER --title "Comfirm Build?" --yesno "Do not run this command unless you were told to do so. Requires files outside of RIP." 8 68) then
+      if find ../rpi_images -prune -empty ; then
+        rpi_image_file="$(find ../rpi_images -mindepth 1 -maxdepth 1 -printf '%f\n' | tail -1 )"
+        echo "Found rpi debootstrap image ${rpi_image_file}"
+        rsync --copy-links --times ../rpi_images/${rpi_image_file} ./external/rpi_images/
+        echo "Building the rip_rpi container... this will take awhile."
+        docker build -f docker/rip_rpi.dockerfile -t utkrobotics/rip_rpi:latest --build-arg pi_image=${rpi_image_file} .
+      else
+        echo "No Raspbian debootstrap images could be located at ../rpi_images."
+        exit 1
+      fi
+    else
+      echo "Run me again to select another option."
+    fi
+    ;;
   cancel)
     echo "I'm a very busy shell script, next time try not to waste my time? Thanks!"
     ;;
