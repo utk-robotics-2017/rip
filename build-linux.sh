@@ -1,6 +1,12 @@
 #!/bin/zsh
 set -E
 
+BUILDDIR="build"
+
+if [[ "$(dpkg --print-architecture)" == "armhf" ]]; then
+  BUILDDIR="${BUILDDIR}_armhf"
+fi
+
 while [[ "$1" != "" ]]; do
   case "$1" in
     "--help"|"-h")
@@ -14,11 +20,11 @@ while [[ "$1" != "" ]]; do
       break
       ;;
     "--clean"|"-c")
-      if [ -d build ]; then
-        echo "Removing $(pwd)/build/"
-        rm -r "$(pwd)/build/"
+      if [ -d "$BUILDDIR" ]; then
+        echo "Removing $(pwd)/${BUILDDIR}/"
+        rm -r "$(pwd)/${BUILDDIR}/"
       else
-        echo "No $(pwd)/build/ to remove."
+        echo "No $(pwd)/${BUILDDIR}/ to remove."
       fi
       ;;
     "--no-cd"|"-n")
@@ -34,8 +40,8 @@ if [ -z "$NO_CD" ]; then
   pushd "$(dirname "$0" )"
 fi
 
-mkdir -p build
-pushd build
+mkdir -p $BUILDDIR
+pushd $BUILDDIR
 
 cleanup() {
   exit $SIGNAL;
