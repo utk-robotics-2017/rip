@@ -63,5 +63,13 @@ namespace rip
 			cmdmessenger::ArduinoCmdMessenger messenger;
 			messenger.send<cmdmessenger::ArduinoCmdMessenger::CharType, cmdmessenger::ArduinoCmdMessenger::CharType, cmdmessenger::ArduinoCmdMessenger::FloatType, cmdmessenger::ArduinoCmdMessenger::FloatType, cmdmessenger::ArduinoCmdMessenger::FloatType, cmdmessenger::ArduinoCmdMessenger::UnsignedLongType>(m_device, m_set_velocity_pid, m_address, motor, Kp, Ki, Kd, qpps);
 		}
+
+		void Roboclaw::stop() {
+			SetSpeed(0, 0);
+		}
+
+		bool Roboclaw::diagnostic() {
+			// TODO
+		}
 	}
 }
