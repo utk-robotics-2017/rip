@@ -14,6 +14,14 @@ while [[ "$1" != "" ]] ; do
     --rpi)
       RIPPROG=run_rpi
       ;;
+    --prog)
+      if [[ "$1" != "" ]]; then
+        RIPPROG="$1"
+      else
+        echo " --prog requires a program selection to run."
+        exit 1
+      fi
+      break
     --)
       shift
       if [[ "$1" != "" ]]; then
@@ -38,27 +46,60 @@ RIPPROG=$($PROMPTER --title "Choose Action" \
   "build_rip_deps" "Build the rip_deps base dependency image." \
   "update_rpi" "Pull latest rip_rpi image from the dockerhub." \
   "build_rip_rpi" "Build the rip_rpi Pi emulator and dependency container." \
+  "build_stack" "Build the full RIP docker stack." \
   "cancel" "Do nothing." \
   3>&1 1>&2 2>&3
 )
 fi
 
+function build_rip_deps() {
+  echo "Building rip_deps container..."
+  DOCKER_VTAG=latest ./docker/rip_deps.sh
+}
+
+function build_rip_rpi() {
+  if ($PROMPTER --title "Comfirm Build?" --yesno "Do not run this command unless you were told to do so. Requires files outside of RIP." 8 68) then
+    if find ../rpi_images -prune -empty ; then
+      rpi_image_file="$(find ../rpi_images -mindepth 1 -maxdepth 1 -printf '%f\n' | tail -1 )"
+      echo "Found rpi debootstrap image ${rpi_image_file}"
+      rsync --copy-links --times ../rpi_images/${rpi_image_file} ./external/rpi_images/
+      echo "Building the rip_rpi container... this will take awhile."
+      docker build -f docker/rip_rpi.dockerfile -t utkrobotics/rip_rpi:latest --build-arg pi_image=${rpi_image_file} .
+    else
+      echo "No Raspbian debootstrap images could be located at ../rpi_images."
+      exit 1
+    fi
+  else
+    echo "Run me again to select another option."
+  fi
+}
+
+function build_stack() {
+  docker pull robobenklein/home
+  build_rip_deps
+  build_rip_rpi
+}
+
+function run_rpi() {
+  # go to the user's working dir and run the container there.
+  ABSPATH_RPXC="$(readlink -f $RPXC_SCRIPT_LOCATION )"
+  popd
+  "${ABSPATH_RPXC}" --image "$RPXC_IMAGE" \
+    --args "--rm \
+      --tmpfs=${RPXC_SYSROOT}/dev:rw,dev \
+      --mount type=tmpfs,dst=${RPXC_SYSROOT}/dev/shm \
+      --mount type=bind,src=/dev/pts,dst=/dev/pts \
+      --mount type=bind,src=/dev/pts,dst=${RPXC_SYSROOT}/dev/pts \
+      " -- ${DEF_EXEC}
+  pushd "$SELFDIR"
+}
+
 if [ -n "$RIPPROG" ]; then
-  echo "Container command: ‘${(j: Ø :)DEF_EXEC}’"
+echo "Container command: ‘${(j: Ø :)DEF_EXEC}’"
 echo "( $0 -- <cmd> <args> to change it )"
 case $RIPPROG in
   run_rpi)
-    # go to the user's working dir and run the container there.
-    ABSPATH_RPXC="$(readlink -f $RPXC_SCRIPT_LOCATION )"
-    popd
-    "${ABSPATH_RPXC}" --image "$RPXC_IMAGE" \
-      --args "--rm \
-        --tmpfs=${RPXC_SYSROOT}/dev:rw,dev \
-        --mount type=tmpfs,dst=${RPXC_SYSROOT}/dev/shm \
-        --mount type=bind,src=/dev/pts,dst=/dev/pts \
-        --mount type=bind,src=/dev/pts,dst=${RPXC_SYSROOT}/dev/pts \
-        " -- ${DEF_EXEC}
-    pushd "$SELFDIR"
+    run_rpi
     ;;
   new_rip)
     DOCKER_VTAG=${DOCKER_VTAG:-$(git_branch_norm)}
@@ -88,24 +129,13 @@ case $RIPPROG in
     docker pull $RPXC_IMAGE
     ;;
   build_rip_deps)
-    echo "Building rip_deps container..."
-    DOCKER_VTAG=latest ./docker/rip_deps.sh
+    build_rip_deps
     ;;
   build_rip_rpi)
-    if ($PROMPTER --title "Comfirm Build?" --yesno "Do not run this command unless you were told to do so. Requires files outside of RIP." 8 68) then
-      if find ../rpi_images -prune -empty ; then
-        rpi_image_file="$(find ../rpi_images -mindepth 1 -maxdepth 1 -printf '%f\n' | tail -1 )"
-        echo "Found rpi debootstrap image ${rpi_image_file}"
-        rsync --copy-links --times ../rpi_images/${rpi_image_file} ./external/rpi_images/
-        echo "Building the rip_rpi container... this will take awhile."
-        docker build -f docker/rip_rpi.dockerfile -t utkrobotics/rip_rpi:latest --build-arg pi_image=${rpi_image_file} .
-      else
-        echo "No Raspbian debootstrap images could be located at ../rpi_images."
-        exit 1
-      fi
-    else
-      echo "Run me again to select another option."
-    fi
+    build_rip_rpi
+    ;;
+  build_stack)
+    build_stack
     ;;
   cancel)
     echo "I'm a very busy shell script, next time try not to waste my time? Thanks!"
