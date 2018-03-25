@@ -2,12 +2,12 @@
 #define ROBOCLAW_HPP
 
 #include <tuple>
-
+#include <misc/logger.hpp>
+#include <units/units.hpp>
 #include <cmd_messenger/command.hpp>
-
+#include <motor_controllers/motor_dynamics.hpp>
 #include "appendages/appendage.hpp"
 #include "appendages/appendage_factory.hpp"
-
 #include <json.hpp>
 
 namespace rip
@@ -17,14 +17,19 @@ namespace rip
 		class Roboclaw : public Appendage
 		{
 		public:
-			void SetSpeed(int32_t speed1, int32_t speed2);
-			void SetSpeedAccel(int32_t accel, int32_t speed1, int32_t speed2);
-			std::tuple<uint32_t, uint32_t> ReadEncoders();
-			void SetDuty(int16_t duty1, int16_t duty2);
-			void SetVelocityPID(uint8_t motor, float Kp, float Ki, float Kd, uint32_t qpps);
-
+			void drive(bool motor, int32_t speed)
+			void drive(int32_t speed1, int32_t speed2);
+			//void setSpeedAccel(int32_t accel, int32_t speed1, int32_t speed2);
+			std::tuple<units::Distance, units::Distance> readEncoders();
+			units::Distance readEncoder(bool motor)
+			std::tuple<units::Velocity, units::Velocity> readEncoderSpeeds();
+			//void setDuty(int16_t duty1, int16_t duty2);
+			void setVelocityPID(bool motor, float Kp, float Ki, float Kd, uint32_t qpps);
+			void setDynamics(bool motor, const MotorDynamics& dynamics, bool respectBuffer=true);
+			void setDynamics(const MotorDynamics& dynamics, bool respectBuffer=true);
+			void resetEncoders();
 			/**
-			* Stop
+			* Stop! ^0^
 			*/
 			virtual void stop() override;
 
@@ -60,6 +65,9 @@ namespace rip
 			std::shared_ptr<cmdmessenger::Command> m_read_encoders_result;
 			std::shared_ptr<cmdmessenger::Command> m_set_duty;
 			std::shared_ptr<cmdmessenger::Command> m_set_velocity_pid;
+			std::shared_ptr<cmdmessenger::Command> m_read_encoders_velocity;
+			std::shared_ptr<cmdmessenger::Command> m_read_encoders_velocity_result;
+
 		};
 	}
 }
