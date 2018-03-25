@@ -15,14 +15,15 @@ while [[ "$1" != "" ]] ; do
       RIPPROG=run_rpi
       ;;
     --prog)
+      shift
       if [[ "$1" != "" ]]; then
         RIPPROG="$1"
       else
         echo " --prog requires a program selection to run."
         exit 1
       fi
-      break
-    --)
+      ;;
+    '--')
       shift
       if [[ "$1" != "" ]]; then
         DEF_EXEC=("$@")
