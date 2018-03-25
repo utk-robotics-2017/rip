@@ -174,7 +174,13 @@ namespace rip
 
         std::string ArduinoGen::getArduinoCode()
         {
-            std::unique_ptr<std::istream> code_template_istream = cppfs::fs::open("code_template.txt").createInputStream();
+			cppfs::FileHandle code_template_fh = cppfs::fs::open("code_template.txt");
+			if (!code_template_fh.exists() || !code_template_fh.isFile())
+			{
+				throw FileIoException("code_template.txt does not exist");
+			}
+
+            std::unique_ptr<std::istream> code_template_istream = code_template_fh.createInputStream();
             std::string code_template(std::istreambuf_iterator<char>(*code_template_istream), {});
 
             return fmt::format(code_template,
