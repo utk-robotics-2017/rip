@@ -1,9 +1,10 @@
 #include "appendages/roboclaw.hpp"
-
+#include <ctime>
 #include <utility>
 #include <tuple>
 #include <memory>
-
+#include <chrono>
+#include <thread>
 #include <cmd_messenger/cmd_messenger.hpp>
 
 #include "appendages/exceptions.hpp"
@@ -68,8 +69,27 @@ namespace rip
 			SetSpeed(0, 0);
 		}
 
-		bool Roboclaw::diagnostic() {
-			// TODO
+		bool Roboclaw::diagnostic()
+		{
+			std::chrono::time_point<std::chrono::system_clock> start_time = std::chrono::system_clock::now();
+			misc::Logger::getInstance()->debug("Roboclaw appendage diagnostics start");
+
+			misc::Logger::getInstance()->debug("Read encoders for 10s in a loop");
+			while(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - start_time).count() < 10000)
+			{
+				misc::Logger::getInstance()->debug(fmt::format("Encoder 1 Ticks: {} | Encoder 2 Ticks: ", std::get<0>(ReadEncoders()), std::get<0>(ReadEncoders())));
+			}
+			misc::Logger::getInstance()->debug("Setting Duty to ~1/2 Power, forward for 5 seconds");
+			SetDuty(16000, 16000);
+			start_time = std::chrono::system_clock::now();
+			while(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - start_time).count() < 5000)
+			{}
+			stop();
+			misc::Logger::getInstance()->debug("Setting speed accel drive (5s)");
+			SetSpeedAccel(12000, 12000, 12000);
+			while(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - start_time).count() < 5000)
+			{}
+			stop();
 		}
 	}
 }

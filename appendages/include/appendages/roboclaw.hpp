@@ -2,7 +2,8 @@
 #define ROBOCLAW_HPP
 
 #include <tuple>
-
+#include <misc/logger.hpp>
+#include <fmt/format.h>
 #include <cmd_messenger/command.hpp>
 
 #include "appendages/appendage.hpp"
