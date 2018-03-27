@@ -24,7 +24,7 @@ namespace rip
 		{
 			if (config.find("address") == config.end())
 			{
-				throw AppendageMissingField(fmt::format("appendage roboclaw missing address"));
+				throw AppendageMissingField(fmt::format("Roboclaw: missing config field 'address'"));
 			}
 			m_address = config["address"];
 		}
