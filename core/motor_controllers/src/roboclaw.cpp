@@ -732,11 +732,15 @@ namespace rip
                             response.push_back(data);
                             if (data == 0xFF)
                             {
-                                continue;
+                                break;
                             }
                         }
 
-                        if (data != 0xFF)
+                        if (data == 0xFF)
+                        {
+                            continue;
+                        }
+                        else
                         {
                             uint16_t ccrc;
                             data = read(&m_serial, m_timeout);
