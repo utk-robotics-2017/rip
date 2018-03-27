@@ -46,7 +46,7 @@ namespace rip
         {
             registerAppendage("Digital Input", &DigitalInput::create);
             registerAppendage("Analog Input", &AnalogInput::create);
-			registerAppendage("Roboclaw", &Roboclaw::create);
+            registerAppendage("Roboclaw", &Roboclaw::create);
         }
     }
 }

@@ -29,7 +29,7 @@ namespace rip
         NEW_EX(AppendageWithoutType)
         NEW_EX(AppendageWithoutLabel)
         NEW_EX(AppendageWithId)
-		NEW_EX(AppendageMissingField)
+        NEW_EX(AppendageMissingField)
     }
 }
 #endif // APPENDAGES_EXCEPTIONS_HPP
