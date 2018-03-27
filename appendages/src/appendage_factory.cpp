@@ -6,6 +6,8 @@
 #include "appendages/digital_input.hpp"
 #include "appendages/analog_input.hpp"
 #include "appendages/roboclaw.hpp"
+#include "appendages/servo.hpp"
+#include "appendages/ultrasonic.hpp"
 
 #include "appendages/exceptions.hpp"
 
@@ -31,6 +33,11 @@ namespace rip
                 throw AppendageWithoutType(fmt::format("appendage missing type"));
             }
             std::string appendage_type = config["type"];
+            if (m_constructors.find(appendage_type) == m_constructors.end())
+            {
+                // we probably don't have this appendage type available to the factory
+                throw AppendageNotImplemented(fmt::format("Factory: no Constructor for appendage type {} !", appendage_type));
+            }
             misc::Logger::getInstance()->debug(fmt::format("Factory: Constructing an appendage of type {} ...", appendage_type));
             return m_constructors[appendage_type](config, command_map, device);
         }
@@ -48,6 +55,8 @@ namespace rip
             registerAppendage("Digital Input", &DigitalInput::create);
             registerAppendage("Analog Input", &AnalogInput::create);
             registerAppendage("Roboclaw", &Roboclaw::create);
+            registerAppendage("Servo", &Servo::create);
+            registerAppendage("Ultrasonic", &Ultrasonic::create);
         }
     }
 }
