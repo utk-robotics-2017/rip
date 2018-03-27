@@ -75,7 +75,7 @@ namespace rip
 
         void RobotBase::stop()
         {
-            misc::Logger::getInstance()->debug("Stoping the robot...");
+            misc::Logger::getInstance()->debug("Stopping the robot...");
             m_running = false;
         }
 
