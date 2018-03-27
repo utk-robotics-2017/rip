@@ -1,5 +1,5 @@
-#ifndef EXCEPTIONS_HPP
-#define EXCEPTIONS_HPP
+#ifndef ARDUINO_GEN_EXCEPTIONS_HPP
+#define ARDUINO_GEN_EXCEPTIONS_HPP
 #include <string>
 #include <misc/exception_base.hpp>
 
@@ -45,4 +45,4 @@ namespace rip
     }
 }
 
-#endif // EXCEPTIONS_HPP
+#endif // ARDUINO_GEN_EXCEPTIONS_HPP

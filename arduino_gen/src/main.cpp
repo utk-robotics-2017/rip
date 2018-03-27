@@ -7,6 +7,7 @@
 #include <cppfs/FileHandle.h>
 
 #include "arduino_gen/arduino_gen.hpp"
+#include "misc/exception_base.hpp"
 
 #include <misc/exception_base.hpp>
 
