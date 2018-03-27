@@ -50,6 +50,7 @@ namespace rip
 
             if(j.find("arduino_gen_home") != j.end())
             {
+                misc::Logger::getInstance()->debug("Loading spine appendages...");
                 m_spine->loadDevices(j["arduino_gen_home"], devices);
             }
 
