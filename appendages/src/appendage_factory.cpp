@@ -30,8 +30,9 @@ namespace rip
             {
                 throw AppendageWithoutType(fmt::format("appendage missing type"));
             }
-
-            return m_constructors["type"](config, command_map, device);
+            std::string appendage_type = config["type"];
+            misc::Logger::getInstance()->debug(fmt::format("Constructing a {} appendage...", appendage_type));
+            return m_constructors[appendage_type](config, command_map, device);
         }
 
         void AppendageFactory::registerAppendage(const std::string& type, std::function<std::shared_ptr<Appendage>(const nlohmann::json&,
