@@ -121,9 +121,9 @@ namespace rip
 			{
 				throw FileIoException(fmt::format("Could not create device folder: \"{}\"", device_folder.path()));
 			}
-            device_folder.setPermissions(FilePermissions::UserRead  | FilePermissions::UserWrite  | FilePermissions::UserExec  |
-                                         FilePermissions::GroupRead | FilePermissions::GroupWrite | FilePermissions::GroupExec |
-                                         FilePermissions::OtherRead | FilePermissions::OtherWrite | FilePermissions::OtherExec);
+            // device_folder.setPermissions(FilePermissions::UserRead  | FilePermissions::UserWrite  | FilePermissions::UserExec  |
+            //                              FilePermissions::GroupRead | FilePermissions::GroupWrite | FilePermissions::GroupExec |
+            //                              FilePermissions::OtherRead);// | FilePermissions::OtherWrite | FilePermissions::OtherExec);
 
             // Create src dir
             FileHandle source_folder = fs::open(fmt::format("{}/{}/{}", m_parent_folder, m_arduino, "src"));
@@ -131,9 +131,9 @@ namespace rip
 			{
 				throw FileIoException(fmt::format("Could not create source folder: \"{}\"", source_folder.path()));
 			}
-            source_folder.setPermissions(FilePermissions::UserRead  | FilePermissions::UserWrite  | FilePermissions::UserExec  |
-                                         FilePermissions::GroupRead | FilePermissions::GroupWrite | FilePermissions::GroupExec |
-                                         FilePermissions::OtherRead | FilePermissions::OtherWrite | FilePermissions::OtherExec);
+            // source_folder.setPermissions(FilePermissions::UserRead  | FilePermissions::UserWrite  | FilePermissions::UserExec  |
+            //                              FilePermissions::GroupRead | FilePermissions::GroupWrite | FilePermissions::GroupExec |
+            //                              FilePermissions::OtherRead);// | FilePermissions::OtherWrite | FilePermissions::OtherExec);
 
             // Create ino file
             FileHandle source = fs::open(fmt::format("{0}/{1}/src/{1}.ino", m_parent_folder, m_arduino));
@@ -143,7 +143,7 @@ namespace rip
 			}
             source.setPermissions(FilePermissions::UserRead  | FilePermissions::UserWrite  |
                                   FilePermissions::GroupRead | FilePermissions::GroupWrite |
-                                  FilePermissions::OtherRead | FilePermissions::OtherWrite);
+                                  FilePermissions::OtherRead);// | FilePermissions::OtherWrite);
 
             // Create config file
             FileHandle json_config = fs::open(fmt::format("{0}/{1}/{1}.json", m_parent_folder, m_arduino));
@@ -153,7 +153,7 @@ namespace rip
 			}
             json_config.setPermissions(FilePermissions::UserRead  | FilePermissions::UserWrite  |
                                        FilePermissions::GroupRead | FilePermissions::GroupWrite |
-                                       FilePermissions::OtherRead | FilePermissions::OtherWrite);
+                                       FilePermissions::OtherRead);// | FilePermissions::OtherWrite);
 
             // Create core file
             FileHandle core_config = fs::open(fmt::format("{0}/{1}/{1}_core.json", m_parent_folder, m_arduino));
@@ -163,7 +163,7 @@ namespace rip
 			}
             core_config.setPermissions(FilePermissions::UserRead  | FilePermissions::UserWrite  |
                                        FilePermissions::GroupRead | FilePermissions::GroupWrite |
-                                       FilePermissions::OtherRead | FilePermissions::OtherWrite);
+                                       FilePermissions::OtherRead);// | FilePermissions::OtherWrite);
 
             // Create platformio.ini
             FileHandle platformio_ini = fs::open(fmt::format("{}/{}/platformio.ini", m_parent_folder, m_arduino));
@@ -173,7 +173,7 @@ namespace rip
 			}
             platformio_ini.setPermissions(FilePermissions::UserRead  | FilePermissions::UserWrite  |
                                           FilePermissions::GroupRead | FilePermissions::GroupWrite |
-                                          FilePermissions::OtherRead | FilePermissions::OtherWrite);
+                                          FilePermissions::OtherRead);// | FilePermissions::OtherWrite);
 
             // Create serial script
             FileHandle serial = fs::open(fmt::format("{0}/{1}/serial.sh", m_parent_folder, m_arduino));
@@ -183,7 +183,7 @@ namespace rip
 			}
             serial.setPermissions(FilePermissions::UserRead  | FilePermissions::UserWrite  | FilePermissions::UserExec  |
                                   FilePermissions::GroupRead | FilePermissions::GroupWrite | FilePermissions::GroupExec |
-                                  FilePermissions::OtherRead | FilePermissions::OtherWrite | FilePermissions::OtherExec);
+                                  FilePermissions::OtherRead);// | FilePermissions::OtherWrite | FilePermissions::OtherExec);
 
             // Create upload script
             FileHandle upload = fs::open(fmt::format("{0}/{1}/upload.sh", m_parent_folder, m_arduino));
@@ -193,7 +193,7 @@ namespace rip
 			}
             upload.setPermissions(FilePermissions::UserRead  | FilePermissions::UserWrite  | FilePermissions::UserExec  |
                                   FilePermissions::GroupRead | FilePermissions::GroupWrite | FilePermissions::GroupExec |
-                                  FilePermissions::OtherRead | FilePermissions::OtherWrite | FilePermissions::OtherExec);
+                                  FilePermissions::OtherRead);// | FilePermissions::OtherWrite | FilePermissions::OtherExec);
         }
 
         std::string ArduinoGen::getArduinoCode()

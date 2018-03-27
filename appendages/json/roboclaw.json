@@ -1,4 +1,5 @@
 {
     "serial":  "string",
-    "baudrate": "int"
+    "baudrate": "int",
+    "address": "int"
 }

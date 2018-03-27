@@ -78,7 +78,7 @@ namespace rip
         bool Spine::canLoadDevice(const std::string& arduino_gen_folder, const std::string& device_name) const
         {
             cppfs::FileHandle dev = cppfs::fs::open(fmt::format("/dev/{}", device_name));
-            cppfs::FileHandle config = cppfs::fs::open(fmt::format("{}/{}/{}_core.json", arduino_gen_folder, device_name, device_name));
+            cppfs::FileHandle config = cppfs::fs::open(fmt::format("{0}/{1}/{1}_core.json", arduino_gen_folder, device_name));
             return dev.exists() && config.exists();
         }
 
