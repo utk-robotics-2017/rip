@@ -4,6 +4,7 @@
 #include <tuple>
 #include <misc/logger.hpp>
 #include <units/units.hpp>
+#include <fmt/format.h>
 #include <cmd_messenger/command.hpp>
 #include <motor_controllers/motor_dynamics.hpp>
 #include "appendages/appendage.hpp"

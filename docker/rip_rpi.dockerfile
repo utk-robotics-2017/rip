@@ -43,8 +43,9 @@ RUN chroot $SYSROOT $QEMU_PATH /bin/sh -c '\
  && DEBIAN_FRONTEND=noninteractive dpkg --configure -a \
  && DEBIAN_FRONTEND=noninteractive apt-get upgrade -y '
 RUN chroot $SYSROOT $QEMU_PATH /bin/sh -c '\
- DEBIAN_FRONTEND=noninteractive apt-get install -y \
-  libc6-dev symlinks \
+ apt-get update \
+ && DEBIAN_FRONTEND=noninteractive apt-get install -y \
+  libc6-dev symlinks libssl-dev libcrypto++-dev \
   libeigen3-dev libsuitesparse-dev qt5-default \
   bash zsh git vim tmux \
   cmake lcov g++ time libssh-dev unzip \

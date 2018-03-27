@@ -5,6 +5,7 @@
 
 #include <json.hpp>
 #include <appendages/appendage_factory.hpp>
+#include <misc/logger.hpp>
 
 namespace rip
 {
@@ -37,6 +38,7 @@ namespace rip
                 {
                     if (!canLoadDevice(arduino_gen_folder, device_name))
                     {
+                        misc::Logger::getInstance()->error(fmt::format("Cannot load {}", device_name));
                         throw CannotLoadDevice(fmt::format("Cannot load {}", device_name));
                     }
                 }
@@ -46,8 +48,9 @@ namespace rip
             // Create devices
             for (const std::string& device_name : device_names)
             {
+                misc::Logger::getInstance()->debug(fmt::format("Loading appendage {}...", device_name));
                 m_devices[device_name] = std::make_shared<cmdmessenger::Device>(fmt::format("/dev/{}", device_name));
-                loadConfig(m_devices[device_name], fmt::format("{}/{}/core.json", arduino_gen_folder, device_name));
+                loadConfig(m_devices[device_name], fmt::format("{}/{}/{}_core.json", arduino_gen_folder, device_name, device_name));
             }
         }
 
@@ -75,15 +78,17 @@ namespace rip
         bool Spine::canLoadDevice(const std::string& arduino_gen_folder, const std::string& device_name) const
         {
             cppfs::FileHandle dev = cppfs::fs::open(fmt::format("/dev/{}", device_name));
-            cppfs::FileHandle config = cppfs::fs::open(fmt::format("{}/{}/core.json", arduino_gen_folder, device_name));
+            cppfs::FileHandle config = cppfs::fs::open(fmt::format("{}/{}/{}_core.json", arduino_gen_folder, device_name, device_name));
             return dev.exists() && config.exists();
         }
 
         void Spine::loadConfig(std::shared_ptr<cmdmessenger::Device> device, const std::string& path)
         {
+            misc::Logger::getInstance()->debug(fmt::format("Loading appendage config {} ...", path));
             cppfs::FileHandle config_file = cppfs::fs::open(path);
             if (!config_file.exists())
             {
+                misc::Logger::getInstance()->error(fmt::format("Cannot find appendage config file {}", path));
                 throw FileNotFound(fmt::format("Cannot find {}", path));
             }
 
