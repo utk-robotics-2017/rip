@@ -109,7 +109,7 @@ namespace rip
             }
         }
 
-        void Appendage::testType() const
+        void Appendage::testType()
         {
 
             std::string type = getType();
@@ -151,7 +151,21 @@ namespace rip
                 (*type_template.createInputStream()) >> j;
                 std::map< std::string, std::string > temp;
                 for (nlohmann::json::iterator it = j.begin(); it != j.end(); ++it) {
-                    temp[it.key()] = it.value();
+					if (it.key() == "core")
+					{
+						for (std::string core_key : it.value())
+						{
+							if (m_data.find(core_key) == m_data.end())
+							{
+								throw AppendageDataException(fmt::format("{} missing core field {}", label, core_key));
+							}
+							m_core_fields.emplace_back(core_key);
+						}
+					}
+					else
+					{
+						temp[it.key()] = it.value();
+					}
                 }
                 m_type_cache[type] = temp;
             }
@@ -233,6 +247,11 @@ namespace rip
             json["type"] = m_data["type"];
             json["label"] = m_data["label"];
             json["index"] = index;
+
+			for (std::string core_key : m_core_fields)
+			{
+				json[core_key] = m_data[core_key];
+			}
 
             return json;
         }
