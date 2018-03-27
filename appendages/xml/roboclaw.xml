@@ -12,7 +12,7 @@
         roboclaws[$i$].begin($baudrate$);
     </setup>
     <commands>
-		<command id="kSetSpeed" name="SetSpeed">
+		<command id="kSetSpeeds" name="setSpeeds">
 			<parameter type="uint8_t" name="address" />
 			<parameter type="uint32_t" name="speed1" />
 			<parameter type="uint32_t" name="speed2" />
@@ -23,7 +23,43 @@
 				}
 			</code>
 		</command>
-		<command id="kSetSpeedAccel" name="SetSpeedAccel">
+		<command id="kSetSpeedAccel" name="setSpeedAccel">
+			<parameter type="uint8_t" name="address" />
+			<parameter type="uint32_t" name="accel" />
+			<parameter type="uint32_t" name="speed1" />
+			<parameter type="uint32_t" name="speed2" />
+			<code>
+				if (!roboclaws[indexNum].SpeedAccelM1M2(address, accel, speed1, speed2)) // TODO: Check return value
+				{
+					cmdMessenger.sendBinCmd(kError, kSetSpeedAccel);
+				}
+			</code>
+		</command>
+        <command id="kSetSpeedDist" name="setSpeedDist">in
+			<parameter type="uint8_t" name="address" />
+			<parameter type="uint32_t" name="accel" />
+			<parameter type="uint32_t" name="speed1" />
+			<parameter type="uint32_t" name="speed2" />
+			<code>
+				if (!roboclaws[indexNum].SpeedDistM1M2(address, accel, speed1, speed2)) // TODO: Check return value
+				{
+					cmdMessenger.sendBinCmd(kError, kSetSpeedAccel);
+				}
+			</code>
+		</command>
+        <command id="kSetSpeedAccelDist" name="setSpeedAccelDist">
+			<parameter type="uint8_t" name="address" />
+			<parameter type="uint32_t" name="accel" />
+			<parameter type="uint32_t" name="speed1" />
+			<parameter type="uint32_t" name="speed2" />
+			<code>
+				if (!roboclaws[indexNum].SpeedAccelM1M2(address, accel, speed1, speed2)) // TODO: Check return value
+				{
+					cmdMessenger.sendBinCmd(kError, kSetSpeedAccel);
+				}
+			</code>
+		</command>
+        <command id="kSetSpeedAccelDecelDist" name="setSpeedAccelDecelDist">
 			<parameter type="uint8_t" name="address" />
 			<parameter type="uint32_t" name="accel" />
 			<parameter type="uint32_t" name="speed1" />
@@ -46,7 +82,7 @@
 				}
 			</code>
 		</command>
-		<command id="kSetDuty" name="SetDuty">
+		<command id="kSetM1M2Duty" name="SetDuties">
 			<parameter type="uint8_t" name="address" />
 			<parameter type="uint16_t" name="duty1" />
 			<parameter type="uint16_t" name="duty2" />
@@ -66,7 +102,7 @@
 			<parameter type="uint32_t" name="qpps" />
 			<code>
 				bool result;
-				
+
 				switch (motor)
 				{
 					case 1:
@@ -79,7 +115,7 @@
 						result = false;
 						break;
 				}
-				
+
 				if (!result) // TODO: Double check return values
 				{
 					cmdMessenger.sendBinCmd(kError, kSetVelocityPID);
