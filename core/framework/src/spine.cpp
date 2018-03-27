@@ -116,7 +116,7 @@ namespace rip
                 std::string appendage_type = appendage["type"];
                 if (appendage.find("label") == appendage.end())
                 {
-                    throw AppendageWithoutLabel(fmt::format("appendage of type {} has no label", appendage_type))
+                    throw AppendageWithoutLabel(fmt::format("appendage of type {} has no label", appendage_type));
                 }
                 std::string appendage_label = appendage["label"];
                 misc::Logger::getInstance()->debug(fmt::format("Loading appendage {} of type {} ...", appendage_label, appendage_type));
