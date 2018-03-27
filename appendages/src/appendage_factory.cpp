@@ -31,7 +31,7 @@ namespace rip
                 throw AppendageWithoutType(fmt::format("appendage missing type"));
             }
             std::string appendage_type = config["type"];
-            misc::Logger::getInstance()->debug(fmt::format("Constructing a {} appendage...", appendage_type));
+            misc::Logger::getInstance()->debug(fmt::format("Factory: Constructing an appendage of type {} ...", appendage_type));
             return m_constructors[appendage_type](config, command_map, device);
         }
 
