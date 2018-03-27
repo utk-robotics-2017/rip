@@ -21,13 +21,15 @@ namespace rip
 			void drive(bool motor, int32_t speed)
 			void drive(int32_t speed1, int32_t speed2);
 			//void setSpeedAccel(int32_t accel, int32_t speed1, int32_t speed2);
-			std::tuple<units::Distance, units::Distance> readEncoders();
-			units::Distance readEncoder(bool motor)
-			std::tuple<units::Velocity, units::Velocity> readEncoderSpeeds();
+			std::array<units::Distance, 2> readEncoders();
+			units::Distance readEncoder(bool motor);
+			std::array<units::Velocity, 2> readEncoderSpeeds();
+			units::Velocity readEncoderSpeed(bool motor);
 			//void setDuty(int16_t duty1, int16_t duty2);
 			void setVelocityPID(bool motor, float Kp, float Ki, float Kd, uint32_t qpps);
 			void setDynamics(bool motor, const MotorDynamics& dynamics, bool respectBuffer=true);
 			void setDynamics(const MotorDynamics& dynamics, bool respectBuffer=true);
+			std::array<uint8_t, 2> getBuffers();
 			void resetEncoders();
 			/**
 			* Stop! ^0^
@@ -62,8 +64,14 @@ namespace rip
 
 			std::shared_ptr<cmdmessenger::Command> m_set_speed;
 			std::shared_ptr<cmdmessenger::Command> m_set_speed_accel;
+			std::shared_ptr<cmdmessenger::Command> m_set_speed_dist;
+			std::shared_ptr<cmdmessenger::Command> m_set_speed_accel_dist;
+			std::shared_ptr<cmdmessenger::Command> m_set_speed_accel_decel_dist;
 			std::shared_ptr<cmdmessenger::Command> m_read_encoders;
 			std::shared_ptr<cmdmessenger::Command> m_read_encoders_result;
+			std::shared_ptr<cmdmessenger::Command> m_reset_encoders;
+			std::shared_ptr<cmdmessenger::Command> m_get_buffers;
+			std::shared_ptr<cmdmessenger::Command> m_get_buffers_result;
 			std::shared_ptr<cmdmessenger::Command> m_set_duty;
 			std::shared_ptr<cmdmessenger::Command> m_set_velocity_pid;
 			std::shared_ptr<cmdmessenger::Command> m_read_encoders_velocity;
