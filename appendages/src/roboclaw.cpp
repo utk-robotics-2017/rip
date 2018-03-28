@@ -85,17 +85,24 @@ namespace rip
 			m_read_encoders_result(createCommand("kReadEncodersResult", command_map,
 				cmdmessenger::ArduinoCmdMessenger::makeArgumentString<cmdmessenger::ArduinoCmdMessenger::UnsignedLongType,
 				cmdmessenger::ArduinoCmdMessenger::UnsignedLongType>())),
-			m_read_m1_encoder_speed(createCommand("kReadM1Encoder", command_map,
+			m_read_m1_encoder_speed(createCommand("kReadM1EncoderSpeed", command_map,
 				cmdmessenger::ArduinoCmdMessenger::makeArgumentString<cmdmessenger::ArduinoCmdMessenger::CharType>())),
-			m_read_m2_encoder_speed(createCommand("kReadM2Encoder", command_map,
+			m_read_m2_encoder_speed(createCommand("kReadM2EncoderSpeed", command_map,
 				cmdmessenger::ArduinoCmdMessenger::makeArgumentString<cmdmessenger::ArduinoCmdMessenger::CharType>())),
-			m_read_m1m2_encoder_speed(createCommand("kReadM1M2Encoder", command_map,
+			m_read_m1m2_encoder_speed(createCommand("kReadM1M2EncoderSpeed", command_map,
 				cmdmessenger::ArduinoCmdMessenger::makeArgumentString<cmdmessenger::ArduinoCmdMessenger::CharType>())),
 			m_read_encoder_speed_result(createCommand("kReadEncoderSpeedResult", command_map,
 				cmdmessenger::ArduinoCmdMessenger::makeArgumentString<cmdmessenger::ArduinoCmdMessenger::UnsignedLongType>())),
 			m_read_encoders_speed_result(createCommand("kReadEncodersSpeedResult", command_map,
 				cmdmessenger::ArduinoCmdMessenger::makeArgumentString<cmdmessenger::ArduinoCmdMessenger::UnsignedLongType,
 				cmdmessenger::ArduinoCmdMessenger::UnsignedLongType>())),
+			m_reset_encoders(createCommand("kResetEncoders", command_map,
+				cmdmessenger::ArduinoCmdMessenger::makeArgumentString<cmdmessenger::ArduinoCmdMessenger::CharType>())),
+			m_get_buffers(createCommand("kGetBuffers", command_map,
+				cmdmessenger::ArduinoCmdMessenger::makeArgumentString<cmdmessenger::ArduinoCmdMessenger::CharType>())),
+			m_get_buffers_result(createCommand("kReadEncodersSpeedResult", command_map,
+				cmdmessenger::ArduinoCmdMessenger::makeArgumentString<cmdmessenger::ArduinoCmdMessenger::CharType,
+				cmdmessenger::ArduinoCmdMessenger::CharType>())),
 			m_set_m1_duty(createCommand("kSetM1Duty", command_map,
 				cmdmessenger::ArduinoCmdMessenger::makeArgumentString<cmdmessenger::ArduinoCmdMessenger::CharType,
 				cmdmessenger::ArduinoCmdMessenger::UnsignedIntegerType>())),
@@ -139,17 +146,24 @@ namespace rip
 
 		void Roboclaw::setM1Speed(int32_t speed)
 		{
-
+			cmdmessenger::ArduinoCmdMessenger messenger;
+			messenger.send<cmdmessenger::ArduinoCmdMessenger::CharType,
+			cmdmessenger::ArduinoCmdMessenger::UnsignedLongType>(m_device, m_set_m1_speed, m_address, speed);
 		}
 
 		void Roboclaw::setM2Speed(int32_t speed)
 		{
-
+			cmdmessenger::ArduinoCmdMessenger messenger;
+			messenger.send<cmdmessenger::ArduinoCmdMessenger::CharType,
+			cmdmessenger::ArduinoCmdMessenger::UnsignedLongType>(m_device, m_set_m2_speed, m_address, speed);
 		}
 
-		void Roboclaw::setM1M2Speed(int32_t speed)
+		void Roboclaw::setM1M2Speed(int32_t speed1, speed2)
 		{
-
+			cmdmessenger::ArduinoCmdMessenger messenger;
+			messenger.send<cmdmessenger::ArduinoCmdMessenger::CharType,
+			cmdmessenger::ArduinoCmdMessenger::UnsignedLongType,
+			cmdmessenger::ArduinoCmdMessenger::UnsignedLongType>(m_device, m_set_m1m2_speed, m_address, speed1, speed2);
 		}
 
 		void Roboclaw::setM1SpeedAccel(uint32_t accel, int32_t speed)
@@ -164,6 +178,8 @@ namespace rip
 
 		void Roboclaw::setM1M2SpeedAccel(int32_t accel, int32_t speed1, int32_t speed2)
 		{
+			cmdmessenger::ArduinoCmdMessenger messenger;
+			messenger.send<cmdmessenger::ArduinoCmdMessenger::CharType, cmdmessenger::ArduinoCmdMessenger::UnsignedLongType, cmdmessenger::ArduinoCmdMessenger::UnsignedLongType, cmdmessenger::ArduinoCmdMessenger::UnsignedLongType>(m_device, m_set_speed_accel, m_address, accel, speed1, speed2);
 
 		}
 
@@ -222,10 +238,11 @@ namespace rip
 
 		}
 
-		std::array<int32_t, 2> Roboclaw::readM1M2Encoders()
+		std::tuple<int32_t, int32_t> Roboclaw::readM1M2Encoders()
 		{
 
 		}
+
 
 		units::Distance Roboclaw::readEncoder(bool motor)
 		{
@@ -242,7 +259,7 @@ namespace rip
 
 		}
 
-		std::array<int32_t, 2> Roboclaw::readM1M2EncoderSpeed()
+		std::tuple<int32_t, int32_t> Roboclaw::readM1M2EncoderSpeed()
 		{
 
 		}
@@ -252,37 +269,27 @@ namespace rip
 
 		}
 
+		units::Velocity Roboclaw::readEncoderSpeed(bool motor)
+		{
+
+		}
+
 		void Roboclaw::resetEncoders()
 		{
 
 		}
 
-		units::Velocity Roboclaw::readEncoderSpeed(bool motor)
+		std::tuple<uint8_t, uint8_t> getBuffers()
 		{
 
-		}
-		/*
-		void Roboclaw::setSpeed(int32_t speed1, int32_t speed2)
-		{
-			cmdmessenger::ArduinoCmdMessenger messenger;
-			messenger.send<cmdmessenger::ArduinoCmdMessenger::CharType, cmdmessenger::ArduinoCmdMessenger::UnsignedLongType, cmdmessenger::ArduinoCmdMessenger::UnsignedLongType>(m_device, m_set_speed, m_address, speed1, speed2);
-		}
-
-		void Roboclaw::setSpeedAccel(int32_t accel, int32_t speed1, int32_t speed2)
-		{
-			cmdmessenger::ArduinoCmdMessenger messenger;
-			messenger.send<cmdmessenger::ArduinoCmdMessenger::CharType, cmdmessenger::ArduinoCmdMessenger::UnsignedLongType, cmdmessenger::ArduinoCmdMessenger::UnsignedLongType, cmdmessenger::ArduinoCmdMessenger::UnsignedLongType>(m_device, m_set_speed_accel, m_address, accel, speed1, speed2);
 		}
 
 		std::array<units::Distance, 2> Roboclaw::readEncoders()
 		{
-			cmdmessenger::ArduinoCmdMessenger messenger;
-			messenger.send<cmdmessenger::ArduinoCmdMessenger::CharType>(m_device, m_read_encoders, m_address);
-			return messenger.receive<cmdmessenger::ArduinoCmdMessenger::UnsignedLongType, cmdmessenger::ArduinoCmdMessenger::UnsignedLongType>(m_read_encoders_result);
-		}
-		*/
 
-		void Roboclaw::setDynamic(bool motor, const MotorDynamics& dynamics, bool respectBuffer)
+		}
+
+		void Roboclaw::setDynamic(bool motor, const MotorDynamics& dynamics)
 		{
 			cmdmessenger::ArduinoCmdMessenger messenger;
 			int32_t speed;
@@ -297,25 +304,74 @@ namespace rip
 				case MotorDynamics::DType::kSpeed:
                 {
 					speed = static_cast<int32_t>((*dynamics.getSpeed() / (m_wheel_radius * M_PI * 2)).to(1 / units::s) * m_ticks_per_rev);
-
+					if(motor)
+					{
+						setM2Speed(speed);
+					}
+					else
+					{
+						setM1Speed(speed);
+					}
+					return;
 				}
 				case MotorDynamics::DType::kSpeedAccel:
 				{
 					speed = static_cast<int32_t>((*dynamics.getSpeed() / (m_wheel_radius * M_PI * 2)).to(1 / units::s) * m_ticks_per_rev);
 					accel = static_cast<uint32_t>((*dynamics.getAcceleration() / (m_wheel_radius * M_PI * 2)).to(1 / (units::s * units::s)) * m_ticks_per_rev);
-
+					if(motor)
+					{
+						setM2SpeedAccel(accel, speed);
+					}
+					else
+					{
+						setM1SpeedAccel(accel, speed);
+					}
+					return;
 				}
 				case MotorDynamics::DType::kSpeedDist:
 				{
-
+					speed = static_cast<int32_t>((*dynamics.getSpeed() / (m_wheel_radius * M_PI * 2)).to(1 / units::s) * m_ticks_per_rev);
+					dist = static_cast<uint32_t>((*dynamics.getDistance() / (m_wheel_radius * M_PI * 2)).to(units::none) * m_ticks_per_rev);
+					if(motor)
+					{
+						setM2SpeedDist(speed, dist);
+					}
+					else
+					{
+						setM1SpeedDist(speed, dist);
+					}
+					return;
 				}
 				case MotorDynamics::DType::kSpeedAccelDist:
                 {
-
+					speed = static_cast<int32_t>((*dynamics.getSpeed() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
+					dist = static_cast<uint32_t>((*dynamics.getDistance() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
+					accel = static_cast<uint32_t>((*dynamics.getAcceleration() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
+					if(motor)
+					{
+						setM2SpeedAccelDist(accel, speed, dist);
+					}
+					else
+					{
+						setM1SpeedAccelDist(accel, speed, dist);
+					}
+					return;
 				}
 				case MotorDynamics::DType::kSpeedAccelDecelDist:
                 {
-
+					speed = static_cast<int32_t>((*dynamics.getSpeed() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
+					dist = static_cast<uint32_t>((*dynamics.getDistance() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
+					accel = static_cast<uint32_t>((*dynamics.getAcceleration() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
+					decel = static_cast<uint32_t>((*dynamics.getDeceleration() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
+					if(motor)
+					{
+						setM2SpeedAccelDecelDist(accel, speed, decel, dist);
+					}
+					else
+					{
+						setM1SpeedAccelDecelDist(accel, speed, decel, dist);
+					}
+					return;
 				}
 				default:
 				{
@@ -324,7 +380,7 @@ namespace rip
 			}
 		}
 
-		void Roboclaw::setDynamics(const MotorDynamics& dynamics, bool respectBuffer);
+		void Roboclaw::setDynamics(const MotorDynamics& dynamics);
 		{
 			cmdmessenger::ArduinoCmdMessenger messenger;
 			int32_t speed;
@@ -334,31 +390,44 @@ namespace rip
 			{
 				case MotorDynamics::DType::kNone:
                 {
-
+					return;
 				}
 				case MotorDynamics::DType::kSpeed:
                 {
-
+					speed = static_cast<int32_t>((*dynamics.getSpeed() / (m_wheel_radius * M_PI * 2)).to(1 / units::s) * m_ticks_per_rev);
+					setM1M2Speed(speed, speed);
+					return;
 				}
 				case MotorDynamics::DType::kSpeedAccel:
 				{
-					messenger.send<cmdmessenger::ArduinoCmdMessenger::CharType, cmdmessenger::ArduinoCmdMessenger::UnsignedLongType, cmdmessenger::ArduinoCmdMessenger::UnsignedLongType, cmdmessenger::ArduinoCmdMessenger::UnsignedLongType>(m_device, m_set_speed_accel, m_address, accel, speed1, speed2);
+					speed = static_cast<int32_t>((*dynamics.getSpeed() / (m_wheel_radius * M_PI * 2)).to(1 / units::s) * m_ticks_per_rev);
+					accel = static_cast<uint32_t>((*dynamics.getAcceleration() / (m_wheel_radius * M_PI * 2)).to(1 / (units::s * units::s)) * m_ticks_per_rev);
+					setM1M2SpeedAccel(accel, speed, speed);
+					return;
 				}
 				case MotorDynamics::DType::kSpeedDist:
 				{
-
-				}
-				case MotorDynamics::DType::kSpeedDist:
-                {
-
+					speed = static_cast<int32_t>((*dynamics.getSpeed() / (m_wheel_radius * M_PI * 2)).to(1 / units::s) * m_ticks_per_rev);
+					dist = static_cast<uint32_t>((*dynamics.getDistance() / (m_wheel_radius * M_PI * 2)).to(units::none) * m_ticks_per_rev);
+					setM1M2SpeedDist(speed, dist, speed, dist);
+					return;
 				}
 				case MotorDynamics::DType::kSpeedAccelDist:
                 {
-
+					speed = static_cast<int32_t>((*dynamics.getSpeed() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
+					dist = static_cast<uint32_t>((*dynamics.getDistance() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
+					accel = static_cast<uint32_t>((*dynamics.getAcceleration() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
+					setM1M2SpeedAccelDist(accel, speed, dist, speed, dist);
+					return;
 				}
 				case MotorDynamics::DType::kSpeedAccelDecelDist:
                 {
-
+					speed = static_cast<int32_t>((*dynamics.getSpeed() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
+					dist = static_cast<uint32_t>((*dynamics.getDistance() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
+					accel = static_cast<uint32_t>((*dynamics.getAcceleration() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
+					decel = static_cast<uint32_t>((*dynamics.getDeceleration() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
+					setM1M2SpeedAccelDecelDist(accel, speed, decel, dist, accel, speed, decel, dist);
+					return;
 				}
 				default:
 				{
@@ -367,16 +436,28 @@ namespace rip
 			}
 		}
 
-		std::array<uint8_t, 2> Roboclaw::getBuffers();
+		std::tuple<uint8_t, uint8_t> Roboclaw::getBuffers();
 		{
 			cmdmessenger::ArduinoCmdMessenger messenger;
 		}
-		/*
-		void Roboclaw::setDuty(int16_t duty1, int16_t duty2)
+
+		void Roboclaw::setM1Duty(int16_t duty)
 		{
 			cmdmessenger::ArduinoCmdMessenger messenger;
-			messenger.send<cmdmessenger::ArduinoCmdMessenger::CharType, cmdmessenger::ArduinoCmdMessenger::UnsignedIntegerType, cmdmessenger::ArduinoCmdMessenger::UnsignedIntegerType>(m_device, m_set_duty, m_address, duty1, duty2);
-		}*/
+			messenger.send<cmdmessenger::ArduinoCmdMessenger::CharType, cmdmessenger::ArduinoCmdMessenger::UnsignedIntegerType>(m_device, m_set_m1_duty, m_address, duty);
+		}
+
+		void Roboclaw::setM2Duty(int16_t duty)
+		{
+			cmdmessenger::ArduinoCmdMessenger messenger;
+			messenger.send<cmdmessenger::ArduinoCmdMessenger::CharType, cmdmessenger::ArduinoCmdMessenger::UnsignedIntegerType>(m_device, m_set_m2_duty, m_address, duty);
+		}
+
+		void Roboclaw::setM1M2Duty(int16_t duty1, int16_t duty2)
+		{
+			cmdmessenger::ArduinoCmdMessenger messenger;
+			messenger.send<cmdmessenger::ArduinoCmdMessenger::CharType, cmdmessenger::ArduinoCmdMessenger::UnsignedIntegerType, cmdmessenger::ArduinoCmdMessenger::UnsignedIntegerType>(m_device, m_set_m1m2_duty, m_address, duty1, duty2);
+		}
 
 		void Roboclaw::setVelocityPID(uint8_t motor, float Kp, float Ki, float Kd, uint32_t qpps)
 		{
@@ -386,7 +467,7 @@ namespace rip
 
 		void Roboclaw::stop()
 		{
-			setDuty(0, 0);
+			setM1M2Duty(0, 0);
 		}
 
 		bool Roboclaw::diagnostic()
@@ -398,7 +479,7 @@ namespace rip
 			misc::Logger::getInstance()->debug("Read encoders for 10s in a loop");
 			while(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - start_time).count() < 10000)
 			{
-				misc::Logger::getInstance()->debug(fmt::format("Encoder 1 Ticks: {} | Encoder 2 Ticks: ", std::get<0>(ReadEncoders()), std::get<0>(ReadEncoders())));
+				misc::Logger::getInstance()->debug(fmt::format("Encoder 1 Ticks: {} | Encoder 2 Ticks: {}", std::get<0>(ReadEncoders()), std::get<0>(ReadEncoders())));
 			}
 			misc::Logger::getInstance()->debug("Setting Duty to ~1/2 Power, forward for 5 seconds");
 			SetDuty(16000, 16000);
