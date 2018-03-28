@@ -15,6 +15,7 @@ namespace rip
 {
 	namespace appendages
 	{
+		using MotorDynamics = rip::motorcontrollers::MotorDynamics;
 		class Roboclaw : public Appendage
 		{
 		public:
@@ -136,7 +137,8 @@ namespace rip
 			std::shared_ptr<cmdmessenger::Command> m_set_m2_duty;
 			std::shared_ptr<cmdmessenger::Command> m_set_m1m2_duty;
 
-			std::shared_ptr<cmdmessenger::Command> m_set_speed_pid;
+			std::shared_ptr<cmdmessenger::Command> m_set_m1_velocity_pid;
+			std::shared_ptr<cmdmessenger::Command> m_set_m2_velocity_pid;
 
 		};
 	}

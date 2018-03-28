@@ -9,7 +9,7 @@ add_library(${PROJECT_NAME} EXCLUDE_FROM_ALL ${${PROJECT_NAME}_SOURCES} ${${PROJ
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
 target_link_libraries(${PROJECT_NAME}
     fmt json spdlog cppfs
-    cmd_messenger units misc)
+    cmd_messenger units misc motor_controllers)
 target_include_directories(${PROJECT_NAME} PUBLIC include)
 
 set_property(GLOBAL PROPERTY AppendageRoot ${CMAKE_CURRENT_SOURCE_DIR})
