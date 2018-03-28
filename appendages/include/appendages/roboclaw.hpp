@@ -35,7 +35,7 @@ namespace rip
 			void setM2SpeedAccelDist(uint32_t accel, int32_t speed, uint32_t distance);
 			void setM1M2SpeedAccelDist(uint32_t accel, int32_t speed1, uint32_t distance1, int32_t speed2, uint32_t distance2);
 
-			void setM1SpeedAccelDecelDist(uint32_t accel, int32_t speed,uint32_t deccel,uint32_t position);
+			void setM1SpeedAccelDecelDist(uint32_t accel, int32_t speed, uint32_t deccel, uint32_t position);
 			void setM2SpeedAccelDecelDist(uint32_t accel, int32_t speed,uint32_t deccel,uint32_t position);
 			void setM1M2SpeedAccelDecelDist(uint32_t accel1, int32_t speed1,uint32_t deccel1,
 				uint32_t position1, uint32_t accel2, int32_t speed2, uint32_t deccel2, uint32_t position2);
