@@ -12,115 +12,268 @@
         roboclaws[$i$].begin($baudrate$);
     </setup>
     <commands>
-		<command id="kSetSpeeds" name="setSpeeds">
-			<parameter type="uint8_t" name="address" />
-			<parameter type="uint32_t" name="speed1" />
-			<parameter type="uint32_t" name="speed2" />
-			<code>
-				if (!roboclaws[indexNum].SpeedM1M2(address, speed1, speed2)) // TODO: Check return value
+        <!-- SET SPEED -->
+        <command id="kSetM1Speed" name="setM1Speed">
+            <parameter type="uint8_t" name="address" />
+            <parameter type="uint32_t" name="speed" />
+            <code>
+                if (!roboclaws[indexNum].SpeedM1(address, speed)) // TODO: Check return value
 				{
-					cmdMessenger.sendBinCmd(kError, kSetSpeed);
-				}
-			</code>
-		</command>
-		<command id="kSetSpeedAccel" name="setSpeedAccel">
-			<parameter type="uint8_t" name="address" />
-			<parameter type="uint32_t" name="accel" />
-			<parameter type="uint32_t" name="speed1" />
-			<parameter type="uint32_t" name="speed2" />
-			<code>
-				if (!roboclaws[indexNum].SpeedAccelM1M2(address, accel, speed1, speed2)) // TODO: Check return value
-				{
-					cmdMessenger.sendBinCmd(kError, kSetSpeedAccel);
-				}
-			</code>
-		</command>
-        <command id="kSetSpeedDist" name="setSpeedDist">in
-			<parameter type="uint8_t" name="address" />
-			<parameter type="uint32_t" name="accel" />
-			<parameter type="uint32_t" name="speed1" />
-			<parameter type="uint32_t" name="speed2" />
-			<code>
-				if (!roboclaws[indexNum].SpeedDistM1M2(address, accel, speed1, speed2)) // TODO: Check return value
-				{
-					cmdMessenger.sendBinCmd(kError, kSetSpeedAccel);
-				}
-			</code>
-		</command>
-        <command id="kSetSpeedAccelDist" name="setSpeedAccelDist">
-			<parameter type="uint8_t" name="address" />
-			<parameter type="uint32_t" name="accel" />
-			<parameter type="uint32_t" name="speed1" />
-			<parameter type="uint32_t" name="speed2" />
-			<code>
-				if (!roboclaws[indexNum].SpeedAccelM1M2(address, accel, speed1, speed2)) // TODO: Check return value
-				{
-					cmdMessenger.sendBinCmd(kError, kSetSpeedAccel);
-				}
-			</code>
-		</command>
-        <command id="kSetSpeedAccelDecelDist" name="setSpeedAccelDecelDist">
-			<parameter type="uint8_t" name="address" />
-			<parameter type="uint32_t" name="accel" />
-			<parameter type="uint32_t" name="speed1" />
-			<parameter type="uint32_t" name="speed2" />
-			<code>
-				if (!roboclaws[indexNum].SpeedAccelM1M2(address, accel, speed1, speed2)) // TODO: Check return value
-				{
-					cmdMessenger.sendBinCmd(kError, kSetSpeedAccel);
-				}
-			</code>
-		</command>
-		<command id="kReadEncoders" name="ReadEncoders">
-			<parameter type="uint8_t" name="address" />
-			<return-value type="uint32_t" name="enc1" />
-			<return-value type="uint32_t" name="enc2" />
-			<code>
-				if (!roboclaws[indexNum].ReadEncoders(address, enc1, enc2)) // TODO: Check return value
-				{
-					cmdMessenger.sendBinCmd(kError, kReadEncoders);
-				}
-			</code>
-		</command>
-		<command id="kSetM1M2Duty" name="SetDuties">
-			<parameter type="uint8_t" name="address" />
-			<parameter type="uint16_t" name="duty1" />
-			<parameter type="uint16_t" name="duty2" />
-			<code>
-				if (!roboclaws[indexNum].DutyM1M2(address, duty1, duty2)) // TODO: Check return value
-				{
-					cmdMessenger.sendBinCmd(kError, kSetDuty);
-				}
-			</code>
-		</command>
-		<command id="kSetVelocityPID" name="SetVelocityPID">
-			<parameter type="uint8_t" name="address" />
-			<parameter type="uint8_t" name="motor" />
-			<parameter type="float" name="Kp" />
-			<parameter type="float" name="Ki" />
-			<parameter type="float" name="Kd" />
-			<parameter type="uint32_t" name="qpps" />
-			<code>
-				bool result;
+                    cmdMessenger.sendBinCmd(kError, kSetM1Speed);
+                }
+            </code>
+        </command>
+        <command id="kSetM2Speed" name="setM2Speed">
+            <parameter type="uint8_t" name="address" />
+            <parameter type="uint32_t" name="speed" />
+            <code>
+                if (!roboclaws[indexNum].SpeedM2(address, speed)) {
+                    cmdMessenger.sendBinCmd(kerror, kSetM2Speed);
+                }
+            </code>
+        </command>
+        <command id="kSetM1M2Speed" name="setM1M2Speed">
+            <parameter type="uint8_t" name="address" />
+            <parameter type="uint32_t" name="speed1" />
+            <parameter type="uint32_t" name="speed2" />
+            <code>
+                if (!roboclaws[indexNum].SpeedM1M2(address, speed1, speed2)) {
+                    cmdMessenger.sendBinCmd(kerror, kSetM1M2Speed);
+                }
+            </code>
+        </command>
 
-				switch (motor)
-				{
-					case 1:
-						result = roboclaws[indexNum].SetM1VelocityPID(address, Kp, Ki, Kd, qpps);
-						break;
-					case 2:
-						result = roboclaws[indexNum].SetM2VelocityPID(address, Kp, Ki, Kd, qpps);
-						break;
-					default:
-						result = false;
-						break;
-				}
+        <!-- SET SPEED/ACCELERATION -->
+        <command id="kSetM1SpeedAccel" name="setM1SpeedAccel">
+            <parameter type="uint8_t" name="address" />
+            <parameter type="uint32_t" name="accel" />
+            <parameter type="uint32_t" name="speed" />
+            <code>
+                if (!roboclaws[indexNum].SpeedAccelM1(address, accel, speed)) {
+                    cmdMessenger.sendBinCmd(kerror, kSetM1SpeedAccel);
+                }
+            </code>
+        </command>
+        <command id="kSetM2SpeedAccel" name="setM2SpeedAccel">
+            <parameter type="uint8_t" name="address" />
+            <parameter type="uint32_t" name="accel" />
+            <parameter type="uint32_t" name="speed" />
+            <code>
+                if (!roboclaws[indexNum].SpeedAccelM2(address, accel, speed)) {
+                    cmdMessenger.sendBinCmd(kerror, kSetM2SpeedAccel);
+                }
+            </code>
+        </command>
+        <command id="kSetM1M2SpeedAccel" name="setM1M2SpeedAccel">
+            <parameter type="uint8_t" name="address" />
+            <parameter type="uint32_t" name="accel" />
+            <parameter type="uint32_t" name="speed1" />
+            <parameter type="uint32_t" name="speed2" />
+            <code>
+                if (!roboclaws[indexNum].SpeedAccelM1M2(address, accel, speed1, speed2)) {
+                    cmdMessenger.sendBinCmd(kerror, kSetM1M2SpeedAccel);
+                }
+            </code>
+        </command>
 
-				if (!result) // TODO: Double check return values
-				{
-					cmdMessenger.sendBinCmd(kError, kSetVelocityPID);
-				}
-			</code>
-		</command>
+        <!-- SET SPEED/DISTANCE-->
+        <command id="kSetM1SpeedDist" name="setM1SpeedDist">
+            <parameter type="uint8_t" name="address" />
+            <parameter type="uint32_t" name="speed" />
+            <parameter type="uint32_t" name="distance" />
+            <code>
+                if (!roboclaws[indexNum].SpeedDistanceM1(address, speed, distance)) {
+                    cmdMessenger.sendBinCmd(kerror, kSetM1SpeedDist);
+                }
+            </code>
+        </command>
+        <command id="kSetM2SpeedDist" name="setM2SpeedDist">
+            <parameter type="uint8_t" name="address" />
+            <parameter type="int32_t" name="speed" />
+            <parameter type="uint32_t" name="distance" />
+            <code>
+                if (!roboclaws[indexNum].SpeedDistanceM2(address, speed, distance)) {
+                    cmdMessenger.sendBinCmd(kerror, kSetM2SpeedDist);
+                }
+            </code>
+        </command>
+        <command id="kSetM1M2SpeedDist" name="setM1M2SpeedDist">
+            <parameter type="uint8_t" name="address" />
+            <parameter type="int32_t" name="speed1" />
+            <parameter type="uint32_t" name="distance1" />
+            <parameter type="int32_t" name="speed2" />
+            <parameter type="uint32_t" name="distance2" />
+            <code>
+                if (!roboclaws[indexNum].SpeedDistanceM1M2(address, speed1, distance1, speed2, distance2)) {
+                    cmdMessenger.sendBinCmd(kerror, kSetM1M2SpeedDist);
+                }
+            </code>
+        </command>
+
+        <!-- SET SPEED/ACCELERATION/DISTANCE -->
+        <command id="kSetM1SpeedAccelDist" name="setM1SpeedAccelDist">
+            <parameter type="uint8_t" name="address" />
+            <parameter type="uint32_t" name="accel" />
+            <parameter type="int32_t" name="speed" />
+            <parameter type="uint32_t" name="distance" />
+            <code>
+                if (!roboclaws[indexNum].SpeedAccelDistanceM1(address, accel, speed, distance)) {
+                    cmdMessenger.sendBinCmd(kerror, kSetM1SpeedAccelDist);
+                }
+            </code>
+        </command>
+        <command id="kSetM2SpeedAccelDist" name="setM2SpeedAccelDist">
+            <parameter type="uint8_t" name="address" />
+            <parameter type="uint32_t" name="accel" />
+            <parameter type="int32_t" name="speed" />
+            <parameter type="uint32_t" name="distance" />
+            <code>
+                if (!roboclaws[indexNum].SpeedAccelDistanceM2(address, accel, speed, distance)) {
+                    cmdMessenger.sendBinCmd(kerror, kSetM2SpeedAccelDist);
+                }
+            </code>
+        </command>
+        <command id="kSetM1M2SpeedAccelDist" name="setM1M2SpeedAccelDist">
+            <parameter type="uint8_t" name="address" />
+            <parameter type="uint32_t" name="accel" />
+            <parameter type="int32_t" name="speed1" />
+            <parameter type="uint32_t" name="distance1" />
+            <parameter type="int32_t" name="speed2" />
+            <parameter type="uint32_t" name="distance2" />
+            <code>
+                if (!roboclaws[indexNum].SpeedAccelDistanceM1M2(address, accel, speed1, distance1, speed2, distance2)) {
+                    cmdMessenger.sendBinCmd(kerror, kSetM1M2SpeedAccelDist);
+                }
+            </code>
+        </command>
+
+        <!-- SET SPEED/ACCELERATION/DECELERATION/DISTANCE -->
+        <command id="kSetM1SpeedAccelDecelDist" name="setM1SpeedAccelDecelDist">
+            <parameter type="uint8_t" name="address" />
+            <parameter type="uint32_t" name="accel" />
+            <parameter type="int32_t" name="speed" />
+            <parameter type="uint32_t" name="deccel" />
+            <parameter type="uint32_t" name="position" />
+            <code>
+                if (!roboclaws[indexNum].SpeedAccelDeccelPositionM1(address, accel, speed, deccel, position)) {
+                    cmdMessenger.sendBinCmd(kerror, kSetM1SpeedAccelDecelDist);
+                }
+            </code>
+        </command>
+        <command id="kSetM2SpeedAccelDecelDist" name="setM2SpeedAccelDecelDist">
+            <parameter type="uint8_t" name="address" />
+            <parameter type="uint32_t" name="accel" />
+            <parameter type="int32_t" name="speed" />
+            <parameter type="uint32_t" name="deccel" />
+            <parameter type="uint32_t" name="position" />
+            <code>
+                if (!roboclaws[indexNum].SpeedAccelDeccelPositionM2(address, accel, speed, deccel, position)) {
+                    cmdMessenger.sendBinCmd(kerror, kSetM2SpeedAccelDecelDist);
+                }
+            </code>
+        </command>
+        <command id="kSetM1M2SpeedAccelDecelDist" name="setM1M2SpeedAccelDecelDist">
+            <parameter type="uint8_t" name="address" />
+            <parameter type="uint32_t" name="accel1" />
+            <parameter type="int32_t" name="speed1" />
+            <parameter type="uint32_t" name="deccel1" />
+            <parameter type="uint32_t" name="position1" />
+            <parameter type="uint32_t" name="accel2" />
+            <parameter type="int32_t" name="speed2" />
+            <parameter type="uint32_t" name="deccel2" />
+            <parameter type="uint32_t" name="position2" />
+            <code>
+                if (!roboclaws[indexNum].SpeedAccelDeccelPositionM1M2(address, accel1, speed1, deccel1, position1, accel2, speed2, deccel2, position2)) {
+                    cmdMessenger.sendBinCmd(kerror, kSetM2SpeedAccelDecelDist);
+                }
+            </code>
+        </command>
+
+        <!-- READ ENCODER POSITION -->
+        <command id="kReadM1Encoder" name="readM1Encoder">
+            <parameter type="uint8_t" name="address" />
+            <return-value type="int32_t" name="enc1" />
+            <code>
+                <!-- DEPRECATED -->
+            </code>
+        </command>
+        <command id="kReadM2Encoder" name="readM2Encoder">
+            <parameter type="uint8_t" name="address" />
+            <return-value type="int32_t" name="enc2" />
+            <code>
+                <!-- DEPRECATED -->
+            </code>
+        </command>
+        <command id="kReadM1M2Encoder" name="readM1M2Encoder">
+            <parameter type="uint8_t" name="address" />
+            <return-value type="int32_t" name="enc1" />
+            <return-value type="int32_t" name="enc2" />
+            <code>
+                if (!roboclaws[indexNum].ReadEncoders(address, enc1, enc2)) {
+                    cmdMessenger.sendBinCmd(kerror, kReadM1M2Encoder);
+                }
+            </code>
+        </command>
+
+        <!-- READ ENCODER SPEED -->
+        <command id="kReadM1EncoderSpeed" name="readM1EncoderSpeed">
+            <parameter type="uint8_t" name="address" />
+            <return-value type="int32_t" name="enc1Speed" />
+            <code>
+            </code>
+        </command>
+        <command id="kReadM2EncoderSpeed" name="readM2EncoderSpeed">
+            <parameter type="uint8_t" name="address" />
+            <return-value type="int32_t" name="enc2Speed" />
+            <code>
+            </code>bool RoboClaw::ReadEncoders(uint8_t address,uint32_t &enc1,uint32_t &enc2){
+
+        </command>
+        <command id="kReadM1M2EncoderSpeed" name="readM1M2EncoderSpeed">
+            <parameter type="uint8_t" name="address" />
+            <return-value type="int32_t" name="enc1Speed" />
+            <return-value type="int32_t" name="enc2Speed" />
+            <code>
+            </code>
+        </command>
+
+        <!-- SET DUTY -->
+        <command id="kSetM1Duty" name="setM1Duty">
+            <parameter type="uint8_t" name="address" />
+            <parameter type="int16_t" name="duty" />
+            <code>
+            </code>
+        </command>
+        <command id="kSetM2Duty" name="setM2Duty">
+            <parameter type="uint8_t" name="address" />
+            <parameter type="int16_t" name="duty" />
+            <code>
+            </code>
+        </command>
+
+        <!-- MISCELLANEOUS -->
+        <command id="kSetVelocityPID" name="setVelocityPID">
+            <parameter type="uint8_t" name="address" />
+            <parameter type="bool" name="motor" />
+            <parameter type="float" name="kp" />
+            <parameter type="float" name="ki" />
+            <parameter type="float" name="kd" />
+            <parameter type="uint32_t" name="qpps" />
+            <code>
+            </code>
+        </command>
+        <command id="kgetBuffers" name="getBuffers">
+            <parameter type="uint8_t" name="address" />
+            <return-value type="uint8_t" name="buff1" /> <!-- MAKE SURE NAMES MATCH -->
+            <return-value type="uint8_t" name="buff2" />
+            <code>
+            </code>
+        </command>
+        <command id="kResetEncoders" name="resetEncoders">
+            <parameter type="uint8_t" name="address" />
+            <code>
+            </code>
+        </command>
+
     </commands>
 </appendage-template>
