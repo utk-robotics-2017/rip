@@ -58,7 +58,8 @@ namespace rip
 			void setM2Duty(int16_t duty);
 			void setM1M2Duty(int16_t duty1, int16_t duty2);
 
-			void setVelocityPID(bool motor, float Kp, float Ki, float Kd, uint32_t qpps);
+			void setM1VelocityPID(float Kp, float Ki, float Kd, uint32_t qpps);
+            void setM2VelocityPID(float Kp, float Ki, float Kd, uint32_t qpps);
 
 			void setDynamics(bool motor, const MotorDynamics& dynamics); //Not implemented on arduino
 			void setDynamics(const MotorDynamics& dynamics); //Not implemented on arduino
