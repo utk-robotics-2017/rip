@@ -94,7 +94,7 @@ namespace rip
 
             nlohmann::json m_data;
 
-            static std::map< std::string, std::map< std::string, std::string > > m_type_cache;
+            static std::map< std::string, nlohmann::json > m_type_cache;
 
             std::string m_appendage_data_folder;
 
