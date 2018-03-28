@@ -28,8 +28,9 @@ namespace rip
         NEW_EX(CommandNotFound)
         NEW_EX(AppendageWithoutType)
         NEW_EX(AppendageWithoutLabel)
-        NEW_EX(AppendageWithId)
-		NEW_EX(AppendageMissingField)
+        NEW_EX(AppendageWithoutId)
+        NEW_EX(AppendageMissingField)
+        NEW_EX(AppendageNotImplemented)
     }
 }
 #endif // APPENDAGES_EXCEPTIONS_HPP

@@ -145,7 +145,7 @@ namespace rip
 		{
 			if (config.find("address") == config.end())
 			{
-				throw AppendageMissingField(fmt::format("appendage roboclaw missing address"));
+				throw AppendageMissingField(fmt::format("Roboclaw: missing config field 'address'"));
 			}
 			m_address = config["address"];
 			if (config.find("wheel_radius") == config.end())
@@ -596,7 +596,7 @@ namespace rip
 			misc::Logger::getInstance()->debug("Read encoders for 10s in a loop");
 			while(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - start_time).count() < 10000)
 			{
-				misc::Logger::getInstance()->debug(fmt::format("Encoder 1 Ticks: {} | Encoder 2 Ticks: {}", std::get<0>(ReadEncoders()), std::get<0>(ReadEncoders())));
+				misc::Logger::getInstance()->debug(fmt::format("Encoder 1 Ticks: {} | Encoder 2 Ticks: {}", std::get<0>(ReadEncoders()), std::get<1>(ReadEncoders())));
 			}
 			misc::Logger::getInstance()->debug("Setting Duty to ~1/2 Power, forward for 5 seconds");
 			SetDuty(16000, 16000);

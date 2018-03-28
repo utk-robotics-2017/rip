@@ -48,7 +48,7 @@ namespace rip
             // Create devices
             for (const std::string& device_name : device_names)
             {
-                misc::Logger::getInstance()->debug(fmt::format("Loading appendage {}...", device_name));
+                misc::Logger::getInstance()->debug(fmt::format("Loading device {}...", device_name));
                 m_devices[device_name] = std::make_shared<cmdmessenger::Device>(fmt::format("/dev/{}", device_name));
                 loadConfig(m_devices[device_name], fmt::format("{}/{}/{}_core.json", arduino_gen_folder, device_name, device_name));
             }
@@ -78,7 +78,7 @@ namespace rip
         bool Spine::canLoadDevice(const std::string& arduino_gen_folder, const std::string& device_name) const
         {
             cppfs::FileHandle dev = cppfs::fs::open(fmt::format("/dev/{}", device_name));
-            cppfs::FileHandle config = cppfs::fs::open(fmt::format("{}/{}/{}_core.json", arduino_gen_folder, device_name, device_name));
+            cppfs::FileHandle config = cppfs::fs::open(fmt::format("{0}/{1}/{1}_core.json", arduino_gen_folder, device_name));
             return dev.exists() && config.exists();
         }
 
@@ -106,15 +106,21 @@ namespace rip
             }
 
             std::shared_ptr<appendages::AppendageFactory> factory = appendages::AppendageFactory::getInstance();
-            nlohmann::json appendages;
-            for (nlohmann::json appendage : appendages)
+            nlohmann::json appendages_conf = config["appendages"];
+            for (nlohmann::json appendage : appendages_conf)
             {
                 if (appendage.find("type") == appendage.end())
                 {
                     throw AppendageWithoutType(fmt::format("appendage missing type"));
                 }
-
-                m_appendages[appendage["type"]] = factory->makeAppendage(appendage, command_map, device);
+                std::string appendage_type = appendage["type"];
+                if (appendage.find("label") == appendage.end())
+                {
+                    throw AppendageWithoutLabel(fmt::format("appendage of type {} has no label", appendage_type));
+                }
+                std::string appendage_label = appendage["label"];
+                misc::Logger::getInstance()->debug(fmt::format("Loading appendage {} of type {} ...", appendage_label, appendage_type));
+                m_appendages[appendage_label] = factory->makeAppendage(appendage, command_map, device);
             }
         }
     }
