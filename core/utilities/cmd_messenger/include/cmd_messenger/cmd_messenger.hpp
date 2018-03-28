@@ -137,6 +137,7 @@ namespace rip
             template <typename... Args>
             void send(std::shared_ptr<Device> device, std::shared_ptr<Command> command, Args... args)
             {
+                std::string debugString; // HACK
                 if (device == nullptr)
                 {
                     throw EmptyDevice();
@@ -147,6 +148,8 @@ namespace rip
                     throw EmptyCommand();
                 }
 
+                std::cout << fmt::format("Command->getEnum(): {} (aka {})", command->getEnum(), command->getId()) << std::endl;
+
                 // Get the argument types
                 std::string argument_types = command->getArgumentTypes();
                 const std::size_t value = sizeof...(Args);
@@ -154,6 +157,10 @@ namespace rip
                 {
                     throw IncorrectArgumentListSize();
                 }
+
+                debugString = byteStringToHexDebugString(toBytes<int, T_IntegerType>(command->getEnum()));
+                std::cout << fmt::format("toBytes(command->getEnum()) bytes: {}", debugString) << std::endl;
+                // std::cout << toBytes<int, T_IntegerType>(command->getEnum()) << std::endl;
 
                 // Pack the command to send
                 std::string message = toBytes<int, T_IntegerType>(command->getEnum()) + static_cast<T_CharType>(m_field_separator);
@@ -171,10 +178,23 @@ namespace rip
                 }
 
                 // Send the message
+                debugString = byteStringToHexDebugString(message);
+                std::cout << fmt::format("Device->write bytes: {}", debugString) << std::endl;
                 device->write(message);
+
+                // HACK
+                device->setTimeout(units::s * 3);
 
                 // Check Acknowledgement
                 std::string acknowledgement = device->readline(m_max_response_length, std::to_string(m_command_separator));
+
+                if (acknowledgement.length() == 0)
+                {
+                  throw EmptyDeviceResponse(fmt::format("did not receive any bytes from the device, timeout or crash?"));
+                }
+
+                debugString = byteStringToHexDebugString(acknowledgement);
+                std::cout << fmt::format("Device->readline bytes: {}", debugString) << std::endl;
 
                 handleAck(acknowledgement, command);
 
@@ -193,17 +213,17 @@ namespace rip
              */
             void handleAck(std::string& acknowledgement, std::shared_ptr<Command> command)
             {
-                //std::string debugString = byteStringToHexDebugString(acknowledgement);
+                std::string debugString = byteStringToHexDebugString(acknowledgement);
+                std::cout << fmt::format("Ack Str: {}", debugString) << std::endl;
 
                 // First part should be the acknowledgment id
-                T_IntegerType acknowledgement_id = fromBytes<T_IntegerType>(acknowledgement);
+                uint8_t acknowledgement_id = fromBytes<uint8_t>(acknowledgement);
 
                 if (acknowledgement_id != 0) //TODO(Andrew): Look up number
                 {
-                    //std::cout << fmt::format("Ack Str: {}\nAck Id: {}", debugString, acknowledgement_id) << std::endl;
-                    throw IncorrectAcknowledgementCommand("Acknowledge command incorrect");
+                    throw IncorrectAcknowledgementCommand(fmt::format("handleAck: Acknowledge command incorrect, got {} instead of zero.", acknowledgement_id));
                 }
-
+                acknowledgement.erase(0,2);
                 // Then the field separator
                 if (acknowledgement[0] != m_field_separator)
                 {
@@ -309,6 +329,19 @@ namespace rip
                 return str;
             }
 
+            // HACK
+            using byte = unsigned char ;
+
+            template< typename T > std::array< byte, sizeof(T) >  to_bytes( const T& object )
+            {
+                std::array< byte, sizeof(T) > bytes;
+
+                const byte* begin = reinterpret_cast< const byte* >( std::addressof(object) ) ;
+                const byte* end = begin + sizeof(T) ;
+                std::copy( begin, end, std::begin(bytes) ) ;
+
+                return bytes;
+            }
 
             /**
              * @brief Convert a type into bytes
@@ -331,6 +364,7 @@ namespace rip
             template<typename From, typename To>
             typename std::enable_if<std::is_convertible<From, To>::value, std::string>::type toBytes(const From& f)
             {
+                /*
                 To t = static_cast<To>(f);
 
                 if (std::is_same<To, T_StringType>::value)
@@ -352,6 +386,22 @@ namespace rip
                     rv.push_back(*byte_pointer);
                     byte_pointer ++;
                 }
+                return rv;
+                //*/
+                To t = static_cast<To>(f);
+
+                if (std::is_same<To, T_StringType>::value)
+                {
+                    return toBytesString(t);
+                }
+
+                std::string rv;
+                for (auto a_chr : to_bytes(t))
+                {
+                    char n_chr = static_cast<char>(a_chr);
+                    rv += n_chr;
+                }
+                std::reverse(rv.begin(), rv.end());
                 return rv;
             }
 
@@ -453,6 +503,8 @@ namespace rip
 
                 // Recurse through future elements
                 message += tupleToBytes < I + 1, Args... > (argument_types, args_tuple);
+
+                // Remove comma and add semi-colon
 
                 return message;
             }

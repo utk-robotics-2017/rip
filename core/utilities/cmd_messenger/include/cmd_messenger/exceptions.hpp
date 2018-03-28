@@ -27,6 +27,7 @@ namespace rip
     {
         NEW_EX(EmptyDevice)
         NEW_EX(EmptyCommand)
+        NEW_EX(EmptyDeviceResponse)
 
         NEW_EX(IncorrectAcknowledgementCommand)
         NEW_EX(IncorrectArgumentListSize)
