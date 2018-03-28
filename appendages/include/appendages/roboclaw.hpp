@@ -56,7 +56,8 @@ namespace rip
 			void setDuties(int16_t duty1, int16_t duty2); //Not implemented on arduino
 			void setDuty(bool motor, int16_t duty); //Not implemented on arduino
 
-			void setVelocityPID(bool motor, float Kp, float Ki, float Kd, uint32_t qpps);
+			void setM1VelocityPID(float Kp, float Ki, float Kd, uint32_t qpps);
+            void setM2VelocityPID(float Kp, float Ki, float Kd, uint32_t qpps);
 			std::array<uint8_t, 2> getBuffers();
 			void resetEncoders();
 
