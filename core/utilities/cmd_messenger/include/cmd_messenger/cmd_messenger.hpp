@@ -117,7 +117,8 @@ namespace rip
              * @param escape_character The character used to escape the separators
              */
             CmdMessenger(char field_separator = ',', char command_separator = ';', char escape_character = '/')
-                : m_field_separator(field_separator)
+                : m_max_response_length(1023)
+                , m_field_separator(field_separator)
                 , m_command_separator(command_separator)
                 , m_escape_character(escape_character)
                 , m_last_device(nullptr)
@@ -181,12 +182,13 @@ namespace rip
                 debugString = byteStringToHexDebugString(message);
                 std::cout << fmt::format("Device->write bytes: {}", debugString) << std::endl;
                 device->write(message);
-
+                
                 // HACK
                 device->setTimeout(units::s * 3);
 
                 // Check Acknowledgement
                 std::string acknowledgement = device->readline(m_max_response_length, std::to_string(m_command_separator));
+
 
                 if (acknowledgement.length() == 0)
                 {
