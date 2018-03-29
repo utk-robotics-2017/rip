@@ -61,11 +61,35 @@ function build_rip_deps() {
 function build_rip_rpi() {
   if ($PROMPTER --title "Comfirm Build?" --yesno "Do not run this command unless you were told to do so. Requires files outside of RIP." 8 68) then
     if find ../rpi_images -prune -empty ; then
-      rpi_image_file="$(find ../rpi_images -mindepth 1 -maxdepth 1 -printf '%f\n' | tail -1 )"
+      rpi_image_file="$(find ../rpi_images -mindepth 1 -maxdepth 1 -printf '%f\n' | sort -g | tail -1 )"
       echo "Found rpi debootstrap image ${rpi_image_file}"
       rsync --copy-links --times ../rpi_images/${rpi_image_file} ./external/rpi_images/
+      if [ -z "$RPI_DOCKER_TAG" ]; then
+        RPI_DOCKER_TAG=$($PROMPTER --title "Docker tag" \
+          --inputbox "Choose docker tag for building image ${rpi_image_file}" \
+          $(( LINES - 4 )) $(( COLUMNS - 18 )) \
+          "latest" \
+          3>&1 1>&2 2>&3
+        )
+        if [[ "$?" != "0" ]]; then
+          echo "Cancelled."
+          exit 0
+        fi
+      fi
+      if [ -z "$RPI_DIST" ]; then
+        RPI_DIST=$($PROMPTER --title "Distro release" \
+          --inputbox "Enter distro name of image ${rpi_image_file}" \
+          $(( LINES - 4 )) $(( COLUMNS - 18 )) \
+          "stretch" \
+          3>&1 1>&2 2>&3
+        )
+        if [[ "$?" != "0" ]]; then
+          echo "Cancelled."
+          exit 0
+        fi
+      fi
       echo "Building the rip_rpi container... this will take awhile."
-      docker build -f docker/rip_rpi.dockerfile -t utkrobotics/rip_rpi:latest --build-arg pi_image=${rpi_image_file} .
+      docker build -f docker/rip_rpi.dockerfile -t utkrobotics/rip_rpi:${RPI_DOCKER_TAG} --build-arg pi_image=${rpi_image_file} --build-arg pi_image_dist=${RPI_DIST} .
     else
       echo "No Raspbian debootstrap images could be located at ../rpi_images."
       exit 1

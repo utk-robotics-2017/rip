@@ -33,11 +33,22 @@ RUN cat /tmp/raspi-img.tar.xz \
 RUN curl -fsSL https://github.com/resin-io-projects/armv7hf-debian-qemu/raw/master/bin/qemu-arm-static \
     > $SYSROOT/$QEMU_PATH
 RUN chmod +x $SYSROOT/$QEMU_PATH
+
+ARG pi_image_dist
+ENV PI_IMAGE_DIST=${pi_image_dist}
+# edit the sources.list for more
+RUN chroot $SYSROOT $QEMU_PATH /bin/sh -c "\
+ echo \"deb http://archive.raspbian.org/raspbian/ ${PI_IMAGE_DIST} main contrib non-free rpi\" > /etc/apt/sources.list "
+
 RUN chroot $SYSROOT $QEMU_PATH /bin/sh -c '\
- echo "deb http://mirrordirector.raspbian.org/raspbian/ jessie main contrib non-free rpi" > /etc/apt/sources.list \
- && echo "deb http://archive.raspberrypi.org/debian/ jessie main ui" >> /etc/apt/sources.list \
- && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 82B129927FA3303E \
- && apt-get clean \
+ cd /dev \
+ && MAKEDEV -n std \
+ && MAKEDEV -d std \
+ && MAKEDEV std \
+ '
+
+RUN chroot $SYSROOT $QEMU_PATH /bin/sh -c '\
+ apt-get clean \
  && apt-get update \
  && DEBIAN_FRONTEND=noninteractive apt-get install -y apt-utils \
  && DEBIAN_FRONTEND=noninteractive dpkg --configure -a \
@@ -48,7 +59,7 @@ RUN chroot $SYSROOT $QEMU_PATH /bin/sh -c '\
   libc6-dev symlinks libssl-dev libcrypto++-dev \
   libeigen3-dev libsuitesparse-dev qt5-default \
   bash zsh git vim tmux \
-  cmake lcov g++ time libssh-dev unzip \
+  cmake lcov g++ time unzip \
  && symlinks -cors / \
  && apt-get clean'
 
