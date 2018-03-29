@@ -169,7 +169,7 @@ namespace rip
             FileHandle platformio_ini = fs::open(fmt::format("{}/{}/platformio.ini", m_parent_folder, m_arduino));
 			if (!platformio_ini.writeFile(platformio_str))
 			{
-				throw FileIoException(fmt::format("Could not create platform.ini: \"{}\"", platformio_ini.path()));
+				throw FileIoException(fmt::format("Could not create platformio.ini: \"{}\"", platformio_ini.path()));
 			}
             platformio_ini.setPermissions(FilePermissions::UserRead  | FilePermissions::UserWrite  |
                                           FilePermissions::GroupRead | FilePermissions::GroupWrite |

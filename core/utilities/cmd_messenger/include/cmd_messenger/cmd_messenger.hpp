@@ -224,10 +224,17 @@ namespace rip
                 T_IntegerType acknowledgement_id = std::stoi(acknowledgement.substr(0, acknowledgement.find(m_field_separator)), nullptr);
                 acknowledgement.erase(0, acknowledgement.find(m_field_separator));
 
-                if (acknowledgement_id != 0) // kAcknowledge will always be zero
+                // kAcknowledge will always be zero
+                if (acknowledgement_id == 1)
                 {
-                    throw IncorrectAcknowledgementCommand(fmt::format("handleAck: Acknowledge command incorrect, got {} instead of zero.", acknowledgement_id));
+                  debugString = byteStringToHexDebugString(acknowledgement);
+                  throw DeviceSentErrorResponse(fmt::format("handleAck: device returned 1:kError: {}", debugString));
                 }
+                else if (acknowledgement_id != 0)
+                {
+                  throw IncorrectAcknowledgementCommand(fmt::format("handleAck: Acknowledge command incorrect, got {} instead of zero.", acknowledgement_id));
+                }
+
                 // XXX
                 debugString = byteStringToHexDebugString(acknowledgement);
                 std::cout << fmt::format("After checking ack_id: {}", debugString) << std::endl;
