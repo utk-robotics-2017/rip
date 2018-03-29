@@ -187,8 +187,7 @@ namespace rip
                 device->setTimeout(units::s * 3);
 
                 // Check Acknowledgement
-                std::string acknowledgement = device->readline(m_max_response_length, std::to_string(m_command_separator));
-
+                std::string acknowledgement = device->readline(m_max_response_length, std::string(1, m_command_separator));
 
                 if (acknowledgement.length() == 0)
                 {
@@ -294,7 +293,7 @@ namespace rip
                 }
 
                 // Unpack the message
-                std::string response = m_last_device->readline(m_max_response_length, std::to_string(m_command_separator));
+                std::string response = m_last_device->readline(m_max_response_length, std::string(1, m_command_separator));
 
                 if (response.size() == 0)
                 {
@@ -302,7 +301,8 @@ namespace rip
                 }
 
                 // Check that response command is correct
-                T_IntegerType response_command_enum = fromBytes<T_IntegerType>(response);
+                T_IntegerType response_command_enum = std::stoi(response.substr(0, response.find(m_field_separator)), nullptr);
+                response.erase(0, response.find(m_field_separator));
 
                 if (response_command_enum != command->getEnum())
                 {

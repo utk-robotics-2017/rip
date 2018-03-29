@@ -119,7 +119,8 @@ namespace rip
             //appendages::Appendage::createCommand("kPing", command_map, "");
             misc::Logger::getInstance()->debug(fmt::format("Attempting to Ping {} ", device_name));
             messenger.send(device, command_ping);
-            messenger.receive<cmdmessenger::ArduinoCmdMessenger::IntegerType>(command_ping_result);
+            std::tuple<cmdmessenger::ArduinoCmdMessenger::IntegerType> ping_result = messenger.receive<cmdmessenger::ArduinoCmdMessenger::IntegerType>(command_ping_result);
+            misc::Logger::getInstance()->debug(fmt::format("Ping result is {}", std::get<0>(ping_result)));
 
             std::shared_ptr<appendages::AppendageFactory> factory = appendages::AppendageFactory::getInstance();
             nlohmann::json appendages_conf = config["appendages"];
