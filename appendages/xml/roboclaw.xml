@@ -29,7 +29,7 @@
             <code>
                 if (!roboclaws[indexNum].SpeedM2(address, speed))
                 {
-                    cmdMessenger.sendBinCmd(kerror, kSetM2Speed);
+                    cmdMessenger.sendBinCmd(kError, kSetM2Speed);
                 }
             </code>
         </command>
@@ -40,7 +40,7 @@
             <code>
                 if (!roboclaws[indexNum].SpeedM1M2(address, speed1, speed2))
                 {
-                    cmdMessenger.sendBinCmd(kerror, kSetM1M2Speed);
+                    cmdMessenger.sendBinCmd(kError, kSetM1M2Speed);
                 }
             </code>
         </command>
@@ -53,7 +53,7 @@
             <code>
                 if (!roboclaws[indexNum].SpeedAccelM1(address, accel, speed))
                 {
-                    cmdMessenger.sendBinCmd(kerror, kSetM1SpeedAccel);
+                    cmdMessenger.sendBinCmd(kError, kSetM1SpeedAccel);
                 }
             </code>
         </command>
@@ -64,7 +64,7 @@
             <code>
                 if (!roboclaws[indexNum].SpeedAccelM2(address, accel, speed))
                 {
-                    cmdMessenger.sendBinCmd(kerror, kSetM2SpeedAccel);
+                    cmdMessenger.sendBinCmd(kError, kSetM2SpeedAccel);
                 }
             </code>
         </command>
@@ -76,7 +76,7 @@
             <code>
                 if (!roboclaws[indexNum].SpeedAccelM1M2(address, accel, speed1, speed2))
                 {
-                    cmdMessenger.sendBinCmd(kerror, kSetM1M2SpeedAccel);
+                    cmdMessenger.sendBinCmd(kError, kSetM1M2SpeedAccel);
                 }
             </code>
         </command>
@@ -89,7 +89,7 @@
             <code>
                 if (!roboclaws[indexNum].SpeedDistanceM1(address, speed, distance))
                 {
-                    cmdMessenger.sendBinCmd(kerror, kSetM1SpeedDist);
+                    cmdMessenger.sendBinCmd(kError, kSetM1SpeedDist);
                 }
             </code>
         </command>
@@ -100,7 +100,7 @@
             <code>
                 if (!roboclaws[indexNum].SpeedDistanceM2(address, speed, distance))
                 {
-                    cmdMessenger.sendBinCmd(kerror, kSetM2SpeedDist);
+                    cmdMessenger.sendBinCmd(kError, kSetM2SpeedDist);
                 }
             </code>
         </command>
@@ -113,7 +113,7 @@
             <code>
                 if (!roboclaws[indexNum].SpeedDistanceM1M2(address, speed1, distance1, speed2, distance2))
                 {
-                    cmdMessenger.sendBinCmd(kerror, kSetM1M2SpeedDist);
+                    cmdMessenger.sendBinCmd(kError, kSetM1M2SpeedDist);
                 }
             </code>
         </command>
@@ -127,7 +127,7 @@
             <code>
                 if (!roboclaws[indexNum].SpeedAccelDistanceM1(address, accel, speed, distance))
                 {
-                    cmdMessenger.sendBinCmd(kerror, kSetM1SpeedAccelDist);
+                    cmdMessenger.sendBinCmd(kError, kSetM1SpeedAccelDist);
                 }
             </code>
         </command>
@@ -139,7 +139,7 @@
             <code>
                 if (!roboclaws[indexNum].SpeedAccelDistanceM2(address, accel, speed, distance)) \
                 {
-                    cmdMessenger.sendBinCmd(kerror, kSetM2SpeedAccelDist);
+                    cmdMessenger.sendBinCmd(kError, kSetM2SpeedAccelDist);
                 }
             </code>
         </command>
@@ -153,7 +153,7 @@
             <code>
                 if (!roboclaws[indexNum].SpeedAccelDistanceM1M2(address, accel, speed1, distance1, speed2, distance2))
                 {
-                    cmdMessenger.sendBinCmd(kerror, kSetM1M2SpeedAccelDist);
+                    cmdMessenger.sendBinCmd(kError, kSetM1M2SpeedAccelDist);
                 }
             </code>
         </command>
@@ -168,7 +168,7 @@
             <code>
                 if (!roboclaws[indexNum].SpeedAccelDeccelPositionM1(address, accel, speed, deccel, position))
                 {
-                    cmdMessenger.sendBinCmd(kerror, kSetM1SpeedAccelDecelDist);
+                    cmdMessenger.sendBinCmd(kError, kSetM1SpeedAccelDecelDist);
                 }
             </code>
         </command>
@@ -181,7 +181,7 @@
             <code>
                 if (!roboclaws[indexNum].SpeedAccelDeccelPositionM2(address, accel, speed, deccel, position))
                 {
-                    cmdMessenger.sendBinCmd(kerror, kSetM2SpeedAccelDecelDist);
+                    cmdMessenger.sendBinCmd(kError, kSetM2SpeedAccelDecelDist);
                 }
             </code>
         </command>
@@ -198,7 +198,7 @@
             <code>
                 if (!roboclaws[indexNum].SpeedAccelDeccelPositionM1M2(address, accel1, speed1, deccel1, position1, accel2, speed2, deccel2, position2))
                 {
-                    cmdMessenger.sendBinCmd(kerror, kSetM2SpeedAccelDecelDist);
+                    cmdMessenger.sendBinCmd(kError, kSetM2SpeedAccelDecelDist);
                 }
             </code>
         </command>
@@ -212,7 +212,7 @@
 
                 if (!roboclaws[indexNum].ReadEncoders(address, enc1, tmp))
                 {
-                    cmdMessenger.sendBinCmd(kerror, kReadM1M2Encoder);
+                    cmdMessenger.sendBinCmd(kError, kReadM1M2Encoder);
                 }
             </code>
         </command>
@@ -224,7 +224,7 @@
 
                 if (!roboclaws[indexNum].ReadEncoders(address, tmp, enc2))
                 {
-                    cmdMessenger.sendBinCmd(kerror, kReadM1M2Encoder);
+                    cmdMessenger.sendBinCmd(kError, kReadM1M2Encoder);
                 }
             </code>
         </command>
@@ -235,7 +235,7 @@
             <code>
                 if (!roboclaws[indexNum].ReadEncoders(address, enc1, enc2))
                 {
-                    cmdMessenger.sendBinCmd(kerror, kReadM1M2Encoder);
+                    cmdMessenger.sendBinCmd(kError, kReadM1M2Encoder);
                 }
             </code>
         </command>
@@ -248,7 +248,7 @@
                 enc1Speed = roboclaws[indexNum].ReadSpeedM1(address, status, valid);
                 if (!valid)
                 {
-                    cmdMessenger.sendBinCmd(kerror, kReadM1EncoderSpeed);
+                    cmdMessenger.sendBinCmd(kError, kReadM1EncoderSpeed);
                 }
 
             </code>
@@ -260,7 +260,7 @@
                 enc2Speed = roboclaws[indexNum].ReadSpeedM2(address, status, valid);
                 if (!valid)
                 {
-                    cmdMessenger.sendBinCmd(kerror, kReadM2EncoderSpeed);
+                    cmdMessenger.sendBinCmd(kError, kReadM2EncoderSpeed);
                 }
             </code>
         </command>
@@ -274,7 +274,7 @@
 
                 if (!validM1 || !validM2)
                 {
-                    cmdMessenger.sendBinCmd(kerror, kReadM1M2EncoderSpeed);
+                    cmdMessenger.sendBinCmd(kError, kReadM1M2EncoderSpeed);
                 }
             </code>
         </command>
@@ -286,7 +286,7 @@
             <code>
                 if (!roboclaws[indexNum].DutyM1(address, duty))
                 {
-                    cmdMessenger.sendBinCmd(kerror, kSetM1Duty);
+                    cmdMessenger.sendBinCmd(kError, kSetM1Duty);
                 }
             </code>
         </command>
@@ -296,7 +296,7 @@
             <code>
                 if (!roboclaws[indexNum].DutyM2(address, duty))
                 {
-                    cmdMessenger.sendBinCmd(kerror, kSetM2Duty);
+                    cmdMessenger.sendBinCmd(kError, kSetM2Duty);
                 }
             </code>
         </command>
@@ -307,7 +307,7 @@
             <code>
                 if (!roboclaws[indexNum].DutyM1M2(address, duty1, duty2))
                 {
-                    cmdMessenger.sendBinCmd(kerror, kSetM1M2Duty);
+                    cmdMessenger.sendBinCmd(kError, kSetM1M2Duty);
                 }
             </code>
         </command>
@@ -322,7 +322,7 @@
             <code>
                 if (!roboclaws[indexNum].SetM1VelocityPID(address, kp, ki, kd, qpps))
                 {
-                    cmdMessenger.sendBinCmd(kerror, kSetM1VelocityPID);
+                    cmdMessenger.sendBinCmd(kError, kSetM1VelocityPID);
                 }
             </code>
         </command>
@@ -335,7 +335,7 @@
             <code>
                 if (!roboclaws[indexNum].SetM2VelocityPID(address, kp, ki, kd, qpps))
                 {
-                    cmdMessenger.sendBinCmd(kerror, kSetM2VelocityPID);
+                    cmdMessenger.sendBinCmd(kError, kSetM2VelocityPID);
                 }
             </code>
         </command>
@@ -346,7 +346,7 @@
             <code>
                 if (!roboclaws[indexNum].ReadBuffers(address, buff1, buff2))
                 {
-                    cmdMessenger.sendBinCmd(kerror, kGetBuffers);
+                    cmdMessenger.sendBinCmd(kError, kGetBuffers);
                 }
             </code>
         </command>
@@ -355,7 +355,7 @@
             <code>
                 if (!roboclaws[indexNum].ResetEncoders(address))
                 {
-                    cmdMessenger.sendBinCmd(kerror, kGetBuffers);
+                    cmdMessenger.sendBinCmd(kError, kGetBuffers);
                 }
             </code>
         </command>
