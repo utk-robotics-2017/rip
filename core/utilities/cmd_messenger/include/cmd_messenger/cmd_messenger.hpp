@@ -32,7 +32,7 @@
 
 #include <fmt/format.h>
 
-#include "exceptions.hpp"
+#include <cmd_messenger/exceptions.hpp>
 #include "command.hpp"
 #include "device.hpp"
 
@@ -46,7 +46,7 @@ namespace rip
          *  @brief Packs a series of arguments in to a command message that can be sent
          *
          * @tparam T_StringType The type for representing a string (may not work with any other than the default type)
-         * @tparam T_IntegerType The type for representing an integer
+         * @tparam T_IntegerType The type for representing a cross-platform integer
          * @tparam T_UnsignedIntegerType
          * @tparam T_LongType
          * @tparam T_UnsignedLongType
@@ -159,12 +159,12 @@ namespace rip
                     throw IncorrectArgumentListSize();
                 }
 
-                debugString = byteStringToHexDebugString(toBytes<int, T_IntegerType>(command->getEnum()));
-                std::cout << fmt::format("toBytes(command->getEnum()) bytes: {}", debugString) << std::endl;
+                debugString = byteStringToHexDebugString(std::to_string(command->getEnum()));
+                std::cout << fmt::format("to_str(command->getEnum()) bytes: {}", debugString) << std::endl;
                 // std::cout << toBytes<int, T_IntegerType>(command->getEnum()) << std::endl;
 
                 // Pack the command to send
-                std::string message = toBytes<int, T_IntegerType>(command->getEnum()) + static_cast<T_CharType>(m_field_separator);
+                std::string message = std::to_string(command->getEnum()) + static_cast<T_CharType>(m_field_separator);
 
                 std::tuple<Args...> args_tuple(args...);
 
@@ -182,7 +182,7 @@ namespace rip
                 debugString = byteStringToHexDebugString(message);
                 std::cout << fmt::format("Device->write bytes: {}", debugString) << std::endl;
                 device->write(message);
-                
+
                 // HACK
                 device->setTimeout(units::s * 3);
 
@@ -219,30 +219,45 @@ namespace rip
                 std::cout << fmt::format("Ack Str: {}", debugString) << std::endl;
 
                 // First part should be the acknowledgment id
-                uint8_t acknowledgement_id = fromBytes<uint8_t>(acknowledgement);
+                // (a two-byte integer by default)
+                // note that fromBytes consumes and modifies the target
+                // T_CharType acknowledgement_id = fromBytes<T_CharType>(acknowledgement);
+                T_IntegerType acknowledgement_id = std::stoi(acknowledgement.substr(0, acknowledgement.find(m_field_separator)), nullptr);
+                acknowledgement.erase(0, acknowledgement.find(m_field_separator));
 
-                if (acknowledgement_id != 0) //TODO(Andrew): Look up number
+                if (acknowledgement_id != 0) // kAcknowledge will always be zero
                 {
                     throw IncorrectAcknowledgementCommand(fmt::format("handleAck: Acknowledge command incorrect, got {} instead of zero.", acknowledgement_id));
                 }
-                acknowledgement.erase(0,2);
+                // XXX
+                debugString = byteStringToHexDebugString(acknowledgement);
+                std::cout << fmt::format("After checking ack_id: {}", debugString) << std::endl;
                 // Then the field separator
                 if (acknowledgement[0] != m_field_separator)
                 {
-                    throw IncorrectFieldSeparator();
+                   std::cout << fmt::format("Bad field_separator: Wanted '{}' but got '{}' !", m_field_separator, acknowledgement[0]) << std::endl;
+                    throw IncorrectFieldSeparator(fmt::format("Wanted '{}' but got '{}' !", m_field_separator, acknowledgement[0]));
                 }
                 acknowledgement.erase(0, 1);
 
+                debugString = byteStringToHexDebugString(acknowledgement);
+                std::cout << fmt::format("After checking field_separator: {}", debugString) << std::endl;
+
                 // Then the command sent
                 T_IntegerType acknowledge_command = fromBytes<T_IntegerType>(acknowledgement);
-                if (acknowledge_command != command->getEnum())
+                // NOTE fromBytes consumes the data from the string!
+                if ( acknowledge_command != static_cast<T_IntegerType>(command->getEnum()) )
                 {
+                  std::cout << fmt::format("Acknowledgement command {:d} is not the same as the current command {:d}", acknowledge_command, command->getEnum()) << std::endl;
                     throw IncorrectAcknowledgementCommand(fmt::format("Acknowledgement command {} is not the same as the current command {}", acknowledge_command, command->getEnum()));
                 }
                 if (acknowledgement[0] != m_command_separator)
                 {
-                    throw IncorrectCommandSeparator();
+                  std::cout << fmt::format("Wanted '{}' but got '{}' !", m_command_separator, acknowledgement[0]) << std::endl;
+                    throw IncorrectCommandSeparator(fmt::format("Wanted '{}' but got '{}' !", m_command_separator, acknowledgement[0]));
                 }
+
+                std::cout << fmt::format("Successfully acknowledged command {}.", command->getId()) << std::endl;
             }
 
             /**
@@ -280,6 +295,11 @@ namespace rip
 
                 // Unpack the message
                 std::string response = m_last_device->readline(m_max_response_length, std::to_string(m_command_separator));
+
+                if (response.size() == 0)
+                {
+                   throw EmptyDeviceResponse("In CmdMessenger->receive(), device->receive() did not return anything. Timeout?");
+                }
 
                 // Check that response command is correct
                 T_IntegerType response_command_enum = fromBytes<T_IntegerType>(response);
@@ -572,17 +592,22 @@ namespace rip
             {
                 T rv;
                 char* byte_pointer = reinterpret_cast<char*>(&rv);
-                for (size_t i = 0; i < sizeof(rv); i++)
+                uint16_t escape_chars_skipped = 0;
+                for (size_t i = 0; i < (sizeof(rv) + escape_chars_skipped); i++)
                 {
                     // Skip the escape character
                     if (message[i] == m_escape_character)
                     {
                         i++;
+                        escape_chars_skipped++;
                     }
                     *byte_pointer = message[i];
                     byte_pointer ++;
                 }
-                message.erase(0, sizeof(rv));
+                message.erase(0, sizeof(rv)+escape_chars_skipped);
+                // reverse the return val
+                // char *Tstart = reinterpret_cast<char*>(&rv), *Tend = Tstart + sizeof(rv);
+                // std::reverse(Tstart, Tend);
                 return rv;
             }
 

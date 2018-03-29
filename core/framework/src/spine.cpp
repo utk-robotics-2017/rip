@@ -5,6 +5,7 @@
 
 #include <json.hpp>
 #include <appendages/appendage_factory.hpp>
+#include <cmd_messenger/cmd_messenger.hpp>
 #include <misc/logger.hpp>
 
 namespace rip
@@ -50,7 +51,7 @@ namespace rip
             {
                 misc::Logger::getInstance()->debug(fmt::format("Loading device {}...", device_name));
                 m_devices[device_name] = std::make_shared<cmdmessenger::Device>(fmt::format("/dev/{}", device_name));
-                loadConfig(m_devices[device_name], fmt::format("{}/{}/{}_core.json", arduino_gen_folder, device_name, device_name));
+                loadConfig(m_devices[device_name], fmt::format("{0}/{1}/{1}_core.json", arduino_gen_folder, device_name), device_name);
             }
         }
 
@@ -82,13 +83,13 @@ namespace rip
             return dev.exists() && config.exists();
         }
 
-        void Spine::loadConfig(std::shared_ptr<cmdmessenger::Device> device, const std::string& path)
+        void Spine::loadConfig(std::shared_ptr<cmdmessenger::Device> device, const std::string& path, const std::string& device_name)
         {
-            misc::Logger::getInstance()->debug(fmt::format("Loading appendage config {} ...", path));
+            misc::Logger::getInstance()->debug(fmt::format("Loading device config {} ...", path));
             cppfs::FileHandle config_file = cppfs::fs::open(path);
             if (!config_file.exists())
             {
-                misc::Logger::getInstance()->error(fmt::format("Cannot find appendage config file {}", path));
+                misc::Logger::getInstance()->error(fmt::format("Cannot find device config file {}", path));
                 throw FileNotFound(fmt::format("Cannot find {}", path));
             }
 
@@ -104,6 +105,21 @@ namespace rip
             {
                 command_map[iter.key()] = iter.value();
             }
+
+            // test the device by sending a kPing command
+            cmdmessenger::ArduinoCmdMessenger messenger;
+            std::shared_ptr<cmdmessenger::Command> command_ping;
+            std::shared_ptr<cmdmessenger::Command> command_ping_result;
+            command_ping = std::make_shared<cmdmessenger::Command>("kPing", command_map.find("kPing")->second, "");
+            command_ping_result = std::make_shared<cmdmessenger::Command>(
+              "kPingResult",
+              command_map.find("kPingResult")->second,
+              cmdmessenger::ArduinoCmdMessenger::makeArgumentString<cmdmessenger::ArduinoCmdMessenger::IntegerType>()
+            );
+            //appendages::Appendage::createCommand("kPing", command_map, "");
+            misc::Logger::getInstance()->debug(fmt::format("Attempting to Ping {} ", device_name));
+            messenger.send(device, command_ping);
+            messenger.receive<cmdmessenger::ArduinoCmdMessenger::IntegerType>(command_ping_result);
 
             std::shared_ptr<appendages::AppendageFactory> factory = appendages::AppendageFactory::getInstance();
             nlohmann::json appendages_conf = config["appendages"];

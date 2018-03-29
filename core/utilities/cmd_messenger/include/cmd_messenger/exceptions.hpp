@@ -17,8 +17,8 @@
  *  \$$    $$   | $$   | $$  \$$\      | $$  | $$|   $$ \| $$
  *   \$$$$$$     \$$    \$$   \$$       \$$   \$$ \$$$$$$ \$$
  */
-#ifndef EXCEPTIONS_HPP
-#define EXCEPTIONS_HPP
+#ifndef CMD_MESSENGER_EXCEPTIONS_HPP
+#define CMD_MESSENGER_EXCEPTIONS_HPP
 #include <misc/exception_base.hpp>
 
 namespace rip
@@ -40,4 +40,4 @@ namespace rip
         NEW_EX(UnknownArgument)
     }
 }
-#endif // EXCEPTIONS_HPP
+#endif // CMD_MESSENGER_EXCEPTIONS_HPP

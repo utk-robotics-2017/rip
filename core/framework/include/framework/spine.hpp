@@ -116,7 +116,7 @@ namespace rip
              * @exception FileNotFound Thrown if the config file cannot be found
              * @exception IncorrectConfig Thrown if the config has incorrect information in it
              */
-            void loadConfig(std::shared_ptr<cmdmessenger::Device> device, const std::string& path);
+            void loadConfig(std::shared_ptr<cmdmessenger::Device> device, const std::string& path, const std::string& device_name);
 
             /**
              * @brief Checks if possible to load a device
