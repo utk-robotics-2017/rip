@@ -141,12 +141,17 @@ namespace rip
                 std::string debugString; // HACK
                 if (device == nullptr)
                 {
-                    throw EmptyDevice();
+                    throw EmptyDevice("Device is nullptr!");
                 }
 
                 if (command->getId() == "")
                 {
                     throw EmptyCommand();
+                }
+
+                if ( ! device->isOpen())
+                {
+                  throw EmptyDevice("Device not open / available.");
                 }
 
                 std::cout << fmt::format("Command->getEnum(): {} (aka {})", command->getEnum(), command->getId()) << std::endl;
@@ -164,12 +169,13 @@ namespace rip
                 // std::cout << toBytes<int, T_IntegerType>(command->getEnum()) << std::endl;
 
                 // Pack the command to send
-                std::string message = std::to_string(command->getEnum()) + static_cast<T_CharType>(m_field_separator);
+                std::string message = std::to_string(command->getEnum());
 
                 std::tuple<Args...> args_tuple(args...);
 
                 if (sizeof...(args) > 0)
                 {
+                    message += static_cast<T_CharType>(m_field_separator);
                     message += tupleToBytes<0, Args...>(argument_types, args_tuple);
                     message.back() = static_cast<T_CharType>(m_command_separator);
                 }
@@ -181,23 +187,63 @@ namespace rip
                 // Send the message
                 debugString = byteStringToHexDebugString(message);
                 std::cout << fmt::format("Device->write bytes: {}", debugString) << std::endl;
+                std::cout << fmt::format("Device baud: {}", device->getBaudrate()) << '\n';
                 device->write(message);
+                // device->flushOutput();
+                device->flush();
 
                 // HACK
-                device->setTimeout(units::s * 3);
+                device->setTimeout(units::s * 1);
+
+                std::cout << "reading till I see " << std::string(1, m_command_separator) << std::endl;
 
                 // Check Acknowledgement
-                std::string acknowledgement = device->readline(m_max_response_length, std::string(1, m_command_separator));
+                // std::string acknowledgement = device->readline(m_max_response_length, ";");//std::string(1, m_command_separator));
+                std::string ack_msg, new_data;
+                uint8_t retry_count = 0;
+                while (true)
+                {
+                  new_data = device->read(sizeof(char));
+                  if (new_data.size() > 1)
+                  {
+                    throw SerialLibrarySucks("cmdmessenger->send(), device->read(): We asked for 1 char but got more than that...");
+                  }
+                  if (new_data.size() == 0)
+                  {
+                    retry_count++;
+                    if (retry_count > 3)
+                    {
+                      std::cout << "Read retry count exceeded." << '\n';
+                      break;
+                    }
+                  }
+                  else
+                  {
+                    ack_msg.append(new_data);
+                    // reset the retry whenever we get data back
+                    retry_count = 0;
+                    if (new_data.front() == m_escape_character)
+                    {
+                      // pass the next byte
+                      ack_msg.append(device->read(sizeof(char)));
+                    }
+                    else if (new_data.front() == m_command_separator)
+                    {
+                      // done reading the command
+                      break;
+                    }
+                  }
+                }
 
-                if (acknowledgement.length() == 0)
+                if (ack_msg.length() == 0)
                 {
                   throw EmptyDeviceResponse(fmt::format("did not receive any bytes from the device, timeout or crash?"));
                 }
 
-                debugString = byteStringToHexDebugString(acknowledgement);
+                debugString = byteStringToHexDebugString(ack_msg);
                 std::cout << fmt::format("Device->readline bytes: {}", debugString) << std::endl;
 
-                handleAck(acknowledgement, command);
+                handleAck(ack_msg, command);
 
                 m_last_device = device;
             }
@@ -300,7 +346,43 @@ namespace rip
                 }
 
                 // Unpack the message
-                std::string response = m_last_device->readline(m_max_response_length, std::string(1, m_command_separator));
+                // std::string response = m_last_device->readline(m_max_response_length, std::string(1, m_command_separator));
+                std::string response, new_data;
+                uint8_t retry_count = 0;
+                while (true)
+                {
+                  new_data = m_last_device->read(sizeof(char));
+                  if (new_data.size() > 1)
+                  {
+                    throw SerialLibrarySucks("We asked for 1 char but got more than that...");
+                  }
+                  if (new_data.size() == 0)
+                  {
+                    retry_count++;
+                    if (retry_count > 3)
+                    {
+                      std::cout << "Read retry count exceeded." << '\n';
+                      break;
+                    }
+                  }
+                  else
+                  {
+                    response.append(new_data);
+                    // reset the retry whenever we get data back
+                    retry_count = 0;
+                    if (new_data.front() == m_escape_character)
+                    {
+                      // if we have an escape character, go ahead and pass the next byte through
+                      response.append(m_last_device->read(sizeof(char)));
+                    }
+                    else if (new_data.front() == m_command_separator)
+                    {
+                      // and it's not escaped! we must be at the end of the command
+                      break;
+                    }
+                  }
+                }
+                std::cout << fmt::format("CmdMessenger->receive(), device->readline() output: {}", byteStringToHexDebugString(response)) << '\n';
 
                 if (response.size() == 0)
                 {
@@ -318,7 +400,7 @@ namespace rip
 
                 if (response[0] != m_field_separator)
                 {
-                    throw IncorrectFieldSeparator();
+                    throw IncorrectFieldSeparator("In CmdMessenger->receive(), after checking response command.");
                 }
                 response.erase(0, 1);
 
@@ -373,7 +455,7 @@ namespace rip
             }
 
             /**
-             * @brief Convert a type into bytes
+             * @brief Convert a type into bytes and escape control characters
              *
              * @tparam From The current value of the type to convert to bytes
              * @tparam To The type that is specified for the device
@@ -393,30 +475,6 @@ namespace rip
             template<typename From, typename To>
             typename std::enable_if<std::is_convertible<From, To>::value, std::string>::type toBytes(const From& f)
             {
-                /*
-                To t = static_cast<To>(f);
-
-                if (std::is_same<To, T_StringType>::value)
-                {
-                    return toBytesString(t);
-                }
-
-                char* byte_pointer = reinterpret_cast<char*>(&t);
-                std::string rv;
-                for (size_t i = 0; i < sizeof(t); i++)
-                {
-                    // Add the escape character
-                    if (*byte_pointer == m_field_separator ||
-                            *byte_pointer == m_command_separator ||
-                            *byte_pointer == m_escape_character)
-                    {
-                        rv.push_back(static_cast<T_CharType>(m_escape_character));
-                    }
-                    rv.push_back(*byte_pointer);
-                    byte_pointer ++;
-                }
-                return rv;
-                //*/
                 To t = static_cast<To>(f);
 
                 if (std::is_same<To, T_StringType>::value)
@@ -428,9 +486,17 @@ namespace rip
                 for (auto a_chr : to_bytes(t))
                 {
                     char n_chr = static_cast<char>(a_chr);
-                    rv += n_chr;
+                    // escape any special control chars here
+                    if (
+                      n_chr == '\0'
+                      || n_chr == m_field_separator
+                      || n_chr == m_command_separator
+                    ) {
+                      rv += m_escape_character;
+                    }
+                    rv += n_chr; // before or after depending on reversal
                 }
-                std::reverse(rv.begin(), rv.end());
+                // std::reverse(rv.begin(), rv.end());
                 return rv;
             }
 

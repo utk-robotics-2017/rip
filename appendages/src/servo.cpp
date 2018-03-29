@@ -12,7 +12,15 @@ namespace rip
     {
         Servo::Servo(const nlohmann::json& config, const std::map<std::string, int>& command_map, std::shared_ptr<cmdmessenger::Device> device)
             : Appendage(config, device)
-            , m_write(createCommand("kServoWrite", command_map, cmdmessenger::ArduinoCmdMessenger::makeArgumentString<typename cmdmessenger::ArduinoCmdMessenger::IntegerType, typename cmdmessenger::ArduinoCmdMessenger::IntegerType>()))
+            , m_write(
+              createCommand(
+                "kSetServo",
+                command_map,
+                cmdmessenger::ArduinoCmdMessenger::makeArgumentString<
+                  cmdmessenger::ArduinoCmdMessenger::IntegerType,
+                  cmdmessenger::ArduinoCmdMessenger::IntegerType>()
+                )
+              )
         {
         }
 
@@ -29,7 +37,16 @@ namespace rip
 
         bool Servo::diagnostic()
         {
-            return true;
+          int new_val = 0;
+          while (new_val != -1) {
+            // write(0);
+            std::cout << " >>> Please enter a servo value (int) to write (-1 quits): ";
+            std::cin >> new_val;
+            if (new_val == -1) break;
+            std::cout << " >>> Writing...\n";
+            write(new_val);
+          }
+          return true;
         }
 
         std::shared_ptr<Appendage> Servo::create(const nlohmann::json& config, const std::map<std::string, int>& command_map, std::shared_ptr<cmdmessenger::Device> device)
