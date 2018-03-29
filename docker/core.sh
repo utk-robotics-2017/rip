@@ -12,7 +12,8 @@ else
 fi
 
 RPXC_SCRIPT_LOCATION=${RPXC_SCRIPT_LOCATION:-'./docker/rpi/rpxc/rpxc'}
-RPXC_IMAGE=${RPXC_IMAGE:-'utkrobotics/rip_rpi:latest'}
+RPXC_IMAGE_TAG=${RPXC_IMAGE_TAG:-'latest'}
+RPXC_IMAGE=${RPXC_IMAGE:-"utkrobotics/rip_rpi:${RPXC_IMAGE_TAG}"}
 RPXC_SYSROOT=${RPXC_SYSROOT:-'/rpxc/sysroot'}
 
 function git_branch_norm() {

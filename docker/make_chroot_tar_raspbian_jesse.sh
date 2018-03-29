@@ -124,3 +124,6 @@ EOF
 )
 
 #( set -x; rm -rf "$rootfsDir" )
+
+echo "REMINDER: update the etc/apt/sources.list if you want additional repo selections other than 'main'!"
+
