@@ -24,6 +24,7 @@ while [[ "$1" != "" ]] ; do
       fi
       ;;
     --rpxc-tag)
+      shift
       if [[ "$1" != "" ]]; then
         RPXC_IMAGE_TAG="$1"
       else
