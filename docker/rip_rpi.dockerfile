@@ -46,15 +46,15 @@ ENV PI_IMAGE_DIST=${pi_image_dist}
 # edit the sources.list for more
 RUN chroot $SYSROOT $QEMU_PATH /bin/sh -c "\
  echo ${PI_IMAGE_DIST} > /etc/pi_image_dist \
- && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 82B129927FA3303E \
  && echo \"deb http://archive.raspbian.org/raspbian/ ${PI_IMAGE_DIST} main contrib non-free rpi\" > /etc/apt/sources.list \
  && echo \"deb http://archive.raspberrypi.org/debian/ ${PI_IMAGE_DIST} main ui\" >> /etc/apt/sources.list "
 
-# Run the clean, update, apt-utils, configure, and upgrade
+# Run the clean, update, apt needs, configure, and upgrade
 RUN chroot $SYSROOT $QEMU_PATH /bin/sh -c '\
  apt-get clean \
  && apt-get update \
- && DEBIAN_FRONTEND=noninteractive apt-get install -y apt-utils \
+ && DEBIAN_FRONTEND=noninteractive apt-get install -y apt-utils dirmngr \
+ && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 82B129927FA3303E \
  && DEBIAN_FRONTEND=noninteractive dpkg --configure -a \
  && DEBIAN_FRONTEND=noninteractive apt-get upgrade -y '
 
