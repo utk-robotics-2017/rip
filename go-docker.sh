@@ -27,6 +27,7 @@ while [[ "$1" != "" ]] ; do
       shift
       if [[ "$1" != "" ]]; then
         RPXC_IMAGE_TAG="$1"
+        source docker/core.sh
       else
         echo " --rpxc-tag requires a docker tag id"
         exit 1
