@@ -70,7 +70,19 @@ namespace rip
 						cmdmessenger::ArduinoCmdMessenger::UnsignedIntegerType>()
 					)
 				),
-			m_set_velocity_pid(createCommand("kSetVelocityPID", command_map, cmdmessenger::ArduinoCmdMessenger::makeArgumentString<cmdmessenger::ArduinoCmdMessenger::CharType, cmdmessenger::ArduinoCmdMessenger::CharType, cmdmessenger::ArduinoCmdMessenger::FloatType, cmdmessenger::ArduinoCmdMessenger::FloatType, cmdmessenger::ArduinoCmdMessenger::FloatType, cmdmessenger::ArduinoCmdMessenger::UnsignedLongType>()))
+			m_set_velocity_pid(
+				createCommand(
+					"kSetVelocityPID",
+					command_map,
+					cmdmessenger::ArduinoCmdMessenger::makeArgumentString<
+					  cmdmessenger::ArduinoCmdMessenger::CharType,
+						cmdmessenger::ArduinoCmdMessenger::CharType,
+						cmdmessenger::ArduinoCmdMessenger::FloatType,
+						cmdmessenger::ArduinoCmdMessenger::FloatType,
+						cmdmessenger::ArduinoCmdMessenger::FloatType,
+						cmdmessenger::ArduinoCmdMessenger::UnsignedLongType>()
+					)
+				)
 		{
 			if (config.find("address") == config.end())
 			{
@@ -135,6 +147,7 @@ namespace rip
 		}
 
 		void Roboclaw::stop() {
+			misc::Logger::getInstance()->debug("Setting roboclaw duty to zero.");
 			SetDuty(0, 0);
 		}
 
@@ -143,23 +156,28 @@ namespace rip
 			std::chrono::time_point<std::chrono::system_clock> start_time = std::chrono::system_clock::now();
 			misc::Logger::getInstance()->debug("Roboclaw appendage diagnostics start");
 
-			misc::Logger::getInstance()->debug("Read encoders for 10s in a loop");
-			while(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - start_time).count() < 10000)
+			misc::Logger::getInstance()->debug("Read encoders for 5s in a loop");
+			while(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - start_time).count() < 5000)
 			{
 				misc::Logger::getInstance()->debug(fmt::format("Encoder 1 Ticks: {} | Encoder 2 Ticks: {}", std::get<0>(ReadEncoders()), std::get<1>(ReadEncoders())));
 			}
 			misc::Logger::getInstance()->debug("Setting Duty to ~1/2 Power, forward for 5 seconds");
+			misc::Logger::getInstance()->debug(fmt::format("Encoder 1 Ticks: {} | Encoder 2 Ticks: {}", std::get<0>(ReadEncoders()), std::get<1>(ReadEncoders())));
 			SetDuty(16000, 16000);
 			start_time = std::chrono::system_clock::now();
 			while(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - start_time).count() < 5000)
 			{}
+			misc::Logger::getInstance()->debug(fmt::format("Encoder 1 Ticks: {} | Encoder 2 Ticks: {}", std::get<0>(ReadEncoders()), std::get<1>(ReadEncoders())));
 			stop();
 			misc::Logger::getInstance()->debug("Setting speed accel drive (5s)");
+			misc::Logger::getInstance()->debug(fmt::format("Encoder 1 Ticks: {} | Encoder 2 Ticks: {}", std::get<0>(ReadEncoders()), std::get<1>(ReadEncoders())));
 			SetSpeedAccel(12000, 12000, 12000);
 			start_time = std::chrono::system_clock::now();
 			while(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - start_time).count() < 5000)
 			{}
+			misc::Logger::getInstance()->debug(fmt::format("Encoder 1 Ticks: {} | Encoder 2 Ticks: {}", std::get<0>(ReadEncoders()), std::get<1>(ReadEncoders())));
 			stop();
+			misc::Logger::getInstance()->debug(fmt::format("Encoder 1 Ticks: {} | Encoder 2 Ticks: {}", std::get<0>(ReadEncoders()), std::get<1>(ReadEncoders())));
 		}
 	}
 }

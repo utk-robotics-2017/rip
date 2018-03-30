@@ -31,6 +31,7 @@
 #include <iostream>
 
 #include <fmt/format.h>
+#include <misc/logger.hpp>
 
 #include <cmd_messenger/exceptions.hpp>
 #include "command.hpp"
@@ -154,8 +155,6 @@ namespace rip
                   throw EmptyDevice("Device not open / available.");
                 }
 
-                std::cout << fmt::format("Command->getEnum(): {} (aka {})", command->getEnum(), command->getId()) << std::endl;
-
                 // Get the argument types
                 std::string argument_types = command->getArgumentTypes();
                 const std::size_t value = sizeof...(Args);
@@ -165,7 +164,8 @@ namespace rip
                 }
 
                 debugString = byteStringToHexDebugString(std::to_string(command->getEnum()));
-                std::cout << fmt::format("to_str(command->getEnum()) bytes: {}", debugString) << std::endl;
+                // std::cout << fmt::format("to_str(command->getEnum()) bytes: {}", debugString) << std::endl;
+                misc::Logger::getInstance()->debug(fmt::format("CmdMessenger sending: '{}:{}' as '{}')", command->getEnum(), command->getId(), debugString ));
                 // std::cout << toBytes<int, T_IntegerType>(command->getEnum()) << std::endl;
 
                 // Pack the command to send
@@ -187,7 +187,7 @@ namespace rip
                 // Send the message
                 debugString = byteStringToHexDebugString(message);
                 std::cout << fmt::format("Device->write bytes: {}", debugString) << std::endl;
-                std::cout << fmt::format("Device baud: {}", device->getBaudrate()) << '\n';
+                // std::cout << fmt::format("Device baud: {}", device->getBaudrate()) << '\n';
                 device->write(message);
                 // device->flushOutput();
                 device->flush();
@@ -195,7 +195,7 @@ namespace rip
                 // HACK
                 device->setTimeout(units::s * 1);
 
-                std::cout << "reading till I see " << std::string(1, m_command_separator) << std::endl;
+                // std::cout << "reading till I see " << std::string(1, m_command_separator) << std::endl;
 
                 // Check Acknowledgement
                 // std::string acknowledgement = device->readline(m_max_response_length, ";");//std::string(1, m_command_separator));
@@ -261,7 +261,7 @@ namespace rip
             void handleAck(std::string& acknowledgement, std::shared_ptr<Command> command)
             {
                 std::string debugString = byteStringToHexDebugString(acknowledgement);
-                std::cout << fmt::format("Ack Str: {}", debugString) << std::endl;
+                // std::cout << fmt::format("Ack Str: {}", debugString) << std::endl;
 
                 // First part should be the acknowledgment id
                 // (a two-byte integer by default)
@@ -271,6 +271,7 @@ namespace rip
                 acknowledgement.erase(0, acknowledgement.find(m_field_separator));
 
                 // kAcknowledge will always be zero
+                // kError will always be 1
                 if (acknowledgement_id == 1)
                 {
                   debugString = byteStringToHexDebugString(acknowledgement);
@@ -282,18 +283,18 @@ namespace rip
                 }
 
                 // XXX
-                debugString = byteStringToHexDebugString(acknowledgement);
-                std::cout << fmt::format("After checking ack_id: {}", debugString) << std::endl;
+                // debugString = byteStringToHexDebugString(acknowledgement);
+                // std::cout << fmt::format("After checking ack_id: {}", debugString) << std::endl;
                 // Then the field separator
                 if (acknowledgement[0] != m_field_separator)
                 {
-                   std::cout << fmt::format("Bad field_separator: Wanted '{}' but got '{}' !", m_field_separator, acknowledgement[0]) << std::endl;
+                    std::cerr << fmt::format("Bad field_separator: Wanted '{}' but got '{}' !", m_field_separator, acknowledgement[0]) << std::endl;
                     throw IncorrectFieldSeparator(fmt::format("Wanted '{}' but got '{}' !", m_field_separator, acknowledgement[0]));
                 }
                 acknowledgement.erase(0, 1);
 
-                debugString = byteStringToHexDebugString(acknowledgement);
-                std::cout << fmt::format("After checking field_separator: {}", debugString) << std::endl;
+                // debugString = byteStringToHexDebugString(acknowledgement);
+                // std::cout << fmt::format("After checking field_separator: {}", debugString) << std::endl;
 
                 // Then the command sent
                 T_IntegerType acknowledge_command = fromBytes<T_IntegerType>(acknowledgement);
@@ -309,7 +310,7 @@ namespace rip
                     throw IncorrectCommandSeparator(fmt::format("Wanted '{}' but got '{}' !", m_command_separator, acknowledgement[0]));
                 }
 
-                std::cout << fmt::format("Successfully acknowledged command {}.", command->getId()) << std::endl;
+                misc::Logger::getInstance()->debug(fmt::format("CmdMessenger: Successfully acknowledged command {}.", command->getId() ));
             }
 
             /**
