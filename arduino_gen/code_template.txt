@@ -10,7 +10,7 @@ const char LED = 13;
 
 {constructors}
 
-enum
+enum RIPenum : int16_t
 {{
 {command_enums}
 }};
