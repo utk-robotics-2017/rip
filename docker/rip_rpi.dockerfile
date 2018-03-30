@@ -55,6 +55,7 @@ RUN chroot $SYSROOT $QEMU_PATH /bin/sh -c '\
  && apt-get update \
  && DEBIAN_FRONTEND=noninteractive apt-get install -y apt-utils dirmngr \
  && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 82B129927FA3303E \
+ && apt-get update \
  && DEBIAN_FRONTEND=noninteractive dpkg --configure -a \
  && DEBIAN_FRONTEND=noninteractive apt-get upgrade -y '
 
@@ -72,7 +73,7 @@ RUN chroot $SYSROOT $QEMU_PATH /bin/sh -c '\
 # STRETCH requirements
 RUN chroot $SYSROOT $QEMU_PATH /bin/sh -c '\
  if grep -Fxq stretch /etc/pi_image_dist; then \
- && DEBIAN_FRONTEND=noninteractive apt-get install -y \
+ DEBIAN_FRONTEND=noninteractive apt-get install -y \
   libzstd-dev \
  ;fi'
 
