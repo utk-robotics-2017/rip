@@ -23,6 +23,14 @@ while [[ "$1" != "" ]] ; do
         exit 1
       fi
       ;;
+    --rpxc-tag)
+      if [[ "$1" != "" ]]; then
+        RPXC_IMAGE_TAG="$1"
+      else
+        echo " --rpxc-tag requires a docker tag id"
+        exit 1
+      fi
+      ;;
     '--')
       shift
       if [[ "$1" != "" ]]; then
