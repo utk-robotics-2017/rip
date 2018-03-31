@@ -36,14 +36,14 @@ namespace rip
         bool Ultrasonic::diagnostic()
         {
             std::chrono::time_point<std::chrono::system_clock> start_time = std::chrono::system_clock::now();
-            misc::Logger::getInstance()->debug("Reading the ultrasonic value for 10s.");
+            misc::Logger::getInstance()->info("Reading the ultrasonic value for 10s.");
 
             while(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - start_time).count() < 10000)
       			{
-      				misc::Logger::getInstance()->debug(fmt::format("Distance: {} cm", read().to(units::cm)));
+      				misc::Logger::getInstance()->info(fmt::format("Distance: {} cm", read().to(units::cm)));
       			}
 
-            misc::Logger::getInstance()->debug("Ultrasonic diag finished.");
+            misc::Logger::getInstance()->info("Ultrasonic diag finished.");
             return true;
         }
 
