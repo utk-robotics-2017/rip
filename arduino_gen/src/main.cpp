@@ -143,5 +143,7 @@ int main(int argc, char* argv[])
         }
     }
 
+    std::system(fmt::format("chmod -R g+w {}/{}", args::get(parent_folder), args::get(arduino)).c_str());
+
     return EXIT_SUCCESS;
 }

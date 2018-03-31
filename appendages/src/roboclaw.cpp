@@ -717,7 +717,6 @@ namespace rip
 				misc::Logger::getInstance()->debug(fmt::format("Encoder velocity: M1 {} M2 {}", readM1EncoderSpeed(), readM2EncoderSpeed()));
 				misc::Logger::getInstance()->debug(fmt::format("Encoder 1 velocity(cm/s): {} | Encoder 2 velocity(cm/s): {}",
 					(readEncoderSpeeds()[0]).to(units::cm / units::s), (readEncoderSpeeds()[1]).to(units::cm / units::s)));
-
 			}
 			start_time = std::chrono::system_clock::now();
 			//buffer reading diag
@@ -829,7 +828,6 @@ namespace rip
 			misc::Logger::getInstance()->debug("Roboclaw appendage diagnostics complete");
 
 			return 1;
-
 		}
 	}
 }

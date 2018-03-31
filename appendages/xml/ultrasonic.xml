@@ -8,6 +8,12 @@
             <argument type="int" name="echoPin" />
             <argument type="int" name="maxDistance" value="200" />
         </constructor>
+        <constructor type="int" variable="sonar_timeouts">
+            <argument type="int" name="minSleepMs" />
+        </constructor>
+        <constructor type="long" variable="sonar_prevtime">
+            <argument type="long" name="timeSinceLastRead" value="1" />
+        </constructor>
     </constructors>
     <setup>
         // Ultrasonic triggerPin: $triggerPin$
@@ -19,7 +25,13 @@
         <command id="kReadUltrasonic" name="readUltraSonic" index-num="true">
             <return-value name="rv" type="unsigned long"/>
             <code>
+                unsigned long curtime = millis();
+                if (curtime < sonar_prevtime[indexNum]+sonar_timeouts[indexNum])
+                {
+                    delay(sonar_prevtime[indexNum]+sonar_timeouts[indexNum] - curtime );
+                }
                 rv = sonar[indexNum].ping_cm();
+                sonar_prevtime[indexNum] = millis();
             </code>
         </command>
     </commands>

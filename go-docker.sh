@@ -23,6 +23,17 @@ while [[ "$1" != "" ]] ; do
         exit 1
       fi
       ;;
+    --rpxc-tag)
+      shift
+      if [[ "$1" != "" ]]; then
+        RPXC_IMAGE_TAG="$1"
+        unset RPXC_IMAGE
+        source docker/core.sh
+      else
+        echo " --rpxc-tag requires a docker tag id"
+        exit 1
+      fi
+      ;;
     '--')
       shift
       if [[ "$1" != "" ]]; then
@@ -61,7 +72,7 @@ function build_rip_deps() {
 function build_rip_rpi() {
   if ($PROMPTER --title "Comfirm Build?" --yesno "Do not run this command unless you were told to do so. Requires files outside of RIP." 8 68) then
     if find ../rpi_images -prune -empty ; then
-      rpi_image_file="$(find ../rpi_images -mindepth 1 -maxdepth 1 -printf '%f\n' | sort -g | tail -1 )"
+      rpi_image_file=${rpi_image_file:-"$(find ../rpi_images -mindepth 1 -maxdepth 1 -printf '%f\n' | sort -g | tail -1 )"}
       echo "Found rpi debootstrap image ${rpi_image_file}"
       rsync --copy-links --times ../rpi_images/${rpi_image_file} ./external/rpi_images/
       if [ -z "$RPI_DOCKER_TAG" ]; then

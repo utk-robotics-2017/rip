@@ -38,6 +38,9 @@ namespace rip
         NEW_EX(NoLastDeviceException)
         NEW_EX(UnconvertibleArgument)
         NEW_EX(UnknownArgument)
+        NEW_EX(DeviceSentErrorResponse)
+
+        NEW_EX(SerialLibrarySucks)
     }
 }
 #endif // CMD_MESSENGER_EXCEPTIONS_HPP

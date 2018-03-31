@@ -4,8 +4,8 @@
     </includes>
     <constructors>
         <constructor type="RoboClaw" variable="roboclaws">
-			<argument name="serial" type="string_literal" prefix="&amp;" />
-			<argument name="timeout" type="int" value="10000" />
+          <argument name="serial" type="string_literal" prefix="&amp;" />
+          <argument name="timeout" type="int" value="10000" />
         </constructor>
     </constructors>
     <setup>
@@ -17,7 +17,7 @@
             <parameter type="uint8_t" name="address" />
             <parameter type="uint32_t" name="speed" />
             <code>
-                if (!roboclaws[indexNum].SpeedM1(address, speed)) // TODO: Check return value
+                if (!roboclaws[indexNum].SpeedM1(address, speed))
 				{
                     cmdMessenger.sendBinCmd(kError, kSetM1Speed);
                 }
