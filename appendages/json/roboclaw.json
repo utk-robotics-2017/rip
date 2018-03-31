@@ -2,7 +2,11 @@
     "serial":  "string",
     "baudrate": "int",
     "address": "int",
+    "ticks_per_rev" : "float",
+    "wheel_radius" : "float",
     "core": [
-        "address"
+        "address",
+        "ticks_per_rev",
+		"wheel_radius"
     ]
 }
