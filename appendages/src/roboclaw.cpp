@@ -644,7 +644,8 @@ namespace rip
 			cmdmessenger::ArduinoCmdMessenger messenger;
 			messenger.send<cmdmessenger::ArduinoCmdMessenger::IntegerType,
 				cmdmessenger::ArduinoCmdMessenger::CharType,
-				cmdmessenger::ArduinoCmdMessenger::UnsignedIntegerType>(m_device, m_set_m1_duty, m_id, m_address, duty);
+				cmdmessenger::ArduinoCmdMessenger::UnsignedIntegerType>(m_device, m_set_m1_duty, m_id,
+					m_address, duty);
 		}
 
 		void Roboclaw::setM2Duty(int16_t duty)
@@ -652,7 +653,8 @@ namespace rip
 			cmdmessenger::ArduinoCmdMessenger messenger;
 			messenger.send<cmdmessenger::ArduinoCmdMessenger::IntegerType,
 				cmdmessenger::ArduinoCmdMessenger::CharType,
-				cmdmessenger::ArduinoCmdMessenger::UnsignedIntegerType>(m_device, m_set_m2_duty, m_id, m_address, duty);
+				cmdmessenger::ArduinoCmdMessenger::UnsignedIntegerType>(m_device, m_set_m2_duty, m_id,
+					m_address, duty);
 		}
 
 		void Roboclaw::setM1M2Duty(int16_t duty1, int16_t duty2)
@@ -661,7 +663,8 @@ namespace rip
 			messenger.send<cmdmessenger::ArduinoCmdMessenger::IntegerType,
 				cmdmessenger::ArduinoCmdMessenger::CharType,
 				cmdmessenger::ArduinoCmdMessenger::UnsignedIntegerType,
-				cmdmessenger::ArduinoCmdMessenger::UnsignedIntegerType>(m_device, m_set_m1m2_duty, m_id, m_address, duty1, duty2);
+				cmdmessenger::ArduinoCmdMessenger::UnsignedIntegerType>(m_device, m_set_m1m2_duty, m_id,
+					m_address, duty1, duty2);
 		}
 
 		void Roboclaw::setM1VelocityPID(float Kp, float Ki, float Kd, uint32_t qpps)
@@ -672,7 +675,8 @@ namespace rip
 				cmdmessenger::ArduinoCmdMessenger::FloatType,
 				cmdmessenger::ArduinoCmdMessenger::FloatType,
 				cmdmessenger::ArduinoCmdMessenger::FloatType,
-				cmdmessenger::ArduinoCmdMessenger::UnsignedLongType>(m_device, m_set_m1_velocity_pid, m_id, m_address, Kp, Ki, Kd, qpps);
+				cmdmessenger::ArduinoCmdMessenger::UnsignedLongType>(m_device, m_set_m1_velocity_pid, m_id,
+					m_address, Kp, Ki, Kd, qpps);
 		}
 
 		void Roboclaw::setM2VelocityPID(float Kp, float Ki, float Kd, uint32_t qpps)
@@ -683,7 +687,8 @@ namespace rip
 				cmdmessenger::ArduinoCmdMessenger::FloatType,
 				cmdmessenger::ArduinoCmdMessenger::FloatType,
 				cmdmessenger::ArduinoCmdMessenger::FloatType,
-				cmdmessenger::ArduinoCmdMessenger::UnsignedLongType>(m_device, m_set_m2_velocity_pid, m_id, m_address, Kp, Ki, Kd, qpps);
+				cmdmessenger::ArduinoCmdMessenger::UnsignedLongType>(m_device, m_set_m2_velocity_pid, m_id,
+					m_address, Kp, Ki, Kd, qpps);
 		}
 
 		void Roboclaw::stop()
@@ -693,27 +698,130 @@ namespace rip
 
 		bool Roboclaw::diagnostic()
 		{
-			/*
 			std::chrono::time_point<std::chrono::system_clock> start_time = std::chrono::system_clock::now();
 			misc::Logger::getInstance()->debug("Roboclaw appendage diagnostics start");
-
-			misc::Logger::getInstance()->debug("Read encoders for 10s in a loop");
-			while(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - start_time).count() < 10000)
+			//encoder reading diag
+			misc::Logger::getInstance()->debug("Read encoders for 5s in a loop");
+			while(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - start_time).count() < 5000)
 			{
-				misc::Logger::getInstance()->debug(fmt::format("Encoder 1 Ticks: {} | Encoder 2 Ticks: {}", std::get<0>(ReadEncoders()), std::get<1>(ReadEncoders())));
+				misc::Logger::getInstance()->debug(fmt::format("Encoder 1 Ticks(cm): {} | Encoder 2 Ticks(cm): {}", (readEncoders()[0]).to(units::cm), (readEncoders()[1]).to(units::cm)));
+				misc::Logger::getInstance()->debug(fmt::format("Raw readings: 1: {}  | 2: {}", readM1Encoder(), readM2Encoder()));
+				misc::Logger::getInstance()->debug(fmt::format("Encoder velocity: M1 {} M2 {}", readM1EncoderSpeed(), readM2EncoderSpeed()));
+				misc::Logger::getInstance()->debug(fmt::format("Encoder 1 velocity(cm/s): {} | Encoder 2 velocity(cm/s): {}",
+					(readEncoderSpeeds()[0]).to(units::cm / units::s), (readEncoderSpeeds()[1]).to(units::cm / units::s)));
+
 			}
-			misc::Logger::getInstance()->debug("Setting Duty to ~1/2 Power, forward for 5 seconds");
-			SetDuty(16000, 16000);
 			start_time = std::chrono::system_clock::now();
+			//buffer reading diag
+			misc::Logger::getInstance()->debug("Getting buffers for 2s in a loop");
+			while(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - start_time).count() < 2000)
+			{
+				misc::Logger::getInstance()->debug(fmt::format("Buffer M1: {} M2: {}", std::get<0>(getBuffers()), std::get<1>(getBuffers())));
+			}
+			start_time = std::chrono::system_clock::now();
+			//encoder resetting diag
+			misc::Logger::getInstance()->debug("Resetting encoders for 2s in a loop");
+			while(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - start_time).count() < 2000)
+			{
+				resetEncoders();
+				misc::Logger::getInstance()->debug(fmt::format("Raw readings: 1: {}  | 2: {}", readM1Encoder(), readM2Encoder()));
+			}
+			start_time = std::chrono::system_clock::now();
+			//duty setting diag
+			misc::Logger::getInstance()->debug("Setting Duty to ~1/2 Power, forward for 5 seconds");
+
 			while(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - start_time).count() < 5000)
-			{}
+			{
+				setM1M2Duty(16000, 16000);
+				setM1Duty(16000);
+				setM2Duty(16000);
+				misc::Logger::getInstance()->debug(fmt::format("Raw readings: 1: {}  | 2: {}", readM1Encoder(), readM2Encoder()));
+				misc::Logger::getInstance()->debug(fmt::format("Encoder velocity: M1 {} M2 {}", readM1EncoderSpeed(), readM2EncoderSpeed()));
+			}
 			stop();
+			//speed accel drive diag
 			misc::Logger::getInstance()->debug("Setting speed accel drive (5s)");
-			SetSpeedAccel(12000, 12000, 12000);
+			start_time = std::chrono::system_clock::now();
+
 			while(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - start_time).count() < 5000)
-			{}
+			{
+				setM1M2SpeedAccel(12000, 12000, 12000);
+				setM1SpeedAccel(12000, 12000);
+				setM2SpeedAccel(12000, 12000);
+				misc::Logger::getInstance()->debug(fmt::format("Raw readings: 1: {}  | 2: {}", readM1Encoder(), readM2Encoder()));
+				misc::Logger::getInstance()->debug(fmt::format("Encoder velocity: M1 {} M2 {}", readM1EncoderSpeed(), readM2EncoderSpeed()));
+			}
 			stop();
-			*/
+			misc::Logger::getInstance()->debug("Setting speed drive (5s)");
+			start_time = std::chrono::system_clock::now();
+			//speed drive diag
+			while(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - start_time).count() < 5000)
+			{
+				setM1Speed(12000);
+				setM2Speed(12000);
+				setM1M2Speed(12000, 12000);
+				misc::Logger::getInstance()->debug(fmt::format("Raw readings: 1: {}  | 2: {}", readM1Encoder(), readM2Encoder()));
+				misc::Logger::getInstance()->debug(fmt::format("Encoder velocity: M1 {} M2 {}", readM1EncoderSpeed(), readM2EncoderSpeed()));
+			}
+			stop();
+			//speed dist drive diag
+			misc::Logger::getInstance()->debug("Setting speed dist drive (5s)");
+			start_time = std::chrono::system_clock::now();
+
+			while(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - start_time).count() < 5000)
+			{
+				setM1SpeedDist(12000, 12000);
+				setM2SpeedDist(12000, 12000);
+				setM1M2SpeedDist(12000, 12000, 12000, 12000);
+				misc::Logger::getInstance()->debug(fmt::format("Raw readings: 1: {}  | 2: {}", readM1Encoder(), readM2Encoder()));
+				misc::Logger::getInstance()->debug(fmt::format("Encoder velocity: M1 {} M2 {}", readM1EncoderSpeed(), readM2EncoderSpeed()));
+			}
+			stop();
+			//speed accel dist drive diag
+			misc::Logger::getInstance()->debug("Setting speed accel dist drive (5s)");
+			start_time = std::chrono::system_clock::now();
+
+			while(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - start_time).count() < 5000)
+			{
+				setM1SpeedAccelDist(12000, 12000, 12000);
+				setM2SpeedAccelDist(12000, 12000, 12000);
+				setM1M2SpeedAccelDist(12000, 12000, 12000, 12000, 12000);
+				misc::Logger::getInstance()->debug(fmt::format("Raw readings: 1: {}  | 2: {}", readM1Encoder(), readM2Encoder()));
+				misc::Logger::getInstance()->debug(fmt::format("Encoder velocity: M1 {} M2 {}", readM1EncoderSpeed(), readM2EncoderSpeed()));
+			}
+			stop();
+			//speed accel decel dist drive diag
+			misc::Logger::getInstance()->debug("Setting speed accel decel dist drive (5s)");
+			start_time = std::chrono::system_clock::now();
+
+			while(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - start_time).count() < 5000)
+			{
+				setM1SpeedAccelDecelDist(12000, 12000, 12000, 12000);
+				setM2SpeedAccelDecelDist(12000, 12000, 12000, 12000);
+				setM1M2SpeedAccelDecelDist(12000, 12000, 12000, 12000, 12000, 12000, 12000, 12000);
+				misc::Logger::getInstance()->debug(fmt::format("Raw readings: 1: {}  | 2: {}", readM1Encoder(), readM2Encoder()));
+				misc::Logger::getInstance()->debug(fmt::format("Encoder velocity: M1 {} M2 {}", readM1EncoderSpeed(), readM2EncoderSpeed()));
+			}
+			stop();
+			//setDynamics diag
+			misc::Logger::getInstance()->debug("Setting via setDynamics");
+
+			MotorDynamics dynamics;
+			dynamics.setSpeed(.5 * units::ft / units::s);
+			setDynamics(0, dynamics);
+			setDynamics(1, dynamics);
+			setDynamics(dynamics);
+
+			dynamics.setDistance(1 * units::ft);
+			setDynamics(dynamics);
+
+			dynamics.setAcceleration(2 * units::ft / (units::s * units::s));
+			setDynamics(dynamics);
+			stop();
+			misc::Logger::getInstance()->debug("Roboclaw appendage diagnostics complete");
+
+			return 0;
+
 		}
 	}
 }
