@@ -27,18 +27,18 @@ namespace rip
 			void setM2SpeedAccel(uint32_t accel, int32_t speed);
 			void setM1M2SpeedAccel(uint32_t accel, int32_t speed1, int32_t speed2);
 
-			void setM1SpeedDist(int32_t speed, uint32_t distance);
-			void setM2SpeedDist(int32_t speed, uint32_t distance);
-			void setM1M2SpeedDist(int32_t speed1, uint32_t distance1, int32_t speed2, uint32_t distance2);
+			void setM1SpeedDist(int32_t speed, uint32_t distance, uint8_t flag=1);
+			void setM2SpeedDist(int32_t speed, uint32_t distance, uint8_t flag=1);
+			void setM1M2SpeedDist(int32_t speed1, uint32_t distance1, int32_t speed2, uint32_t distance2, uint8_t flag=1);
 
-			void setM1SpeedAccelDist(uint32_t accel, int32_t speed, uint32_t distance);
-			void setM2SpeedAccelDist(uint32_t accel, int32_t speed, uint32_t distance);
-			void setM1M2SpeedAccelDist(uint32_t accel, int32_t speed1, uint32_t distance1, int32_t speed2, uint32_t distance2);
+			void setM1SpeedAccelDist(uint32_t accel, int32_t speed, uint32_t distance, uint8_t flag=1);
+			void setM2SpeedAccelDist(uint32_t accel, int32_t speed, uint32_t distance, uint8_t flag=1);
+			void setM1M2SpeedAccelDist(uint32_t accel, int32_t speed1, uint32_t distance1, int32_t speed2, uint32_t distance2, uint8_t flag=1);
 
-			void setM1SpeedAccelDecelDist(uint32_t accel, int32_t speed, uint32_t deccel, uint32_t position);
-			void setM2SpeedAccelDecelDist(uint32_t accel, int32_t speed,uint32_t deccel,uint32_t position);
+			void setM1SpeedAccelDecelDist(uint32_t accel, int32_t speed, uint32_t deccel, uint32_t position, uint8_t flag=1);
+			void setM2SpeedAccelDecelDist(uint32_t accel, int32_t speed,uint32_t deccel,uint32_t position, uint8_t flag=1);
 			void setM1M2SpeedAccelDecelDist(uint32_t accel1, int32_t speed1,uint32_t deccel1,
-				uint32_t position1, uint32_t accel2, int32_t speed2, uint32_t deccel2, uint32_t position2);
+				uint32_t position1, uint32_t accel2, int32_t speed2, uint32_t deccel2, uint32_t position2, uint8_t flag=1);
 
 			int32_t readM1Encoder();
 			int32_t readM2Encoder();
@@ -62,8 +62,8 @@ namespace rip
 			void setM1VelocityPID(float Kp, float Ki, float Kd, uint32_t qpps);
             void setM2VelocityPID(float Kp, float Ki, float Kd, uint32_t qpps);
 
-			void setDynamics(bool motor, const MotorDynamics& dynamics); //Not implemented on arduino
-			void setDynamics(const MotorDynamics& dynamics); //Not implemented on arduino
+			void setDynamics(bool motor, const MotorDynamics& dynamics, bool respectBuffer=1); //Not implemented on arduino
+			void setDynamics(const MotorDynamics& dynamics, bool respectBuffer=1); //Not implemented on arduino
 			/**
 			* Stop! ^0^
 			*/

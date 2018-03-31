@@ -86,8 +86,9 @@
             <parameter type="uint8_t" name="address" />
             <parameter type="uint32_t" name="speed" />
             <parameter type="uint32_t" name="distance" />
+            <parameter type="uint8_t" name="flag" />
             <code>
-                if (!roboclaws[indexNum].SpeedDistanceM1(address, speed, distance))
+                if (!roboclaws[indexNum].SpeedDistanceM1(address, speed, distance, flag))
                 {
                     cmdMessenger.sendBinCmd(kError, kSetM1SpeedDist);
                 }
@@ -97,8 +98,9 @@
             <parameter type="uint8_t" name="address" />
             <parameter type="uint32_t" name="speed" />
             <parameter type="uint32_t" name="distance" />
+            <parameter type="uint8_t" name="flag" />
             <code>
-                if (!roboclaws[indexNum].SpeedDistanceM2(address, speed, distance))
+                if (!roboclaws[indexNum].SpeedDistanceM2(address, speed, distance, flag))
                 {
                     cmdMessenger.sendBinCmd(kError, kSetM2SpeedDist);
                 }
@@ -110,8 +112,9 @@
             <parameter type="uint32_t" name="distance1" />
             <parameter type="uint32_t" name="speed2" />
             <parameter type="uint32_t" name="distance2" />
+            <parameter type="uint8_t" name="flag" />
             <code>
-                if (!roboclaws[indexNum].SpeedDistanceM1M2(address, speed1, distance1, speed2, distance2))
+                if (!roboclaws[indexNum].SpeedDistanceM1M2(address, speed1, distance1, speed2, distance2, flag))
                 {
                     cmdMessenger.sendBinCmd(kError, kSetM1M2SpeedDist);
                 }
@@ -124,8 +127,9 @@
             <parameter type="uint32_t" name="accel" />
             <parameter type="uint32_t" name="speed" />
             <parameter type="uint32_t" name="distance" />
+            <parameter type="uint8_t" name="flag" />
             <code>
-                if (!roboclaws[indexNum].SpeedAccelDistanceM1(address, accel, speed, distance))
+                if (!roboclaws[indexNum].SpeedAccelDistanceM1(address, accel, speed, distance, flag))
                 {
                     cmdMessenger.sendBinCmd(kError, kSetM1SpeedAccelDist);
                 }
@@ -136,8 +140,9 @@
             <parameter type="uint32_t" name="accel" />
             <parameter type="uint32_t" name="speed" />
             <parameter type="uint32_t" name="distance" />
+            <parameter type="uint8_t" name="flag" />
             <code>
-                if (!roboclaws[indexNum].SpeedAccelDistanceM2(address, accel, speed, distance)) \
+                if (!roboclaws[indexNum].SpeedAccelDistanceM2(address, accel, speed, distance, flag))
                 {
                     cmdMessenger.sendBinCmd(kError, kSetM2SpeedAccelDist);
                 }
@@ -150,23 +155,25 @@
             <parameter type="uint32_t" name="distance1" />
             <parameter type="uint32_t" name="speed2" />
             <parameter type="uint32_t" name="distance2" />
+            <parameter type="uint8_t" name="flag" />
             <code>
-                if (!roboclaws[indexNum].SpeedAccelDistanceM1M2(address, accel, speed1, distance1, speed2, distance2))
+                if (!roboclaws[indexNum].SpeedAccelDistanceM1M2(address, accel, speed1, distance1, speed2, distance2, flag))
                 {
                     cmdMessenger.sendBinCmd(kError, kSetM1M2SpeedAccelDist);
                 }
             </code>
         </command>
 
-        <!-- SET SPEED/ACCELERATION/DECELERATION/DISTANCE -->
+        <!-- SET SPEED/ACCELERATION/DECELERATION/DISTANCE add uint8_tflag/buffer = 1 (unbuffered)-->
         <command id="kSetM1SpeedAccelDecelDist" name="setM1SpeedAccelDecelDist">
             <parameter type="uint8_t" name="address" />
             <parameter type="uint32_t" name="accel" />
             <parameter type="uint32_t" name="speed" />
             <parameter type="uint32_t" name="deccel" />
             <parameter type="uint32_t" name="position" />
+            <parameter type="uint8_t" name="flag" />
             <code>
-                if (!roboclaws[indexNum].SpeedAccelDeccelPositionM1(address, accel, speed, deccel, position))
+                if (!roboclaws[indexNum].SpeedAccelDeccelPositionM1(address, accel, speed, deccel, position, flag))
                 {
                     cmdMessenger.sendBinCmd(kError, kSetM1SpeedAccelDecelDist);
                 }
@@ -178,8 +185,9 @@
             <parameter type="uint32_t" name="speed" />
             <parameter type="uint32_t" name="deccel" />
             <parameter type="uint32_t" name="position" />
+            <parameter type="uint8_t" name="flag" />
             <code>
-                if (!roboclaws[indexNum].SpeedAccelDeccelPositionM2(address, accel, speed, deccel, position))
+                if (!roboclaws[indexNum].SpeedAccelDeccelPositionM2(address, accel, speed, deccel, position, flag))
                 {
                     cmdMessenger.sendBinCmd(kError, kSetM2SpeedAccelDecelDist);
                 }
@@ -195,8 +203,9 @@
             <parameter type="uint32_t" name="speed2" />
             <parameter type="uint32_t" name="deccel2" />
             <parameter type="uint32_t" name="position2" />
+            <parameter type="uint8_t" name="flag" />
             <code>
-                if (!roboclaws[indexNum].SpeedAccelDeccelPositionM1M2(address, accel1, speed1, deccel1, position1, accel2, speed2, deccel2, position2))
+                if (!roboclaws[indexNum].SpeedAccelDeccelPositionM1M2(address, accel1, speed1, deccel1, position1, accel2, speed2, deccel2, position2, flag))
                 {
                     cmdMessenger.sendBinCmd(kError, kSetM2SpeedAccelDecelDist);
                 }
@@ -245,7 +254,9 @@
             <parameter type="uint8_t" name="address" />
             <return-value type="uint32_t" name="enc1Speed" />
             <code>
-                enc1Speed = roboclaws[indexNum].ReadSpeedM1(address, status, valid);
+                bool valid;
+                uint8_t status;
+                enc1Speed = roboclaws[indexNum].ReadSpeedM1(address, &status, &valid);
                 if (!valid)
                 {
                     cmdMessenger.sendBinCmd(kError, kReadM1EncoderSpeed);
@@ -257,7 +268,9 @@
             <parameter type="uint8_t" name="address" />
             <return-value type="uint32_t" name="enc2Speed" />
             <code>
-                enc2Speed = roboclaws[indexNum].ReadSpeedM2(address, status, valid);
+                bool valid;
+                uint8_t status;
+                enc2Speed = roboclaws[indexNum].ReadSpeedM2(address, &status, &valid);
                 if (!valid)
                 {
                     cmdMessenger.sendBinCmd(kError, kReadM2EncoderSpeed);
@@ -269,8 +282,10 @@
             <return-value type="uint32_t" name="enc1Speed" />
             <return-value type="uint32_t" name="enc2Speed" />
             <code>
-                enc1Speed = roboclaws[indexNum].ReadSpeedM2(address, status, validM1);
-                enc2Speed = roboclaws[indexNum].ReadSpeedM2(address, status, validM2);
+                bool validM1, validM2;
+                uint8_t status;
+                enc1Speed = roboclaws[indexNum].ReadSpeedM2(address, &status, &validM1);
+                enc2Speed = roboclaws[indexNum].ReadSpeedM2(address, &status, &validM2);
 
                 if (!validM1 || !validM2)
                 {
