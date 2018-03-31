@@ -123,9 +123,11 @@ namespace rip
 			m_read_m1m2_encoder(createCommand("kReadM1M2Encoder", command_map,
 				cmdmessenger::ArduinoCmdMessenger::makeArgumentString<cmdmessenger::ArduinoCmdMessenger::IntegerType,
 				cmdmessenger::ArduinoCmdMessenger::CharType>())),
-			m_read_encoder_result(createCommand("kReadEncoderResult", command_map,
+			m_read_m1_encoder_result(createCommand("kReadM1EncoderResult", command_map,
 				cmdmessenger::ArduinoCmdMessenger::makeArgumentString<cmdmessenger::ArduinoCmdMessenger::UnsignedLongType>())),
-			m_read_encoders_result(createCommand("kReadEncodersResult", command_map,
+			m_read_m2_encoder_result(createCommand("kReadM2EncoderResult", command_map,
+				cmdmessenger::ArduinoCmdMessenger::makeArgumentString<cmdmessenger::ArduinoCmdMessenger::UnsignedLongType>())),
+			m_read_m1m2_encoder_result(createCommand("kReadM1M2EncoderResult", command_map,
 				cmdmessenger::ArduinoCmdMessenger::makeArgumentString<cmdmessenger::ArduinoCmdMessenger::UnsignedLongType,
 				cmdmessenger::ArduinoCmdMessenger::UnsignedLongType>())),
 			m_read_m1_encoder_speed(createCommand("kReadM1EncoderSpeed", command_map,
@@ -137,9 +139,11 @@ namespace rip
 			m_read_m1m2_encoder_speed(createCommand("kReadM1M2EncoderSpeed", command_map,
 				cmdmessenger::ArduinoCmdMessenger::makeArgumentString<cmdmessenger::ArduinoCmdMessenger::IntegerType,
 				cmdmessenger::ArduinoCmdMessenger::CharType>())),
-			m_read_encoder_speed_result(createCommand("kReadEncoderSpeedResult", command_map,
+			m_read_m1_encoder_speed_result(createCommand("kReadM1EncoderSpeedResult", command_map,
 				cmdmessenger::ArduinoCmdMessenger::makeArgumentString<cmdmessenger::ArduinoCmdMessenger::UnsignedLongType>())),
-			m_read_encoders_speed_result(createCommand("kReadEncodersSpeedResult", command_map,
+			m_read_m2_encoder_speed_result(createCommand("kReadM2EncoderSpeedResult", command_map,
+				cmdmessenger::ArduinoCmdMessenger::makeArgumentString<cmdmessenger::ArduinoCmdMessenger::UnsignedLongType>())),
+			m_read_m1m2_encoder_speed_result(createCommand("kReadM1M2EncoderSpeedResult", command_map,
 				cmdmessenger::ArduinoCmdMessenger::makeArgumentString<cmdmessenger::ArduinoCmdMessenger::UnsignedLongType,
 				cmdmessenger::ArduinoCmdMessenger::UnsignedLongType>())),
 			m_reset_encoders(createCommand("kResetEncoders", command_map,
@@ -383,7 +387,7 @@ namespace rip
 			cmdmessenger::ArduinoCmdMessenger messenger;
 			messenger.send<cmdmessenger::ArduinoCmdMessenger::IntegerType,
 				cmdmessenger::ArduinoCmdMessenger::CharType>(m_device, m_read_m1_encoder, m_id, m_address);
-			return std::get<0>(messenger.receive<cmdmessenger::ArduinoCmdMessenger::UnsignedLongType>(m_read_encoder_result));
+			return std::get<0>(messenger.receive<cmdmessenger::ArduinoCmdMessenger::UnsignedLongType>(m_read_m1_encoder_result));
 		}
 
 		int32_t Roboclaw::readM2Encoder()
@@ -391,7 +395,7 @@ namespace rip
 			cmdmessenger::ArduinoCmdMessenger messenger;
 			messenger.send<cmdmessenger::ArduinoCmdMessenger::IntegerType,
 				cmdmessenger::ArduinoCmdMessenger::CharType>(m_device, m_read_m2_encoder, m_id, m_address);
-			return std::get<0>(messenger.receive<cmdmessenger::ArduinoCmdMessenger::UnsignedLongType>(m_read_encoder_result));
+			return std::get<0>(messenger.receive<cmdmessenger::ArduinoCmdMessenger::UnsignedLongType>(m_read_m2_encoder_result));
 		}
 
 		std::tuple<int32_t, int32_t> Roboclaw::readM1M2Encoders()
@@ -400,7 +404,7 @@ namespace rip
 			messenger.send<cmdmessenger::ArduinoCmdMessenger::IntegerType,
 				cmdmessenger::ArduinoCmdMessenger::CharType>(m_device, m_read_m1m2_encoder, m_id, m_address);
 			return messenger.receive<cmdmessenger::ArduinoCmdMessenger::UnsignedLongType,
-				cmdmessenger::ArduinoCmdMessenger::UnsignedLongType>(m_read_encoders_result);
+				cmdmessenger::ArduinoCmdMessenger::UnsignedLongType>(m_read_m1m2_encoder_result);
 		}
 
 		units::Distance Roboclaw::readEncoder(bool motor)
@@ -431,7 +435,7 @@ namespace rip
 			cmdmessenger::ArduinoCmdMessenger messenger;
 			messenger.send<cmdmessenger::ArduinoCmdMessenger::IntegerType,
 				cmdmessenger::ArduinoCmdMessenger::CharType>(m_device, m_read_m1_encoder_speed, m_id, m_address);
-			return std::get<0>(messenger.receive<cmdmessenger::ArduinoCmdMessenger::UnsignedLongType>(m_read_encoder_speed_result));
+			return std::get<0>(messenger.receive<cmdmessenger::ArduinoCmdMessenger::UnsignedLongType>(m_read_m1_encoder_speed_result));
 		}
 
 		int32_t Roboclaw::readM2EncoderSpeed()
@@ -439,7 +443,7 @@ namespace rip
 			cmdmessenger::ArduinoCmdMessenger messenger;
 			messenger.send<cmdmessenger::ArduinoCmdMessenger::IntegerType,
 				cmdmessenger::ArduinoCmdMessenger::CharType>(m_device, m_read_m2_encoder_speed, m_id, m_address);
-			return std::get<0>(messenger.receive<cmdmessenger::ArduinoCmdMessenger::UnsignedLongType>(m_read_encoder_speed_result));
+			return std::get<0>(messenger.receive<cmdmessenger::ArduinoCmdMessenger::UnsignedLongType>(m_read_m2_encoder_speed_result));
 		}
 
 		std::tuple<int32_t, int32_t> Roboclaw::readM1M2EncoderSpeed()
@@ -448,7 +452,7 @@ namespace rip
 			messenger.send<cmdmessenger::ArduinoCmdMessenger::IntegerType,
 				cmdmessenger::ArduinoCmdMessenger::CharType>(m_device, m_read_m1m2_encoder_speed, m_id, m_address);
 			return messenger.receive<cmdmessenger::ArduinoCmdMessenger::UnsignedLongType,
-				cmdmessenger::ArduinoCmdMessenger::UnsignedLongType>(m_read_encoders_speed_result);
+				cmdmessenger::ArduinoCmdMessenger::UnsignedLongType>(m_read_m1m2_encoder_speed_result);
 		}
 
 		std::array<units::Velocity, 2> Roboclaw::readEncoderSpeeds()
@@ -698,6 +702,10 @@ namespace rip
 
 		bool Roboclaw::diagnostic()
 		{
+			int32_t ticks;
+			units::Distance d;
+			units::Velocity v;
+
 			std::chrono::time_point<std::chrono::system_clock> start_time = std::chrono::system_clock::now();
 			misc::Logger::getInstance()->debug("Roboclaw appendage diagnostics start");
 			//encoder reading diag
@@ -820,7 +828,7 @@ namespace rip
 			stop();
 			misc::Logger::getInstance()->debug("Roboclaw appendage diagnostics complete");
 
-			return 0;
+			return 1;
 
 		}
 	}

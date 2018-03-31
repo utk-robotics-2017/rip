@@ -120,14 +120,16 @@ namespace rip
 			std::shared_ptr<cmdmessenger::Command> m_read_m1_encoder;
 			std::shared_ptr<cmdmessenger::Command> m_read_m2_encoder;
 			std::shared_ptr<cmdmessenger::Command> m_read_m1m2_encoder;
-			std::shared_ptr<cmdmessenger::Command> m_read_encoder_result;
-			std::shared_ptr<cmdmessenger::Command> m_read_encoders_result;
+			std::shared_ptr<cmdmessenger::Command> m_read_m1_encoder_result;
+			std::shared_ptr<cmdmessenger::Command> m_read_m2_encoder_result;
+			std::shared_ptr<cmdmessenger::Command> m_read_m1m2_encoder_result;
 
 			std::shared_ptr<cmdmessenger::Command> m_read_m1_encoder_speed;
 			std::shared_ptr<cmdmessenger::Command> m_read_m2_encoder_speed;
 			std::shared_ptr<cmdmessenger::Command> m_read_m1m2_encoder_speed;
-			std::shared_ptr<cmdmessenger::Command> m_read_encoder_speed_result;
-			std::shared_ptr<cmdmessenger::Command> m_read_encoders_speed_result;
+			std::shared_ptr<cmdmessenger::Command> m_read_m1_encoder_speed_result;
+			std::shared_ptr<cmdmessenger::Command> m_read_m2_encoder_speed_result;
+			std::shared_ptr<cmdmessenger::Command> m_read_m1m2_encoder_speed_result;
 
 			std::shared_ptr<cmdmessenger::Command> m_reset_encoders;
 			std::shared_ptr<cmdmessenger::Command> m_get_buffers;
