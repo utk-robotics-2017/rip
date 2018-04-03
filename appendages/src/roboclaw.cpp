@@ -369,7 +369,7 @@ namespace rip
 					m_address, accel, speed, deccel, position, flag);
 		}
 
-		void Roboclaw::setM1M2SpeedAccelDecelDist(uint32_t accel1, int32_t speed1,uint32_t deccel1,
+		/*void Roboclaw::setM1M2SpeedAccelDecelDist(uint32_t accel1, int32_t speed1,uint32_t deccel1,
 				uint32_t position1, uint32_t accel2, int32_t speed2, uint32_t deccel2, uint32_t position2, uint8_t flag)
 		{
 			cmdmessenger::ArduinoCmdMessenger messenger;
@@ -385,7 +385,7 @@ namespace rip
 				cmdmessenger::ArduinoCmdMessenger::UnsignedLongType,
 				cmdmessenger::ArduinoCmdMessenger::CharType>(m_device, m_set_m1m2_speed_accel_decel_dist, m_id,
 					m_address, accel1, speed1, deccel1, position1, accel2, speed2, deccel2, position2, flag);
-		}
+		}*/
 
 		int32_t Roboclaw::readM1Encoder()
 		{
