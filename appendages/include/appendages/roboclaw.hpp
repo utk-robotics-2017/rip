@@ -64,6 +64,8 @@ namespace rip
 
 			void setDynamics(bool motor, const MotorDynamics& dynamics, bool respectBuffer=1); //Not implemented on arduino
 			void setDynamics(const MotorDynamics& dynamics, bool respectBuffer=1); //Not implemented on arduino
+
+			std::tuple<units::Distance, units::Velocity> getDistAndVel(bool motor);
 			/**
 			* Stop! ^0^
 			*/

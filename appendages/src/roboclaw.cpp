@@ -695,6 +695,11 @@ namespace rip
 					m_address, Kp, Ki, Kd, qpps);
 		}
 
+		std::tuple<units::Distance, units::Velocity> Roboclaw::getDistAndVel(bool motor)
+		{
+			return std::tuple<units::Distance, units::Velocity>(readEncoder(motor), readEncoderSpeed(motor));
+		}
+
 		void Roboclaw::stop()
 		{
 			setM1M2Duty(0, 0);
