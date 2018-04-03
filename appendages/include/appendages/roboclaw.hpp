@@ -37,9 +37,9 @@ namespace rip
 
 			void setM1SpeedAccelDecelDist(uint32_t accel, int32_t speed, uint32_t deccel, uint32_t position, uint8_t flag=1);
 			void setM2SpeedAccelDecelDist(uint32_t accel, int32_t speed,uint32_t deccel,uint32_t position, uint8_t flag=1);
-			void setM1M2SpeedAccelDecelDist(uint32_t accel1, int32_t speed1,uint32_t deccel1,
+			/*void setM1M2SpeedAccelDecelDist(uint32_t accel1, int32_t speed1,uint32_t deccel1,
 				uint32_t position1, uint32_t accel2, int32_t speed2, uint32_t deccel2, uint32_t position2, uint8_t flag=1);
-
+			*/
 			int32_t readM1Encoder();
 			int32_t readM2Encoder();
 			std::tuple<int32_t, int32_t> readM1M2Encoders();

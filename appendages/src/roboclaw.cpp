@@ -634,11 +634,13 @@ namespace rip
 				}
 				case MotorDynamics::DType::kSpeedAccelDecelDist:
                 {
+					/*
 					speed = static_cast<int32_t>((*dynamics.getSpeed() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
 					dist = static_cast<uint32_t>((*dynamics.getDistance() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
 					accel = static_cast<uint32_t>((*dynamics.getAcceleration() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
 					decel = static_cast<uint32_t>((*dynamics.getDeceleration() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
 					setM1M2SpeedAccelDecelDist(accel, speed, decel, dist, accel, speed, decel, dist, static_cast<uint8_t>(respectBuffer));
+					*/
 					return;
 				}
 				default:
@@ -810,7 +812,6 @@ namespace rip
 			//speed accel decel dist drive diag
 			misc::Logger::getInstance()->debug("Setting speed accel decel dist drive (5s)");
 			start_time = std::chrono::system_clock::now();
-			setM1M2SpeedAccelDecelDist(12000, 12000, 12000, 12000, 12000, 12000, 12000, 12000);
 			/*
 			while(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - start_time).count() < 5000)
 			{
