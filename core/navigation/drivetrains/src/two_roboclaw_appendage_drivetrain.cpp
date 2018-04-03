@@ -11,8 +11,8 @@ namespace rip
         namespace drivetrains
         {
             TwoRoboclawAppendageDrivetrain::TwoRoboclawAppendageDrivetrain(const std::string& name,
-                std::shared_ptr<TwoRoboclawAppendageDrivetrain::Roboclaw> left,
-                std::shared_ptr<TwoRoboclawAppendageDrivetrain::Roboclaw> right,
+                std::shared_ptr<Roboclaw> left,
+                std::shared_ptr<Roboclaw> right,
                 std::shared_ptr<TwoRoboclawAppendageDrivetrain::NavX> navx)
                 : Drivetrain(name)
                 , m_left(left)
