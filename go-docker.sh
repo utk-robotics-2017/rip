@@ -41,6 +41,45 @@ while [[ "$1" != "" ]] ; do
       fi
       break
       ;;
+    '-h'|'--help')
+      cat << EOF
+RIP Docker Script 'go-docker.sh'
+
+Usage: ./go-docker.sh [options] [script args] [program ars ...]
+
+Overridable Environment Variables:
+  RPXC_IMAGE="utkrobotics/rip_rpi:latest"
+          See also: --rpxc-tag flag
+  RPXC_SCRIPT_LOCATION="./docker/rpi/rpxc/rpxc"
+          Location of the RPXC script used to enter and setup the rip_rpi container from the host.
+          Location relative to this shell script.
+  RPXC_SYSROOT="/rpxc/sysroot"
+          Location of sysroot *inside* the docker container.
+          Do not change unless using a compatible/different docker image.
+  RIPPROG
+          Uses the same values as --prog flag does. (Shown in menu.)
+
+  (for building containers...)
+  RPI_DIST
+          Sets the raspberry pi distro when building rip_rpi. (i.e. 'jessie'/'stretch')
+  RPI_DOCKER_TAG
+          Set the target docker tag for the rip_rpi build.
+
+Options: <required> [optional]
+  --help
+          Display this help and exit.
+  --prog <program selection>
+          Select a program directly without being prompted by whiptail/dialog.
+  --rpi [--] [command to run in container]
+          Run the RPI emulation container directly with an optional command instead of a shell.
+  --rpxc-tag <tag name>
+          Specify an alternate tag (different from latest) to use for the docker repo.
+          Used like 'utkrobotics/rip_rpi:<tag_name>'
+  -- [anything else]
+          Ignore flags after the '--' and pass them to the program selection.
+EOF
+      exit 0
+      ;;
     *)
       echo "Unknown option: $1"
       exit 1
