@@ -5,6 +5,7 @@
 // Appendages
 #include "appendages/digital_input.hpp"
 #include "appendages/analog_input.hpp"
+#include "appendages/roboclaw.hpp"
 
 #include "appendages/exceptions.hpp"
 
@@ -45,6 +46,7 @@ namespace rip
         {
             registerAppendage("Digital Input", &DigitalInput::create);
             registerAppendage("Analog Input", &AnalogInput::create);
+			registerAppendage("Roboclaw", &Roboclaw::create);
         }
     }
 }

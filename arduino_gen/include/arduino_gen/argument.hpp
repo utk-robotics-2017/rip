@@ -56,6 +56,8 @@ namespace rip
             std::string m_name;
             std::string m_type;
             std::string m_value;
+			std::string m_prefix;
+			std::string m_suffix;
         };
     } // arduinogen
 }

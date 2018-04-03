@@ -29,6 +29,9 @@ namespace rip
     {
         namespace roboclaw
         {
+
+			std::mutex Roboclaw::global_lock;
+
             Roboclaw::Roboclaw(const nlohmann::json& config, bool test)
                 : Subsystem("")
             {
@@ -45,12 +48,12 @@ namespace rip
                     setName(config["name"]);
                     //required parameters
                     m_address = config.at("address").get<uint8_t>();
-                    m_timeout = config.at("timeout");
+                    m_timeout = config.at("timeout") * units::ms;
+
                     m_ticks_per_rev = config.at("ticks_per_rev");
                     m_wheel_radius = config.at("wheel_radius");
                     //serial
-                    std::string temp = config.at("device");
-                    m_device = temp.c_str();
+                    m_device = config.at("device"); 
                     m_baudrate = config.at("baudrate");
                     if (config.find("advanced serial options") != config.end())
                     {
@@ -58,13 +61,30 @@ namespace rip
                         m_stopbits = config.at("stopbits");
                         m_xonxoff = config.at("xonxoff");
                         m_rtscts = config.at("rtscts");
-                        m_parity = config.at("parity");
+                        int parity = config.at("parity");
+                        serial_parity_t cpar;
+                        if (parity == 0)
+                        {
+                            cpar = PARITY_NONE;
+                        }
+                        else if (parity == 1)
+                        {
+                            cpar = PARITY_ODD;
+                        }
+                        else
+                        {
+                            cpar = PARITY_EVEN;
+                        }
+                        m_parity = cpar;
                     }
                 }
-                if (config.find("faking") == config.end())
+                m_faking = (config.find("faking") != config.end());
+
+                if(!m_faking)
                 {
                     if (config.find("advanced serial options") != config.end())
                     {
+                        m_advanced_serial = true;
                         open(&m_serial, m_device, m_baudrate, m_databits, m_parity,
                              m_stopbits, m_xonxoff, m_rtscts);
                     }
@@ -72,10 +92,6 @@ namespace rip
                     {
                         open(&m_serial, m_device, m_baudrate);
                     }
-                }
-                else
-                {
-                    m_faking = true;
                 }
             }
             Roboclaw::~Roboclaw()
@@ -362,7 +378,7 @@ namespace rip
 
                     for (uint8_t i = 0; i < 48; i++)
                     {
-                        if (data != -1)
+                        if (data != 0xFF)
                         {
                             data = read(&m_serial, m_timeout);
                             version += data;
@@ -371,12 +387,12 @@ namespace rip
                             {
                                 uint16_t ccrc;
                                 data = read(&m_serial, m_timeout);
-                                if (data != -1)
+                                if (data != 0xFF)
                                 {
                                     ccrc = static_cast<uint16_t>(data) << 8;
                                     data = read(&m_serial, m_timeout);
 
-                                    if (data != -1)
+                                    if (data != 0xFF)
                                     {
                                         ccrc |= data;
                                         if (crcGet() == ccrc)
@@ -689,56 +705,72 @@ namespace rip
 //////////////////////////////////////////////////////////////////////////////////////////////
             std::vector<uint8_t> Roboclaw::readN(uint8_t n, Command cmd)
             {
-                uint8_t crc;
+                // todo: don't do this --- just trying something out
+                std::lock_guard<std::mutex> lock(Roboclaw::global_lock);
 
-                uint8_t value = 0;
-                uint8_t trys = kMaxRetries;
-                int16_t data;
+                uint8_t max_reset = 2;
 
                 std::vector<uint8_t> command = {m_address, static_cast<uint8_t>(cmd)};
-                for (uint8_t try_ = 0; try_ < kMaxRetries; try_++)
+                for(uint8_t reset = 0; reset < max_reset; reset++)
                 {
-                    crcClear();
-                    for (uint8_t i = 0; i < command.size(); i++)
+                    for (uint8_t try_ = 0; try_ < kMaxRetries; try_++)
                     {
-                        crcUpdate(command[i]);
-                    }
-
-                    write(&m_serial, command, command.size());
-
-                    std::vector<uint8_t> response;
-                    uint8_t data;
-                    for (uint8_t i = 0; i < n; i++)
-                    {
-                        data = read(&m_serial, m_timeout);
-                        crcUpdate(data);
-                        response.push_back(data);
-                        if (data == -1)
+                        crcClear();
+                        for (uint8_t i = 0; i < command.size(); i++)
                         {
-                            continue;
+                            crcUpdate(command[i]);
                         }
-                    }
 
-                    if (data != -1)
-                    {
-                        uint16_t ccrc;
-                        data = read(&m_serial, m_timeout);
-                        if (data != -1)
+                        write(&m_serial, command, command.size());
+
+                        std::vector<uint8_t> response;
+                        uint8_t data;
+                        for (uint8_t i = 0; i < n; i++)
                         {
-                            ccrc = static_cast<uint16_t>(data) << 8;
                             data = read(&m_serial, m_timeout);
-                            if (data != -1)
+                            crcUpdate(data);
+                            response.push_back(data);
+                            if (data == 0xFF)
                             {
-                                ccrc |= data;
-                                if (crcGet() == ccrc)
+                                continue;
+                            }
+                        }
+
+                        if (data != 0xFF)
+                        {
+                            uint16_t ccrc;
+                            data = read(&m_serial, m_timeout);
+                            if (data != 0xFF)
+                            {
+                                ccrc = static_cast<uint16_t>(data) << 8;
+                                data = read(&m_serial, m_timeout);
+                                if (data != 0xFF)
                                 {
-                                    return response;
+                                    ccrc |= data;
+                                    if (crcGet() == ccrc)
+                                    {
+                                        return response;
+                                    }
                                 }
                             }
                         }
                     }
+                    if(!m_faking)
+                    {
+                        misc::Logger::getInstance()->debug(fmt::format("Serial read failure on device {}, attempting reset...", m_device));
+                        serial_flush(&m_serial);
+                        serial_close(&m_serial);
+                        if(m_advanced_serial)
+                        {
+                            open(&m_serial, m_device, m_baudrate, m_databits, m_parity,
+                                 m_stopbits, m_xonxoff, m_rtscts);
+                        }
+                        else
+                        {
+                            open(&m_serial, m_device, m_baudrate);
+                        }
+                    }
                 }
-
                 throw ReadFailure();
             }
 
@@ -746,15 +778,20 @@ namespace rip
             {
                 if (serial_write(serial, &command[0], len) < 0)
                 {
+                    misc::Logger::getInstance()->debug(fmt::format("Serial write failure on device {}", m_device));
+
                     throw CommandFailure(serial_errmsg(serial));
                 }
+                serial_flush(serial);
             }
 
             uint8_t Roboclaw::read(serial_t* serial, units::Time timeout)
             {
                 uint8_t data;
-                if (serial_read(serial, &data, 1, static_cast<int>(timeout())) < 0)
+                if (serial_read(serial, &data, 1, static_cast<int>(timeout.to(units::ms))) < 0)
                 {
+                    misc::Logger::getInstance()->debug(fmt::format("Serial read failure on device {}", m_device));
+
                     throw ReadFailure(serial_errmsg(serial));
                 }
                 return data;
@@ -768,6 +805,8 @@ namespace rip
                 if (serial_open_advanced(serial, device.c_str(), baudrate, databits, parity,
                                          stopbits, xonxoff, rtscts) < 0)
                 {
+                    misc::Logger::getInstance()->debug(fmt::format("Serial open failure on device {}", m_device));
+
                     throw SerialOpenFail(serial_errmsg(serial));
                 }
             }
@@ -776,6 +815,8 @@ namespace rip
             {
                 if (serial_open(serial, device.c_str(), baudrate) < 0)
                 {
+                    misc::Logger::getInstance()->debug(fmt::format("Serial open failure on device {}", m_device));
+
                     throw SerialOpenFail(serial_errmsg(serial));
                 }
             }
@@ -945,6 +986,7 @@ namespace rip
             bool Roboclaw::diagnostic()
             {
                 // todo
+                return 0;
             }
 
             void Roboclaw::crcUpdate(uint8_t data)
@@ -1033,11 +1075,11 @@ namespace rip
                 {
                     setName(testcfg["name"]);
                     m_address = testcfg.at("address").get<uint8_t>();
-                    m_timeout = testcfg.at("timeout");
+                    m_timeout = testcfg.at("timeout") * units::ms;
+                    misc::Logger::getInstance()->debug(fmt::format("Roboclaw timeout in ms = {}", m_timeout.to(units::ms)));
                     m_ticks_per_rev = testcfg.at("ticks_per_rev");
                     m_wheel_radius = testcfg.at("wheel_radius");
-                    std::string temp = testcfg.at("device");
-                    m_device = temp.c_str();
+                    m_device = testcfg.at("device");
                     m_baudrate = testcfg.at("baudrate");
                     if (testcfg.find("advanced serial options") != testcfg.end())
                     {
@@ -1045,7 +1087,21 @@ namespace rip
                         m_stopbits = testcfg.at("stopbits");
                         m_xonxoff = testcfg.at("xonxoff");
                         m_rtscts = testcfg.at("rtscts");
-                        m_parity = testcfg.at("parity");
+                        int parity = testcfg.at("parity");
+                        serial_parity_t cpar;
+                        if (parity == 0)
+                        {
+                            cpar = PARITY_NONE;
+                        }
+                        else if (parity == 1)
+                        {
+                            cpar = PARITY_ODD;
+                        }
+                        else
+                        {
+                            cpar = PARITY_EVEN;
+                        }
+                        m_parity = cpar;
                     }
                 }
                 catch (...)

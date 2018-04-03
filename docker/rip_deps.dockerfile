@@ -29,4 +29,10 @@ RUN cmake ..
 RUN make -j$(nproc --ignore=1 ) # building g2o might take awhile...
 RUN sudo make install
 
+RUN sudo install_clean \
+ python-pip python-setuptools
+
+RUN sudo pip install --no-cache-dir --upgrade pip
+RUN sudo pip install --no-cache-dir platformio
+
 # vim: set syntax=dockerfile:

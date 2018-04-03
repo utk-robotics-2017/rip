@@ -17,19 +17,22 @@
  *  \$$    $$   | $$   | $$  \$$\      | $$  | $$|   $$ \| $$
  *   \$$$$$$     \$$    \$$   \$$       \$$   \$$ \$$$$$$ \$$
  */
-#ifndef APPENDAGES_EXCEPTIONS_HPP
-#define APPENDAGES_EXCEPTIONS_HPP
+#ifndef EXCEPTIONS_HPP
+#define EXCEPTIONS_HPP
 #include <misc/exception_base.hpp>
 
 namespace rip
 {
-    namespace appendages
+    namespace navigation
     {
-        NEW_EX(CommandNotFound)
-        NEW_EX(AppendageWithoutType)
-        NEW_EX(AppendageWithoutLabel)
-        NEW_EX(AppendageWithId)
-		NEW_EX(AppendageMissingField)
+        namespace actions
+        {
+            /**
+             * Thrown if a parameter is out of bounds
+             * @param OutofBoundsException [description]
+             */
+            NEW_EX(OutofBoundsException);
+        }
     }
 }
-#endif // APPENDAGES_EXCEPTIONS_HPP
+#endif // EXCEPTIONS_HPP

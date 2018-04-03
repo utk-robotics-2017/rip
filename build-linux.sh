@@ -2,6 +2,7 @@
 set -E
 
 BUILDDIR="build"
+ENABLE_TESTING="ON"
 
 if [[ "$(dpkg --print-architecture)" == "armhf" ]]; then
   BUILDDIR="${BUILDDIR}_armhf"
@@ -25,6 +26,11 @@ while [[ "$1" != "" ]]; do
     "--no-cd"|"-n")
       echo "Building project: $(pwd)"
       NO_CD="true"
+      ;;
+    "--production"|"-p")
+      echo "Building production executables."
+      echo " -DENABLE_TESTING=OFF"
+      ENABLE_TESTING="OFF"
       ;;
     "-h"|"--help")
       cat << EOF
@@ -77,7 +83,7 @@ trap 'SIGNAL=$?;cleanup' ERR
 trap 'cleanup' SIGINT
 
 cmake .. \
-  -DENABLE_TESTING=on \
+  -DENABLE_TESTING=${ENABLE_TESTING} \
   "$@"
 #
 
