@@ -8,9 +8,13 @@
         <constructor type="unsigned char" variable="servo_pins" type-is-class="false">
             <argument name="pin" type="int" />
         </constructor>
+        <constructor type="int" variable="servo_init_write" type-is-class="false">
+          <argument type="int" name="initialValue" />
+        </constructor>
     </constructors>
     <setup>
         servos[$i$].attach($pin$);
+        servos[$i$].write($initialValue$);
     </setup>
     <loop>
         // Servo pin: $pin$
