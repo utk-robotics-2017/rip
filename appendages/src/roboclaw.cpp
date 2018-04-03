@@ -62,6 +62,7 @@ namespace rip
 				cmdmessenger::ArduinoCmdMessenger::UnsignedLongType,
 				cmdmessenger::ArduinoCmdMessenger::UnsignedLongType,
 				cmdmessenger::ArduinoCmdMessenger::UnsignedLongType,
+				cmdmessenger::ArduinoCmdMessenger::UnsignedLongType,
 				cmdmessenger::ArduinoCmdMessenger::CharType>())),
 			m_set_m1_speed_accel_dist(createCommand("kSetM1SpeedAccelDist", command_map,
 				cmdmessenger::ArduinoCmdMessenger::makeArgumentString<cmdmessenger::ArduinoCmdMessenger::IntegerType,
@@ -374,6 +375,10 @@ namespace rip
 			cmdmessenger::ArduinoCmdMessenger messenger;
 			messenger.send<cmdmessenger::ArduinoCmdMessenger::IntegerType,
 				cmdmessenger::ArduinoCmdMessenger::CharType,
+				cmdmessenger::ArduinoCmdMessenger::UnsignedLongType,
+				cmdmessenger::ArduinoCmdMessenger::UnsignedLongType,
+				cmdmessenger::ArduinoCmdMessenger::UnsignedLongType,
+				cmdmessenger::ArduinoCmdMessenger::UnsignedLongType,
 				cmdmessenger::ArduinoCmdMessenger::UnsignedLongType,
 				cmdmessenger::ArduinoCmdMessenger::UnsignedLongType,
 				cmdmessenger::ArduinoCmdMessenger::UnsignedLongType,
@@ -805,15 +810,16 @@ namespace rip
 			//speed accel decel dist drive diag
 			misc::Logger::getInstance()->debug("Setting speed accel decel dist drive (5s)");
 			start_time = std::chrono::system_clock::now();
-
+			setM1M2SpeedAccelDecelDist(12000, 12000, 12000, 12000, 12000, 12000, 12000, 12000);
+			/*
 			while(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - start_time).count() < 5000)
 			{
 				setM1SpeedAccelDecelDist(12000, 12000, 12000, 12000);
 				setM2SpeedAccelDecelDist(12000, 12000, 12000, 12000);
-				setM1M2SpeedAccelDecelDist(12000, 12000, 12000, 12000, 12000, 12000, 12000, 12000);
+
 				misc::Logger::getInstance()->debug(fmt::format("Raw readings: 1: {}  | 2: {}", readM1Encoder(), readM2Encoder()));
 				misc::Logger::getInstance()->debug(fmt::format("Encoder velocity: M1 {} M2 {}", readM1EncoderSpeed(), readM2EncoderSpeed()));
-			}
+			}*/
 			stop();
 			//setDynamics diag
 			misc::Logger::getInstance()->debug("Setting via setDynamics");

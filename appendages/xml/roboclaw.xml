@@ -207,7 +207,7 @@
             <code>
                 if (!roboclaws[indexNum].SpeedAccelDeccelPositionM1M2(address, accel1, speed1, deccel1, position1, accel2, speed2, deccel2, position2, flag))
                 {
-                    cmdMessenger.sendBinCmd(kError, kSetM2SpeedAccelDecelDist);
+                    cmdMessenger.sendBinCmd(kError, kSetM1M2SpeedAccelDecelDist);
                 }
             </code>
         </command>
