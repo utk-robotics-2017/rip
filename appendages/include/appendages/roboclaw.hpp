@@ -19,53 +19,239 @@ namespace rip
 		class Roboclaw : public Appendage
 		{
 		public:
+			/**
+			 * @brief PID based drive with speed for motor 1
+			 * @param speed ticks / second
+			 */
 			void setM1Speed(int32_t speed);
+			/**
+			 * @brief PID based drive with speed for motor 2
+			 * @param speed ticks / second
+			 */
 			void setM2Speed(int32_t speed);
+			/**
+			 * @brief PID based drive with speed for motors 1 and 2
+			 * @param speed1 ticks / second
+			 * @param speed2 ticks / second
+			 */
 			void setM1M2Speed(int32_t speed1, int32_t speed2);
-
+			/**
+			 * @brief PID based drive with speed, accel for motor 1
+			 * @param accel ticks / second^2
+			 * @param speed ticks / second
+			 */
 			void setM1SpeedAccel(uint32_t accel, int32_t speed);
+			/**
+			 * @brief PID based drive with speed, accel for motor 2
+			 * @param accel ticks / second^2
+			 * @param speed ticks / second
+			 */
 			void setM2SpeedAccel(uint32_t accel, int32_t speed);
+			/**
+			 * @brief PID based drive with speed, accel for motors 1&2
+			 * @param accel  ticks / second^2
+			 * @param speed1 ticks / second
+			 * @param speed2 ticks / second
+			 */
 			void setM1M2SpeedAccel(uint32_t accel, int32_t speed1, int32_t speed2);
-
+			/**
+			 * @brief PID based drive with speed, dist for motor 1
+			 * @param speed    ticks / second
+			 * @param distance ticks
+			 * @param flag     1 to apply instantly, 0 to buffer command
+			 */
 			void setM1SpeedDist(int32_t speed, uint32_t distance, uint8_t flag=1);
+			/**
+			 * @brief PID based drive with speed, dist for motor 2
+			 * @param speed    ticks / second
+			 * @param distance ticks
+			 * @param flag      1 to apply instantly, 0 to buffer command
+			 */
 			void setM2SpeedDist(int32_t speed, uint32_t distance, uint8_t flag=1);
+			/**
+			 * @brief PID based drive with speed, dist for motors 1&2
+			 * @param speed1    ticks / second
+			 * @param distance1 ticks
+			 * @param speed2    ticks / second
+			 * @param distance2 ticks
+			 * @param flag      1 to apply instantly, 0 to buffer command
+			 */
 			void setM1M2SpeedDist(int32_t speed1, uint32_t distance1, int32_t speed2, uint32_t distance2, uint8_t flag=1);
-
+			/**
+			 * @brief PID based drive with speed, accel, dist for motor 1
+			 * @param accel    ticks / second^2
+			 * @param speed    ticks / second
+			 * @param distance ticks
+			 * @param flag      1 to apply instantly, 0 to buffer command
+			 */
 			void setM1SpeedAccelDist(uint32_t accel, int32_t speed, uint32_t distance, uint8_t flag=1);
+			/**
+			 * @brief PID based drive with speed, accel, dist for motor 2
+			 * @param accel    ticks / second^2
+			 * @param speed    ticks / second
+			 * @param distance ticks
+			 * @param flag      1 to apply instantly, 0 to buffer command
+			 */
 			void setM2SpeedAccelDist(uint32_t accel, int32_t speed, uint32_t distance, uint8_t flag=1);
+			/**
+			 * @brief PID based drive with speed, accel, dist for motors 1&2
+			 * @param accel     ticks / second^2
+			 * @param speed1    ticks / second
+			 * @param distance1 ticks
+			 * @param speed2    ticks / second
+			 * @param distance2 ticks
+			 * @param flag      1 to apply instantly, 0 to buffer command
+			 */
 			void setM1M2SpeedAccelDist(uint32_t accel, int32_t speed1, uint32_t distance1, int32_t speed2, uint32_t distance2, uint8_t flag=1);
-
+			/**
+			 * @brief PID based drive with speed, accel, decel, dist for motor 1
+			 * @param accel    ticks / second^2
+			 * @param speed    ticks / second
+			 * @param deccel   ticks / second^2
+			 * @param position ticks
+			 * @param flag      1 to apply instantly, 0 to buffer command
+			 */
 			void setM1SpeedAccelDecelDist(uint32_t accel, int32_t speed, uint32_t deccel, uint32_t position, uint8_t flag=1);
+			/**
+			 * @brief PID based drive with speed, accel, decel, dist for motors 2
+			 * @param accel    ticks / second^2
+			 * @param speed    ticks / second
+			 * @param deccel   ticks / second^2
+			 * @param position ticks
+			 * @param flag      1 to apply instantly, 0 to buffer command
+			 */
 			void setM2SpeedAccelDecelDist(uint32_t accel, int32_t speed,uint32_t deccel,uint32_t position, uint8_t flag=1);
 			/*void setM1M2SpeedAccelDecelDist(uint32_t accel1, int32_t speed1,uint32_t deccel1,
 				uint32_t position1, uint32_t accel2, int32_t speed2, uint32_t deccel2, uint32_t position2, uint8_t flag=1);
 			*/
+			/**
+			 * @brief Reads the tick count from motor 1
+			 * @return ticks
+			 */
 			int32_t readM1Encoder();
+			/**
+			 * @brief Reads the tick count from motor 2
+			 * @return ticks
+			 */
 			int32_t readM2Encoder();
+			/**
+			 * @brief Reads the tick count from motors 1&2
+			 * @return ticks
+			 */
 			std::tuple<int32_t, int32_t> readM1M2Encoders();
+			/**
+			 * @brief Reads encoder distance (and converts to linear distance based on ticks per revolution and wheel
+			 * radius for motors 1&2
+			 * @return ticks
+			 */
 			std::array<units::Distance, 2> readEncoders(); //Not implemented on arduino
+			/**
+			 * @brief Reads encoder distance (M1 or M2) and converts to linear distance based on ticks per revolution and wheel radius
+			 * @param  motor 0 for motor 1, 1 for motor 2
+			 * @return       units of linear distance
+			 */
 			units::Distance readEncoder(bool motor); //Not implemented on arduino
-
+			/**
+			 * @brief Reads encoder ticks/s for motor M1.
+			 * @return Motor M1 ticks/ second
+			 */
 			int32_t readM1EncoderSpeed();
+			/**
+			 * @brief Reads encoder ticks per second for motor M1.
+			 * @return Motor m2 ticks/ second
+			 */
 			int32_t readM2EncoderSpeed();
+			/**
+			 * @brief Reads encoder ticks/s for motors M1&M2.
+			 * @return tuple containing int32_t for m1 & m2 respectively
+			 */
 			std::tuple<int32_t, int32_t> readM1M2EncoderSpeed();
+			/**
+			 * @brief Reads encoder speed (and converts to linear speed based on ticks per revolution and wheel radius
+			 * @return array size 2 of linear velocity m1&m2 respectively
+			 */
 			std::array<units::Velocity, 2> readEncoderSpeeds(); //Not implemented on arduino
+			/**
+			 * @brief Reads encoder velocity (M1 or M2) and converts to linear speed based on ticks per revolution and wheel
+			 * @param  motor 0 foe mtoor 1, 1 for motor 2
+			 * @return       encoder speeds for m1 || M2 in units of linear velocity
+			 */
 			units::Velocity readEncoderSpeed(bool motor); //Not implemented on arduino
-
+			/**
+			 * @brief Resets encoders tick values.
+			 */
 			void resetEncoders();
+			/**
+			 * @brief: reads the number of commands in the buffer for
+			 both motors, returns the buffer for just the specified motor.
+			 Send: [Address, 47]
+			 Receive: [BufferM1, BufferM2, CRC(2 bytes)]
+
+			 @returns Buffer length for motors 1 or 2
+			 *
+			 */
 			std::tuple<uint8_t, uint8_t> getBuffers();
-
+			/**
+			 * @brief Sets the duty for motor M1.
+			 * @param duty (-32727 - 32726) for motor 1
+			 */
 			void setM1Duty(int16_t duty);
+			/**
+			 * @brief Sets duty for motor m2.
+			 * @param duty (-32727 - 32726) for motor 2
+			 */
 			void setM2Duty(int16_t duty);
+			/**
+			 * @brief sets duty for motors m1 and m2
+			 * @param duty1 (-32727 - 32726) for motor 1
+			 * @param duty2 (-32727 - 32726) for motor 2
+			 */
 			void setM1M2Duty(int16_t duty1, int16_t duty2);
-
+			/**
+			 * @brief sets the M1 PID constants for velocity on Roboclaw.
+			 * @param Kp   proportional
+			 * @param Ki   integral
+			 * @param Kd   derivative
+			 * @param qpps maximum quadrature pulses per second
+			 */
 			void setM1VelocityPID(float Kp, float Ki, float Kd, uint32_t qpps);
+			/**
+			 * @brief sets the M2 PID constants for velocity on Roboclaw.
+			 * @param Kp   proportional
+			 * @param Ki   integral
+			 * @param Kd   derivative
+			 * @param qpps Maximum quadrature pulses per second.
+			 */
             void setM2VelocityPID(float Kp, float Ki, float Kd, uint32_t qpps);
-
+			/**
+			 * @brief sets the M1&M2 PID constants for velocity on Roboclaw.
+			 * @param motor         0 for motor 1, 1 for motor 2
+			 * @param dynamics      see MotorDynamics
+			 * @param respectBuffer if false, command will be buffered
+			 */
 			void setDynamics(bool motor, const MotorDynamics& dynamics, bool respectBuffer=1); //Not implemented on arduino
+			/**
+			 * @brief Given a MotorDynamics object, does PID driving with units for one motor.
+			 * @param dynamics      See MotorDynamics
+			 * @param respectBuffer if false, command will be buffered
+			 */
 			void setDynamics(const MotorDynamics& dynamics, bool respectBuffer=1); //Not implemented on arduino
-
+			/**
+			 * @brief returns the encoder distance and velocity in a pair
+			 * @param motor 0 for motor 1, 1 for motor 2
+			 */
 			std::tuple<units::Distance, units::Velocity> getDistAndVel(bool motor);
+			/**
+			 * @brief Returns the angle of the motor shaft
+			 * @param  motor 0 for m1, 1 for m2
+			 * @return offset angle of shaft relative to last encoder reset
+			 */
+			units::Angle getAngle(bool motor);
+			/**
+			 * @brief Sets wheel speed based off provided angular velocity
+			 * @param av unit of angular velocity
+			 */
+			void setAngularSpeed(bool motor, units::AngularVelocity av);
 			/**
 			* Stop! ^0^
 			*/

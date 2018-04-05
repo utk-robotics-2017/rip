@@ -707,6 +707,35 @@ namespace rip
 			return std::tuple<units::Distance, units::Velocity>(readEncoder(motor), readEncoderSpeed(motor));
 		}
 
+		units::Angle Roboclaw::getAngle(bool motor)
+		{
+			int32_t ticks;
+			units::Angle rv;
+			if(motor)
+			{
+				ticks = readM2Encoder();
+			}
+			else
+			{
+				ticks = readM1Encoder();
+			}
+			ticks %= static_cast<int32_t>(m_ticks_per_rev);
+			rv = (ticks/m_ticks_per_rev) * 360 * units::deg;
+			return rv;
+		}
+
+		void Roboclaw::setAngularSpeed(bool motor, units::AngularVelocity av)
+		{
+			if(motor)
+			{
+				setM2Speed(av.to(units::deg/units::s) / 360 * m_ticks_per_rev);
+			}
+			else
+			{
+				setM1Speed(av.to(units::deg/units::s) / 360 * m_ticks_per_rev);
+			}
+		}
+
 		void Roboclaw::stop()
 		{
 			setM1M2Duty(0, 0);
