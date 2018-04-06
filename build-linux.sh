@@ -63,6 +63,10 @@ Options:
 EOF
       exit 0
       ;;
+    *)
+      echo "Unknown option: $1"
+      exit 1
+      ;;
   esac
   shift
 done
