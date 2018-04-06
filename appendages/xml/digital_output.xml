@@ -1,0 +1,20 @@
+<appendage-template>
+    <constructors type="char" variable="digital_output_pins">
+        <parameter name="pin" type="int"/>
+    </constructors>
+
+    <setup>
+        pinMode(digital_output_pins[i], OUTPUT);
+    </setup>
+
+    <commands>
+        <command id="kWriteDigitalOutput" name"writeDigitalOutput" index-num="true">
+            <parameter type="bool" name="output"/>
+            <code>
+                typedef enum { HIGH, LOW } out_t;
+                out_t bit = output ? HIGH : LOW;
+                digitalWrite(digital_output_pins[index_num], bit);
+            </code>
+        </command>
+    </commands>
+</appendage-template>
