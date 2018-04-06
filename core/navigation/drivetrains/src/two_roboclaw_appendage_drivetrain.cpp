@@ -13,10 +13,14 @@ namespace rip
             TwoRoboclawAppendageDrivetrain::TwoRoboclawAppendageDrivetrain(const std::string& name,
                 std::shared_ptr<Roboclaw> left,
                 std::shared_ptr<Roboclaw> right,
+                double ticks_per_rev,
+                units::Distance wheel_radius,
                 std::shared_ptr<TwoRoboclawAppendageDrivetrain::NavX> navx)
                 : Drivetrain(name)
                 , m_left(left)
                 , m_right(right)
+                , m_ticks_per_rev(ticks_per_rev)
+                , m_wheel_radius(wheel_radius)
                 , m_navx(navx)
             {}
 
@@ -63,25 +67,26 @@ namespace rip
 
             void TwoRoboclawAppendageDrivetrain::drive(const MotorDynamics& command)
             {
-                m_left->setDynamics(command);
-                m_right->setDynamics(command);
+                setDynamics(command);
             }
 
             void TwoRoboclawAppendageDrivetrain::drive(const MotorDynamics& left, const MotorDynamics& right)
             {
-                m_left->setDynamics(left);
-                m_right->setDynamics(right);
+                setDynamics(Motor::kFrontLeft, left);
+                setDynamics(Motor::kBackLeft, left);
+
+                setDynamics(Motor::kFrontRight, right);
+                setDynamics(Motor::kBackRight, right);
             }
 
             void TwoRoboclawAppendageDrivetrain::drive(const MotorDynamics& front_left, const MotorDynamics& front_right,
                  const MotorDynamics& back_left, const MotorDynamics& back_right)
             {
-                m_left->setDynamics(0, front_left);
-                m_right->setDynamics(0, front_right);
+                setDynamics(Motor::kFrontLeft, front_left);
+                setDynamics(Motor::kBackLeft, back_left);
 
-                m_left->setDynamics(1, back_left);
-                m_right->setDynamics(1, back_right);
-
+                setDynamics(Motor::kFrontRight, front_right);
+                setDynamics(Motor::kBackRight, back_right);
             }
 
             std::vector<units::Distance> TwoRoboclawAppendageDrivetrain::readEncoders(const std::vector<Motor>& motors)
@@ -93,22 +98,22 @@ namespace rip
                     {
                         case Motor::kFrontLeft:
                         {
-                            data.push_back(m_left->readEncoder(0));
+                            data.push_back(static_cast<double>(m_left->readM1Encoder()) / m_ticks_per_rev * m_wheel_radius * M_PI * 2);
                             break;
                         }
                         case Motor::kFrontRight:
                         {
-                            data.push_back(m_right->readEncoder(0));
+                            data.push_back(static_cast<double>(m_right->readM1Encoder()) / m_ticks_per_rev * m_wheel_radius * M_PI * 2);
                             break;
                         }
                         case Motor::kBackLeft:
                         {
-                            data.push_back(m_left->readEncoder(1));
+                            data.push_back(static_cast<double>(m_left->readM2Encoder()) / m_ticks_per_rev * m_wheel_radius * M_PI * 2);
                             break;
                         }
                         case Motor::kBackRight:
                         {
-                            data.push_back(m_right->readEncoder(1));
+                            data.push_back(static_cast<double>(m_right->readM2Encoder()) / m_ticks_per_rev * m_wheel_radius * M_PI * 2);
                             break;
                         }
                         default:
@@ -126,19 +131,19 @@ namespace rip
                 {
                     case Motor::kFrontLeft:
                     {
-                        return m_left->readEncoder(0);
+                        return static_cast<double>(m_left->readM1Encoder()) / m_ticks_per_rev * m_wheel_radius * M_PI * 2;
                     }
                     case Motor::kFrontRight:
                     {
-                        return m_right->readEncoder(0);
+                        return static_cast<double>(m_right->readM1Encoder()) / m_ticks_per_rev * m_wheel_radius * M_PI * 2;
                     }
                     case Motor::kBackLeft:
                     {
-                        return m_left->readEncoder(1);
+                        return static_cast<double>(m_left->readM2Encoder()) / m_ticks_per_rev * m_wheel_radius * M_PI * 2;
                     }
                     case Motor::kBackRight:
                     {
-                        return m_right->readEncoder(1);
+                        return static_cast<double>(m_right->readM2Encoder()) / m_ticks_per_rev * m_wheel_radius * M_PI * 2;
                     }
                     default:
                     {
@@ -157,19 +162,19 @@ namespace rip
                     {
                         case Motor::kFrontLeft:
                         {
-                            data.push_back(m_left->readEncoderSpeed(0));
+                            data.push_back(m_left->readM1EncoderSpeed() / m_ticks_per_rev * m_wheel_radius * M_PI * 2 / units::s);
                         }
                         case Motor::kFrontRight:
                         {
-                            data.push_back(m_right->readEncoderSpeed(0));
+                            data.push_back(m_right->readM1EncoderSpeed() / m_ticks_per_rev * m_wheel_radius * M_PI * 2 / units::s);
                         }
                         case Motor::kBackLeft:
                         {
-                            data.push_back(m_left->readEncoderSpeed(1));
+                            data.push_back(m_left->readM2EncoderSpeed() / m_ticks_per_rev * m_wheel_radius * M_PI * 2 / units::s);
                         }
                         case Motor::kBackRight:
                         {
-                            data.push_back(m_right->readEncoderSpeed(1));
+                            data.push_back(m_right->readM2EncoderSpeed() / m_ticks_per_rev * m_wheel_radius * M_PI * 2 / units::s);
                         }
                         default:
                         {
@@ -186,25 +191,283 @@ namespace rip
                 {
                     case Motor::kFrontLeft:
                     {
-                        return m_left->readEncoderSpeed(0);
+                        return m_left->readM1EncoderSpeed() / m_ticks_per_rev * m_wheel_radius * M_PI * 2 / units::s;
                     }
                     case Motor::kFrontRight:
                     {
-                        return m_right->readEncoderSpeed(0);
+                        return m_right->readM1EncoderSpeed() / m_ticks_per_rev * m_wheel_radius * M_PI * 2 / units::s;
                     }
                     case Motor::kBackLeft:
                     {
-                        return m_left->readEncoderSpeed(1);
+                        return m_left->readM2EncoderSpeed() / m_ticks_per_rev * m_wheel_radius * M_PI * 2 / units::s;
                     }
                     case Motor::kBackRight:
                     {
-                        return m_right->readEncoderSpeed(1);
+                        return m_right->readM2EncoderSpeed() / m_ticks_per_rev * m_wheel_radius * M_PI * 2 / units::s;
                     }
                     default:
                     {
                         throw InvalidMotorException("Invalid motor");
                     }
                 }
+            }
+
+            void TwoRoboclawAppendageDrivetrain::setDynamics(const Motor& motor, const MotorDynamics& dynamics, bool respectBuffer)
+            {
+                int32_t speed;
+                uint32_t accel, dist, decel;
+
+                switch(dynamics.getDType())
+                {
+                    case MotorDynamics::DType::kNone:
+                    {
+                        return;
+                    }
+                    case MotorDynamics::DType::kSpeed:
+                    {
+                        speed = static_cast<int32_t>((*dynamics.getSpeed() / (m_wheel_radius * M_PI * 2)).to(1 / units::s) * m_ticks_per_rev);
+                        switch(motor)
+                        {
+                            case Motor::kFrontLeft:
+                            {
+                                m_left->setM1Speed(speed);
+                            }
+                            case Motor::kFrontRight:
+                            {
+                                m_right->setM1Speed(speed);
+                            }
+                            case Motor::kBackLeft:
+                            {
+                                m_left->setM2Speed(speed);
+                            }
+                            case Motor::kBackRight:
+                            {
+                                m_right->setM2Speed(speed);
+                            }
+                            default:
+                            {
+                                throw InvalidMotorException("Invalid motor");
+                            }
+                        }
+                        return;
+                    }
+                    case MotorDynamics::DType::kSpeedAccel:
+                    {
+                        speed = static_cast<int32_t>((*dynamics.getSpeed() / (m_wheel_radius * M_PI * 2)).to(1 / units::s) * m_ticks_per_rev);
+                        accel = static_cast<uint32_t>((*dynamics.getAcceleration() / (m_wheel_radius * M_PI * 2)).to(1 / (units::s * units::s)) * m_ticks_per_rev);
+                        switch(motor)
+                        {
+                            case Motor::kFrontLeft:
+                            {
+                                m_left->setM1SpeedAccel(accel, speed);
+                            }
+                            case Motor::kFrontRight:
+                            {
+                                m_right->setM1SpeedAccel(accel, speed);
+                            }
+                            case Motor::kBackLeft:
+                            {
+                                m_left->setM2SpeedAccel(accel, speed);
+                            }
+                            case Motor::kBackRight:
+                            {
+                                m_right->setM2SpeedAccel(accel, speed);
+                            }
+                            default:
+                            {
+                                throw InvalidMotorException("Invalid motor");
+                            }
+                        }
+                        return;
+                    }
+                    case MotorDynamics::DType::kSpeedDist:
+                    {
+                        speed = static_cast<int32_t>((*dynamics.getSpeed() / (m_wheel_radius * M_PI * 2)).to(1 / units::s) * m_ticks_per_rev);
+                        dist = static_cast<uint32_t>((*dynamics.getDistance() / (m_wheel_radius * M_PI * 2)).to(units::none) * m_ticks_per_rev);
+
+                        switch(motor)
+                        {
+                            case Motor::kFrontLeft:
+                            {
+                                m_left->setM1SpeedDist(speed, dist, respectBuffer);
+                            }
+                            case Motor::kFrontRight:
+                            {
+                                m_right->setM1SpeedDist(speed, dist, respectBuffer);
+                            }
+                            case Motor::kBackLeft:
+                            {
+                                m_left->setM2SpeedDist(speed, dist, respectBuffer);
+                            }
+                            case Motor::kBackRight:
+                            {
+                                m_right->setM2SpeedDist(speed, dist, respectBuffer);
+                            }
+                            default:
+                            {
+                                throw InvalidMotorException("Invalid motor");
+                            }
+                        }
+                        return;
+                    }
+                    case MotorDynamics::DType::kSpeedAccelDist:
+                    {
+                        speed = static_cast<int32_t>((*dynamics.getSpeed() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
+                        dist = static_cast<uint32_t>((*dynamics.getDistance() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
+                        accel = static_cast<uint32_t>((*dynamics.getAcceleration() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
+
+                        switch(motor)
+                        {
+                            case Motor::kFrontLeft:
+                            {
+                                m_left->setM1SpeedAccelDist(accel, speed, dist, respectBuffer);
+                            }
+                            case Motor::kFrontRight:
+                            {
+                                m_right->setM1SpeedAccelDist(accel, speed, dist, respectBuffer);
+                            }
+                            case Motor::kBackLeft:
+                            {
+                                m_left->setM2SpeedAccelDist(accel, speed, dist, respectBuffer);
+                            }
+                            case Motor::kBackRight:
+                            {
+                                m_right->setM2SpeedAccelDist(accel, speed, dist, respectBuffer);
+                            }
+                            default:
+                            {
+                                throw InvalidMotorException("Invalid motor");
+                            }
+                        }
+                        return;
+                    }
+                    case MotorDynamics::DType::kSpeedAccelDecelDist:
+                    {
+                        speed = static_cast<int32_t>((*dynamics.getSpeed() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
+                        dist = static_cast<uint32_t>((*dynamics.getDistance() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
+                        accel = static_cast<uint32_t>((*dynamics.getAcceleration() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
+                        decel = static_cast<uint32_t>((*dynamics.getDeceleration() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
+
+                        switch(motor)
+                        {
+                            case Motor::kFrontLeft:
+                            {
+                                m_left->setM1SpeedAccelDecelDist(accel, speed, decel, dist, respectBuffer);
+                            }
+                            case Motor::kFrontRight:
+                            {
+                                m_right->setM1SpeedAccelDecelDist(accel, speed, decel, dist, respectBuffer);
+                            }
+                            case Motor::kBackLeft:
+                            {
+                                m_left->setM2SpeedAccelDecelDist(accel, speed, decel, dist, respectBuffer);
+                            }
+                            case Motor::kBackRight:
+                            {
+                                m_right->setM2SpeedAccelDecelDist(accel, speed, decel, dist, respectBuffer);
+                            }
+                            default:
+                            {
+                                throw InvalidMotorException("Invalid motor");
+                            }
+                        }
+                        return;
+                    }
+                    default:
+                    {
+                        assert(false);
+                    }
+                }
+            }
+
+            void TwoRoboclawAppendageDrivetrain::setDynamics(const MotorDynamics& dynamics, bool respectBuffer)
+            {
+                int32_t speed;
+                uint32_t accel, dist, decel;
+
+                switch(dynamics.getDType())
+                {
+                    case MotorDynamics::DType::kNone:
+                    {
+                        return;
+                    }
+                    case MotorDynamics::DType::kSpeed:
+                    {
+                        speed = static_cast<int32_t>((*dynamics.getSpeed() / (m_wheel_radius * M_PI * 2)).to(1 / units::s) * m_ticks_per_rev);
+                        m_left->setM1M2Speed(speed, speed);
+                        m_right->setM1M2Speed(speed, speed);
+
+                        return;
+                    }
+                    case MotorDynamics::DType::kSpeedAccel:
+                    {
+                        speed = static_cast<int32_t>((*dynamics.getSpeed() / (m_wheel_radius * M_PI * 2)).to(1 / units::s) * m_ticks_per_rev);
+                        accel = static_cast<uint32_t>((*dynamics.getAcceleration() / (m_wheel_radius * M_PI * 2)).to(1 / (units::s * units::s)) * m_ticks_per_rev);
+                        m_left->setM1M2SpeedAccel(accel, speed, speed);
+                        m_right->setM1M2SpeedAccel(accel, speed, speed);
+
+                        return;
+                    }
+                    case MotorDynamics::DType::kSpeedDist:
+                    {
+                        speed = static_cast<int32_t>((*dynamics.getSpeed() / (m_wheel_radius * M_PI * 2)).to(1 / units::s) * m_ticks_per_rev);
+                        dist = static_cast<uint32_t>((*dynamics.getDistance() / (m_wheel_radius * M_PI * 2)).to(units::none) * m_ticks_per_rev);
+                        m_left->setM1M2SpeedDist(speed, dist, speed, dist, respectBuffer);
+                        m_right->setM1M2SpeedDist(speed, dist, speed, dist, respectBuffer);
+
+                        return;
+                    }
+                    case MotorDynamics::DType::kSpeedAccelDist:
+                    {
+                        speed = static_cast<int32_t>((*dynamics.getSpeed() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
+                        dist = static_cast<uint32_t>((*dynamics.getDistance() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
+                        accel = static_cast<uint32_t>((*dynamics.getAcceleration() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
+                        m_left->setM1M2SpeedAccelDist(accel, speed, dist, speed, dist, respectBuffer);
+                        m_right->setM1M2SpeedAccelDist(accel, speed, dist, speed, dist, respectBuffer);
+
+                        return;
+                    }
+                    case MotorDynamics::DType::kSpeedAccelDecelDist:
+                    {
+                        /*
+                        speed = static_cast<int32_t>((*dynamics.getSpeed() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
+                        dist = static_cast<uint32_t>((*dynamics.getDistance() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
+                        accel = static_cast<uint32_t>((*dynamics.getAcceleration() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
+                        decel = static_cast<uint32_t>((*dynamics.getDeceleration() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
+                        setM1M2SpeedAccelDecelDisqt(accel, speed, decel, dist, accel, speed, decel, dist, static_cast<uint8_t>(respectBuffer));
+                        */
+                        return;
+                    }
+                    default:
+                    {
+                        assert(false);
+                    }
+                }
+            }
+
+            std::tuple<units::Distance, units::Velocity> TwoRoboclawAppendageDrivetrain::getDistAndVel(const Motor& motor)
+    		{
+    			return std::tuple<units::Distance, units::Velocity>(readEncoder(motor), readEncoderVelocity(motor));
+    		}
+
+            std::tuple<units::Distance, units::Velocity> TwoRoboclawAppendageDrivetrain::getDistAndVel(bool side)
+            {
+                std::vector<units::Distance> d;
+                std::vector<units::Velocity> v;
+                std::vector<Motor> motors;
+                if(side)
+                {
+                    motors = {Motor::kFrontRight, Motor::kBackRight};
+                }
+                else
+                {
+                    motors = {Motor::kFrontLeft, Motor::kBackLeft};
+                }
+                v = readEncoderVelocities(motors);
+                d = readEncoders(motors);
+                d[0] = (d[0] + d[1])/2;
+                v[0] = (v[0] + v[1])/2;
+                return std::tuple<units::Distance, units::Velocity>(d[0], v[0]);
             }
 
             void TwoRoboclawAppendageDrivetrain::stop()
