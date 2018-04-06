@@ -190,13 +190,13 @@ namespace rip
                 /* Loop to enable retry on kError */
                 do
                 {
+                    try_resend = false;
+
                     // Send the message
                     debugString = byteStringToHexDebugString(message);
                     misc::Logger::getInstance()->debug(fmt::format("Device->write bytes: {}", debugString));
                     // std::cout << fmt::format("Device baud: {}", device->getBaudrate()) << '\n';
                     device->write(message);
-                    try_resend = false;
-                    n_resend--;
                     // device->flushOutput();
                     device->flush();
 
@@ -245,7 +245,7 @@ namespace rip
 
                     if (ack_msg.length() == 0)
                     {
-                      throw EmptyDeviceResponse(fmt::format("did not receive any bytes from the device, timeout or crash?"));
+                        throw EmptyDeviceResponse(fmt::format("did not receive any bytes from the device, timeout or crash?"));
                     }
 
                     debugString = byteStringToHexDebugString(ack_msg);
@@ -257,9 +257,19 @@ namespace rip
                     }
                     catch(rip::utilities::ExceptionBase &e)
                     {
-                        misc::Logger::getInstance()->debug("Retry command send");
+                        // clear everything and reopen the serial link
+                        device->flush();
+                        device->close();
+                        device->open();
+
                         // if we have more resends left, try to resend
-                        if(n_resend > 0) try_resend = true;
+                        if(n_resend > 0)
+                        {
+                            misc::Logger::getInstance()->debug("Retry sending the command");
+
+                            n_resend--;
+                            try_resend = true;
+                        }
                         // pass the error through when out of retries
                         else throw;
                     }
