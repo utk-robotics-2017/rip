@@ -243,16 +243,16 @@ namespace rip
                       }
                     }
 
-                    if (ack_msg.length() == 0)
-                    {
-                        throw EmptyDeviceResponse(fmt::format("did not receive any bytes from the device, timeout or crash?"));
-                    }
-
-                    debugString = byteStringToHexDebugString(ack_msg);
-                    misc::Logger::getInstance()->debug(fmt::format("Device->readline bytes: {}", debugString));
-
                     try
                     {
+                        if (ack_msg.length() == 0)
+                        {
+                            throw EmptyDeviceResponse(fmt::format("did not receive any bytes from the device, timeout or crash?"));
+                        }
+
+                        debugString = byteStringToHexDebugString(ack_msg);
+                        misc::Logger::getInstance()->debug(fmt::format("Device->readline bytes: {}", debugString));
+
                         handleAck(ack_msg, command);
                     }
                     catch(rip::utilities::ExceptionBase &e)
