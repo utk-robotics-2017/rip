@@ -164,18 +164,22 @@ namespace rip
                         case Motor::kFrontLeft:
                         {
                             data.push_back(m_left->readM1EncoderSpeed() / m_ticks_per_rev * m_wheel_radius * M_PI * 2 / units::s);
+                            break;
                         }
                         case Motor::kFrontRight:
                         {
                             data.push_back(m_right->readM1EncoderSpeed() / m_ticks_per_rev * m_wheel_radius * M_PI * 2 / units::s);
+                            break;
                         }
                         case Motor::kBackLeft:
                         {
                             data.push_back(m_left->readM2EncoderSpeed() / m_ticks_per_rev * m_wheel_radius * M_PI * 2 / units::s);
+                            break;
                         }
                         case Motor::kBackRight:
                         {
                             data.push_back(m_right->readM2EncoderSpeed() / m_ticks_per_rev * m_wheel_radius * M_PI * 2 / units::s);
+                            break;
                         }
                         default:
                         {
@@ -232,18 +236,22 @@ namespace rip
                             case Motor::kFrontLeft:
                             {
                                 m_left->setM1Speed(speed);
+                                break;
                             }
                             case Motor::kFrontRight:
                             {
                                 m_right->setM1Speed(speed);
+                                break;
                             }
                             case Motor::kBackLeft:
                             {
                                 m_left->setM2Speed(speed);
+                                break;
                             }
                             case Motor::kBackRight:
                             {
                                 m_right->setM2Speed(speed);
+                                break;
                             }
                             default:
                             {
@@ -261,18 +269,22 @@ namespace rip
                             case Motor::kFrontLeft:
                             {
                                 m_left->setM1SpeedAccel(accel, speed);
+                                break;
                             }
                             case Motor::kFrontRight:
                             {
                                 m_right->setM1SpeedAccel(accel, speed);
+                                break;
                             }
                             case Motor::kBackLeft:
                             {
                                 m_left->setM2SpeedAccel(accel, speed);
+                                break;
                             }
                             case Motor::kBackRight:
                             {
                                 m_right->setM2SpeedAccel(accel, speed);
+                                break;
                             }
                             default:
                             {
@@ -291,18 +303,22 @@ namespace rip
                             case Motor::kFrontLeft:
                             {
                                 m_left->setM1SpeedDist(speed, dist, respectBuffer);
+                                break;
                             }
                             case Motor::kFrontRight:
                             {
                                 m_right->setM1SpeedDist(speed, dist, respectBuffer);
+                                break;
                             }
                             case Motor::kBackLeft:
                             {
                                 m_left->setM2SpeedDist(speed, dist, respectBuffer);
+                                break;
                             }
                             case Motor::kBackRight:
                             {
                                 m_right->setM2SpeedDist(speed, dist, respectBuffer);
+                                break;
                             }
                             default:
                             {
@@ -322,18 +338,22 @@ namespace rip
                             case Motor::kFrontLeft:
                             {
                                 m_left->setM1SpeedAccelDist(accel, speed, dist, respectBuffer);
+                                break;
                             }
                             case Motor::kFrontRight:
                             {
                                 m_right->setM1SpeedAccelDist(accel, speed, dist, respectBuffer);
+                                break;
                             }
                             case Motor::kBackLeft:
                             {
                                 m_left->setM2SpeedAccelDist(accel, speed, dist, respectBuffer);
+                                break;
                             }
                             case Motor::kBackRight:
                             {
                                 m_right->setM2SpeedAccelDist(accel, speed, dist, respectBuffer);
+                                break;
                             }
                             default:
                             {
@@ -354,18 +374,22 @@ namespace rip
                             case Motor::kFrontLeft:
                             {
                                 m_left->setM1SpeedAccelDecelDist(accel, speed, decel, dist, respectBuffer);
+                                break;
                             }
                             case Motor::kFrontRight:
                             {
                                 m_right->setM1SpeedAccelDecelDist(accel, speed, decel, dist, respectBuffer);
+                                break;
                             }
                             case Motor::kBackLeft:
                             {
                                 m_left->setM2SpeedAccelDecelDist(accel, speed, decel, dist, respectBuffer);
+                                break;
                             }
                             case Motor::kBackRight:
                             {
                                 m_right->setM2SpeedAccelDecelDist(accel, speed, decel, dist, respectBuffer);
+                                break;
                             }
                             default:
                             {
