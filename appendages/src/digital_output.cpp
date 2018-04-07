@@ -12,7 +12,7 @@ namespace rip
     {
         DigitalOutput::DigitalOutput(const nlohmann::json& config, const std::map<std::string, int>& command_map, std::shared_ptr<cmdmessenger::Device> device) 
             : Appendage(config, device)
-            , m_write(createCommand("kWriteDigitalWrite", command_map, cmdmessenger::ArduinoCmdMessenger::makeArgumentString<cmdmessenger::ArduinoCmdMessenger::BooleanType>())
+            , m_write(createCommand("kWriteDigitalWrite", command_map, cmdmessenger::ArduinoCmdMessenger::makeArgumentString<cmdmessenger::ArduinoCmdMessenger::BooleanType>()))
         {
         }
 
