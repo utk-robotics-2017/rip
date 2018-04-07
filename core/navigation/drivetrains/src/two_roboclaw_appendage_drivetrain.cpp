@@ -470,6 +470,12 @@ namespace rip
                 return std::tuple<units::Distance, units::Velocity>(d[0], v[0]);
             }
 
+            void TwoRoboclawAppendageDrivetrain::resetEncoders()
+            {
+                m_left->resetEncoders();
+                m_right->resetEncoders();
+            }
+
             void TwoRoboclawAppendageDrivetrain::stop()
             {
                 m_left->stop();

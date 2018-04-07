@@ -21,7 +21,7 @@ namespace rip
                 Drivetrain(const std::string& name)
                     : Subsystem(name)
                 {}
-                    
+
                 enum class Motor
                 {
                     //4 motor drivetrain
@@ -90,6 +90,11 @@ namespace rip
                  * reads the encoder for one motor
                  */
                 virtual units::Velocity readEncoderVelocity(const Motor& motor) = 0;
+                /**
+                 * @brief resets the encoders
+                 */
+                virtual void resetEncoders() = 0;
+                
             };
         }
     }
