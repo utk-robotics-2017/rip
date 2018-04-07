@@ -51,6 +51,8 @@ namespace rip
                 /* distance to go */
                 units::Distance m_distance;
 
+                units::Distance m_init_encoder;
+
                 units::Time m_time;
                 std::chrono::time_point<std::chrono::system_clock> m_start_time;
                 std::chrono::time_point<std::chrono::system_clock> m_last_time;

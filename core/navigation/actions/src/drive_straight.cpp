@@ -1,5 +1,7 @@
 #include "navigation_actions/drive_straight.hpp"
 #include <misc/logger.hpp>
+#include <algorithm>
+
 namespace rip
 {
     namespace navigation
@@ -63,7 +65,7 @@ namespace rip
                 if(!m_use_time)
                 {
                     std::vector<units::Distance> dists = m_drivetrain->readEncoders(motors);
-                    units::Distance threshold = m_distance - (1 * units::cm);
+                    units::Distance threshold = m_distance + m_init_encoder - (1 * units::cm);
 
                     if(    dists[0] >= threshold || dists[1] >= threshold
                         || dists[2] >= threshold || dists[3] >= threshold )
@@ -105,9 +107,21 @@ namespace rip
 
             void DriveStraight::setup(nlohmann::json& state)
             {
+                using drivetrains::Drivetrain;
+
                 misc::Logger::getInstance()->debug("Driving Straight");
                 m_start_time = std::chrono::system_clock::now();
                 m_finished = false;
+
+                const std::vector<Drivetrain::Motor> motors = {Drivetrain::Motor::kFrontLeft,
+                                                               Drivetrain::Motor::kBackLeft,
+                                                               Drivetrain::Motor::kFrontRight,
+                                                               Drivetrain::Motor::kBackRight};
+
+               std::vector<units::Distance> dists = m_drivetrain->readEncoders(motors);
+
+               m_init_encoder = dists[0];
+               for(units::Distance const &dist : dists) if(dist > m_init_encoder) m_init_encoder = dist;
             }
 
             void DriveStraight::teardown(nlohmann::json& state)
