@@ -31,7 +31,13 @@ namespace rip
 
                 static std::shared_ptr<Appendage> create(const nlohmann::json& config, const std::map<std::string, int>& command_map, std::shared_ptr<cmdmessenger::Device> device);
 
+            private:
+
+                DigitalOutput(const nlohmann::json& config, const std::map<std::string, int>& command_map, std::shared_ptr<cmd_messenger::Device> device);
+
                 std::shared_ptr<cmdmessenger::Command> m_write;
         };
     }
 }
+
+#endif
