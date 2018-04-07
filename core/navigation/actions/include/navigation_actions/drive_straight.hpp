@@ -20,7 +20,7 @@ namespace rip
             {
             public:
                 DriveStraight(const std::string& name, std::shared_ptr<drivetrains::Drivetrain> drivetrain,
-                     std::shared_ptr<navx::NavX> navx, const units::Distance& distance, double p, double i, double d, units::Acceleration max_accel);
+                     std::shared_ptr<navx::NavX> navx, const units::Distance& distance, const units::Velocity& speed, double p, double i, double d, units::Acceleration max_accel);
 
                 DriveStraight(const std::string& name, std::shared_ptr<drivetrains::Drivetrain> drivetrain,
                      std::shared_ptr<navx::NavX> navx, const units::Time& time, const units::Velocity& speed, units::Acceleration max_accel);
