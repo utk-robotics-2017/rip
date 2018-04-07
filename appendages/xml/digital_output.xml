@@ -1,6 +1,8 @@
 <appendage-template>
-    <constructors type="char" variable="digital_output_pins">
-        <parameter name="pin" type="int"/>
+    <constructors>
+        <constructor type="char" variable="digital_output_pins">
+            <parameter name="pin" type="int"/>
+        </constructor>
     </constructors>
 
     <setup>
