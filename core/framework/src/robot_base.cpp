@@ -53,10 +53,20 @@ namespace rip
                 misc::Logger::getInstance()->debug("Loading spine appendages...");
                 m_spine->loadDevices(j["arduino_gen_home"], devices);
             }
+            else
+            {
+                misc::Logger::getInstance()->error("Arduino Gen Home not found in config");
+                throw AppendageNotFound();
+            }
 
             if(j.find("subsystems") != j.end())
             {
                 createSubsystems(j["subsystems"]);
+            }
+            else
+            {
+                misc::Logger::getInstance()->error("Subsystems not found in config");
+                throw SubSystemsNotFound();
             }
             createRoutine();
 

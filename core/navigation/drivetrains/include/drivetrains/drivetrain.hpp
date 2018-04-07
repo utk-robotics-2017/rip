@@ -17,11 +17,12 @@ namespace rip
             {
 
                 using MotorDynamics = motorcontrollers::MotorDynamics;
+                
             public:
                 Drivetrain(const std::string& name)
                     : Subsystem(name)
                 {}
-                    
+
                 enum class Motor
                 {
                     //4 motor drivetrain
@@ -53,7 +54,7 @@ namespace rip
                  * all range from [-1, 1]
                  */
                 virtual void drive(double front_left, double front_right, double back_left,
-                    double back_rightk) = 0;
+                    double back_right) = 0;
 
                 /**
                  * Single command to all motors
