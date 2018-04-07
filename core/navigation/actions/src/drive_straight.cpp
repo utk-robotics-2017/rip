@@ -69,7 +69,9 @@ namespace rip
                     {
                         misc::Logger::getInstance()->debug(
                             "Left: {} {} | Right: {} {} | Target: {}",
-                            dists[0], dists[1], dists[2], dists[3], m_distance);
+                            dists[0].to(units::in), dists[1].to(units::in),
+                            dists[2].to(units::in), dists[3].to(units::in),
+                            m_distance.to(units::in));
 
                         m_finished = true;
                         m_drivetrain->stop();
@@ -86,7 +88,9 @@ namespace rip
 
                     if(diff >= m_time)
                     {
-                        misc::Logger::getInstance()->debug("Drove for {} | Target: {}", diff, m_time);
+                        misc::Logger::getInstance()->debug(
+                            "Drove for {} | Target: {}",
+                            diff.to(units::s), m_time.to(units::s));
                         m_finished = true;
                         m_drivetrain->stop();                        
                     }
