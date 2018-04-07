@@ -21,6 +21,15 @@ namespace rip
                   cmdmessenger::ArduinoCmdMessenger::IntegerType>()
                 )
               )
+            , m_attach(
+              createCommand(
+                "kAttachServo",
+                command_map,
+                cmdmessenger::ArduinoCmdMessenger::makeArgumentString<
+                  cmdmessenger::ArduinoCmdMessenger::IntegerType,
+                  cmdmessenger::ArduinoCmdMessenger::BooleanType>()
+              )
+            )
         {
         }
 
@@ -32,19 +41,36 @@ namespace rip
 
         void Servo::stop()
         {
+            attach(false);
+        }
 
+        void Servo::attach(bool state)
+        {
+            cmdmessenger::ArduinoCmdMessenger messenger;
+            messenger.send<bool>(m_device, m_attach, m_id, state);
         }
 
         bool Servo::diagnostic()
         {
           int new_val = 0;
+          std::cout << " === DIAG CONTROLS: === " << '\n';
+          std::cout << " '-1': Quit." << '\n';
+          std::cout << " '-2': Detach servo." << '\n';
+          std::cout << " '0-180': Set servo position." << '\n';
           while (new_val != -1) {
             // write(0);
             std::cout << " >>> Please enter a servo value (int) to write (-1 quits): ";
             std::cin >> new_val;
+            std::cout << " >>> Working...\n";
             if (new_val == -1) break;
-            std::cout << " >>> Writing...\n";
-            write(new_val);
+            else if (new_val == -2)
+            {
+              attach(false);
+            }
+            else
+            {
+              write(new_val);
+            }
           }
           return true;
         }
