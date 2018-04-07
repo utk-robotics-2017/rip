@@ -1,13 +1,11 @@
 cmake_minimum_required(VERSION 3.1)
-project(pose)
-message("Building pose")
+project(path_follower)
+message("Building path_follower")
 
 # Get all .cpp files except for main.cpp
-file(GLOB_RECURSE ${PROJECT_NAME}_HEADERS "include/pose/*.hpp")
+file(GLOB_RECURSE ${PROJECT_NAME}_HEADERS "include/path_follower/*.hpp")
 file(GLOB_RECURSE ${PROJECT_NAME}_SOURCES "src/*.cpp")
 
-# Find Eigen3
-FIND_PACKAGE(Eigen3 REQUIRED)
 
 # Create the library, set to c++11, link external libraries, and set include dir
 add_library(${PROJECT_NAME} ${${PROJECT_NAME}_SOURCES} ${${PROJECT_NAME}_HEADERS})
@@ -15,9 +13,8 @@ set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
 if(ENABLE_TESTING)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage")
 endif()
-target_link_libraries(${PROJECT_NAME} units misc geometry)
+target_link_libraries(${PROJECT_NAME} units misc optional fmt)
 target_include_directories(${PROJECT_NAME} PUBLIC include)
-target_include_directories(${PROJECT_NAME} PUBLIC ${EIGEN3_INCLUDE_DIR})
 
 if(ENABLE_TESTING)
     # Get test source files and test data files

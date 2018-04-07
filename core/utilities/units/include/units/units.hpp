@@ -328,6 +328,24 @@ namespace rip
             return std::fabs(lhs());
         }
 
+        template<int U1, int U2, int U3, int U4, int U5, int U6>
+        bool isnan(const Units<U1, U2, U3, U4, U5, U6>& lhs)
+        {
+            return std::isnan(lhs());
+        }
+
+        template<int U1, int U2, int U3, int U4, int U5, int U6>
+        bool isinf(const Units<U1, U2, U3, U4, U5, U6>& lhs)
+        {
+            return std::isinf(lhs());
+        }
+
+        template<int U1, int U2, int U3, int U4, int U5, int U6>
+        int signum(const Units<U1, U2, U3, U4, U5, U6>& lhs)
+        {
+            return (0.0 < lhs()) - (lhs() < 0.0);
+        }
+
         // operator>> is not provided because the unit type can not be
         // created at runtime in any reasonable fashion.  This means there is
         // no easy way to serialize unit objects.
