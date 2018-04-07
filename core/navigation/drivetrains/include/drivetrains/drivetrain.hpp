@@ -17,6 +17,7 @@ namespace rip
             {
 
                 using MotorDynamics = motorcontrollers::MotorDynamics;
+                
             public:
                 Drivetrain(const std::string& name)
                     : Subsystem(name)

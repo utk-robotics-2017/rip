@@ -1,5 +1,6 @@
 #include "drivetrains/two_roboclaw_appendage_drivetrain.hpp"
 #include <drivetrains/exceptions.hpp>
+#include <appendages/roboclaw.hpp>
 #include <cmath>
 #include <fmt/format.h>
 #include <iostream>
@@ -19,9 +20,9 @@ namespace rip
                 : Drivetrain(name)
                 , m_left(left)
                 , m_right(right)
+                , m_navx(navx)
                 , m_ticks_per_rev(ticks_per_rev)
                 , m_wheel_radius(wheel_radius)
-                , m_navx(navx)
             {}
 
             TwoRoboclawAppendageDrivetrain::~TwoRoboclawAppendageDrivetrain()
