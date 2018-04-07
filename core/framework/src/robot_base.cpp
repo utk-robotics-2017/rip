@@ -65,7 +65,7 @@ namespace rip
             }
             else
             {
-                misc::Logger::getInstance()->error("Arduino Gen Home not found in config");
+                misc::Logger::getInstance()->error("Subsystems not found in config");
                 throw SubSystemsNotFound();
             }
             createRoutine();

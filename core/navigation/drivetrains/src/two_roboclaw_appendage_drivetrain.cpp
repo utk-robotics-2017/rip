@@ -15,7 +15,7 @@ namespace rip
                 std::shared_ptr<Roboclaw> right,
                 double ticks_per_rev,
                 units::Distance wheel_radius,
-                std::shared_ptr<TwoRoboclawAppendageDrivetrain::NavX> navx)
+                std::shared_ptr<NavX> navx)
                 : Drivetrain(name)
                 , m_left(left)
                 , m_right(right)
