@@ -60,13 +60,17 @@ namespace rip
                 r_dynamics.setAcceleration(m_max_accel);
 
                 // just for now...
-                if(m_use_time)
+                if(!m_use_time)
                 {
                     std::vector<units::Distance> dists = m_drivetrain->readEncoders(motors);
 
                     if(    dists[0] >= m_distance || dists[1] >= m_distance
                         || dists[2] >= m_distance || dists[3] >= m_distance )
                     {
+                        misc::Logger::getInstance()->debug(
+                            "Left: {} {} | Right: {} {} | Target: {}",
+                            dists[0], dists[1], dists[2], dists[3], m_distance);
+
                         m_finished = true;
                         m_drivetrain->stop();
                     }
@@ -82,8 +86,9 @@ namespace rip
 
                     if(diff >= m_time)
                     {
+                        misc::Logger::getInstance()->debug("Drove for {} | Target: {}", diff, m_time);
                         m_finished = true;
-                        m_drivetrain->stop();
+                        m_drivetrain->stop();                        
                     }
                     else
                     {
