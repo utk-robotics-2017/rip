@@ -22,7 +22,7 @@ namespace rip
             messenger.send<cmdmessenger::ArduinoCmdMessenger::IntegerType, cmdmessenger::ArduinoCmdMessenger::BooleanType>(m_device, m_write, m_id, output);
         }
 
-        bool DigitalOutput::stop()
+        void DigitalOutput::stop()
         {
 
         }
