@@ -92,7 +92,7 @@ namespace rip
                             "Drove for {} | Target: {}",
                             diff.to(units::s), m_time.to(units::s));
                         m_finished = true;
-                        m_drivetrain->stop();
+                        m_drivetrain->stop();                        
                     }
                     else
                     {
