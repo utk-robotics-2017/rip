@@ -9,6 +9,9 @@ namespace rip
     {
         namespace pathfollower
         {
+
+            MotionState MotionState::k_invalid_state = MotionState(std::nan(""),std::nan(""),std::nan(""),std::nan(""));
+
             MotionState::MotionState(const units::Time& t, const units::Distance& position, const units::Velocity& velocity, const units::Acceleration& acceleration)
                     : m_t(t)
                     , m_position(position)

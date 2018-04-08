@@ -13,7 +13,7 @@ find_package(Qt5 REQUIRED COMPONENTS Core Gui Widgets)
 file(GLOB_RECURSE ${PROJECT_NAME}_SOURCES "src/*.cpp")
 list(REMOVE_ITEM ${PROJECT_NAME}_SOURCES "src/main.cpp")
 
-file(GLOB_RECURSE ${PROJECT_NAME}_HEADERS "include/spline_planner_gui/*.hpp")
+file(GLOB_RECURSE ${PROJECT_NAME}_HEADERS "include/path_follower_gui/*.hpp")
 QT5_WRAP_CPP(${PROJECT_NAME}_HEADER_MOCS ${${PROJECT_NAME}_HEADERS})
 
 
@@ -35,7 +35,7 @@ set_property(TARGET _${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
 target_include_directories(_${PROJECT_NAME} PUBLIC "include" ${CMAKE_BINARY_DIR})
 target_link_libraries(_${PROJECT_NAME}
         fmt units spdlog stp geometry cppfs misc
-        spline_planner
+        path_follower
         Qt5::Core Qt5::Gui Qt5::Widgets
         )
 

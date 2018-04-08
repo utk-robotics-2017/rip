@@ -6,7 +6,8 @@ namespace rip
     {
         namespace pose
         {
-            Imu::Imu();
+            Imu::Imu()
+            {}
 
             units::Time Imu::time() const
             {

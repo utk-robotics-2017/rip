@@ -44,7 +44,7 @@ namespace rip
                 units::Acceleration ddy();
                 units::Acceleration ddz();
 
-                Pose pose() const;
+                Pose pose();
 
             private:
                 void updatePredictions();

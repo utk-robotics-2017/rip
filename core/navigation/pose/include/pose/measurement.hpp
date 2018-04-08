@@ -3,6 +3,7 @@
 
 #include <eigen3/Eigen/Core>
 #include <memory>
+#include <vector>
 
 namespace rip
 {

@@ -10,7 +10,7 @@ namespace rip
                 : m_wheelbase(wheelbase)
                 , m_x(0)
                 , m_y(0)
-                , m_heading(0)
+                , m_theta(0)
 
             {
             }

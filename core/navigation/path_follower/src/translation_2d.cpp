@@ -145,6 +145,11 @@ namespace rip
             {
                 return (lhs.m_x * rhs.m_y - lhs.m_y * rhs.m_x)();
             }
+
+            Translation2d::operator geometry::Point() const
+            {
+                return geometry::Point(m_x, m_y);
+            }
         }
     }
 }

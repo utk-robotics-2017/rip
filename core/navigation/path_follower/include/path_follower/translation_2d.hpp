@@ -2,6 +2,7 @@
 #define TRANSLATION_2D_HPP
 
 #include <units/units.hpp>
+#include <geometry/point.hpp>
 
 #include "path_follower/interpolable.hpp"
 
@@ -82,6 +83,8 @@ namespace rip
 
                 double cross(const Translation2d& rhs);
                 static double cross(const Translation2d& lhs, const Translation2d& rhs);
+
+                operator geometry::Point() const;
 
             protected:
                 units::Distance m_x;

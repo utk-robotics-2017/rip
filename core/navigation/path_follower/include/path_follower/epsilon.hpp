@@ -7,7 +7,7 @@ namespace rip
     {
         namespace pathfollower
         {
-            double k_epsilon = 1e-6;
+            extern double k_epsilon;
 
             template <typename T>
             bool epsilonEquals(const T& a, const T& b, const T& epsilon)
