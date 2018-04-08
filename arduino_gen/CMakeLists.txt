@@ -6,13 +6,13 @@ file(GLOB_RECURSE ${PROJECT_NAME}_SOURCES "src/*.cpp")
 list(REMOVE_ITEM ${PROJECT_NAME}_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp")
 
 # Create the arduino_gen library, set to c++11, link external libraries, and set include dir
-add_library(_${PROJECT_NAME} ${${PROJECT_NAME}_SOURCES})
+add_library(_${PROJECT_NAME} STATIC ${${PROJECT_NAME}_SOURCES})
 set_property(TARGET _${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
 if(ENABLE_TESTING)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage -DTESTING")
+	target_link_libraries(_${PROJECT_NAME} gmock gtest googletest_rip_macros)
 endif()
 target_link_libraries(_${PROJECT_NAME} fmt json spdlog tinyxml2 cppfs misc)
-target_link_libraries(_${PROJECT_NAME} gtest)
 target_include_directories(_${PROJECT_NAME} PUBLIC include)
 
 include(FileOutputs)
