@@ -62,6 +62,24 @@ namespace rip
                 l_dynamics.setAcceleration(m_max_accel);
                 r_dynamics.setAcceleration(m_max_accel);
 
+                std::vector<units::Velocity> vel = m_drivetrain->readEncoderVelocities(motors);
+
+                misc::Logger::getInstance()->debug(
+                    "Encoder Velocity | Left: {} {} | Right: {} {} | Target: {}",
+                    vel[0].to(units::in / units::s), vel[1].to(units::in / units::s),
+                    vel[2].to(units::in / units::s), vel[3].to(units::in / units::s),
+                    m_speed.to(units::in / units::s)
+                );
+
+                misc::Logger::getInstance()->debug(
+                    "NavX | Velocity: X: {} Y: {} | Yaw: {} | Angle: {} | Fused Heading: {}",
+                    m_navx->getVelocityX().to(units::in / units::s),
+                    m_navx->getVelocityY().to(units::in / units::s),
+                    m_navx->getYaw().to(units::deg),
+                    m_navx->getAngle().to(units::deg),
+                    m_navx->getFusedHeading().to(units::deg)
+                );
+
                 // just for now...
                 if(!m_use_time)
                 {
@@ -71,7 +89,7 @@ namespace rip
 
 					// set a threshold for stopping -- this tries to account for the delay in actually stopping
 					// this is quite arbitrary right now but should be kinda close
-                    units::Distance threshold = m_distance + m_init_encoder - (m_speed * (0.08 * units::s));
+                    units::Distance threshold = m_distance + m_init_encoder - (m_speed * (0.15 * units::s));
 
                     if(max_encoder >= threshold)
                     {
@@ -89,7 +107,7 @@ namespace rip
                     m_last_time = std::chrono::system_clock::now();
                     units::Time diff = std::chrono::duration_cast<std::chrono::milliseconds>(m_last_time - m_start_time).count() * units::ms;
 
-                    units::Time threshold = m_time - (0.08 * units::s);
+                    units::Time threshold = m_time - (0.15 * units::s);
 
                     if(diff >= threshold)
                     {
@@ -115,9 +133,17 @@ namespace rip
                                                                Drivetrain::Motor::kFrontRight,
                                                                Drivetrain::Motor::kBackRight};
 
-				std::vector<units::Distance> dists = m_drivetrain->readEncoders(motors);
 
+                // Drivetrain Encoders
+                std::vector<units::Distance> dists = m_drivetrain->readEncoders(motors);
 				m_init_encoder = *(std::max_element(dists.begin(), dists.end()));
+
+                // NavX
+                m_navx->zeroYaw();
+                misc::Logger::getInstance()->debug(
+                    "Inital Yaw: {}", m_navx->getYaw().to(units::deg)
+                );
+
             }
 
             void DriveStraight::teardown(nlohmann::json& state)
