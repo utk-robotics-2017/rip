@@ -72,11 +72,13 @@ namespace rip
                 );
 
                 misc::Logger::getInstance()->debug(
-                    "NavX | Velocity: X: {} Y: {} | Yaw: {} | Angle: {} | Fused Heading: {}",
+                    "NavX | Velocity: X: {} Y: {} Z: {} | Yaw: {} | Angle: {} | Angle Diff: {} | Fused Heading: {}",
                     m_navx->getVelocityX().to(units::in / units::s),
                     m_navx->getVelocityY().to(units::in / units::s),
+                    m_navx->getVelocityZ().to(units::in / units::s),
                     m_navx->getYaw().to(units::deg),
                     m_navx->getAngle().to(units::deg),
+                    (m_navx->getAngle() - m_initial_yaw).to(units::deg),
                     m_navx->getFusedHeading().to(units::deg)
                 );
 
@@ -89,7 +91,7 @@ namespace rip
 
 					// set a threshold for stopping -- this tries to account for the delay in actually stopping
 					// this is quite arbitrary right now but should be kinda close
-                    units::Distance threshold = m_distance + m_init_encoder - (m_speed * (0.15 * units::s));
+                    units::Distance threshold = m_distance + m_init_encoder - (m_speed * (0.1 * units::s));
 
                     if(max_encoder >= threshold)
                     {
@@ -107,7 +109,7 @@ namespace rip
                     m_last_time = std::chrono::system_clock::now();
                     units::Time diff = std::chrono::duration_cast<std::chrono::milliseconds>(m_last_time - m_start_time).count() * units::ms;
 
-                    units::Time threshold = m_time - (0.15 * units::s);
+                    units::Time threshold = m_time - (0.1 * units::s);
 
                     if(diff >= threshold)
                     {
@@ -118,8 +120,14 @@ namespace rip
                     }
                 }
 
-                m_drivetrain->drive(l_dynamics, r_dynamics);
-
+                if(!m_finished)
+                {
+                    m_drivetrain->drive(l_dynamics, r_dynamics);
+                }
+                else
+                {
+                    m_drivetrain->stop();
+                }
             }
 
             void DriveStraight::setup(nlohmann::json& state)
@@ -140,14 +148,15 @@ namespace rip
 
                 // NavX
                 m_navx->zeroYaw();
+                m_initial_yaw = m_navx->getYaw();
                 misc::Logger::getInstance()->debug(
-                    "Inital Yaw: {}", m_navx->getYaw().to(units::deg)
+                    "Inital Yaw: {}", m_initial_yaw.to(units::deg)
                 );
-
             }
 
             void DriveStraight::teardown(nlohmann::json& state)
             {
+                // also called in update -- leaving this here for now?
                 m_drivetrain->stop();
             }
         }
