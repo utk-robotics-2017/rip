@@ -68,7 +68,7 @@ namespace rip
                 misc::Logger::getInstance()->error("Subsystems not found in config");
                 throw SubSystemsNotFound();
             }
-            createRoutine();
+            createRoutine(j);
 
             if(j.find("state_file") != j.end())
             {
