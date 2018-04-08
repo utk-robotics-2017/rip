@@ -10,7 +10,7 @@ namespace rip
         {
             using drivetrains::Drivetrain;
 			using navx::NavX;
-            
+
 			DriveStraight::DriveStraight(const std::string& name, std::shared_ptr<Drivetrain> drivetrain,
                  std::shared_ptr<NavX> navx, const units::Distance& distance, const units::Velocity& speed,
                  double p, double i, double d, units::Acceleration max_accel)
@@ -71,7 +71,7 @@ namespace rip
 
 					// set a threshold for stopping -- this tries to account for the delay in actually stopping
 					// this is quite arbitrary right now but should be kinda close
-                    units::Distance threshold = m_distance + m_init_encoder - (m_speed * (0.06 * units::s));
+                    units::Distance threshold = m_distance + m_init_encoder - (m_speed * (0.08 * units::s));
 
                     if(max_encoder >= threshold)
                     {
@@ -89,7 +89,7 @@ namespace rip
                     m_last_time = std::chrono::system_clock::now();
                     units::Time diff = std::chrono::duration_cast<std::chrono::milliseconds>(m_last_time - m_start_time).count() * units::ms;
 
-                    units::Time threshold = m_time - (0.06 * units::s);
+                    units::Time threshold = m_time - (0.08 * units::s);
 
                     if(diff >= threshold)
                     {
