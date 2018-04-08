@@ -5,11 +5,8 @@
 
 #include <framework/action.hpp>
 #include <drivetrains/drivetrain.hpp>
-<<<<<<< HEAD
-=======
 #include <pid/pid_output.hpp>
 #include <pid/pid.hpp>
->>>>>>> 8231bb029241e767376cf3895d1922cc3f2e6ff3
 #include <navx/navx.hpp>
 
 #include <chrono>

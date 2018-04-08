@@ -56,6 +56,11 @@ namespace rip
                 return m_finished;
             }
 
+            void DriveStraight::set(double value)
+            {
+                misc::Logger::getInstance()->debug("set value: {}", value);
+            }            
+
             void DriveStraight::update(nlohmann::json& state)
             {
                 const std::vector<Drivetrain::Motor> motors = {Drivetrain::Motor::kFrontLeft,
@@ -168,8 +173,6 @@ namespace rip
                 misc::Logger::getInstance()->debug(
                     "Inital Yaw: {}", m_initial_yaw.to(units::deg)
                 );
-
-                m_pid->enable();
             }
 
             void DriveStraight::teardown(nlohmann::json& state)
