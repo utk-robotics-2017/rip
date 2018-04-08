@@ -61,11 +61,15 @@ namespace rip
                 l_dynamics.setAcceleration(m_max_accel);
                 r_dynamics.setAcceleration(m_max_accel);
 
+                l_dynamics.setDeceleration(m_max_accel);
+                r_dynamics.setDeceleration(m_max_accel);
+
                 // just for now...
                 if(!m_use_time)
                 {
                     std::vector<units::Distance> dists = m_drivetrain->readEncoders(motors);
                     units::Distance threshold = m_distance + m_init_encoder - (1 * units::cm);
+                    units::Distance decel_threshold = (m_distance + m_init_encoder) - (m_speed / m_max_accel) * m_speed / 2;
 
                     if(    dists[0] >= threshold || dists[1] >= threshold
                         || dists[2] >= threshold || dists[3] >= threshold )
@@ -74,13 +78,15 @@ namespace rip
                             "Left: {} {} | Right: {} {} | Target: {}",
                             dists[0].to(units::in), dists[1].to(units::in),
                             dists[2].to(units::in), dists[3].to(units::in),
-                            m_distance.to(units::in));
+                            threshold.to(units::in));
 
                         m_finished = true;
                     }
-                    else
+                    else if(    dists[0] >= decel_threshold || dists[1] >= decel_threshold
+                             || dists[2] >= decel_threshold || dists[3] >= decel_threshold )
                     {
-                        m_drivetrain->drive(l_dynamics, r_dynamics);
+                        l_dynamics.setSpeed(0);
+                        r_dynamics.setSpeed(0);
                     }
                 }
                 else
@@ -97,11 +103,9 @@ namespace rip
                             diff.to(units::s), m_time.to(units::s));
                         m_finished = true;
                     }
-                    else
-                    {
-                        m_drivetrain->drive(l_dynamics, r_dynamics);
-                    }
                 }
+
+                m_drivetrain->drive(l_dynamics, r_dynamics);
 
             }
 

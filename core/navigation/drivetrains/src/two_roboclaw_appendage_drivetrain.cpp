@@ -454,13 +454,20 @@ namespace rip
                     }
                     case MotorDynamics::DType::kSpeedAccelDecelDist:
                     {
-                        /*
+                        // last test - this wasn't working
+                        //setM1M2SpeedAccelDecelDist(accel, speed, decel, dist, accel, speed, decel, dist, static_cast<uint8_t>(respectBuffer));
+
                         speed = static_cast<int32_t>((*dynamics.getSpeed() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
                         dist = static_cast<uint32_t>((*dynamics.getDistance() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
                         accel = static_cast<uint32_t>((*dynamics.getAcceleration() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
                         decel = static_cast<uint32_t>((*dynamics.getDeceleration() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
-                        setM1M2SpeedAccelDecelDisqt(accel, speed, decel, dist, accel, speed, decel, dist, static_cast<uint8_t>(respectBuffer));
-                        */
+
+                        // Call these separately to avoid issues from prior attempt
+                        m_left->setM1SpeedAccelDecelDist(accel, speed, decel, dist, respectBuffer);
+                        m_right->setM2SpeedAccelDecelDist(accel, speed, decel, dist, respectBuffer);
+                        m_right->setM1SpeedAccelDecelDist(accel, speed, decel, dist, respectBuffer);
+                        m_left->setM2SpeedAccelDecelDist(accel, speed, decel, dist, respectBuffer);
+
                         return;
                     }
                     default:
