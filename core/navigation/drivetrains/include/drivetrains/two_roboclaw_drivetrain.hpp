@@ -66,29 +66,43 @@ namespace rip
                 virtual void drive(const MotorDynamics& front_left, const MotorDynamics& front_right,
                 const MotorDynamics& back_left, const MotorDynamics& back_right) override;
 
+                virtual bool hasEncoders() const override;
+
                 /**
                 * Reads encoders for every motor you tell it to read, reports back in respective
                 * order
                 */
-                virtual std::vector<units::Distance> readEncoders(const std::vector<Motor>& motors) override;
+                virtual std::vector<units::Distance> readEncoders(const std::vector<Motor>& motors) const override;
                 /**
                 * reads the encoder for one motor
                 */
-                virtual units::Distance readEncoder(const Motor& motor) override;
+                virtual units::Distance readEncoder(const Motor& motor) const override;
                 /**
                 * Reads encoder velocity for every motor you tell it to read, reports back in respective
                 * order
                 * @param motors list of motors to read
                 */
-                virtual std::vector<units::Velocity> readEncoderVelocities(const std::vector<Motor>& motors) override;
+                virtual std::vector<units::Velocity> readEncoderVelocities(const std::vector<Motor>& motors) const override;
                 /**
                 * reads the encoder for one motor
                 */
-                virtual units::Velocity readEncoderVelocity(const Motor& motor) override;
+                virtual units::Velocity readEncoderVelocity(const Motor& motor) const override;
+
+                /**
+                 * Returns whether the drivetrain has a gyro
+                 */
+                virtual bool hasGyro() const override;
+
+                /**
+                 * Reads the rotation of the chassis
+                 */
+                virtual units::Angle readYaw() const override;
 
                 virtual void stop() override;
 
                 virtual bool diagnostic() override;
+
+
             private:
 
                 std::shared_ptr<Roboclaw> m_left;

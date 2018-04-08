@@ -9,33 +9,47 @@ namespace rip
         namespace actions
         {
             using drivetrains::Drivetrain;
-			using navx::NavX;
-
-			DriveStraight::DriveStraight(const std::string& name, std::shared_ptr<Drivetrain> drivetrain,
-                 std::shared_ptr<NavX> navx, const units::Distance& distance, const units::Velocity& speed,
-                 double p, double i, double d, units::Acceleration max_accel)
-                : Action(name)
-                , m_use_time(false)
-                , m_speed(speed)
-                , m_distance(distance)
-                , m_time(distance / m_speed)
-                , m_max_accel(max_accel)
-                , m_drivetrain(drivetrain)
-                , m_navx(navx)
-            {}
+	        using navx::NavX;
 
             DriveStraight::DriveStraight(const std::string& name, std::shared_ptr<Drivetrain> drivetrain,
                  std::shared_ptr<NavX> navx, const units::Time& time, const units::Velocity& speed,
-                 units::Acceleration max_accel)
+                 units::Acceleration max_accel, double p, double i, double d)
                 : Action(name)
                 , m_use_time(true)
                 , m_time(time)
                 , m_speed(speed)
-                , m_distance(speed * time)
                 , m_max_accel(max_accel)
                 , m_drivetrain(drivetrain)
                 , m_navx(navx)
-            {}
+                , m_pid(new pid::PidController(navx.get(), this, p, i , d))
+            {
+                m_pid->setSetpoint(0);
+                m_pid->setTolerance(10);
+                m_navx->setType(pid::PidInput::Type::kDisplacement);
+                m_pid->setContinuous(true);
+                m_pid->setInputRange(-180 * units::deg(), 180 * units::deg());
+                m_pid->setOutputRange(-2 * units::in(), 2 * units::in());
+            }
+
+            DriveStraight::DriveStraight(const std::string& name, std::shared_ptr<Drivetrain> drivetrain,
+                std::shared_ptr<NavX> navx, const units::Distance& distance, const units::Velocity& speed,
+                units::Acceleration max_accel, double p, double i, double d)
+                : Action(name)
+                , m_use_time(false)
+                , m_speed(speed)
+                , m_distance(distance)
+                , m_max_accel(max_accel)
+                , m_drivetrain(drivetrain)
+                , m_navx(navx)
+                , m_pid(new pid::PidController(navx.get(), this, p, i , d))
+            {
+                m_pid->setSetpoint(0);
+                m_pid->setTolerance(10);
+                m_navx->setType(pid::PidInput::Type::kDisplacement);
+                m_pid->setContinuous(true);
+                m_pid->setInputRange(-180 * units::deg(), 180 * units::deg());
+                m_pid->setOutputRange(-2 * units::in(), 2 * units::in());
+            }
 
             bool DriveStraight::isFinished()
             {
@@ -85,12 +99,12 @@ namespace rip
                 // just for now...
                 if(!m_use_time)
                 {
-					// get the encoder values from the Roboclaw & determine the greatest value
+		            // get the encoder values from the Roboclaw & determine the greatest value
                     std::vector<units::Distance> dists = m_drivetrain->readEncoders(motors);
 					units::Distance max_encoder = *(std::max_element(dists.begin(), dists.end()));
 
-					// set a threshold for stopping -- this tries to account for the delay in actually stopping
-					// this is quite arbitrary right now but should be kinda close
+                    // set a threshold for stopping -- this tries to account for the delay in actually stopping
+                    // this is quite arbitrary right now but should be kinda close
                     units::Distance threshold = m_distance + m_init_encoder - (m_speed * (0.1 * units::s));
 
                     if(max_encoder >= threshold)
@@ -128,11 +142,13 @@ namespace rip
                 {
                     m_drivetrain->stop();
                 }
+
+                m_pid->calculate();
             }
 
             void DriveStraight::setup(nlohmann::json& state)
             {
-				misc::Logger::getInstance()->debug("Driving Straight");
+                misc::Logger::getInstance()->debug("Driving Straight");
                 m_start_time = std::chrono::system_clock::now();
                 m_finished = false;
 
@@ -152,6 +168,8 @@ namespace rip
                 misc::Logger::getInstance()->debug(
                     "Inital Yaw: {}", m_initial_yaw.to(units::deg)
                 );
+
+                m_pid->enable();
             }
 
             void DriveStraight::teardown(nlohmann::json& state)

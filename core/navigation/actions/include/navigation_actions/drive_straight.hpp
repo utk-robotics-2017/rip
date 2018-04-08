@@ -5,6 +5,11 @@
 
 #include <framework/action.hpp>
 #include <drivetrains/drivetrain.hpp>
+<<<<<<< HEAD
+=======
+#include <pid/pid_output.hpp>
+#include <pid/pid.hpp>
+>>>>>>> 8231bb029241e767376cf3895d1922cc3f2e6ff3
 #include <navx/navx.hpp>
 
 #include <chrono>
@@ -16,14 +21,14 @@ namespace rip
     {
         namespace actions
         {
-            class DriveStraight : public framework::Action
+            class DriveStraight : public framework::Action, public pid::PidOutput
             {
             public:
                 DriveStraight(const std::string& name, std::shared_ptr<drivetrains::Drivetrain> drivetrain,
-                     std::shared_ptr<navx::NavX> navx, const units::Distance& distance, const units::Velocity& speed, double p, double i, double d, units::Acceleration max_accel);
+                     std::shared_ptr<navx::NavX> navx, const units::Distance& distance, const units::Velocity& speed, units::Acceleration max_accel, double p, double i, double d);
 
                 DriveStraight(const std::string& name, std::shared_ptr<drivetrains::Drivetrain> drivetrain,
-                     std::shared_ptr<navx::NavX> navx, const units::Time& time, const units::Velocity& speed, units::Acceleration max_accel);
+                     std::shared_ptr<navx::NavX> navx, const units::Time& time, const units::Velocity& speed, units::Acceleration max_accel, double p, double i, double d);
 
                 /**
                 * Returns whether or not the action has finished execution.
@@ -45,12 +50,14 @@ namespace rip
                  */
                 virtual void teardown(nlohmann::json& state) override;
 
+
+                virtual void set(double output);
+
             private:
                 bool m_use_time;
 
                 /* distance to go */
                 units::Distance m_distance;
-
                 units::Distance m_init_encoder;
 
                 units::Time m_time;
@@ -68,6 +75,9 @@ namespace rip
 
                 /* NavX IMU -- used for gyro & accelerometer */
                 std::shared_ptr<navx::NavX> m_navx;
+
+                /* PID Control for rotational correction */
+                std::unique_ptr<pid::PidController> m_pid;
 
                 /* Initial yaw -- should try to maintain the same yaw since we are driving straight */
                 units::Angle m_initial_yaw;

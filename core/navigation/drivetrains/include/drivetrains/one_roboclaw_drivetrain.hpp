@@ -24,61 +24,83 @@ namespace rip
                 using MotorDynamics = motorcontrollers::MotorDynamics;
             public:
                 OneRoboclawDrivetrain(const std::string& name, std::shared_ptr<Roboclaw> rclaw,
-                    std::shared_ptr<NavX> navx = nullptr);
+                                      std::shared_ptr<NavX> navx = nullptr);
 
-                    ~OneRoboclawDrivetrain();
+                ~OneRoboclawDrivetrain();
 
-                    /**
-                     * Drive all the motors
-                     * @param power [-1.0, 1.0]
-                     */
-                    virtual void drive(double power) override;
+                /**
+                 * Drive all the motors
+                 * @param power [-1.0, 1.0]
+                 */
+                virtual void drive(double power) override;
 
-                    /**
-                     * Drive left and right separately
-                     * @param left [-1.0, 1.0]
-                     * @param right [-1.0, 1.0]
-                     */
-                    virtual void drive(double left, double right) override;
+                /**
+                 * Drive left and right separately
+                 * @param left [-1.0, 1.0]
+                 * @param right [-1.0, 1.0]
+                 */
+                virtual void drive(double left, double right) override;
 
-                    /**
-                     * Single command to all motors
-                     */
-                    virtual void drive(const MotorDynamics& command) override;
+                /**
+                 * Single command to all motors
+                 */
+                virtual void drive(const MotorDynamics& command) override;
 
-                    /**
-                     * Command left and right sides separately
-                     */
-                    virtual void drive(const MotorDynamics& left, const MotorDynamics& right) override;
-                    /**
-                     * Reads encoders for every motor you tell it to read, reports back in respective
-                     * order
-                     */
-                    virtual std::vector<units::Distance> readEncoders(const std::vector<Motor>& motors) override;
-                    /**
-                     * reads the encoder for one motor
-                     */
-                    virtual units::Distance readEncoder(const Motor& motor) override;
-                    /**
-                     * Reads encoder velocity for every motor you tell it to read, reports back in respective
-                     * order
-                     * @param motors list of motors to read
-                     */
-                    virtual std::vector<units::Velocity> readEncoderVelocities(const std::vector<Motor>& motors) override;
-                    /**
-                     * reads the encoder for one motor
-                     */
-                    virtual units::Velocity readEncoderVelocity(const Motor& motor) override;
+                /**
+                 * Command left and right sides separately
+                 */
+                virtual void drive(const MotorDynamics& left, const MotorDynamics& right) override;
 
-                    virtual void stop() override;
 
-                    virtual bool diagnostic() override;
-                private:
-                    std::shared_ptr<Roboclaw> m_rclaw;
-                    std::shared_ptr<NavX> m_navx;
-                };
-            }
+
+                /**
+                 * Reads encoders for every motor you tell it to read, reports back in respective
+                 * order
+                 */
+                virtual std::vector<units::Distance> readEncoders(const std::vector<Motor>& motors) const override;
+
+                /**
+                 * Reads the encoder for one motor
+                 */
+                virtual units::Distance readEncoder(const Motor& motor) const override;
+
+                /**
+                 * Reads encoder velocity for every motor you tell it to read, reports back in respective
+                 * order
+                 * @param motors list of motors to read
+                 */
+                virtual std::vector<units::Velocity> readEncoderVelocities(const std::vector<Motor>& motors) const override;
+
+                /**
+                 * reads the encoder for one motor
+                 */
+                virtual units::Velocity readEncoderVelocity(const Motor& motor) const override;
+
+                /**
+                 * Returns whether the drivetrain has a gyro
+                 */
+                virtual bool hasGyro() const override;
+
+                /**
+                 * Reads the rotation of the chassis
+                 */
+                virtual units::Angle readYaw() const override;
+
+                /**
+                 * Stops all motors in the drivetrain
+                 */
+                virtual void stop() override;
+
+                /**
+                 * Returns whether the subsystem passed all tests
+                 */
+                virtual bool diagnostic() override;
+            private:
+                std::shared_ptr<Roboclaw> m_roboclaw;
+                std::shared_ptr<NavX> m_navx;
+            };
         }
     }
+}
 
-    #endif // DRIVE_TRAIN_HPP
+#endif // DRIVE_TRAIN_HPP

@@ -3,6 +3,7 @@ project(arduino_gen)
 
 # Get all .cpp files except for main.cpp
 file(GLOB_RECURSE ${PROJECT_NAME}_SOURCES "src/*.cpp")
+file(GLOB_RECURSE ${PROJECT_NAME}_HEADERS "include/*.hpp")
 list(REMOVE_ITEM ${PROJECT_NAME}_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp")
 
 # Create the arduino_gen library, set to c++11, link external libraries, and set include dir

@@ -13,7 +13,7 @@ namespace rip
                 std::shared_ptr<OneRoboclawDrivetrain::Roboclaw> rclaw,
                 std::shared_ptr<OneRoboclawDrivetrain::NavX> navx)
                 : Drivetrain(name)
-                , m_rclaw(rclaw)
+                , m_roboclaw(rclaw)
                 , m_navx(navx)
             {}
 
@@ -28,7 +28,7 @@ namespace rip
                 {
                     throw OutOfRangeException("out of range");
                 }
-                m_rclaw->drive(32767 * power);
+                m_roboclaw->drive(32767 * power);
             }
 
             void OneRoboclawDrivetrain::drive(double left, double right)
@@ -37,24 +37,34 @@ namespace rip
                 {
                     throw OutOfRangeException("out of range");
                 }
-                m_rclaw->drive(Roboclaw::Motor::kM1, 32767 * left);
-                m_rclaw->drive(Roboclaw::Motor::kM2, 32767 * right);
+                m_roboclaw->drive(Roboclaw::Motor::kM1, 32767 * left);
+                m_roboclaw->drive(Roboclaw::Motor::kM2, 32767 * right);
             }
 
             void OneRoboclawDrivetrain::drive(const MotorDynamics& command)
             {
-                m_rclaw->setDynamics(command);
+                m_roboclaw->setDynamics(command);
             }
 
             void OneRoboclawDrivetrain::drive(const MotorDynamics& left, const MotorDynamics& right)
             {
-                m_rclaw->setDynamics(Roboclaw::Motor::kM1, left);
-                m_rclaw->setDynamics(Roboclaw::Motor::kM2, right);
+                m_roboclaw->setDynamics(Roboclaw::Motor::kM1, left);
+                m_roboclaw->setDynamics(Roboclaw::Motor::kM2, right);
+            }
+
+            bool OneRoboclawDrivetrain::hasGyro() const
+            {
+                return m_navx != nullptr;
+            }
+
+            units::Angle OneRoboclawDrivetrain::readYaw() const
+            {
+                return m_navx->getYaw();
             }
 
             void OneRoboclawDrivetrain::stop()
             {
-                m_rclaw->drive(0);
+                m_roboclaw->drive(0);
             }
 
             bool OneRoboclawDrivetrain::diagnostic()
