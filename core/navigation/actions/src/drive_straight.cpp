@@ -61,15 +61,18 @@ namespace rip
                 l_dynamics.setAcceleration(m_max_accel);
                 r_dynamics.setAcceleration(m_max_accel);
 
-                l_dynamics.setDeceleration(m_max_accel);
-                r_dynamics.setDeceleration(m_max_accel);
-
                 // just for now...
                 if(!m_use_time)
                 {
+                    l_dynamics.setDeceleration(m_max_accel);
+                    r_dynamics.setDeceleration(m_max_accel);
+
                     std::vector<units::Distance> dists = m_drivetrain->readEncoders(motors);
                     units::Distance threshold = m_distance + m_init_encoder - (1 * units::cm);
                     units::Distance decel_threshold = (m_distance + m_init_encoder) - (m_speed / m_max_accel) * m_speed / 2;
+
+                    l_dynamics.setDistance(m_distance + m_init_encoder - dists[0]);
+                    r_dynamics.setDistance(m_distance + m_init_encoder - dists[2]);
 
                     if(    dists[0] >= threshold || dists[1] >= threshold
                         || dists[2] >= threshold || dists[3] >= threshold )
