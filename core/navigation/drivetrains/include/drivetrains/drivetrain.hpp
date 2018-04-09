@@ -91,6 +91,11 @@ namespace rip
                  * reads the encoder for one motor
                  */
                 virtual units::Velocity readEncoderVelocity(const Motor& motor) = 0;
+                /**
+                 * @brief resets the encoders
+                 */
+                virtual void resetEncoders() = 0;
+                
             };
         }
     }

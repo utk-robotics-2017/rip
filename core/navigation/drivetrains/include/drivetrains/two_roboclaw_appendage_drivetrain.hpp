@@ -110,7 +110,10 @@ namespace rip
                  * @param side [description]
                  */
                 std::tuple<units::Distance, units::Velocity> getDistAndVel(bool side);
-
+                /**
+                 * Resets the encoders
+                 */
+                virtual void resetEncoders() override;
 
                 virtual void stop() override;
 
