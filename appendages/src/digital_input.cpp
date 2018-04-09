@@ -12,8 +12,8 @@ namespace rip
     {
         DigitalInput::DigitalInput(const nlohmann::json& config, const std::map<std::string, int>& command_map, std::shared_ptr<cmdmessenger::Device> device)
             : Appendage(config, device)
-            , m_read(createCommand("kReadDigitalInputRead", command_map, cmdmessenger::ArduinoCmdMessenger::makeArgumentString<cmdmessenger::ArduinoCmdMessenger::IntegerType>()))
-            , m_read_result(createCommand("kDigitalInputReadResult", command_map, cmdmessenger::ArduinoCmdMessenger::makeArgumentString<cmdmessenger::ArduinoCmdMessenger::BooleanType>()))
+            , m_read(createCommand("kReadDigitalInput", command_map, cmdmessenger::ArduinoCmdMessenger::makeArgumentString<cmdmessenger::ArduinoCmdMessenger::IntegerType>()))
+            , m_read_result(createCommand("kReadDigitalInputResult", command_map, cmdmessenger::ArduinoCmdMessenger::makeArgumentString<cmdmessenger::ArduinoCmdMessenger::BooleanType>()))
         {
         }
 
