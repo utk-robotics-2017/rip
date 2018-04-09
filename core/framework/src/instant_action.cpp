@@ -18,7 +18,7 @@ namespace rip
 
         void InstantAction::setup(nlohmann::json& state)
         {
-            runOnce();
+            runOnce(state);
         }
 
         void InstantAction::teardown(nlohmann::json& state) {}
