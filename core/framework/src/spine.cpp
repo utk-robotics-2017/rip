@@ -110,7 +110,11 @@ namespace rip
             cmdmessenger::ArduinoCmdMessenger messenger;
             std::shared_ptr<cmdmessenger::Command> command_ping;
             std::shared_ptr<cmdmessenger::Command> command_ping_result;
-            command_ping = std::make_shared<cmdmessenger::Command>("kPing", command_map.find("kPing")->second, "");
+            command_ping = std::make_shared<cmdmessenger::Command>(
+              "kPing",
+              command_map.find("kPing")->second,
+              cmdmessenger::ArduinoCmdMessenger::makeArgumentString()
+            );
             command_ping_result = std::make_shared<cmdmessenger::Command>(
               "kPingResult",
               command_map.find("kPingResult")->second,

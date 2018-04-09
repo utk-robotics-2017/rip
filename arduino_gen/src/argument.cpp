@@ -50,7 +50,8 @@ namespace rip
                m_type != "int" &&
                m_type != "bool" &&
                m_type != "string" &&
-			   m_type != "string_literal")
+               m_type != "long" &&
+               m_type != "string_literal")
             {
                 throw AttributeException(fmt::format("Constructor argument unknown type on line number {}",
                                                      xml->GetLineNum()));

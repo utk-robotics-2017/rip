@@ -15,12 +15,74 @@ namespace rip
 	{
 		Roboclaw::Roboclaw(const nlohmann::json& config, const std::map<std::string, int>& command_map, std::shared_ptr<cmdmessenger::Device> device)
 			: Appendage(config, device),
-			m_set_speed(createCommand("kSetSpeed", command_map, cmdmessenger::ArduinoCmdMessenger::makeArgumentString<cmdmessenger::ArduinoCmdMessenger::CharType, cmdmessenger::ArduinoCmdMessenger::UnsignedLongType, cmdmessenger::ArduinoCmdMessenger::UnsignedLongType>())),
-			m_set_speed_accel(createCommand("kSetSpeedAccel", command_map, cmdmessenger::ArduinoCmdMessenger::makeArgumentString<cmdmessenger::ArduinoCmdMessenger::CharType, cmdmessenger::ArduinoCmdMessenger::UnsignedLongType, cmdmessenger::ArduinoCmdMessenger::UnsignedLongType, cmdmessenger::ArduinoCmdMessenger::UnsignedLongType>())),
-			m_read_encoders(createCommand("kReadEncoders", command_map, cmdmessenger::ArduinoCmdMessenger::makeArgumentString<cmdmessenger::ArduinoCmdMessenger::CharType>())),
-			m_read_encoders_result(createCommand("kReadEncodersResult", command_map, cmdmessenger::ArduinoCmdMessenger::makeArgumentString<cmdmessenger::ArduinoCmdMessenger::UnsignedLongType, cmdmessenger::ArduinoCmdMessenger::UnsignedLongType>())),
-			m_set_duty(createCommand("kSetDuty", command_map, cmdmessenger::ArduinoCmdMessenger::makeArgumentString<cmdmessenger::ArduinoCmdMessenger::CharType, cmdmessenger::ArduinoCmdMessenger::UnsignedIntegerType, cmdmessenger::ArduinoCmdMessenger::UnsignedIntegerType>())),
-			m_set_velocity_pid(createCommand("kSetVelocityPID", command_map, cmdmessenger::ArduinoCmdMessenger::makeArgumentString<cmdmessenger::ArduinoCmdMessenger::CharType, cmdmessenger::ArduinoCmdMessenger::CharType, cmdmessenger::ArduinoCmdMessenger::FloatType, cmdmessenger::ArduinoCmdMessenger::FloatType, cmdmessenger::ArduinoCmdMessenger::FloatType, cmdmessenger::ArduinoCmdMessenger::UnsignedLongType>()))
+			m_set_speed(
+				createCommand(
+					"kSetSpeed",
+					command_map,
+					cmdmessenger::ArduinoCmdMessenger::makeArgumentString<
+					  cmdmessenger::ArduinoCmdMessenger::IntegerType,
+					  cmdmessenger::ArduinoCmdMessenger::CharType,
+						cmdmessenger::ArduinoCmdMessenger::UnsignedLongType,
+						cmdmessenger::ArduinoCmdMessenger::UnsignedLongType
+						>()
+					)
+				),
+			m_set_speed_accel(
+				createCommand(
+					"kSetSpeedAccel",
+					command_map,
+					cmdmessenger::ArduinoCmdMessenger::makeArgumentString<
+					  cmdmessenger::ArduinoCmdMessenger::IntegerType,
+					  cmdmessenger::ArduinoCmdMessenger::CharType,
+						cmdmessenger::ArduinoCmdMessenger::UnsignedLongType,
+						cmdmessenger::ArduinoCmdMessenger::UnsignedLongType,
+						cmdmessenger::ArduinoCmdMessenger::UnsignedLongType
+					  >()
+					)
+				),
+			m_read_encoders(
+				createCommand(
+					"kReadEncoders",
+					command_map,
+					cmdmessenger::ArduinoCmdMessenger::makeArgumentString<
+					  cmdmessenger::ArduinoCmdMessenger::IntegerType,
+					  cmdmessenger::ArduinoCmdMessenger::CharType
+						>()
+					)
+				),
+			m_read_encoders_result(createCommand(
+				"kReadEncodersResult",
+				command_map,
+				cmdmessenger::ArduinoCmdMessenger::makeArgumentString<
+					cmdmessenger::ArduinoCmdMessenger::UnsignedLongType,
+					cmdmessenger::ArduinoCmdMessenger::UnsignedLongType
+					>()
+				)
+			),
+			m_set_duty(
+				createCommand(
+					"kSetDuty",
+					command_map,
+					cmdmessenger::ArduinoCmdMessenger::makeArgumentString<
+					  cmdmessenger::ArduinoCmdMessenger::IntegerType,
+					  cmdmessenger::ArduinoCmdMessenger::CharType,
+						cmdmessenger::ArduinoCmdMessenger::UnsignedIntegerType,
+						cmdmessenger::ArduinoCmdMessenger::UnsignedIntegerType>()
+					)
+				),
+			m_set_velocity_pid(
+				createCommand(
+					"kSetVelocityPID",
+					command_map,
+					cmdmessenger::ArduinoCmdMessenger::makeArgumentString<
+					  cmdmessenger::ArduinoCmdMessenger::CharType,
+						cmdmessenger::ArduinoCmdMessenger::CharType,
+						cmdmessenger::ArduinoCmdMessenger::FloatType,
+						cmdmessenger::ArduinoCmdMessenger::FloatType,
+						cmdmessenger::ArduinoCmdMessenger::FloatType,
+						cmdmessenger::ArduinoCmdMessenger::UnsignedLongType>()
+					)
+				)
 		{
 			if (config.find("address") == config.end())
 			{
@@ -37,26 +99,45 @@ namespace rip
 		void Roboclaw::SetSpeed(int32_t speed1, int32_t speed2)
 		{
 			cmdmessenger::ArduinoCmdMessenger messenger;
-			messenger.send<cmdmessenger::ArduinoCmdMessenger::CharType, cmdmessenger::ArduinoCmdMessenger::UnsignedLongType, cmdmessenger::ArduinoCmdMessenger::UnsignedLongType>(m_device, m_set_speed, m_address, speed1, speed2);
+			messenger.send<
+			  cmdmessenger::ArduinoCmdMessenger::IntegerType,
+			  cmdmessenger::ArduinoCmdMessenger::CharType,
+				cmdmessenger::ArduinoCmdMessenger::UnsignedLongType,
+				cmdmessenger::ArduinoCmdMessenger::UnsignedLongType
+				>(m_device, m_set_speed, m_id, m_address, speed1, speed2);
 		}
 
 		void Roboclaw::SetSpeedAccel(int32_t accel, int32_t speed1, int32_t speed2)
 		{
 			cmdmessenger::ArduinoCmdMessenger messenger;
-			messenger.send<cmdmessenger::ArduinoCmdMessenger::CharType, cmdmessenger::ArduinoCmdMessenger::UnsignedLongType, cmdmessenger::ArduinoCmdMessenger::UnsignedLongType, cmdmessenger::ArduinoCmdMessenger::UnsignedLongType>(m_device, m_set_speed_accel, m_address, accel, speed1, speed2);
+			messenger.send<
+			  cmdmessenger::ArduinoCmdMessenger::IntegerType,
+			  cmdmessenger::ArduinoCmdMessenger::CharType,
+				cmdmessenger::ArduinoCmdMessenger::UnsignedLongType,
+				cmdmessenger::ArduinoCmdMessenger::UnsignedLongType,
+				cmdmessenger::ArduinoCmdMessenger::UnsignedLongType
+				>(m_device, m_set_speed_accel, m_id, m_address, accel, speed1, speed2);
 		}
 
 		std::tuple<uint32_t, uint32_t> Roboclaw::ReadEncoders()
 		{
 			cmdmessenger::ArduinoCmdMessenger messenger;
-			messenger.send<cmdmessenger::ArduinoCmdMessenger::CharType>(m_device, m_read_encoders, m_address);
+			messenger.send<
+			  cmdmessenger::ArduinoCmdMessenger::IntegerType,
+			  cmdmessenger::ArduinoCmdMessenger::CharType
+			>(
+				m_device,
+				m_read_encoders,
+				m_id,
+				m_address
+			);
 			return messenger.receive<cmdmessenger::ArduinoCmdMessenger::UnsignedLongType, cmdmessenger::ArduinoCmdMessenger::UnsignedLongType>(m_read_encoders_result);
 		}
 
 		void Roboclaw::SetDuty(int16_t duty1, int16_t duty2)
 		{
 			cmdmessenger::ArduinoCmdMessenger messenger;
-			messenger.send<cmdmessenger::ArduinoCmdMessenger::CharType, cmdmessenger::ArduinoCmdMessenger::UnsignedIntegerType, cmdmessenger::ArduinoCmdMessenger::UnsignedIntegerType>(m_device, m_set_duty, m_address, duty1, duty2);
+			messenger.send<cmdmessenger::ArduinoCmdMessenger::CharType, cmdmessenger::ArduinoCmdMessenger::UnsignedIntegerType, cmdmessenger::ArduinoCmdMessenger::UnsignedIntegerType>(m_device, m_set_duty, m_id, m_address, duty1, duty2);
 		}
 
 		void Roboclaw::SetVelocityPID(uint8_t motor, float Kp, float Ki, float Kd, uint32_t qpps)
@@ -66,7 +147,8 @@ namespace rip
 		}
 
 		void Roboclaw::stop() {
-			SetSpeed(0, 0);
+			misc::Logger::getInstance()->debug("Setting roboclaw duty to zero.");
+			SetDuty(0, 0);
 		}
 
 		bool Roboclaw::diagnostic()
@@ -74,22 +156,28 @@ namespace rip
 			std::chrono::time_point<std::chrono::system_clock> start_time = std::chrono::system_clock::now();
 			misc::Logger::getInstance()->debug("Roboclaw appendage diagnostics start");
 
-			misc::Logger::getInstance()->debug("Read encoders for 10s in a loop");
-			while(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - start_time).count() < 10000)
+			misc::Logger::getInstance()->debug("Read encoders for 5s in a loop");
+			while(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - start_time).count() < 5000)
 			{
 				misc::Logger::getInstance()->debug(fmt::format("Encoder 1 Ticks: {} | Encoder 2 Ticks: {}", std::get<0>(ReadEncoders()), std::get<1>(ReadEncoders())));
 			}
 			misc::Logger::getInstance()->debug("Setting Duty to ~1/2 Power, forward for 5 seconds");
+			misc::Logger::getInstance()->debug(fmt::format("Encoder 1 Ticks: {} | Encoder 2 Ticks: {}", std::get<0>(ReadEncoders()), std::get<1>(ReadEncoders())));
 			SetDuty(16000, 16000);
 			start_time = std::chrono::system_clock::now();
 			while(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - start_time).count() < 5000)
 			{}
+			misc::Logger::getInstance()->debug(fmt::format("Encoder 1 Ticks: {} | Encoder 2 Ticks: {}", std::get<0>(ReadEncoders()), std::get<1>(ReadEncoders())));
 			stop();
 			misc::Logger::getInstance()->debug("Setting speed accel drive (5s)");
+			misc::Logger::getInstance()->debug(fmt::format("Encoder 1 Ticks: {} | Encoder 2 Ticks: {}", std::get<0>(ReadEncoders()), std::get<1>(ReadEncoders())));
 			SetSpeedAccel(12000, 12000, 12000);
+			start_time = std::chrono::system_clock::now();
 			while(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - start_time).count() < 5000)
 			{}
+			misc::Logger::getInstance()->debug(fmt::format("Encoder 1 Ticks: {} | Encoder 2 Ticks: {}", std::get<0>(ReadEncoders()), std::get<1>(ReadEncoders())));
 			stop();
+			misc::Logger::getInstance()->debug(fmt::format("Encoder 1 Ticks: {} | Encoder 2 Ticks: {}", std::get<0>(ReadEncoders()), std::get<1>(ReadEncoders())));
 		}
 	}
 }

@@ -10,11 +10,6 @@ fi
 
 while [[ "$1" != "" ]]; do
   case "$1" in
-    "--help"|"-h")
-      echo "$0 <script args> <extra args are passed to cmake>"
-      popd
-      exit 0
-      ;;
     "--")
       # stop parsing args and let cmake take the rest
       shift
@@ -36,6 +31,41 @@ while [[ "$1" != "" ]]; do
       echo "Building production executables."
       echo " -DENABLE_TESTING=OFF"
       ENABLE_TESTING="OFF"
+      ;;
+    "-h"|"--help")
+      cat << EOF
+RIP build script for linux
+
+usage: ./build-linux.sh [options] [--] [extra args passed to cmake]
+
+Creates the dir 'build/' / 'build_armhf/'.
+Runs Cmake with whatever extra args you gave it.
+Attempts a multithreaded build.
+Runs a single-threaded build if the multithreaded is unsuccessful.
+
+Overridable Environment Variables:
+  NO_CD
+          Set this variable to prevent this script from changing back to the RIP directory.
+
+Options:
+  --help
+          Display this message and exit.
+  -c | --clean
+          Remove the build folder before starting the build.
+  -n | --no-cd
+          Do not CD into this scripts' own directory when building.
+          (Perform the same build steps on the current directory.)
+          Used to build robot projects and others which depend on RIP.
+  -p | --production
+          Sets the Cmake variable ENABLE_TESTING to 'OFF'
+          (Default is 'ON')
+          Add this flag if you are building executables to copy to a Pi.
+EOF
+      exit 0
+      ;;
+    *)
+      echo "Unknown option: $1"
+      exit 1
       ;;
   esac
   shift

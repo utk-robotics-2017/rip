@@ -4,8 +4,8 @@
     </includes>
     <constructors>
         <constructor type="RoboClaw" variable="roboclaws">
-			<argument name="serial" type="string_literal" prefix="&amp;" />
-			<argument name="timeout" type="int" value="10000" />
+          <argument name="serial" type="string_literal" prefix="&amp;" />
+          <argument name="timeout" type="int" value="10000" />
         </constructor>
     </constructors>
     <setup>
@@ -66,7 +66,7 @@
 			<parameter type="uint32_t" name="qpps" />
 			<code>
 				bool result;
-				
+
 				switch (motor)
 				{
 					case 1:
@@ -79,7 +79,7 @@
 						result = false;
 						break;
 				}
-				
+
 				if (!result) // TODO: Double check return values
 				{
 					cmdMessenger.sendBinCmd(kError, kSetVelocityPID);

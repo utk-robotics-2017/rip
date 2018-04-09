@@ -34,12 +34,6 @@ RUN curl -fsSL https://github.com/resin-io-projects/armv7hf-debian-qemu/raw/mast
     > $SYSROOT/$QEMU_PATH
 RUN chmod +x $SYSROOT/$QEMU_PATH
 
-ARG pi_image_dist
-ENV PI_IMAGE_DIST=${pi_image_dist}
-# edit the sources.list for more
-RUN chroot $SYSROOT $QEMU_PATH /bin/sh -c "\
- echo \"deb http://archive.raspbian.org/raspbian/ ${PI_IMAGE_DIST} main contrib non-free rpi\" > /etc/apt/sources.list "
-
 RUN chroot $SYSROOT $QEMU_PATH /bin/sh -c '\
  cd /dev \
  && MAKEDEV -n std \
@@ -47,22 +41,48 @@ RUN chroot $SYSROOT $QEMU_PATH /bin/sh -c '\
  && MAKEDEV std \
  '
 
+ARG pi_image_dist
+ENV PI_IMAGE_DIST=${pi_image_dist}
+# edit the sources.list for more
+RUN chroot $SYSROOT $QEMU_PATH /bin/sh -c "\
+ echo ${PI_IMAGE_DIST} > /etc/pi_image_dist \
+ && echo \"deb http://archive.raspbian.org/raspbian/ ${PI_IMAGE_DIST} main contrib non-free rpi\" > /etc/apt/sources.list \
+ && echo \"deb http://archive.raspberrypi.org/debian/ ${PI_IMAGE_DIST} main ui\" >> /etc/apt/sources.list "
+
+# Run the clean, update, apt needs, configure, and upgrade
 RUN chroot $SYSROOT $QEMU_PATH /bin/sh -c '\
  apt-get clean \
  && apt-get update \
- && DEBIAN_FRONTEND=noninteractive apt-get install -y apt-utils \
+ && DEBIAN_FRONTEND=noninteractive apt-get install -y apt-utils dirmngr \
+ && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 82B129927FA3303E \
+ && apt-get update \
  && DEBIAN_FRONTEND=noninteractive dpkg --configure -a \
  && DEBIAN_FRONTEND=noninteractive apt-get upgrade -y '
+
+# install the packages which should be available regardless of release version
 RUN chroot $SYSROOT $QEMU_PATH /bin/sh -c '\
  apt-get update \
  && DEBIAN_FRONTEND=noninteractive apt-get install -y \
   libc6-dev symlinks libssl-dev libcrypto++-dev \
   libeigen3-dev libsuitesparse-dev qt5-default \
   bash zsh git vim tmux \
-  cmake lcov g++ time unzip \
- && symlinks -cors / \
+  cmake lcov g++ time unzip '
+
+# install the packages only available for certain releases (jessie/stretch/etc)
+
+# STRETCH requirements
+RUN chroot $SYSROOT $QEMU_PATH /bin/sh -c '\
+ if grep -Fxq stretch /etc/pi_image_dist; then \
+ DEBIAN_FRONTEND=noninteractive apt-get install -y \
+  libzstd-dev \
+ ;fi'
+
+# clean up apt caches and links
+RUN chroot $SYSROOT $QEMU_PATH /bin/sh -c '\
+ symlinks -cors / \
  && apt-get clean'
 
+# G2O
 RUN mkdir -p $SYSROOT/tmp
 COPY external/g2o $SYSROOT/tmp/g2o
 # ARM doesn't support SSE things and g2o's cmake can't detect that because /proc isn't mapped for ARM
@@ -74,10 +94,6 @@ RUN chroot $SYSROOT $QEMU_PATH /bin/sh -c '\
  && make -j$(nproc --ignore=1) \
  && make install \
  && symlinks -cors /'
-
-# requires a /dev mounted 'mount --bind /dev /rpxc/sysroot/dev'
-# mounts require '--cap-add=SYS_ADMIN --security-opt apparmor:unconfined' args to docker run
-#RUN install-raspbian python3
 
 COPY docker/rpi/ /
 RUN mkdir -p $SYSROOT/workdir

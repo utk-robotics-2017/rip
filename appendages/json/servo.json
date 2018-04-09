@@ -1,3 +1,4 @@
 {
-    "pin": "int"
+    "pin": "int",
+    "initialValue": "int"
 }

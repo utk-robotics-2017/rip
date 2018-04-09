@@ -23,12 +23,62 @@ while [[ "$1" != "" ]] ; do
         exit 1
       fi
       ;;
+    --rpxc-tag)
+      shift
+      if [[ "$1" != "" ]]; then
+        RPXC_IMAGE_TAG="$1"
+        unset RPXC_IMAGE
+        source docker/core.sh
+      else
+        echo " --rpxc-tag requires a docker tag id"
+        exit 1
+      fi
+      ;;
     '--')
       shift
       if [[ "$1" != "" ]]; then
         DEF_EXEC=("$@")
       fi
       break
+      ;;
+    '-h'|'--help')
+      cat << EOF
+RIP Docker Script 'go-docker.sh'
+
+Usage: ./go-docker.sh [options] [script args] [program ars ...]
+
+Overridable Environment Variables:
+  RPXC_IMAGE="utkrobotics/rip_rpi:latest"
+          See also: --rpxc-tag flag
+  RPXC_SCRIPT_LOCATION="./docker/rpi/rpxc/rpxc"
+          Location of the RPXC script used to enter and setup the rip_rpi container from the host.
+          Location relative to this shell script.
+  RPXC_SYSROOT="/rpxc/sysroot"
+          Location of sysroot *inside* the docker container.
+          Do not change unless using a compatible/different docker image.
+  RIPPROG
+          Uses the same values as --prog flag does. (Shown in menu.)
+
+  (for building containers...)
+  RPI_DIST
+          Sets the raspberry pi distro when building rip_rpi. (i.e. 'jessie'/'stretch')
+  RPI_DOCKER_TAG
+          Set the target docker tag for the rip_rpi build.
+
+Options: <required> [optional]
+  --help
+          Display this help and exit.
+  --prog <program selection>
+          Select a program directly without being prompted by whiptail/dialog.
+  --rpi [--] [command to run in container]
+          Run the RPI emulation container directly with an optional command instead of a shell.
+  --rpxc-tag <tag name>
+          Specify an alternate tag (different from latest) to use for the docker repo.
+          Used like 'utkrobotics/rip_rpi:<tag_name>'
+  -- [anything else]
+          Ignore flags after the '--' and pass them to the program selection.
+EOF
+      exit 0
       ;;
     *)
       echo "Unknown option: $1"
@@ -61,7 +111,7 @@ function build_rip_deps() {
 function build_rip_rpi() {
   if ($PROMPTER --title "Comfirm Build?" --yesno "Do not run this command unless you were told to do so. Requires files outside of RIP." 8 68) then
     if find ../rpi_images -prune -empty ; then
-      rpi_image_file="$(find ../rpi_images -mindepth 1 -maxdepth 1 -printf '%f\n' | sort -g | tail -1 )"
+      rpi_image_file=${rpi_image_file:-"$(find ../rpi_images -mindepth 1 -maxdepth 1 -printf '%f\n' | sort -g | tail -1 )"}
       echo "Found rpi debootstrap image ${rpi_image_file}"
       rsync --copy-links --times ../rpi_images/${rpi_image_file} ./external/rpi_images/
       if [ -z "$RPI_DOCKER_TAG" ]; then
