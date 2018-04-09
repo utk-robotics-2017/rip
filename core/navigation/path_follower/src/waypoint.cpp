@@ -1,5 +1,7 @@
 #include "path_follower/waypoint.hpp"
 
+#include <fmt/format.h>
+
 namespace rip
 {
     namespace navigation
@@ -63,6 +65,55 @@ namespace rip
             std::string Waypoint::marker() const
             {
                 return m_marker;
+            }
+
+            void Waypoint::setX(const units::Distance& x)
+            {
+                m_position.setX(x);
+            }
+
+            void Waypoint::setY(const units::Distance& y)
+            {
+                m_position.setY(y);
+            }
+
+            void Waypoint::setRadius(const units::Distance& radius)
+            {
+                m_radius = radius;
+            }
+
+            void Waypoint::setSpeed(const units::Velocity& speed)
+            {
+                m_speed = speed;
+            }
+
+            std::string Waypoint::toString() const
+            {
+                return fmt::format("(x: {} in, y: {} in, radius: {} in, speed: {} in/s)", m_position.x().to(units::in), m_position.y().to(units::in), m_radius.to(units::in), m_speed.to(units::in/units::s));
+            }
+
+            void to_json(nlohmann::json& j, const Waypoint& w)
+            {
+                j = {
+                    {"x", w.x()},
+                    {"y", w.y()},
+                    {"radius", w.radius()},
+                    {"speed", w.speed()}
+                };
+            }
+
+            void from_json(const nlohmann::json& j, Waypoint& w)
+            {
+                w.m_position.setX(j["x"]);
+                w.m_position.setY(j["y"]);
+                w.m_radius = j["radius"];
+                w.m_speed = j["speed"];
+            }
+
+            std::ostream& operator<<(std::ostream& os, const Waypoint& w)
+            {
+                os << w.toString() << std::endl;
+                return os;
             }
 
         }

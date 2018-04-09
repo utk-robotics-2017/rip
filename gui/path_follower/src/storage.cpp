@@ -344,6 +344,11 @@ namespace rip
                     m_selected_waypoints = name.toStdString();
                     emit selectedWaypointsChanged();
                 }
+
+                void Storage::waypointsUpdated()
+                {
+                    emit waypointsUpdate();
+                }
             }
         }
     }

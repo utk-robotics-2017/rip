@@ -24,23 +24,26 @@ namespace rip
                     std::string name() const;
                     void setName(const std::string& name);
 
-                    std::vector<Waypoint> waypoints() const;
+                    std::vector< std::shared_ptr<Waypoint> > waypoints() const;
+                    std::shared_ptr<Waypoint> get(int index) const;
+                    void setPoint(int index, const geometry::Point& point);
                     void addWaypoint(const Waypoint& waypoint);
                     void insertWaypoint(int index, const Waypoint& waypoint);
                     void removeWaypoint(int index);
+                    int size() const;
 
                     void save(const QString& filepath) const;
                     void draw(QPainter& painter, float circle_radius) const;
 
-                    std::vector<Waypoint>::iterator begin();
-                    std::vector<Waypoint>::iterator end();
-                    std::vector<Waypoint>::const_iterator begin() const;
-                    std::vector<Waypoint>::const_iterator end() const;
+                    std::vector< std::shared_ptr<Waypoint> >::iterator begin();
+                    std::vector< std::shared_ptr<Waypoint> >::iterator end();
+                    std::vector< std::shared_ptr<Waypoint> >::const_iterator begin() const;
+                    std::vector< std::shared_ptr<Waypoint> >::const_iterator end() const;
 
                    static std::shared_ptr<WaypointList> load(const QString& filepath);
                 private:
                     std::string m_name;
-                    std::vector<Waypoint> m_waypoints;
+                    std::vector< std::shared_ptr<Waypoint> > m_waypoints;
                 };
             }
         }

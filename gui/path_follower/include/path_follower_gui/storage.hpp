@@ -60,6 +60,7 @@ namespace rip
                     void selectWorld(const QString& name);
                     void selectRobot(const QString& name);
                     void selectWaypoints(const QString& name);
+                    void waypointsUpdated();
 
                 signals:
                     void worldOptionsChanged();
@@ -69,6 +70,8 @@ namespace rip
                     void selectedWorldChanged();
                     void selectedRobotChanged();
                     void selectedWaypointsChanged();
+
+                    void waypointsUpdate();
 
                 private:
                     Storage() = default;

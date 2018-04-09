@@ -69,6 +69,8 @@ namespace rip
                  */
                 Translation2d inverse() const;
 
+                Translation2d perpendicular() const;
+
                 Translation2d interpolate(const Translation2d& other, double x) override;
                 Translation2d extrapolate(const Translation2d& other, double x);
                 Translation2d scale(double s) const;
@@ -85,6 +87,11 @@ namespace rip
                 static double cross(const Translation2d& lhs, const Translation2d& rhs);
 
                 operator geometry::Point() const;
+
+                Translation2d operator-(const Translation2d& rhs) const;
+                Translation2d& operator-=(const Translation2d& rhs);
+                Translation2d operator+(const Translation2d& rhs) const;
+                Translation2d operator+=(const Translation2d& rhs);
 
             protected:
                 units::Distance m_x;

@@ -22,7 +22,9 @@ namespace rip
                 public:
                     explicit RobotWidgetInner(QWidget* parent);
 
-                    void setRobot(std::shared_ptr<Robot> robot, bool added = false);
+                public slots:
+                    void updateRobot();
+
                 private slots:
                     void updateSelectedPosition();
 

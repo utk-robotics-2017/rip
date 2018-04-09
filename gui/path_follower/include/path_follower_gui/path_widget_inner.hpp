@@ -7,6 +7,7 @@
 
 #include <geometry/rectangle.hpp>
 #include <geometry/point.hpp>
+#include <path_follower/path.hpp>
 #include "path_follower_gui/world.hpp"
 #include "path_follower_gui/robot.hpp"
 #include "path_follower_gui/waypoint_list.hpp"
@@ -25,6 +26,9 @@ namespace rip
                     Q_OBJECT
                 public:
                     explicit PathWidgetInner(QWidget* parent = nullptr);
+
+                private slots:
+                    void updateSelectedPosition();
 
                 public slots:
                     void updateWorld();

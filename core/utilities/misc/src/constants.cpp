@@ -9,5 +9,7 @@ namespace rip
         const char* constants::kLoggerName = "rip_logger";
         const char* constants::kPathFollowingMaxAccel = "path_following_max_accel";
         const char* constants::kSegmentCompletionTolerance = "segment_completion_tolerance";
+
+        std::shared_ptr<constants> constants::m_singleton = nullptr;
     }
 }

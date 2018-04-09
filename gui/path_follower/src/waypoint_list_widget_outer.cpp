@@ -28,13 +28,14 @@ namespace rip
                     m_ui->options->addItems(names);
                     if(m_ui->options->currentIndex() > -1)
                     {
-                        waypointsChanged(m_ui->options->currentText());
+                        Storage::getInstance()->selectWaypoints(m_ui->options->currentText());
                     }
 
                     connect(m_ui->add, SIGNAL(clicked(bool)), this, SLOT(add()));
                     connect(m_ui->remove, SIGNAL(clicked(bool)), this, SLOT(remove()));
                     connect(m_ui->add_waypoint, SIGNAL(clicked(bool)), this, SLOT(addWaypoint()));
-                    connect(m_ui->options, SIGNAL(currentTextChanged(QString)), this, SLOT(waypointsChanged(QString)));
+                    connect(m_ui->options, SIGNAL(currentTextChanged(QString)), Storage::getInstance().get(), SLOT(selectWaypoints(QString)));
+                    connect(Storage::getInstance().get(), SIGNAL(selectedWaypointsChanged()), this, SLOT(updateWaypoints()));
                     connect(Storage::getInstance().get(), SIGNAL(waypointsOptionsChanged()), this, SLOT(waypointsOptionsChanged()));
                 }
 
@@ -45,7 +46,7 @@ namespace rip
 
                 void WaypointListWidgetOuter::waypointsOptionsChanged()
                 {
-                    disconnect(m_ui->options, SIGNAL(currentTextChanged(QString)), this, SLOT(waypointsChanged(QString)));
+                    disconnect(m_ui->options, SIGNAL(currentTextChanged(QString)), this, SLOT(updateWaypoints()));
 
                     // todo: handle add and remove better
 
@@ -61,7 +62,7 @@ namespace rip
                     m_ui->options->addItems(names);
                     m_ui->options->setCurrentText(current_text);
 
-                    connect(m_ui->options, SIGNAL(currentTextChanged(QString)), this, SLOT(waypointsChanged(QString)));
+                    connect(m_ui->options, SIGNAL(currentTextChanged(QString)), this, SLOT(updateWaypoints()));
                 }
 
                 void WaypointListWidgetOuter::add()
@@ -70,8 +71,7 @@ namespace rip
                     QString name = QInputDialog::getText(this, tr("Add Waypoints"), tr("Name:"), QLineEdit::Normal, "Default", &ok);
                     if (ok && !name.isEmpty())
                     {
-                        m_waypoints = Storage::getInstance()->addWaypoints(name.toStdString());
-                        m_ui->inner->setWaypointList(m_waypoints);
+                        Storage::getInstance()->addWaypoints(name.toStdString());
                     }
                 }
 
@@ -89,10 +89,9 @@ namespace rip
                     }
                 }
 
-                void WaypointListWidgetOuter::waypointsChanged(const QString& name)
+                void WaypointListWidgetOuter::updateWaypoints()
                 {
-                    m_waypoints = Storage::getInstance()->waypoints(name.toStdString());
-                    m_ui->inner->setWaypointList(m_waypoints);
+                    m_waypoints = Storage::getInstance()->selectedWaypoints();
                 }
             }
         }

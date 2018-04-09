@@ -38,9 +38,9 @@ namespace rip
                     connect(m_ui->remove, SIGNAL(clicked(bool)), this, SLOT(remove()));
                     connect(Storage::getInstance().get(), SIGNAL(robotOptionsChanged()), this, SLOT(robotOptionsChanged()));
 
-                    connect(m_ui->max_speed, SIGNAL(textEdited(QString)), this, SLOT(maxSpeedChanged(QString)));
-                    connect(m_ui->max_acceleration, SIGNAL(textEdited(QString)), this, SLOT(maxAccelerationChanged(QString)));
-                    connect(m_ui->wheelbase, SIGNAL(textEdited(QString)), this, SLOT(wheelbaseChanged(QString)));
+                    connect(m_ui->max_speed, SIGNAL(textEdited(QString)), this, SLOT(maxSpeedUpdated(QString)));
+                    connect(m_ui->max_acceleration, SIGNAL(textEdited(QString)), this, SLOT(maxAccelerationUpdated(QString)));
+                    connect(m_ui->wheelbase, SIGNAL(textEdited(QString)), this, SLOT(wheelbaseUpdated(QString)));
                 }
 
                 RobotWidgetOuter::~RobotWidgetOuter()
@@ -83,7 +83,7 @@ namespace rip
                     QString name = QInputDialog::getText(this, tr("Add Robot"), tr("Name:"), QLineEdit::Normal, "Default", &ok);
                     if (ok && !name.isEmpty())
                     {
-                        m_ui->inner->setRobot(Storage::getInstance()->addRobot(name.toStdString()), true);
+                        Storage::getInstance()->addRobot(name.toStdString());
                     }
                 }
 

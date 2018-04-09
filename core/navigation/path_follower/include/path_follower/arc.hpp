@@ -22,6 +22,12 @@ namespace rip
                 Arc(const Waypoint& a, const Waypoint& b, const Waypoint& c);
                 Arc(const Line& a, const Line& b);
 
+                Line a() const;
+                Line b() const;
+                Translation2d center() const;
+                units::Distance radius() const;
+                units::Velocity speed() const;
+
             private:
                 static Translation2d intersect(const Line& l1, const Line& l2);
                 void addToPath(Path& p);

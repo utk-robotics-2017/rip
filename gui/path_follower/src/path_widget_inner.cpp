@@ -5,6 +5,7 @@
 #include <QAction>
 #include <QMenu>
 
+#include "path_follower_gui/arc.hpp"
 #include "path_follower_gui/storage.hpp"
 
 namespace rip
@@ -26,8 +27,28 @@ namespace rip
                     , m_selected_index(-1)
                 {
                     connect(Storage::getInstance().get(), SIGNAL(selectedWorldChanged()), this, SLOT(updateWorld()));
-                    connect(Storage::getInstance().get(), SIGNAL(selectedRobotChanged()), this, SLOT(updatRobot()));
-                    connect(Storage::getInstance().get(), SIGNAL(selectedWaypointsChanged()), this, SLOT(updateWaypoints()));
+                    connect(Storage::getInstance().get(), SIGNAL(selectedRobotChanged()), this, SLOT(updateRobot()));
+                    connect(Storage::getInstance().get(), SIGNAL(selectedWaypointsChanged()), this, SLOT(updateWaypointList()));
+                    connect(Storage::getInstance().get(), SIGNAL(waypointsUpdate()), this, SLOT(update()));
+                }
+
+                void PathWidgetInner::updateSelectedPosition()
+                {
+                    if (!m_selected)
+                    {
+                        return; // Shouldn't happen...
+                    }
+                    double scale;
+                    QMatrix transform = getTransform(&scale);
+                    QPoint screen_point;
+                    m_waypoints->setPoint(m_selected_index, m_position_widget->position());
+                    screen_point = QPoint(m_waypoints->get(m_selected_index)->x()(), m_waypoints->get(m_selected_index)->y()());
+
+                    screen_point = screen_point * transform;
+                    int x = std::max(std::min(screen_point.x() - 45, width() - 250), 100);
+                    int y = std::max(std::min(screen_point.y() + 17, height() - 115), 60);
+                    m_position_widget->move(QPoint(x, y));
+                    update();
                 }
 
                 void PathWidgetInner::updateWorld()
@@ -74,10 +95,24 @@ namespace rip
 
                     if(m_waypoints)
                     {
-                        m_waypoints->draw(painter, s);
+                        m_waypoints->draw(painter, s * 5);
                         if(m_robot)
                         {
                             //m_robot->draw(painter, );
+                        }
+
+                        if(m_waypoints->size())
+                        {
+                            painter.setBrush(Qt::transparent);
+                            painter.setPen(QPen(Qt::red, s));
+                            for(int i = 0; i < m_waypoints->size()-2; i++)
+                            {
+                                std::shared_ptr<Waypoint> w1 = m_waypoints->get(i >= m_waypoints->size() ? m_waypoints->size() - 1 : i);
+                                std::shared_ptr<Waypoint> w2 = m_waypoints->get(i+1 >= m_waypoints->size() ? m_waypoints->size() - 1 : i+1);
+                                std::shared_ptr<Waypoint> w3 = m_waypoints->get(i+2 >= m_waypoints->size() ? m_waypoints->size() - 1 : i+2);
+                                Arc a = Arc::fromPoints(*w1,*w2,*w3);
+                                a.draw(painter);
+                            }
                         }
                     }
 
@@ -162,10 +197,10 @@ namespace rip
                     {
                         int x = std::max(std::min(pos.x() - 90, width() - 250), 75);
                         int y = std::max(std::min(pos.y() + 17, height()  - 115), 75);
-                        std::vector<Waypoint> waypoints = m_waypoints->waypoints();
+                        std::vector<std::shared_ptr<Waypoint>> waypoints = m_waypoints->waypoints();
                         for (size_t i = 0; i < waypoints.size(); i++)
                         {
-                            if (checkPointClick(geometry::Point(waypoints[i].x(), waypoints[i].y()), transform, pos, i))
+                            if (checkPointClick(geometry::Point(waypoints[i]->x(), waypoints[i]->y()), transform, pos, i))
                             {
                                 return;
                             }

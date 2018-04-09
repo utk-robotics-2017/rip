@@ -29,12 +29,12 @@ namespace rip
 
                 public slots:
                     void waypointsOptionsChanged();
+                    void updateWaypoints();
 
                 private slots:
                     void add();
                     void remove();
                     void addWaypoint();
-                    void waypointsChanged(const QString& name);
 
                 private:
                     Ui::WaypointListWidgetOuter* m_ui;

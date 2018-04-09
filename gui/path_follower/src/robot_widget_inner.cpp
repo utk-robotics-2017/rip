@@ -22,14 +22,17 @@ namespace rip
                     , m_robot(nullptr)
                     , m_selected(false)
                     , m_selected_index(-1)
-                {}
-
-                void RobotWidgetInner::setRobot(std::shared_ptr<Robot> robot, bool added)
                 {
-                    m_robot = robot;
-                    if (m_robot)
+
+                    connect(Storage::getInstance().get(), SIGNAL(selectedRobotChanged()), this, SLOT(updateRobot()));
+                }
+
+                void RobotWidgetInner::updateRobot()
+                {
+                    m_robot = Storage::getInstance()->selectedRobot();
+                    if(m_robot)
                     {
-                        if (added)
+                        if(m_robot->shape().size() == 0)
                         {
                             bool ok;
                             int n_vertices = QInputDialog::getInt(this, "New Robot", "Number of vertices:", 4, 3, 2147483647, 1, &ok);
@@ -49,9 +52,6 @@ namespace rip
                                 m_robot->setShape(points);
                             }
                         }
-
-                        m_bounding_box = m_robot->shape().boundingBox();
-                        // Force resize event
                         updateGeometry();
                         update();
                     }
@@ -66,8 +66,6 @@ namespace rip
                     double scale;
                     QMatrix transform = getTransform(&scale);
                     QPoint screen_point;
-                    std::shared_ptr<Obstacle> obstacle;
-
                     m_robot->setPoint(m_selected_index, m_position_widget->position());
                     screen_point = QPoint(m_robot->shape()[m_selected_index].x()(), m_robot->shape()[m_selected_index].y()());
 
@@ -84,6 +82,7 @@ namespace rip
                     {
                         return;
                     }
+                    m_bounding_box = m_robot->shape().boundingBox();
 
                     QPainter painter;
                     painter.begin(this);
@@ -108,6 +107,7 @@ namespace rip
                         QWidget::resizeEvent(event);
                         return;
                     }
+                    m_bounding_box = m_robot->shape().boundingBox();
 
                     int given_w = event->size().width();
                     int given_h = event->size().height();

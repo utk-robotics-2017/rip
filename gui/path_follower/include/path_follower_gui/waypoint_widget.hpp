@@ -23,7 +23,7 @@ namespace rip
                 {
                     Q_OBJECT
                 public:
-                    explicit WaypointWidget(const Waypoint& waypoint, QWidget* parent=nullptr);
+                    explicit WaypointWidget(std::shared_ptr<Waypoint> waypoint, QWidget* parent=nullptr);
                     ~WaypointWidget();
 
                     int index() const;
@@ -32,7 +32,7 @@ namespace rip
                     units::Distance y() const;
                     units::Distance radius() const;
                     units::Velocity speed() const;
-                    Waypoint waypoint() const;
+                    std::shared_ptr<Waypoint> waypoint() const;
 
                     void setIndex(int index);
 
@@ -40,7 +40,7 @@ namespace rip
                     void setY(const units::Distance& y);
                     void setRadius(const units::Distance& radius);
                     void setSpeed(const units::Velocity& speed);
-                    void setWaypoint(const Waypoint& waypoint);
+                    void setWaypoint(std::shared_ptr<Waypoint> waypoint);
 
                 private slots:
                     void updateX(const QString& text);
@@ -54,10 +54,7 @@ namespace rip
                 private:
                     Ui::WaypointWidget* m_ui;
                     int m_index;
-                    units::Distance m_x;
-                    units::Distance m_y;
-                    units::Distance m_radius;
-                    units::Velocity m_speed;
+                    std::shared_ptr<Waypoint> m_waypoint;
 
                 };
             }

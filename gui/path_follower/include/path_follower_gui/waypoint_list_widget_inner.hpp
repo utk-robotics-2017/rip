@@ -22,7 +22,7 @@ namespace rip
                 public:
                     explicit WaypointListWidgetInner(QWidget* parent);
 
-                    void setWaypointList(std::shared_ptr<WaypointList> waypoints);
+                public slots:
                     void updateWaypoints();
 
                 protected:

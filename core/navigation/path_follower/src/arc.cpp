@@ -24,6 +24,31 @@ namespace rip
                 m_radius = Translation2d(m_center, a.end()).norm();
             }
 
+            Line Arc::a() const
+            {
+                return m_a;
+            }
+
+            Line Arc::b() const
+            {
+                return m_b;
+            }
+
+            Translation2d Arc::center() const
+            {
+                return m_center;
+            }
+
+            units::Distance Arc::radius() const
+            {
+                return m_radius;
+            }
+
+            units::Velocity Arc::speed() const
+            {
+                return m_speed;
+            }
+
             void Arc::addToPath(Path& p)
             {
                 m_a.addToPath(p, m_speed);

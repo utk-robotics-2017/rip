@@ -22,7 +22,6 @@ namespace rip
                 Translation2d end() const;
                 Translation2d slope() const;
                 units::Velocity speed() const;
-
             private:
                 void addToPath(Path& p, const units::Velocity& end_speed);
                 friend class PathBuilder;

@@ -84,6 +84,11 @@ namespace rip
                 return Translation2d(-m_x, -m_y);
             }
 
+            Translation2d Translation2d::perpendicular() const
+            {
+                return Translation2d(-m_y, m_x);
+            }
+
             Translation2d Translation2d::interpolate(const Translation2d& other, double x)
             {
                 if (x <= 0.0)
@@ -144,6 +149,32 @@ namespace rip
             double Translation2d::cross(const Translation2d& lhs, const Translation2d& rhs)
             {
                 return (lhs.m_x * rhs.m_y - lhs.m_y * rhs.m_x)();
+            }
+
+            Translation2d Translation2d::operator-(const Translation2d& rhs) const
+            {
+                return Translation2d(m_x - rhs.m_x, m_y - rhs.m_y);
+            }
+
+            Translation2d& Translation2d::operator-=(const Translation2d& rhs)
+            {
+                m_x -= rhs.m_x;
+                m_y -= rhs.m_y;
+
+                return *this;
+            }
+
+            Translation2d Translation2d::operator+(const Translation2d& rhs) const
+            {
+                return Translation2d(m_x + rhs.m_x, m_y + rhs.m_y);
+            }
+
+            Translation2d Translation2d::operator+=(const Translation2d& rhs)
+            {
+                m_x += rhs.m_x;
+                m_y += rhs.m_y;
+
+                return *this;
             }
 
             Translation2d::operator geometry::Point() const
