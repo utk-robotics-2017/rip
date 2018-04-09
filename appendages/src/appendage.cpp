@@ -48,15 +48,23 @@ namespace rip
 
             if (config.find("label") == config.end())
             {
-                throw AppendageWithoutLabel(fmt::format("appendage missing label"));
+                throw AppendageWithoutLabel(fmt::format("appendage of type {} is missing label", m_type));
             }
             m_label = config["label"];
 
+            if (config.find("id") == config.end() && config.find("index") == config.end())
+            {
+                throw AppendageWithoutId(fmt::format("appendage labeled {} is missing an id or index", m_label));
+            }
+
             if (config.find("id") == config.end())
             {
-                throw AppendageWithId(fmt::format("appendage missing id"));
+              m_id = config["index"];
             }
-            m_id = config["id"];
+            else
+            {
+              m_id = config["id"];
+            }
         }
     }
 }

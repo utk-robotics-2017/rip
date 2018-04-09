@@ -15,11 +15,25 @@ namespace rip
              */
             class Drivetrain : public framework::Subsystem
             {
+
                 using MotorDynamics = motorcontrollers::MotorDynamics;
+
             public:
                 Drivetrain(const std::string& name)
                     : Subsystem(name)
                 {}
+
+                enum class Motor
+                {
+                    //4 motor drivetrain
+                    kFrontLeft,
+                    kFrontRight,
+                    kBackLeft,
+                    kBackRight,
+                    //2 motor drive train
+                    kLeft,
+                    kRight
+                }; // enum class Motor
 
                 /**
                  * Drive all the motors
@@ -39,12 +53,8 @@ namespace rip
                  *
                  * all range from [-1, 1]
                  */
-<<<<<<< Updated upstream
                 virtual void drive(double front_left, double front_right, double back_left, double back_rightk) = 0;
-=======
-                virtual void drive(double front_left, double front_right, double back_left,
-                    double back_right) = 0;
->>>>>>> Stashed changes
+
 
                 /**
                  * Single command to all motors
@@ -59,11 +69,7 @@ namespace rip
                 /**
                  * Command four wheels separately
                  */
-<<<<<<< Updated upstream
                 virtual void drive(const MotorDynamics& front_left, const MotorDynamics& front_right, const MotorDynamics& back_left, const MotorDynamics& back_right) = 0;
-=======
-                virtual void drive(const MotorDynamics& front_left, const MotorDynamics& front_right,
-                    const MotorDynamics& back_left, const MotorDynamics& back_right) = 0;
 
                 /**
                  * Reads encoders for every motor you tell it to read, reports back in respective
@@ -86,7 +92,6 @@ namespace rip
                 virtual units::Velocity readEncoderVelocity(const Motor& motor) = 0;
 
                 virtual units::Angle readGyro() = 0;
->>>>>>> Stashed changes
             };
         }
     }

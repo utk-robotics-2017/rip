@@ -43,7 +43,6 @@ namespace rip
                 {
                     std::vector<spdlog::sink_ptr> sinks;
                     sinks.push_back(std::make_shared<spdlog::sinks::ansicolor_stdout_sink_mt>());
-                    time_t now = time(0);
 
                     cppfs::FileHandle logs_folder = cppfs::fs::open("logs");
                     if(!logs_folder.exists())
@@ -51,7 +50,14 @@ namespace rip
                         logs_folder.createDirectory();
                     }
 
-                    sinks.push_back(std::make_shared<spdlog::sinks::simple_file_sink_mt>(fmt::format("logs/{}.txt", asctime(localtime(&now)))));
+                    time_t now;
+                    time(&now);
+                    char curtime_iso[sizeof "2011-10-08T07:07:09Z"];
+                    strftime(curtime_iso, sizeof curtime_iso, "%FT%TZ", gmtime(&now));
+                    // this will work too, if your compiler doesn't support %F or %T:
+                    //strftime(buf, sizeof buf, "%Y-%m-%dT%H:%M:%SZ", gmtime(&now));
+
+                    sinks.push_back(std::make_shared<spdlog::sinks::simple_file_sink_mt>(fmt::format("logs/{}.txt", curtime_iso)));
                     std::shared_ptr<spdlog::logger> logger = std::make_shared<spdlog::logger>(constants::kLoggerName, begin(sinks),
                             end(sinks));
                     spdlog::set_pattern("[%H:%M:%S %z] [thread %t] [%I] %v");

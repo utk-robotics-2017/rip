@@ -16,6 +16,11 @@ namespace rip
             public:
                 MockDevice();
 
+                bool isOpen () const
+                {
+                  return true;
+                }
+
                 /**
                  * @brief write
                  * @param message
@@ -156,10 +161,12 @@ namespace rip
                     return rv;
 
                 }
+
             private:
                 std::string m_response;
                 std::string m_last_sent;
                 bool m_correctly_acknowledge;
+                bool m_self_is_open;
                 char m_field_separator;
                 char m_command_separator;
                 char m_escape_character;

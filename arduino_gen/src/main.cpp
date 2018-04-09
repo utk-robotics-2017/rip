@@ -8,6 +8,9 @@
 
 #include "misc/exception_base.hpp"
 #include "arduino_gen/arduino_gen.hpp"
+#include "misc/exception_base.hpp"
+
+#include <misc/exception_base.hpp>
 
 int main(int argc, char* argv[])
 {
@@ -140,6 +143,8 @@ int main(int argc, char* argv[])
             std::system(fmt::format("sh {}/{}/upload.sh", args::get(parent_folder), args::get(arduino)).c_str());
         }
     }
+
+    std::system(fmt::format("chmod -R g+w {}/{}", args::get(parent_folder), args::get(arduino)).c_str());
 
     return EXIT_SUCCESS;
 }

@@ -2,6 +2,8 @@
 #include <motor_controllers/motor_dynamics.hpp>
 #include <drivetrains/exceptions.hpp>
 #include <cmath>
+#include <fmt/format.h>
+#include <iostream>
 
 namespace rip
 {
@@ -9,7 +11,10 @@ namespace rip
     {
         namespace drivetrains
         {
-            TwoRoboclawDrivetrain::TwoRoboclawDrivetrain(const std::string& name, std::shared_ptr<TwoRoboclawDrivetrain::Roboclaw> left, std::shared_ptr<TwoRoboclawDrivetrain::Roboclaw> right, std::shared_ptr<TwoRoboclawDrivetrain::NavX> navx)
+            TwoRoboclawDrivetrain::TwoRoboclawDrivetrain(const std::string& name,
+                std::shared_ptr<TwoRoboclawDrivetrain::Roboclaw> left,
+                std::shared_ptr<TwoRoboclawDrivetrain::Roboclaw> right,
+                std::shared_ptr<TwoRoboclawDrivetrain::NavX> navx)
                 : Drivetrain(name)
                 , m_left(left)
                 , m_right(right)
@@ -41,9 +46,11 @@ namespace rip
                 m_right->drive(32767 * right);
             }
 
-            void TwoRoboclawDrivetrain::drive(double front_left, double front_right, double back_left, double back_right)
+            void TwoRoboclawDrivetrain::drive(double front_left, double front_right, double back_left,
+                double back_right)
             {
-                if (std::abs(front_left) > 1 || std::abs(front_right) > 1 || std::abs(back_left) > 1 || std::abs(back_right) > 1)
+                if (std::abs(front_left) > 1 || std::abs(front_right) > 1 || std::abs(back_left) > 1 ||
+                std::abs(back_right) > 1)
                 {
                     throw OutOfRangeException("out of range");
                 }
@@ -67,7 +74,8 @@ namespace rip
                 m_right->setDynamics(right);
             }
 
-            void TwoRoboclawDrivetrain::drive(const MotorDynamics& front_left, const MotorDynamics& front_right, const MotorDynamics& back_left, const MotorDynamics& back_right)
+            void TwoRoboclawDrivetrain::drive(const MotorDynamics& front_left, const MotorDynamics& front_right,
+                 const MotorDynamics& back_left, const MotorDynamics& back_right)
             {
                 m_left->setDynamics(Roboclaw::Motor::kM1, front_left);
                 m_right->setDynamics(Roboclaw::Motor::kM1, front_right);
@@ -216,6 +224,7 @@ namespace rip
             bool TwoRoboclawDrivetrain::diagnostic()
             {
                 // todo
+                return 0;
             }
         }
     }//subsystem

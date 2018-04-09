@@ -50,14 +50,25 @@ namespace rip
 
             if(j.find("arduino_gen_home") != j.end())
             {
+                misc::Logger::getInstance()->debug("Loading spine appendages...");
                 m_spine->loadDevices(j["arduino_gen_home"], devices);
+            }
+            else
+            {
+                misc::Logger::getInstance()->error("Arduino Gen Home not found in config");
+                throw AppendageNotFound();
             }
 
             if(j.find("subsystems") != j.end())
             {
                 createSubsystems(j["subsystems"]);
             }
-            createRoutine();
+            else
+            {
+                misc::Logger::getInstance()->error("Subsystems not found in config");
+                throw SubSystemsNotFound();
+            }
+            createRoutine(j);
 
             if(j.find("state_file") != j.end())
             {
@@ -74,7 +85,7 @@ namespace rip
 
         void RobotBase::stop()
         {
-            misc::Logger::getInstance()->debug("Stoping the robot...");
+            misc::Logger::getInstance()->debug("Stopping the robot...");
             m_running = false;
         }
 

@@ -3,7 +3,14 @@ cmake_minimum_required(VERSION 3.1)
 message("Building third party libraries")
 
 # 3rd party
-add_subdirectory(googletest)
+if(ENABLE_TESTING)
+	add_subdirectory(googletest)
+
+	# custom
+	message("Building custom addons")
+	add_subdirectory(googletest_rip_macros)
+endif()
+
 add_subdirectory(fmt)
 add_subdirectory(json)
 add_subdirectory(spdlog)
@@ -16,6 +23,3 @@ add_subdirectory(serial)
 add_subdirectory(args)
 add_subdirectory(optional-lite)
 
-# custom
-message("Building custom addons")
-add_subdirectory(googletest_rip_macros)

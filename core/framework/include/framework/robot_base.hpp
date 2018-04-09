@@ -74,7 +74,7 @@ namespace rip
             /**
              * Builds the routine to run for the robot
              */
-            virtual void createRoutine() = 0;
+            virtual void createRoutine(const nlohmann::json& config) = 0;
 
             /**
              * Create the subsystem controllers for the robot
@@ -109,7 +109,7 @@ namespace rip
 
             std::string m_config_path;
 
-            friend class Diag;
+            friend class diag::Diag;
         };
     }
 }

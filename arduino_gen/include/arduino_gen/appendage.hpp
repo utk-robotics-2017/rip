@@ -4,6 +4,7 @@
 #include <string>
 #include <map>
 #include <memory>
+#include <vector>
 
 #include <json.hpp>
 
@@ -89,13 +90,15 @@ namespace rip
              * @exception ParameterInvalid This exception is thrown if a parameter is missing,
              *            included but not in the template, or has the wrong type.
              */
-            void testType() const;
+            void testType();
 
             nlohmann::json m_data;
 
-            static std::map< std::string, std::map< std::string, std::string > > m_type_cache;
+            static std::map< std::string, nlohmann::json > m_type_cache;
 
             std::string m_appendage_data_folder;
+
+			std::vector<std::string> m_core_fields;
         };
     }
 }

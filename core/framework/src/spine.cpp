@@ -5,6 +5,8 @@
 
 #include <json.hpp>
 #include <appendages/appendage_factory.hpp>
+#include <cmd_messenger/cmd_messenger.hpp>
+#include <misc/logger.hpp>
 
 namespace rip
 {
@@ -37,6 +39,7 @@ namespace rip
                 {
                     if (!canLoadDevice(arduino_gen_folder, device_name))
                     {
+                        misc::Logger::getInstance()->error(fmt::format("Cannot load {}", device_name));
                         throw CannotLoadDevice(fmt::format("Cannot load {}", device_name));
                     }
                 }
@@ -46,8 +49,9 @@ namespace rip
             // Create devices
             for (const std::string& device_name : device_names)
             {
+                misc::Logger::getInstance()->debug(fmt::format("Loading device {}...", device_name));
                 m_devices[device_name] = std::make_shared<cmdmessenger::Device>(fmt::format("/dev/{}", device_name));
-                loadConfig(m_devices[device_name], fmt::format("{}/{}/core.json", arduino_gen_folder, device_name));
+                loadConfig(m_devices[device_name], fmt::format("{0}/{1}/{1}_core.json", arduino_gen_folder, device_name), device_name);
             }
         }
 
@@ -75,15 +79,17 @@ namespace rip
         bool Spine::canLoadDevice(const std::string& arduino_gen_folder, const std::string& device_name) const
         {
             cppfs::FileHandle dev = cppfs::fs::open(fmt::format("/dev/{}", device_name));
-            cppfs::FileHandle config = cppfs::fs::open(fmt::format("{}/{}/core.json", arduino_gen_folder, device_name));
+            cppfs::FileHandle config = cppfs::fs::open(fmt::format("{0}/{1}/{1}_core.json", arduino_gen_folder, device_name));
             return dev.exists() && config.exists();
         }
 
-        void Spine::loadConfig(std::shared_ptr<cmdmessenger::Device> device, const std::string& path)
+        void Spine::loadConfig(std::shared_ptr<cmdmessenger::Device> device, const std::string& path, const std::string& device_name)
         {
+            misc::Logger::getInstance()->debug(fmt::format("Loading device config {} ...", path));
             cppfs::FileHandle config_file = cppfs::fs::open(path);
             if (!config_file.exists())
             {
+                misc::Logger::getInstance()->error(fmt::format("Cannot find device config file {}", path));
                 throw FileNotFound(fmt::format("Cannot find {}", path));
             }
 
@@ -100,16 +106,42 @@ namespace rip
                 command_map[iter.key()] = iter.value();
             }
 
+            // test the device by sending a kPing command
+            cmdmessenger::ArduinoCmdMessenger messenger;
+            std::shared_ptr<cmdmessenger::Command> command_ping;
+            std::shared_ptr<cmdmessenger::Command> command_ping_result;
+            command_ping = std::make_shared<cmdmessenger::Command>(
+              "kPing",
+              command_map.find("kPing")->second,
+              cmdmessenger::ArduinoCmdMessenger::makeArgumentString()
+            );
+            command_ping_result = std::make_shared<cmdmessenger::Command>(
+              "kPingResult",
+              command_map.find("kPingResult")->second,
+              cmdmessenger::ArduinoCmdMessenger::makeArgumentString<cmdmessenger::ArduinoCmdMessenger::IntegerType>()
+            );
+            //appendages::Appendage::createCommand("kPing", command_map, "");
+            misc::Logger::getInstance()->debug(fmt::format("Attempting to Ping {} ", device_name));
+            messenger.send(device, command_ping);
+            std::tuple<cmdmessenger::ArduinoCmdMessenger::IntegerType> ping_result = messenger.receive<cmdmessenger::ArduinoCmdMessenger::IntegerType>(command_ping_result);
+            misc::Logger::getInstance()->debug(fmt::format("Ping result is {}", std::get<0>(ping_result)));
+
             std::shared_ptr<appendages::AppendageFactory> factory = appendages::AppendageFactory::getInstance();
-            nlohmann::json appendages;
-            for (nlohmann::json appendage : appendages)
+            nlohmann::json appendages_conf = config["appendages"];
+            for (nlohmann::json appendage : appendages_conf)
             {
                 if (appendage.find("type") == appendage.end())
                 {
                     throw AppendageWithoutType(fmt::format("appendage missing type"));
                 }
-
-                m_appendages[appendage["type"]] = factory->makeAppendage(appendage, command_map, device);
+                std::string appendage_type = appendage["type"];
+                if (appendage.find("label") == appendage.end())
+                {
+                    throw AppendageWithoutLabel(fmt::format("appendage of type {} has no label", appendage_type));
+                }
+                std::string appendage_label = appendage["label"];
+                misc::Logger::getInstance()->debug(fmt::format("Loading appendage {} of type {} ...", appendage_label, appendage_type));
+                m_appendages[appendage_label] = factory->makeAppendage(appendage, command_map, device);
             }
         }
     }

@@ -34,6 +34,11 @@
 namespace rip
 {
 
+  namespace diag
+  {
+      class Diag;
+  }
+
     namespace framework
     {
         /**
@@ -61,6 +66,19 @@ namespace rip
             void loadDevices(const std::string& arduino_gen_folder, std::vector<std::string>& device_names);
 
             /**
+             * True if appendage is present
+             * @param  appendage_name name of appendage to search for
+             * @returns boolean
+             */
+            bool has(const std::string& appendage_name) {
+              if (m_appendages.find(appendage_name) == m_appendages.end())
+              {
+                return false;
+              }
+              return true;
+            }
+
+            /**
              * @brief Returns the specified appendage
              *
              * @tparam T The Appendage class type
@@ -69,15 +87,14 @@ namespace rip
              *
              * @returns The specified appendage
              */
-            template<class T>
-            std::shared_ptr<T> get(const std::string& appendage_name)
+            std::shared_ptr<appendages::Appendage> get(const std::string& appendage_name)
             {
                 if (m_appendages.find(appendage_name) == m_appendages.end())
                 {
                     throw AppendageNotFound(fmt::format("Cannot find appendage named {}", appendage_name));
                 }
 
-                return std::dynamic_pointer_cast<T>(m_appendages[appendage_name]);
+                return m_appendages[appendage_name];
             }
 
             /**
@@ -99,7 +116,7 @@ namespace rip
              * @exception FileNotFound Thrown if the config file cannot be found
              * @exception IncorrectConfig Thrown if the config has incorrect information in it
              */
-            void loadConfig(std::shared_ptr<cmdmessenger::Device> device, const std::string& path);
+            void loadConfig(std::shared_ptr<cmdmessenger::Device> device, const std::string& path, const std::string& device_name);
 
             /**
              * @brief Checks if possible to load a device
@@ -113,6 +130,7 @@ namespace rip
             std::map< std::string, std::shared_ptr<cmdmessenger::Device> > m_devices;
             std::map< std::string, std::shared_ptr<appendages::Appendage> > m_appendages;
 
+            friend class diag::Diag;
         }; // class Spine
     }
 } // namespace rip

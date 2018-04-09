@@ -25,7 +25,7 @@ namespace rip
             std::vector<std::string> appendageNames()
             {
                 std::vector<std::string> rv;
-                for (auto const& element : m_robot->m_spine->appendages())
+                for (auto const& element : m_robot->m_spine->m_appendages)
                 {
                     rv.push_back(element.first);
                 }
@@ -50,11 +50,20 @@ namespace rip
                 // throw error
             }
 
-            void runAppendages(const std::string& name)
+            bool hasAppendage(const std::string& name)
+            {
+              return m_robot->m_spine->has(name);
+            }
+
+            bool runAppendage(const std::string& name)
             {
                 if (m_robot->m_spine->has(name))
                 {
-                    m_robot->m_spine->get(name)->diagnostic();
+                    return m_robot->m_spine->get(name)->diagnostic();
+                }
+                else
+                {
+                    return false;
                 }
             }
 

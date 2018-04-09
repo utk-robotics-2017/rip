@@ -1,4 +1,6 @@
 {
     "triggerPin": "int",
     "echoPin": "int"
+    "echoPin": "int",
+    "minSleepMs": "int"
 }
