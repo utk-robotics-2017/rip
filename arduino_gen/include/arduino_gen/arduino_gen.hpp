@@ -1,7 +1,9 @@
 #ifndef ARDUINO_GEN_H
 #define ARDUINO_GEN_H
 
+#ifdef TESTING
 #include <gtest/gtest_prod.h>
+#endif
 
 #include <string>
 #include <vector>

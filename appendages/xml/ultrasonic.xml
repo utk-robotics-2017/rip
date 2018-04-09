@@ -14,6 +14,9 @@
         <constructor type="long" variable="sonar_prevtime">
             <argument type="long" name="timeSinceLastRead" value="1" />
         </constructor>
+        <constructor type="int" variable="sonar_ping_medians">
+            <argument type="int" name="ping_median" value="5" />
+        </constructor>
     </constructors>
     <setup>
         // Ultrasonic triggerPin: $triggerPin$
@@ -30,7 +33,9 @@
                 {
                     delay(sonar_prevtime[indexNum]+sonar_timeouts[indexNum] - curtime );
                 }
-                rv = sonar[indexNum].ping_cm();
+                //rv = sonar[indexNum].ping_cm();
+                unsigned long median_time = sonar[indexNum].ping_median(sonar_ping_medians[indexNum]);
+                rv = NewPing::convert_cm(median_time);
                 sonar_prevtime[indexNum] = millis();
             </code>
         </command>
