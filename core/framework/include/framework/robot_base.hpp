@@ -109,7 +109,7 @@ namespace rip
 
             std::string m_config_path;
 
-            friend class Diag;
+            friend class diag::Diag;
         };
     }
 }

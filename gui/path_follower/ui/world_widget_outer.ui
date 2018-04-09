@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>WorldWidgetOuter</class>
+ <widget class="QWidget" name="WorldWidgetOuter">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>300</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout" stretch="1,1,10">
+   <item>
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>World</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout" stretch="10,1,1">
+     <item>
+      <widget class="QComboBox" name="options"/>
+     </item>
+     <item>
+      <widget class="QPushButton" name="add">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset resource="../resources/icons/icons.qrc">
+         <normaloff>:/icons/plus.png</normaloff>:/icons/plus.png</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="remove">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset resource="../resources/icons/icons.qrc">
+         <normaloff>:/icons/minus.png</normaloff>:/icons/minus.png</iconset>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="rip::navigation::pathfollower::gui::WorldWidgetInner" name="inner" native="true"/>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>rip::navigation::pathfollower::gui::WorldWidgetInner</class>
+   <extends>QWidget</extends>
+   <header>path_follower_gui/world_widget_inner.hpp</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources>
+  <include location="../resources/icons/icons.qrc"/>
+ </resources>
+ <connections/>
+</ui>

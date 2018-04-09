@@ -11,8 +11,7 @@ namespace rip
 {
     namespace arduinogen
     {
-        std::map< std::string, std::map< std::string, std::string> > Appendage::m_type_cache =
-            std::map< std::string, std::map< std::string, std::string> >();
+		std::map< std::string, nlohmann::json > Appendage::m_type_cache = std::map< std::string, nlohmann::json >();
 
         Appendage::Appendage(nlohmann::json j,
                              std::multimap< std::string, std::shared_ptr<Appendage> >& appendages,
@@ -109,7 +108,7 @@ namespace rip
             }
         }
 
-        void Appendage::testType() const
+        void Appendage::testType()
         {
 
             std::string type = getType();
@@ -149,69 +148,83 @@ namespace rip
 
                 nlohmann::json j;
                 (*type_template.createInputStream()) >> j;
-                std::map< std::string, std::string > temp;
-                for (nlohmann::json::iterator it = j.begin(); it != j.end(); ++it) {
-                    temp[it.key()] = it.value();
-                }
-                m_type_cache[type] = temp;
+				m_type_cache[type] = j;
             }
 
-            std::map< std::string, std::string >& type_check = m_type_cache[type];
+			nlohmann::json& type_check = m_type_cache[type];
 
             // Check if the appendage has all the parameters specified by the tempate
             // and that they are the correct type
-            for(std::pair< std::string, std::string> type_parameter : type_check)
+			for (nlohmann::json::iterator type_parameter = type_check.begin(); type_parameter != type_check.end(); ++type_parameter)
             {
-                if(m_data.find(type_parameter.first) == m_data.end())
+                if (type_parameter.key() != "core" && m_data.find(type_parameter.key()) == m_data.end())
                 {
-                    throw AppendageDataException(fmt::format("{} missing on {}", type_parameter.first, label));
+                    throw AppendageDataException(fmt::format("{} missing on {}", type_parameter.key(), label));
                 }
 
-                nlohmann::json parameter = m_data[type_parameter.first];
+                nlohmann::json parameter = m_data[type_parameter.key()];
 
-                if(type_parameter.second == "int")
+				if (type_parameter.key() == "core")
+				{
+					if (!type_parameter.value().is_array())
+					{
+						throw AppendageDataException(fmt::format("Core field is not an array for type {}", type));
+					}
+
+					nlohmann::json& core_keys = type_parameter.value();
+					for (nlohmann::json::iterator core_key = core_keys.begin(); core_key != core_keys.end(); ++core_key)
+					{
+						if (m_data.find(core_key.value().get<std::string>()) == m_data.end())
+						{
+							throw AppendageDataException(fmt::format("{} missing core field {}", label, core_key.value().get<std::string>()));
+						}
+
+						m_core_fields.emplace_back(core_key.value().get<std::string>());
+					}
+				}
+                else if(type_parameter.value() == "int")
                 {
                     if(!parameter.is_number_integer())
                     {
                         throw AppendageDataException(fmt::format("Incorrect type for {} on {}. Should be an integer.",
-                                                                 type_parameter.first, label));
+                                                                 type_parameter.key(), label));
                     }
                 }
-                else if(type_parameter.second == "float")
+                else if(type_parameter.value() == "float")
                 {
                     if(!parameter.is_number_float())
                     {
                         throw AppendageDataException(fmt::format("Incorrect type for {} on {}. Should be an integer.",
-                                                                 type_parameter.first, label));
+                                                                 type_parameter.key(), label));
                     }
                 }
-                else if(type_parameter.second == "string")
+                else if(type_parameter.value() == "string")
                 {
                     if(!parameter.is_string())
                     {
                         throw AppendageDataException(fmt::format("Incorrect type for {} on {}. Should be a string.",
-                                                                 type_parameter.first, label));
+                                                                 type_parameter.key(), label));
                     }
                 }
-                else if(type_parameter.second == "bool")
+                else if(type_parameter.value() == "bool")
                 {
                     if(!parameter.is_boolean())
                     {
                         throw AppendageDataException(fmt::format("Incorrect type for {} on {}. Should be a bool.",
-                                                                 type_parameter.first, label));
+                                                                 type_parameter.key(), label));
                     }
                 }
-                else if(type_parameter.second == "object")
+                else if(type_parameter.value() == "object")
                 {
                     if(!parameter.is_object())
                     {
                         throw AppendageDataException(fmt::format("Incorrect type for {} on {}. Should be an object.",
-                                                                 type_parameter.first, label));
+                                                                 type_parameter.key(), label));
                     }
                 }
                 else
                 {
-                    throw AppendageDataException(fmt::format("Unknown Type in template file for {}", type_parameter.first,
+                    throw AppendageDataException(fmt::format("Unknown Type in template file for {}", type_parameter.key(),
                                                              label));
                 }
             }
@@ -233,6 +246,11 @@ namespace rip
             json["type"] = m_data["type"];
             json["label"] = m_data["label"];
             json["index"] = index;
+
+			for (std::string core_key : m_core_fields)
+			{
+				json[core_key] = m_data[core_key];
+			}
 
             return json;
         }

@@ -10,7 +10,7 @@ const char LED = 13;
 
 {constructors}
 
-enum
+enum RIPenum : int16_t
 {{
 {command_enums}
 }};
@@ -57,7 +57,7 @@ void attachCommandCallbacks()
 // Called when a received command has no attached function
 void unknownCommand()
 {{
-	cmdMessenger.sendCmd(kError, kUnknown);
+	cmdMessenger.sendBinCmd(kError, kUnknown);
 }}
 
 // Called upon initialization of Spine to check connection

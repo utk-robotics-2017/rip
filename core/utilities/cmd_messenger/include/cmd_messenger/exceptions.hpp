@@ -17,8 +17,8 @@
  *  \$$    $$   | $$   | $$  \$$\      | $$  | $$|   $$ \| $$
  *   \$$$$$$     \$$    \$$   \$$       \$$   \$$ \$$$$$$ \$$
  */
-#ifndef EXCEPTIONS_HPP
-#define EXCEPTIONS_HPP
+#ifndef CMD_MESSENGER_EXCEPTIONS_HPP
+#define CMD_MESSENGER_EXCEPTIONS_HPP
 #include <misc/exception_base.hpp>
 
 namespace rip
@@ -27,6 +27,7 @@ namespace rip
     {
         NEW_EX(EmptyDevice)
         NEW_EX(EmptyCommand)
+        NEW_EX(EmptyDeviceResponse)
 
         NEW_EX(IncorrectAcknowledgementCommand)
         NEW_EX(IncorrectArgumentListSize)
@@ -37,6 +38,9 @@ namespace rip
         NEW_EX(NoLastDeviceException)
         NEW_EX(UnconvertibleArgument)
         NEW_EX(UnknownArgument)
+        NEW_EX(DeviceSentErrorResponse)
+
+        NEW_EX(SerialLibrarySucks)
     }
 }
-#endif // EXCEPTIONS_HPP
+#endif // CMD_MESSENGER_EXCEPTIONS_HPP

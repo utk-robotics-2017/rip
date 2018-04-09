@@ -28,6 +28,7 @@ namespace rip
         NEW_EX(AppendageNotFound)
         NEW_EX(FileNotFound)
         NEW_EX(AppendageWithoutType)
+        NEW_EX(AppendageWithoutLabel)
         NEW_EX(CannotLoadDevice)
     }
 }
