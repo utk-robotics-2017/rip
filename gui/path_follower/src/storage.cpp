@@ -352,6 +352,16 @@ namespace rip
                     return m_selected_waypoints;
                 }
 
+                void Storage::removeIndividualWaypoint(int i)
+                {
+                    std::shared_ptr<WaypointList> waypoints = selectedWaypoints();
+                    if(waypoints)
+                    {
+                        waypoints->removeWaypoint(i);
+                        selectedWaypointsChanged();
+                    }
+                }
+
                 void Storage::selectWorld(const QString& name)
                 {
                     m_selected_world = name.toStdString();

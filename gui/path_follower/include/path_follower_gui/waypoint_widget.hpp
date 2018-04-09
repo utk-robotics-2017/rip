@@ -47,6 +47,7 @@ namespace rip
                     void updateY(const QString& text);
                     void updateRadius(const QString& text);
                     void updateSpeed(const QString& text);
+                    void remove();
 
                 signals:
                     void updated();

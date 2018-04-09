@@ -3,6 +3,8 @@
 
 #include <fmt/format.h>
 
+#include "path_follower_gui/storage.hpp"
+
 namespace rip
 {
     namespace navigation
@@ -23,6 +25,8 @@ namespace rip
                     connect(m_ui->y, SIGNAL(textEdited(QString)), this, SLOT(updateY(QString)));
                     connect(m_ui->radius, SIGNAL(textEdited(QString)), this, SLOT(updateRadius(QString)));
                     connect(m_ui->speed, SIGNAL(textEdited(QString)), this, SLOT(updateSpeed(QString)));
+
+                    connect(m_ui->remove, SIGNAL(clicked(bool)), this, SLOT(remove()));
                 }
 
                 WaypointWidget::~WaypointWidget()
@@ -143,8 +147,10 @@ namespace rip
                     }
                 }
 
-
-
+                void WaypointWidget::remove()
+                {
+                    Storage::getInstance()->removeIndividualWaypoint(m_index);
+                }
             }
         }
     }
