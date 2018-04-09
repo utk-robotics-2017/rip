@@ -395,8 +395,6 @@ namespace rip
 
         typedef Units<0, 0, 0, 0, 0, 0> Unitless;
 
-
-
         // Unit constants
         const NT tera = 1e12;
         const NT giga = 1e9;
@@ -489,6 +487,8 @@ namespace rip
 
         double cos(const Angle& lhs);
         double sin(const Angle& lhs);
+        Time now();
+
 #undef UNITS_FUNC
 #define UNITS_FUNC false
     }
