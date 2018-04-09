@@ -1,6 +1,8 @@
 #ifndef RIGID_TRANSFORM_2D_HPP
 #define RIGID_TRANSFORM_2D_HPP
 
+#include <pose/pose.hpp>
+
 #include "path_follower/interpolable.hpp"
 #include "path_follower/translation_2d.hpp"
 #include "path_follower/rotation_2d.hpp"
@@ -18,6 +20,7 @@ namespace rip
                 RigidTransform2d() = default;
                 RigidTransform2d(const Translation2d& translation, const Rotation2d& rotation);
                 RigidTransform2d(const RigidTransform2d& other);
+                RigidTransform2d(const pose::Pose& pose);
 
                 static RigidTransform2d fromTranslation(const Translation2d& translation);
                 static RigidTransform2d fromRotation(const Rotation2d& rotation);
@@ -31,7 +34,7 @@ namespace rip
                 void setTranslation(const Translation2d& translation);
                 void setRotation(const Rotation2d& rotation);
 
-                RigidTransform2d transformBy(const RigidTransform2d& other);
+                RigidTransform2d transformBy(const RigidTransform2d& other) const;
                 RigidTransform2d inverse() const;
                 RigidTransform2d normal() const;
 
@@ -41,6 +44,21 @@ namespace rip
 
                 std::string toString() const;
                 friend std::ostream& operator<<(std::ostream& os, const RigidTransform2d& transform);
+
+                RigidTransform2d operator+(const RigidTransform2d& rhs) const
+                {
+                    return RigidTransform2d(m_translation + rhs.m_translation, m_rotation + rhs.m_rotation);
+                }
+
+                RigidTransform2d& operator+=(const RigidTransform2d& rhs)
+                {
+                    m_translation += rhs.m_translation;
+                    m_rotation += rhs.m_rotation;
+                }
+
+                RigidTransform2d operator-(const RigidTransform2d& rhs) const;
+                RigidTransform2d& operator-=(const RigidTransform2d& rhs);
+
             private:
                 static Translation2d intersectionInternal(const RigidTransform2d& lhs, const RigidTransform2d& rhs);
 

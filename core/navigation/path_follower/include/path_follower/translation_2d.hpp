@@ -91,7 +91,7 @@ namespace rip
                 Translation2d operator-(const Translation2d& rhs) const;
                 Translation2d& operator-=(const Translation2d& rhs);
                 Translation2d operator+(const Translation2d& rhs) const;
-                Translation2d operator+=(const Translation2d& rhs);
+                Translation2d& operator+=(const Translation2d& rhs);
 
             protected:
                 units::Distance m_x;

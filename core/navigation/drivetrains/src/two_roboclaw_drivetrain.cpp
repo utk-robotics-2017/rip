@@ -77,6 +77,136 @@ namespace rip
 
             }
 
+            std::vector<units::Distance> TwoRoboclawDrivetrain::readEncoders(const std::vector<Motor>& motors)
+            {
+                std::vector<units::Distance> data;
+                for(uint i=0; i<motors.size(); i++)
+                {
+
+                    switch(motors[i])
+                    {
+
+                        case Motor::kFrontLeft:
+                        {
+                            data.push_back(m_left->readEncoder(Roboclaw::Motor::kM1));
+                            break;
+                        }
+                        case Motor::kFrontRight:
+                        {
+                            data.push_back(m_right->readEncoder(Roboclaw::Motor::kM1));
+                            break;
+                        }
+                        case Motor::kBackLeft:
+                        {
+                            data.push_back(m_left->readEncoder(Roboclaw::Motor::kM2));
+                            break;
+                        }
+                        case Motor::kBackRight:
+                        {
+                            data.push_back(m_right->readEncoder(Roboclaw::Motor::kM2));
+                            break;
+                        }
+                        default:
+                        {
+                            throw InvalidMotorException(fmt::format("Invalid motor, parameter {}", i+1));
+                        }
+                    }
+                }
+                return data;
+            }
+
+            units::Distance TwoRoboclawDrivetrain::readEncoder(const Motor& motor)
+            {
+                switch(motor)
+                {
+                    case Motor::kFrontLeft:
+                    {
+                        return m_left->readEncoder(Roboclaw::Motor::kM1);
+                    }
+                    case Motor::kFrontRight:
+                    {
+                        return m_right->readEncoder(Roboclaw::Motor::kM1);
+                    }
+                    case Motor::kBackLeft:
+                    {
+                        return m_left->readEncoder(Roboclaw::Motor::kM2);
+                    }
+                    case Motor::kBackRight:
+                    {
+                        return m_right->readEncoder(Roboclaw::Motor::kM2);
+                    }
+                    default:
+                    {
+                        throw InvalidMotorException("Invalid motor");
+                    }
+                }
+            }
+
+            std::vector<units::Velocity> TwoRoboclawDrivetrain::readEncoderVelocities(
+                const std::vector<Motor>& motors)
+            {
+                std::vector<units::Velocity> data;
+                for(uint i=0; i<motors.size(); i++)
+                {
+                    switch(motors[i])
+                    {
+                        case Motor::kFrontLeft:
+                        {
+                            data.push_back(m_left->readEncoderVelocity(Roboclaw::Motor::kM1));
+                        }
+                        case Motor::kFrontRight:
+                        {
+                            data.push_back(m_right->readEncoderVelocity(Roboclaw::Motor::kM1));
+                        }
+                        case Motor::kBackLeft:
+                        {
+                            data.push_back(m_left->readEncoderVelocity(Roboclaw::Motor::kM2));
+                        }
+                        case Motor::kBackRight:
+                        {
+                            data.push_back(m_right->readEncoderVelocity(Roboclaw::Motor::kM2));
+                        }
+                        default:
+                        {
+                            throw InvalidMotorException(fmt::format("Invalid motor, parameter {}", i+1));
+                        }
+                    }
+                }
+                return data;
+            }
+
+            units::Velocity TwoRoboclawDrivetrain::readEncoderVelocity(const Motor& motor)
+            {
+                switch(motor)
+                {
+                    case Motor::kFrontLeft:
+                    {
+                        return m_left->readEncoderVelocity(Roboclaw::Motor::kM1);
+                    }
+                    case Motor::kFrontRight:
+                    {
+                        return m_right->readEncoderVelocity(Roboclaw::Motor::kM1);
+                    }
+                    case Motor::kBackLeft:
+                    {
+                        return m_left->readEncoderVelocity(Roboclaw::Motor::kM2);
+                    }
+                    case Motor::kBackRight:
+                    {
+                        return m_right->readEncoderVelocity(Roboclaw::Motor::kM2);
+                    }
+                    default:
+                    {
+                        throw InvalidMotorException("Invalid motor");
+                    }
+                }
+            }
+
+            units::Angle TwoRoboclawDrivetrain::readGyro()
+            {
+                return m_navx->getAngle();
+            }
+
             void TwoRoboclawDrivetrain::stop()
             {
                 m_left->drive(0);

@@ -19,6 +19,11 @@ namespace rip
             {
             }
 
+            RigidTransform2d::RigidTransform2d(const pose::Pose& pose)
+                : m_translation(pose.x, pose.y), m_rotation(pose.yaw)
+            {
+            }
+
             RigidTransform2d RigidTransform2d::fromTranslation(const Translation2d& translation)
             {
                 return RigidTransform2d(translation, Rotation2d());
@@ -85,7 +90,7 @@ namespace rip
                 m_rotation = rotation;
             }
 
-            RigidTransform2d RigidTransform2d::transformBy(const RigidTransform2d& other)
+            RigidTransform2d RigidTransform2d::transformBy(const RigidTransform2d& other) const
             {
                 return RigidTransform2d(m_translation.translateBy(other.m_translation.rotateBy(m_rotation)), m_rotation.rotateBy(other.m_rotation));
             }

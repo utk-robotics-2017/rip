@@ -74,6 +74,42 @@ namespace rip
             {
                 return m_steering_controller.hasPassedMarker(marker);
             }
+
+            void to_json(nlohmann::json& j, const PathFollower::Parameters& parameters)
+            {
+                j = {
+                    {"lookahead", parameters.lookahead},
+                    {"inertia_gain", parameters.inertia_gain},
+                    {"kp", parameters.profile_kp},
+                    {"ki", parameters.profile_ki},
+                    {"kv", parameters.profile_kv},
+                    {"kffv", parameters.profile_kffv},
+                    {"kffa", parameters.profile_kffa},
+                    {"max_velocity", parameters.profile_max_velocity},
+                    {"max_acceleration", parameters.profile_max_acceleration},
+                    {"goal_position_tolerance", parameters.goal_position_tolerance},
+                    {"goal_velocity_tolerance", parameters.goal_velocity_tolerance},
+                    {"stop_steering_distance", parameters.stop_steering_distance}
+                };
+            }
+
+            void from_json(const nlohmann::json& j, PathFollower::Parameters& p)
+            {
+                p.lookahead = j["lookahead"];
+                p.inertia_gain = j["inertia_gain"];
+                p.profile_kp = j["kp"];
+                p.profile_ki = j["ki"];
+                p.profile_kv = j["kv"];
+                p.profile_kffv = j["kffv"];
+                p.profile_kffa = j["kffa"];
+                p.profile_max_velocity = j["max_velocity"];
+                p.profile_max_acceleration = j["max_acceleration"];
+                p.goal_position_tolerance = j["goal_position_tolerance"];
+                p.goal_velocity_tolerance = j["goal_velocity_tolerance"];
+                p.stop_steering_distance = j["stop_steering_distance"];
+            }
+
+
         }
     }
 }

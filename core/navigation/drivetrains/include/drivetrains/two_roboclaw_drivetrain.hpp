@@ -63,6 +63,8 @@ namespace rip
                 virtual void drive(const MotorDynamics& front_left, const MotorDynamics& front_right, const MotorDynamics& back_left, const MotorDynamics& back_right) override;
 
 
+                virtual units::Angle readGyro() override;
+
                 virtual void stop() override;
 
                 virtual bool diagnostic() override;

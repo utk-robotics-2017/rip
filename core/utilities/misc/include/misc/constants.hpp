@@ -33,6 +33,8 @@ namespace rip
             static const char* kLoggerName;
             static const char* kPathFollowingMaxAccel;
             static const char* kSegmentCompletionTolerance;
+            static const char* kWheelbase;
+            static const char* kTrackScrubFactor;
 
             static std::shared_ptr<constants> getInstance()
             {

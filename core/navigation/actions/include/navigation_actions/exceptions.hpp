@@ -17,45 +17,23 @@
  *  \$$    $$   | $$   | $$  \$$\      | $$  | $$|   $$ \| $$
  *   \$$$$$$     \$$    \$$   \$$       \$$   \$$ \$$$$$$ \$$
  */
-#ifndef EXCEPTION_BASE_HPP
-#define EXCEPTION_BASE_HPP
-#include <string>
-#include <utility>
-#include <fmt/format.h>
-
-#define NEW_EX(name) \
-class name : public rip::utilities::ExceptionBase \
-{ \
-public: \
-    template <typename... Args>\
-    name(const std::string& message="", Args && ... args) \
-        : rip::utilities::ExceptionBase(#name ": " + message, std::forward<Args>(args)...)\
-    {} \
-};
+#ifndef EXCEPTIONS_HPP
+#define EXCEPTIONS_HPP
+#include <misc/exception_base.hpp>
 
 namespace rip
 {
-    namespace utilities
+    namespace navigation
     {
-        class ExceptionBase : public std::exception
+        namespace actions
         {
-        protected:
-            std::string m_message;
-
-        public:
             /**
-             *  Constructor with parameter pack template and perfect forwarding
+             * Thrown if a parameter is out of bounds
+             * @param OutofBoundsException [description]
              */
-            template <typename... Args>
-            ExceptionBase(const std::string& message,  Args && ... args)
-                : m_message(fmt::format(message, std::forward<Args>(args)...))
-            {}
-
-            const char* what() const throw()
-            {
-                return m_message.c_str();
-            }
-        };
+            NEW_EX(OutofBoundsException);
+            NEW_EX(FileNotFound);
+        }
     }
 }
-#endif // EXCEPTION_BASE_HPP
+#endif // EXCEPTIONS_HPP

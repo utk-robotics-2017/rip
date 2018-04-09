@@ -56,6 +56,9 @@ namespace rip
                 units::Distance m_cross_track_error;
                 units::Distance m_along_track_error;
             };
+
+            void to_json(nlohmann::json& j, const PathFollower::Parameters& parameters);
+            void from_json(const nlohmann::json &j, PathFollower::Parameters &p);
         }
     }
 }
