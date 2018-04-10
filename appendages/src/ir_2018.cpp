@@ -60,7 +60,7 @@ namespace rip
 
         std::shared_ptr<Appendage> Ir2018::create(const nlohmann::json& config, const std::map<std::string, int>& command_map, std::shared_ptr<cmdmessenger::Device> device)
         {
-            return std::dynamic_pointer_cast<Appendage>(std::shared_ptr<DigitalInput>(new Ir2018(config, command_map, device)));
+            return std::dynamic_pointer_cast<Appendage>(std::shared_ptr<Ir2018>(new Ir2018(config, command_map, device)));
         }
     }
 }
