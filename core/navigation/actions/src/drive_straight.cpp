@@ -13,7 +13,7 @@ namespace rip
 
             DriveStraight::DriveStraight(const std::string& name, std::shared_ptr<Drivetrain> drivetrain,
                                          std::shared_ptr<navx::NavX> navx, const units::Time& time, const units::Velocity& speed,
-                                         units::Acceleration max_accel, double p, double i, double d)
+                                         units::Acceleration max_accel, double p, double i, double d, bool forward=true)
                 : Action(name)
                 , m_use_time(true)
                 , m_time(time)
@@ -21,6 +21,7 @@ namespace rip
                 , m_max_accel(max_accel)
                 , m_drivetrain(drivetrain)
                 , m_pid(new pid::PidController(navx.get(), this, p, i , d))
+                , m_direction(forward)
             {
                 m_pid->setSetpoint(0);
                 m_pid->setTolerance(10);
@@ -41,6 +42,7 @@ namespace rip
                 , m_drivetrain(drivetrain)
                 , m_navx(navx)
                 , m_pid(new pid::PidController(navx.get(), this, p, i , d))
+                , m_direction(speed > 0)
             {
                 m_pid->setSetpoint(0);
                 m_pid->setTolerance(10);
@@ -81,14 +83,17 @@ namespace rip
                 l_dynamics.setAcceleration(m_max_accel);
                 r_dynamics.setAcceleration(m_max_accel);
 
+                state["left_target_speed"] = l_speed;
+                state["right_target_speed"] = r_speed;
+
                 std::vector<units::Velocity> vel = m_drivetrain->readEncoderVelocities(motors);
 
                 misc::Logger::getInstance()->debug(
                             "Encoder Velocity | Left: {} {} | Right: {} {} | Target: {}",
                             vel[0].to(units::in / units::s), vel[1].to(units::in / units::s),
-                        vel[2].to(units::in / units::s), vel[3].to(units::in / units::s),
-                        m_speed.to(units::in / units::s)
-                        );
+                            vel[2].to(units::in / units::s), vel[3].to(units::in / units::s),
+                            m_speed.to(units::in / units::s)
+                            );
 
                 misc::Logger::getInstance()->debug(
                             "NavX | Velocity: X: {} Y: {} Z: {} | Yaw: {} | Angle: {} | Angle Diff: {} | Fused Heading: {}",
@@ -112,13 +117,18 @@ namespace rip
                     // this is quite arbitrary right now but should be kinda close
                     units::Distance threshold = m_distance + m_init_encoder - (m_speed * (0.1 * units::s));
 
-                    if (max_encoder >= threshold)
+                    state["current_distance"] = max_encoder;
+                    state["distance_threshold"] = threshold;
+
+                    // going forward encoder > threshold
+                    // going backwards encoder < threshold
+                    if ( (m_direction && max_encoder >= threshold) || (!m_direction && max_encoder <= threshold))
                     {
                         misc::Logger::getInstance()->debug(
                                     "Left: {} {} | Right: {} {} | Target: {}",
                                     dists[0].to(units::in), dists[1].to(units::in),
-                                dists[2].to(units::in), dists[3].to(units::in),
-                                threshold.to(units::in));
+                                    dists[2].to(units::in), dists[3].to(units::in),
+                                    threshold.to(units::in));
 
                         m_finished = true;
                     }
@@ -168,12 +178,17 @@ namespace rip
                 std::vector<units::Distance> dists = m_drivetrain->readEncoders(motors);
                 m_init_encoder = *(std::max_element(dists.begin(), dists.end()));
 
+                state["initial_encoder"] = m_init_encoder;
+
                 // NavX
                 m_navx->zeroYaw();
                 m_initial_yaw = m_navx->getYaw();
                 misc::Logger::getInstance()->debug(
                             "Inital Yaw: {}", m_initial_yaw.to(units::deg)
                             );
+
+                state["initial_yaw"] = m_initial_yaw;
+                state["direction"] = m_direction;
             }
 
             void DriveStraight::teardown(nlohmann::json& state)

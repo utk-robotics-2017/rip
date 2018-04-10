@@ -25,7 +25,7 @@ namespace rip
                               std::shared_ptr<navx::NavX> navx, const units::Distance& distance, const units::Velocity& speed, units::Acceleration max_accel, double p, double i, double d);
 
                 DriveStraight(const std::string& name, std::shared_ptr<drivetrains::Drivetrain> drivetrain,
-                              std::shared_ptr<navx::NavX> navx, const units::Time& time, const units::Velocity& speed, units::Acceleration max_accel, double p, double i, double d);
+                              std::shared_ptr<navx::NavX> navx, const units::Time& time, const units::Velocity& speed, units::Acceleration max_accel, double p, double i, double d, bool forward);
 
                 /**
                 * Returns whether or not the action has finished execution.
@@ -80,6 +80,7 @@ namespace rip
                 units::Angle m_initial_yaw;
 
                 bool m_finished;
+                bool m_direction;
             };
 
         }
