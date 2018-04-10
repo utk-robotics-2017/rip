@@ -1,5 +1,5 @@
-#ifndef ROBOCLAW_HPP
-#define ROBOCLAW_HPP
+#ifndef ROBOCLAW_APPENDAGE_HPP
+#define ROBOCLAW_APPENDAGE_HPP
 
 #include <tuple>
 #include <misc/logger.hpp>
@@ -293,4 +293,4 @@ namespace rip
 	}
 }
 
-#endif // ROBOCLAW_HPP
+#endif // ROBOCLAW_APPENDAGE_HPP
