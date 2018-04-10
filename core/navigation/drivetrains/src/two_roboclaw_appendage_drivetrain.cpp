@@ -506,10 +506,10 @@ namespace rip
                 m_left->resetEncoders();
                 m_right->resetEncoders();
             }
-            
-            units::Angle TwoRoboclawAppendageDrivetrain::readGyro() const
+
+            units::Angle TwoRoboclawAppendageDrivetrain::readGyro()
             {
-                m_navx->getAngle();
+                return m_navx->getAngle();
             }
 
             void TwoRoboclawAppendageDrivetrain::stop()

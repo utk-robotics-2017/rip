@@ -1,5 +1,5 @@
-#ifndef TWO_ROBOCLAW_DRIVE_TRAIN_HPP
-#define TWO_ROBOCLAW_DRIVE_TRAIN_HPP
+#ifndef TWO_ROBOCLAW_APPENDAGE_DRIVE_TRAIN_HPP
+#define TWO_ROBOCLAW_APPENDAGE_DRIVE_TRAIN_HPP
 
 #include <memory>
 #include <appendages/roboclaw.hpp>
@@ -115,7 +115,7 @@ namespace rip
                  */
                 virtual void resetEncoders() override;
 
-                virtual units::Angle readGyro() const;
+                virtual units::Angle readGyro() override;
 
                 virtual void stop() override;
 
