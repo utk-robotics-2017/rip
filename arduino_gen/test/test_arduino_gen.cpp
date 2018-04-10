@@ -1646,7 +1646,7 @@ namespace rip
                 "\tNewPing(1, 2, 200)\n"
                 "};\n"
                 "\n"
-                "enum\n"
+                "enum RIPenum : int16_t\n"
                 "{\n"
                 "\tkAcknowledge,\n"
                 "\tkError,\n"
