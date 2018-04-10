@@ -26,6 +26,8 @@ namespace rip
              */
             std::array<bool, 3> read();
 
+            bool calibrate();
+
             /**
              * Stop
              */
@@ -57,6 +59,8 @@ namespace rip
 
             std::shared_ptr<cmdmessenger::Command> m_read;
             std::shared_ptr<cmdmessenger::Command> m_read_result;
+            std::shared_ptr<cmdmessenger::Command> m_calibrate;
+            std::shared_ptr<cmdmessenger::Command> m_calibrate_result;
         };
     }
 }

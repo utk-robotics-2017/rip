@@ -8,11 +8,28 @@
     </setup>
 
     <commands>
+        <command id="kCalibrateIr2018" name="calibrateIr2018" index-num="true">
+            <return-value name="rv" type="char"/>
+            <code>
+                rv = digitalRead(ir_2018_pins[index_num]);
+            </code>
+        </command>
         <command id="kReadIr2018" name="readIr2018" index-num="true">
             <return-value name="rv" type="char"/>
             <code>
+                long start = millis();
+
                 // Wait for start
-                while(pulseIn(ir_2018_pins[index_num], LOW) < 8000);
+                while(pulseIn(ir_2018_pins[index_num], LOW) < 8000)
+                {
+                    // After a half second tell the pi we don't know
+                    if(millis() - start > 500)
+                    {
+                        rv = 1 << 4;
+                        cmdMessenger.sendBinCmd(kReadIr2018Result, rv);
+                        return;
+                    }
+                }
 
                 // Wait through empty pulses
                 for(int i = 0; i < 5; ++i)

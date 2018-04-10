@@ -14,19 +14,37 @@ namespace rip
             : Appendage(config, device)
             , m_read(createCommand("kReadIr2018", command_map, cmdmessenger::ArduinoCmdMessenger::makeArgumentString<cmdmessenger::ArduinoCmdMessenger::IntegerType>()))
             , m_read_result(createCommand("kReadIr2018Result", command_map, cmdmessenger::ArduinoCmdMessenger::makeArgumentString<cmdmessenger::ArduinoCmdMessenger::CharType>()))
+            , m_calibrate(createCommand("kCalibrateIr2018", command_map, cmdmessenger::ArduinoCmdMessenger::makeArgumentString<cmdmessenger::ArduinoCmdMessenger::IntegerType>()))
+            , m_calibrate_result(createCommand("kCalibrateIr2018Result", command_map, cmdmessenger::ArduinoCmdMessenger::makeArgumentString<cmdmessenger::ArduinoCmdMessenger::BooleanType>()))
         {
         }
 
-        std::array<bool, 3> Ir2018::read()
+        std::array<bool, 4> Ir2018::read()
+        {
+            std::array<bool, 4> rv;
+
+            cmdmessenger::ArduinoCmdMessenger messenger;
+            try
+            {
+                messenger.send<cmdmessenger::ArduinoCmdMessenger::IntegerType>(m_device, m_read, m_id);
+                char data = std::get<0>(messenger.receive<cmdmessenger::ArduinoCmdMessenger::CharType>(m_read_result));
+                rv[0] = true;
+                rv[1] = data & 1 << 0;
+                rv[2] = data & 1 << 1;
+                rv[3] = data & 1 << 2;
+            }
+            catch ()
+            {
+                rv[0] = false;
+            }
+            return rv;
+        }
+
+        bool Ir2018::calibrate()
         {
             cmdmessenger::ArduinoCmdMessenger messenger;
-            messenger.send<cmdmessenger::ArduinoCmdMessenger::IntegerType>(m_device, m_read, m_id);
-            char data = std::get<0>(messenger.receive<cmdmessenger::ArduinoCmdMessenger::CharType>(m_read_result));
-            std::array<bool, 3> rv;
-            rv[0] = data & 1 << 0;
-            rv[1] = data & 1 << 1;
-            rv[2] = data & 1 << 2;
-            return rv;
+            messenger.send<cmdmessenger::ArduinoCmdMessenger::IntegerType>(m_device, m_calibrate, m_id);
+            return std::get<0>(messenger.receive<cmdmessenger::ArduinoCmdMessenger::BooleanType>(m_calibrate_result));
         }
 
         void Ir2018::stop()
