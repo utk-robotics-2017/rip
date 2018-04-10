@@ -1,0 +1,49 @@
+<appendage-template>
+    <constructors type="char" variable="ir_2018_pins">
+        <parameter name="pin" type="int"/>
+    </constructors>
+
+    <setup>
+        pinMode(ir_2018_pins[i], INPUT$pullup$);
+    </setup>
+
+    <commands>
+        <command id="kReadIr2018" name="readIr2018" index-num="true">
+            <return-value name="rv" type="char"/>
+            <code>
+                // Wait for start
+                while(pulseIn(ir_2018_pins[index_num], LOW) < 8000);
+
+                // Wait through empty pulses
+                for(int i = 0; i < 5; ++i)
+                {
+                    pulseIn(ir_2018_pins[index_num], HIGH);
+                }
+
+                // Store pulse in bins
+                boolean bin[3];
+                for(int i = 0; i < 3; ++i)
+                {
+                    if(pulseIn(ir_2018_pins[index_num], HIGH) > 1000)
+                    {
+                        bin[i] = true;
+                    }
+                    else
+                    {
+                        bin[i] = false;
+                    }
+                }
+
+                // Bit shifting
+                rv = 0;
+                for(int i = 0; i < 3; ++i)
+                {
+                    if(bin[i])
+                    {
+                        data += 1 << i;
+                    }
+                }
+            </code>
+        </command>
+    </commands>
+</appendage-template>
