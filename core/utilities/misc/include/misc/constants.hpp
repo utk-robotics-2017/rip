@@ -31,7 +31,8 @@ namespace rip
         {
             static const char* kArduinoGenHome;
             static const char* kLoggerName;
-            static const char* kPathFollowingMaxAccel;
+            static const char* kMaxVelocity;
+            static const char* kMaxAcceleration;
             static const char* kSegmentCompletionTolerance;
             static const char* kWheelbase;
             static const char* kTrackScrubFactor;

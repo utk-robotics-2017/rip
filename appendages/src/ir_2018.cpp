@@ -24,19 +24,15 @@ namespace rip
             std::array<bool, 4> rv;
 
             cmdmessenger::ArduinoCmdMessenger messenger;
-            try
-            {
                 messenger.send<cmdmessenger::ArduinoCmdMessenger::IntegerType>(m_device, m_read, m_id);
                 char data = std::get<0>(messenger.receive<cmdmessenger::ArduinoCmdMessenger::CharType>(m_read_result));
-                rv[0] = true;
-                rv[1] = data & 1 << 0;
-                rv[2] = data & 1 << 1;
-                rv[3] = data & 1 << 2;
-            }
-            catch ()
-            {
-                rv[0] = false;
-            }
+                rv[0] = !(data & 1 << 4);
+                if(rv[0])
+                {
+                    rv[1] = data & 1 << 0;
+                    rv[2] = data & 1 << 1;
+                    rv[3] = data & 1 << 2;
+                }
             return rv;
         }
 

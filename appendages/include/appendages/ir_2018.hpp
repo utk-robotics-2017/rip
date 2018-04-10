@@ -24,7 +24,7 @@ namespace rip
              * Reads the ir receiver for the 2018 challenge
              * @returns Whether A, B, and C are right or left
              */
-            std::array<bool, 3> read();
+            std::array<bool, 4> read();
 
             bool calibrate();
 

@@ -1,6 +1,5 @@
 #include "drivetrains/two_roboclaw_appendage_drivetrain.hpp"
 #include <drivetrains/exceptions.hpp>
-#include <appendages/roboclaw.hpp>
 #include <cmath>
 #include <fmt/format.h>
 #include <iostream>
