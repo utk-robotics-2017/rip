@@ -86,6 +86,10 @@ namespace rip
                 */
                 virtual units::Velocity readEncoderVelocity(const Motor& motor) override;
 
+                virtual units::Angle readGyro() override;
+
+                virtual void resetEncoders() override;
+                
                 virtual void stop() override;
 
                 virtual bool diagnostic() override;

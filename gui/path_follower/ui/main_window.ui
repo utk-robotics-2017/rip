@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="0">
+     <widget class="QTabWidget" name="tabWidget">
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
+      <widget class="rip::navigation::pathfollower::gui::PathWidgetOuter" name="path">
+       <attribute name="title">
+        <string>Path</string>
+       </attribute>
+      </widget>
+      <widget class="rip::navigation::pathfollower::gui::WorldWidgetOuter" name="world">
+       <attribute name="title">
+        <string>World</string>
+       </attribute>
+      </widget>
+      <widget class="rip::navigation::pathfollower::gui::RobotWidgetOuter" name="robot">
+       <attribute name="title">
+        <string>Robot</string>
+       </attribute>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>800</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="import_robot"/>
+    <addaction name="export_robot"/>
+    <addaction name="separator"/>
+    <addaction name="import_world"/>
+    <addaction name="export_world"/>
+    <addaction name="separator"/>
+    <addaction name="import_waypoints"/>
+    <addaction name="export_waypoints"/>
+   </widget>
+   <addaction name="menuFile"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="import_robot">
+   <property name="text">
+    <string>Import Robot</string>
+   </property>
+  </action>
+  <action name="import_world">
+   <property name="text">
+    <string>Import World</string>
+   </property>
+  </action>
+  <action name="import_waypoints">
+   <property name="text">
+    <string>Import Waypoints</string>
+   </property>
+  </action>
+  <action name="export_robot">
+   <property name="text">
+    <string>Export Robot</string>
+   </property>
+  </action>
+  <action name="export_world">
+   <property name="text">
+    <string>Export World</string>
+   </property>
+  </action>
+  <action name="export_waypoints">
+   <property name="text">
+    <string>Export Waypoints</string>
+   </property>
+  </action>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>rip::navigation::pathfollower::gui::WorldWidgetOuter</class>
+   <extends>QWidget</extends>
+   <header>path_follower_gui/world_widget_outer.hpp</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>rip::navigation::pathfollower::gui::RobotWidgetOuter</class>
+   <extends>QWidget</extends>
+   <header>path_follower_gui/robot_widget_outer.hpp</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>rip::navigation::pathfollower::gui::PathWidgetOuter</class>
+   <extends>QWidget</extends>
+   <header>path_follower_gui/path_widget_outer.hpp</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

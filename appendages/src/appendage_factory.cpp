@@ -8,6 +8,7 @@
 #include "appendages/roboclaw.hpp"
 #include "appendages/servo.hpp"
 #include "appendages/ultrasonic.hpp"
+#include "appendages/ir_2018.hpp"
 
 #include "appendages/exceptions.hpp"
 
@@ -57,6 +58,7 @@ namespace rip
             registerAppendage("Roboclaw", &Roboclaw::create);
             registerAppendage("Servo", &Servo::create);
             registerAppendage("Ultrasonic", &Ultrasonic::create);
+            registerAppendage("Ir2018", &Ir2018::create);
         }
     }
 }

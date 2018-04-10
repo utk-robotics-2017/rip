@@ -5,7 +5,7 @@
 
 #include <QObject>
 
-#include <units.hpp>
+#include <units/units.hpp>
 
 namespace rip
 {

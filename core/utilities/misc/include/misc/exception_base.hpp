@@ -20,12 +20,17 @@
 #ifndef EXCEPTION_BASE_HPP
 #define EXCEPTION_BASE_HPP
 #include <string>
+#include <utility>
+#include <fmt/format.h>
 
 #define NEW_EX(name) \
 class name : public rip::utilities::ExceptionBase \
 { \
 public: \
-    name(std::string message = "") : rip::utilities::ExceptionBase(#name ": " + message) {} \
+    template <typename... Args>\
+    name(const std::string& message="", Args && ... args) \
+        : rip::utilities::ExceptionBase(#name ": " + message, std::forward<Args>(args)...)\
+    {} \
 };
 
 namespace rip
@@ -38,7 +43,14 @@ namespace rip
             std::string m_message;
 
         public:
-            ExceptionBase(std::string message = "") : m_message(message) {}
+            /**
+             *  Constructor with parameter pack template and perfect forwarding
+             */
+            template <typename... Args>
+            ExceptionBase(const std::string& message,  Args && ... args)
+                : m_message(fmt::format(message, std::forward<Args>(args)...))
+            {}
+
             const char* what() const throw()
             {
                 return m_message.c_str();

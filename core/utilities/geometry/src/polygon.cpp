@@ -151,7 +151,7 @@ namespace rip
 
                 if (point.y() < bottom_right.y())
                 {
-                    bottom_right.setX(point.y());
+                    bottom_right.setY(point.y());
                 }
 
                 if (point.x() > bottom_right.x())

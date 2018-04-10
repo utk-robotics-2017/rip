@@ -1,6 +1,5 @@
 #include "drivetrains/two_roboclaw_appendage_drivetrain.hpp"
 #include <drivetrains/exceptions.hpp>
-#include <appendages/roboclaw.hpp>
 #include <cmath>
 #include <fmt/format.h>
 #include <iostream>
@@ -12,11 +11,11 @@ namespace rip
         namespace drivetrains
         {
             TwoRoboclawAppendageDrivetrain::TwoRoboclawAppendageDrivetrain(const std::string& name,
-                std::shared_ptr<Roboclaw> left,
-                std::shared_ptr<Roboclaw> right,
-                double ticks_per_rev,
-                units::Distance wheel_radius,
-                std::shared_ptr<NavX> navx)
+                    std::shared_ptr<Roboclaw> left,
+                    std::shared_ptr<Roboclaw> right,
+                    double ticks_per_rev,
+                    units::Distance wheel_radius,
+                    std::shared_ptr<NavX> navx)
                 : Drivetrain(name)
                 , m_left(left)
                 , m_right(right)
@@ -51,10 +50,10 @@ namespace rip
             }
 
             void TwoRoboclawAppendageDrivetrain::drive(double front_left, double front_right, double back_left,
-                double back_right)
+                    double back_right)
             {
                 if (std::abs(front_left) > 1 || std::abs(front_right) > 1 || std::abs(back_left) > 1 ||
-                std::abs(back_right) > 1)
+                        std::abs(back_right) > 1)
                 {
                     throw OutOfRangeException("out of range");
                 }
@@ -81,7 +80,7 @@ namespace rip
             }
 
             void TwoRoboclawAppendageDrivetrain::drive(const MotorDynamics& front_left, const MotorDynamics& front_right,
-                 const MotorDynamics& back_left, const MotorDynamics& back_right)
+                    const MotorDynamics& back_left, const MotorDynamics& back_right)
             {
                 setDynamics(Motor::kFrontLeft, front_left);
                 setDynamics(Motor::kBackLeft, back_left);
@@ -93,9 +92,9 @@ namespace rip
             std::vector<units::Distance> TwoRoboclawAppendageDrivetrain::readEncoders(const std::vector<Motor>& motors)
             {
                 std::vector<units::Distance> data;
-                for(uint i=0; i<motors.size(); i++)
+                for (uint i = 0; i < motors.size(); i++)
                 {
-                    switch(motors[i])
+                    switch (motors[i])
                     {
                         case Motor::kFrontLeft:
                         {
@@ -119,7 +118,7 @@ namespace rip
                         }
                         default:
                         {
-                            throw InvalidMotorException(fmt::format("Invalid motor, parameter {}", i+1));
+                            throw InvalidMotorException(fmt::format("Invalid motor, parameter {}", i + 1));
                         }
                     }
                 }
@@ -128,7 +127,7 @@ namespace rip
 
             units::Distance TwoRoboclawAppendageDrivetrain::readEncoder(const Motor& motor)
             {
-                switch(motor)
+                switch (motor)
                 {
                     case Motor::kFrontLeft:
                     {
@@ -157,9 +156,9 @@ namespace rip
                 const std::vector<Motor>& motors)
             {
                 std::vector<units::Velocity> data;
-                for(uint i=0; i<motors.size(); i++)
+                for (uint i = 0; i < motors.size(); i++)
                 {
-                    switch(motors[i])
+                    switch (motors[i])
                     {
                         case Motor::kFrontLeft:
                         {
@@ -183,7 +182,7 @@ namespace rip
                         }
                         default:
                         {
-                            throw InvalidMotorException(fmt::format("Invalid motor, parameter {}", i+1));
+                            throw InvalidMotorException(fmt::format("Invalid motor, parameter {}", i + 1));
                         }
                     }
                 }
@@ -192,7 +191,7 @@ namespace rip
 
             units::Velocity TwoRoboclawAppendageDrivetrain::readEncoderVelocity(const Motor& motor)
             {
-                switch(motor)
+                switch (motor)
                 {
                     case Motor::kFrontLeft:
                     {
@@ -222,7 +221,7 @@ namespace rip
                 int32_t speed;
                 uint32_t accel, dist, decel;
 
-                switch(dynamics.getDType())
+                switch (dynamics.getDType())
                 {
                     case MotorDynamics::DType::kNone:
                     {
@@ -231,7 +230,7 @@ namespace rip
                     case MotorDynamics::DType::kSpeed:
                     {
                         speed = static_cast<int32_t>((*dynamics.getSpeed() / (m_wheel_radius * M_PI * 2)).to(1 / units::s) * m_ticks_per_rev);
-                        switch(motor)
+                        switch (motor)
                         {
                             case Motor::kFrontLeft:
                             {
@@ -264,7 +263,7 @@ namespace rip
                     {
                         speed = static_cast<int32_t>((*dynamics.getSpeed() / (m_wheel_radius * M_PI * 2)).to(1 / units::s) * m_ticks_per_rev);
                         accel = static_cast<uint32_t>((*dynamics.getAcceleration() / (m_wheel_radius * M_PI * 2)).to(1 / (units::s * units::s)) * m_ticks_per_rev);
-                        switch(motor)
+                        switch (motor)
                         {
                             case Motor::kFrontLeft:
                             {
@@ -298,7 +297,7 @@ namespace rip
                         speed = static_cast<int32_t>((*dynamics.getSpeed() / (m_wheel_radius * M_PI * 2)).to(1 / units::s) * m_ticks_per_rev);
                         dist = static_cast<uint32_t>((*dynamics.getDistance() / (m_wheel_radius * M_PI * 2)).to(units::none) * m_ticks_per_rev);
 
-                        switch(motor)
+                        switch (motor)
                         {
                             case Motor::kFrontLeft:
                             {
@@ -333,7 +332,7 @@ namespace rip
                         dist = static_cast<uint32_t>((*dynamics.getDistance() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
                         accel = static_cast<uint32_t>((*dynamics.getAcceleration() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
 
-                        switch(motor)
+                        switch (motor)
                         {
                             case Motor::kFrontLeft:
                             {
@@ -369,7 +368,7 @@ namespace rip
                         accel = static_cast<uint32_t>((*dynamics.getAcceleration() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
                         decel = static_cast<uint32_t>((*dynamics.getDeceleration() / m_wheel_radius / (units::pi * 2))() * m_ticks_per_rev);
 
-                        switch(motor)
+                        switch (motor)
                         {
                             case Motor::kFrontLeft:
                             {
@@ -410,7 +409,7 @@ namespace rip
                 int32_t speed;
                 uint32_t accel, dist, decel;
 
-                switch(dynamics.getDType())
+                switch (dynamics.getDType())
                 {
                     case MotorDynamics::DType::kNone:
                     {
@@ -478,16 +477,16 @@ namespace rip
             }
 
             std::tuple<units::Distance, units::Velocity> TwoRoboclawAppendageDrivetrain::getDistAndVel(const Motor& motor)
-    		{
-    			return std::tuple<units::Distance, units::Velocity>(readEncoder(motor), readEncoderVelocity(motor));
-    		}
+            {
+                return std::tuple<units::Distance, units::Velocity>(readEncoder(motor), readEncoderVelocity(motor));
+            }
 
             std::tuple<units::Distance, units::Velocity> TwoRoboclawAppendageDrivetrain::getDistAndVel(bool side)
             {
                 std::vector<units::Distance> d;
                 std::vector<units::Velocity> v;
                 std::vector<Motor> motors;
-                if(side)
+                if (side)
                 {
                     motors = {Motor::kFrontRight, Motor::kBackRight};
                 }
@@ -497,8 +496,8 @@ namespace rip
                 }
                 v = readEncoderVelocities(motors);
                 d = readEncoders(motors);
-                d[0] = (d[0] + d[1])/2;
-                v[0] = (v[0] + v[1])/2;
+                d[0] = (d[0] + d[1]) / 2;
+                v[0] = (v[0] + v[1]) / 2;
                 return std::tuple<units::Distance, units::Velocity>(d[0], v[0]);
             }
 
@@ -506,6 +505,11 @@ namespace rip
             {
                 m_left->resetEncoders();
                 m_right->resetEncoders();
+            }
+            
+            units::Angle TwoRoboclawAppendageDrivetrain::readGyro() const
+            {
+                m_navx->getAngle();
             }
 
             void TwoRoboclawAppendageDrivetrain::stop()

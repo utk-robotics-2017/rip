@@ -27,8 +27,8 @@ namespace rip
                 using MotorDynamics = motorcontrollers::MotorDynamics;
             public:
                 TwoRoboclawAppendageDrivetrain(const std::string& name, std::shared_ptr<Roboclaw> left,
-                     std::shared_ptr<Roboclaw> right, double ticks_per_rev, units::Distance wheel_radius,
-                     std::shared_ptr<NavX> navx = nullptr);
+                                               std::shared_ptr<Roboclaw> right, double ticks_per_rev, units::Distance wheel_radius,
+                                               std::shared_ptr<NavX> navx = nullptr);
 
                 ~TwoRoboclawAppendageDrivetrain();
 
@@ -51,7 +51,7 @@ namespace rip
                  * all range from [-1.0, 1.0]
                  */
                 virtual void drive(double front_left, double front_right, double back_left,
-                     double back_rightk) override;
+                                   double back_rightk) override;
 
                 /**
                  * Single command to all motors
@@ -67,7 +67,7 @@ namespace rip
                  * Command four wheels separately
                  */
                 virtual void drive(const MotorDynamics& front_left, const MotorDynamics& front_right,
-                const MotorDynamics& back_left, const MotorDynamics& back_right) override;
+                                   const MotorDynamics& back_left, const MotorDynamics& back_right) override;
 
                 /**
                 * Reads encoders for every motor you tell it to read, reports back in respective
@@ -89,22 +89,22 @@ namespace rip
                 */
                 virtual units::Velocity readEncoderVelocity(const Motor& motor) override;
                 /**
-    			 * @brief Given a MotorDynamics object, does PID driving with units for one motor.
-    			 * @param dynamics      See MotorDynamics
-    			 * @param respectBuffer if false, command will be buffered
-    			 */
-                void setDynamics(const Motor& motor, const MotorDynamics& dynamics, bool respectBuffer=1);
+                 * @brief Given a MotorDynamics object, does PID driving with units for one motor.
+                 * @param dynamics      See MotorDynamics
+                 * @param respectBuffer if false, command will be buffered
+                 */
+                void setDynamics(const Motor& motor, const MotorDynamics& dynamics, bool respectBuffer = 1);
                 /**
-    			 * @brief Given a MotorDynamics object, does PID driving with units for one motor.
-    			 * @param dynamics      See MotorDynamics
-    			 * @param respectBuffer if false, command will be buffered
-    			 */
-    			void setDynamics(const MotorDynamics& dynamics, bool respectBuffer=1); //Not implemented on arduino
-    			/**
-    			 * @brief returns the encoder distance and velocity in a pair
-    			 * @param motor 0 for motor 1, 1 for motor 2
-    			 */
-    			std::tuple<units::Distance, units::Velocity> getDistAndVel(const Motor& motor);
+                 * @brief Given a MotorDynamics object, does PID driving with units for one motor.
+                 * @param dynamics      See MotorDynamics
+                 * @param respectBuffer if false, command will be buffered
+                 */
+                void setDynamics(const MotorDynamics& dynamics, bool respectBuffer = 1); //Not implemented on arduino
+                /**
+                 * @brief returns the encoder distance and velocity in a pair
+                 * @param motor 0 for motor 1, 1 for motor 2
+                 */
+                std::tuple<units::Distance, units::Velocity> getDistAndVel(const Motor& motor);
                 /**
                  * [getDistAndVel description]
                  * @param side [description]
@@ -114,6 +114,8 @@ namespace rip
                  * Resets the encoders
                  */
                 virtual void resetEncoders() override;
+
+                virtual units::Angle readGyro() const;
 
                 virtual void stop() override;
 
