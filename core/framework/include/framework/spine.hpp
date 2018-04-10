@@ -87,14 +87,15 @@ namespace rip
              *
              * @returns The specified appendage
              */
-            std::shared_ptr<appendages::Appendage> get(const std::string& appendage_name)
+            template <typename T=appendages::Appendage>
+            std::shared_ptr<T> get(const std::string& appendage_name)
             {
                 if (m_appendages.find(appendage_name) == m_appendages.end())
                 {
                     throw AppendageNotFound(fmt::format("Cannot find appendage named {}", appendage_name));
                 }
 
-                return m_appendages[appendage_name];
+                return std::dynamic_pointer_cast<T>(m_appendages[appendage_name]);
             }
 
             /**

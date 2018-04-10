@@ -32,6 +32,7 @@ namespace rip
              * @param OutofBoundsException [description]
              */
             NEW_EX(OutofBoundsException);
+            NEW_EX(FileNotFound);
         }
     }
 }

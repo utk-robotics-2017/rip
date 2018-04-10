@@ -210,6 +210,11 @@ namespace rip
                 }
             }
 
+            units::Angle TwoRoboclawDrivetrain::readGyro()
+            {
+                return m_navx->getAngle();
+            }
+
             void TwoRoboclawDrivetrain::stop()
             {
                 m_left->drive(0);

@@ -25,7 +25,7 @@ namespace rip
         {
             cmdmessenger::ArduinoCmdMessenger messenger;
             messenger.send<cmdmessenger::ArduinoCmdMessenger::IntegerType>(m_device, m_read, m_id);
-            return std::get<0>(messenger.receive<cmdmessenger::ArduinoCmdMessenger::UnsignedLongType>(m_read_result)) * units::in;
+            return std::get<0>(messenger.receive<cmdmessenger::ArduinoCmdMessenger::UnsignedLongType>(m_read_result)) * units::cm;
         }
 
         void Ultrasonic::stop()

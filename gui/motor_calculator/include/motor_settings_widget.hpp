@@ -13,7 +13,7 @@
 #include <QtCharts/QValueAxis>
 
 #include "settings.hpp"
-#include <units.hpp>
+#include <units/units.hpp>
 
 namespace Ui
 {

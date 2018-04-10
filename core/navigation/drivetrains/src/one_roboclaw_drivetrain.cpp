@@ -52,6 +52,11 @@ namespace rip
                 m_rclaw->setDynamics(Roboclaw::Motor::kM2, right);
             }
 
+            units::Angle OneRoboclawDrivetrain::readGyro()
+            {
+                return m_navx->getAngle();
+            }
+
             void OneRoboclawDrivetrain::stop()
             {
                 m_rclaw->drive(0);

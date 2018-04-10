@@ -29,6 +29,8 @@ namespace rip
         /**
          * Base action for something that only needs to be done
          * once
+         *
+         * @note Only runOnce should be overloaded for an InstantAction derivative
          */
         class InstantAction : public Action
         {
@@ -40,27 +42,27 @@ namespace rip
              *
              * @note Is always true
              */
-            virtual bool isFinished() override;
+            bool isFinished() final override;
 
             /**
              * Action has already happened, so nothing
              */
-            virtual void update(nlohmann::json& state) override;
+            void update(nlohmann::json& state) final override;
 
             /**
              * Where the action actually does stuff
              */
-            virtual void setup(nlohmann::json& state) override;
+            void setup(nlohmann::json& state) final override;
 
             /**
              * Never happens
              */
-            virtual void teardown(nlohmann::json& state) override;
+            void teardown(nlohmann::json& state) final override;
 
             /**
              * This is where the magic happens for this action
              */
-            virtual void runOnce() = 0;
+            virtual void runOnce(nlohmann::json& state) = 0;
         };
     }
 }
