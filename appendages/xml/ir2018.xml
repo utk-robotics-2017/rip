@@ -1,17 +1,19 @@
 <appendage-template>
-    <constructors type="char" variable="ir_2018_pins">
-        <parameter name="pin" type="int"/>
+    <constructors>
+        <constructor type="unsigned char" variable="ir_2018_pins" type-is-class="false">
+            <argument name="pin" type="int"/>
+        </constructor>
     </constructors>
 
     <setup>
-        pinMode(ir_2018_pins[i], INPUT$pullup$);
+        pinMode(ir_2018_pins[$i$], INPUT$pullup$);
     </setup>
 
     <commands>
         <command id="kCalibrateIr2018" name="calibrateIr2018" index-num="true">
             <return-value name="rv" type="char"/>
             <code>
-                rv = digitalRead(ir_2018_pins[index_num]);
+                rv = digitalRead(ir_2018_pins[indexNum]);
             </code>
         </command>
         <command id="kReadIr2018" name="readIr2018" index-num="true">
@@ -20,13 +22,16 @@
                 long start = millis();
 
                 // Wait for start
-                while(pulseIn(ir_2018_pins[index_num], LOW) < 8000)
+                while(pulseIn(ir_2018_pins[indexNum], LOW) < 8000)
                 {
                     // After a half second tell the pi we don't know
                     if(millis() - start > 500)
                     {
                         rv = 1 << 4;
-                        cmdMessenger.sendBinCmd(kReadIr2018Result, rv);
+                        cmdMessenger.sendBinCmd(kAcknowledge, kReadIr2018);
+                        cmdMessenger.sendCmdStart(kReadIr2018Result);
+                        cmdMessenger.sendCmdBinArg(rv);
+                        cmdMessenger.sendCmdEnd();
                         return;
                     }
                 }
@@ -34,14 +39,24 @@
                 // Wait through empty pulses
                 for(int i = 0; i < 5; ++i)
                 {
-                    pulseIn(ir_2018_pins[index_num], HIGH);
+                    // If any of the first 5 are 1 then the run
+                    // hasn't started yet
+                    if(pulseIn(ir_2018_pins[indexNum], HIGH) > 1000)
+                    {
+                        rv = 1 << 4;
+                        cmdMessenger.sendBinCmd(kAcknowledge, kReadIr2018);
+                        cmdMessenger.sendCmdStart(kReadIr2018Result);
+                        cmdMessenger.sendCmdBinArg(rv);
+                        cmdMessenger.sendCmdEnd();
+                        return;
+                    }
                 }
 
                 // Store pulse in bins
                 boolean bin[3];
                 for(int i = 0; i < 3; ++i)
                 {
-                    if(pulseIn(ir_2018_pins[index_num], HIGH) > 1000)
+                    if(pulseIn(ir_2018_pins[indexNum], HIGH) > 1000)
                     {
                         bin[i] = true;
                     }
@@ -57,7 +72,7 @@
                 {
                     if(bin[i])
                     {
-                        data += 1 << i;
+                        rv += 1 << i;
                     }
                 }
             </code>
