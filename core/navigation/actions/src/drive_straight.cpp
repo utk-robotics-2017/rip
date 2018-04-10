@@ -9,18 +9,17 @@ namespace rip
         namespace actions
         {
             using drivetrains::Drivetrain;
-	        using navx::NavX;
+            using navx::NavX;
 
             DriveStraight::DriveStraight(const std::string& name, std::shared_ptr<Drivetrain> drivetrain,
-                 std::shared_ptr<NavX> navx, const units::Time& time, const units::Velocity& speed,
-                 units::Acceleration max_accel, double p, double i, double d)
+                                         std::shared_ptr<navx::NavX> navx, const units::Time& time, const units::Velocity& speed,
+                                         units::Acceleration max_accel, double p, double i, double d)
                 : Action(name)
                 , m_use_time(true)
                 , m_time(time)
                 , m_speed(speed)
                 , m_max_accel(max_accel)
                 , m_drivetrain(drivetrain)
-                , m_navx(navx)
                 , m_pid(new pid::PidController(navx.get(), this, p, i , d))
             {
                 m_pid->setSetpoint(0);
@@ -32,8 +31,8 @@ namespace rip
             }
 
             DriveStraight::DriveStraight(const std::string& name, std::shared_ptr<Drivetrain> drivetrain,
-                std::shared_ptr<NavX> navx, const units::Distance& distance, const units::Velocity& speed,
-                units::Acceleration max_accel, double p, double i, double d)
+                                         std::shared_ptr<NavX> navx, const units::Distance& distance, const units::Velocity& speed,
+                                         units::Acceleration max_accel, double p, double i, double d)
                 : Action(name)
                 , m_use_time(false)
                 , m_speed(speed)
@@ -59,14 +58,15 @@ namespace rip
             void DriveStraight::set(double value)
             {
                 misc::Logger::getInstance()->debug("set value: {}", value);
-            }            
+            }
 
             void DriveStraight::update(nlohmann::json& state)
             {
                 const std::vector<Drivetrain::Motor> motors = {Drivetrain::Motor::kFrontLeft,
                                                                Drivetrain::Motor::kBackLeft,
                                                                Drivetrain::Motor::kFrontRight,
-                                                               Drivetrain::Motor::kBackRight};
+                                                               Drivetrain::Motor::kBackRight
+                                                              };
 
                 motorcontrollers::MotorDynamics l_dynamics;
                 motorcontrollers::MotorDynamics r_dynamics;
@@ -84,41 +84,41 @@ namespace rip
                 std::vector<units::Velocity> vel = m_drivetrain->readEncoderVelocities(motors);
 
                 misc::Logger::getInstance()->debug(
-                    "Encoder Velocity | Left: {} {} | Right: {} {} | Target: {}",
-                    vel[0].to(units::in / units::s), vel[1].to(units::in / units::s),
-                    vel[2].to(units::in / units::s), vel[3].to(units::in / units::s),
-                    m_speed.to(units::in / units::s)
-                );
+                            "Encoder Velocity | Left: {} {} | Right: {} {} | Target: {}",
+                            vel[0].to(units::in / units::s), vel[1].to(units::in / units::s),
+                        vel[2].to(units::in / units::s), vel[3].to(units::in / units::s),
+                        m_speed.to(units::in / units::s)
+                        );
 
                 misc::Logger::getInstance()->debug(
-                    "NavX | Velocity: X: {} Y: {} Z: {} | Yaw: {} | Angle: {} | Angle Diff: {} | Fused Heading: {}",
-                    m_navx->getVelocityX().to(units::in / units::s),
-                    m_navx->getVelocityY().to(units::in / units::s),
-                    m_navx->getVelocityZ().to(units::in / units::s),
-                    m_navx->getYaw().to(units::deg),
-                    m_navx->getAngle().to(units::deg),
-                    (m_navx->getAngle() - m_initial_yaw).to(units::deg),
-                    m_navx->getFusedHeading().to(units::deg)
-                );
+                            "NavX | Velocity: X: {} Y: {} Z: {} | Yaw: {} | Angle: {} | Angle Diff: {} | Fused Heading: {}",
+                            m_navx->getVelocityX().to(units::in / units::s),
+                            m_navx->getVelocityY().to(units::in / units::s),
+                            m_navx->getVelocityZ().to(units::in / units::s),
+                            m_navx->getYaw().to(units::deg),
+                            m_navx->getAngle().to(units::deg),
+                            (m_navx->getAngle() - m_initial_yaw).to(units::deg),
+                            m_navx->getFusedHeading().to(units::deg)
+                            );
 
                 // just for now...
-                if(!m_use_time)
+                if (!m_use_time)
                 {
-		            // get the encoder values from the Roboclaw & determine the greatest value
+                    // get the encoder values from the Roboclaw & determine the greatest value
                     std::vector<units::Distance> dists = m_drivetrain->readEncoders(motors);
-					units::Distance max_encoder = *(std::max_element(dists.begin(), dists.end()));
+                    units::Distance max_encoder = *(std::max_element(dists.begin(), dists.end()));
 
                     // set a threshold for stopping -- this tries to account for the delay in actually stopping
                     // this is quite arbitrary right now but should be kinda close
                     units::Distance threshold = m_distance + m_init_encoder - (m_speed * (0.1 * units::s));
 
-                    if(max_encoder >= threshold)
+                    if (max_encoder >= threshold)
                     {
                         misc::Logger::getInstance()->debug(
-                            "Left: {} {} | Right: {} {} | Target: {}",
-                            dists[0].to(units::in), dists[1].to(units::in),
-                            dists[2].to(units::in), dists[3].to(units::in),
-                            threshold.to(units::in));
+                                    "Left: {} {} | Right: {} {} | Target: {}",
+                                    dists[0].to(units::in), dists[1].to(units::in),
+                                dists[2].to(units::in), dists[3].to(units::in),
+                                threshold.to(units::in));
 
                         m_finished = true;
                     }
@@ -130,16 +130,16 @@ namespace rip
 
                     units::Time threshold = m_time - (0.1 * units::s);
 
-                    if(diff >= threshold)
+                    if (diff >= threshold)
                     {
                         misc::Logger::getInstance()->debug(
-                            "Drove for {} | Target: {}",
-                            diff.to(units::s), m_time.to(units::s));
+                                    "Drove for {} | Target: {}",
+                                    diff.to(units::s), m_time.to(units::s));
                         m_finished = true;
                     }
                 }
 
-                if(!m_finished)
+                if (!m_finished)
                 {
                     m_drivetrain->drive(l_dynamics, r_dynamics);
                 }
@@ -160,19 +160,20 @@ namespace rip
                 const std::vector<Drivetrain::Motor> motors = {Drivetrain::Motor::kFrontLeft,
                                                                Drivetrain::Motor::kBackLeft,
                                                                Drivetrain::Motor::kFrontRight,
-                                                               Drivetrain::Motor::kBackRight};
+                                                               Drivetrain::Motor::kBackRight
+                                                              };
 
 
                 // Drivetrain Encoders
                 std::vector<units::Distance> dists = m_drivetrain->readEncoders(motors);
-				m_init_encoder = *(std::max_element(dists.begin(), dists.end()));
+                m_init_encoder = *(std::max_element(dists.begin(), dists.end()));
 
                 // NavX
                 m_navx->zeroYaw();
                 m_initial_yaw = m_navx->getYaw();
                 misc::Logger::getInstance()->debug(
-                    "Inital Yaw: {}", m_initial_yaw.to(units::deg)
-                );
+                            "Inital Yaw: {}", m_initial_yaw.to(units::deg)
+                            );
             }
 
             void DriveStraight::teardown(nlohmann::json& state)

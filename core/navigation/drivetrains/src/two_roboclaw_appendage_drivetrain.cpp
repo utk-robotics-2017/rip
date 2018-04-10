@@ -501,7 +501,7 @@ namespace rip
                 return std::tuple<units::Distance, units::Velocity>(d[0], v[0]);
             }
 
-            units::Angle TwoRoboclawAppendageDrivetrain::readGyro() const
+            units::Angle TwoRoboclawAppendageDrivetrain::readGyro()
             {
                 m_navx->getAngle();
             }
