@@ -168,7 +168,7 @@ namespace rip
 
                 debugString = byteStringToHexDebugString(std::to_string(command->getEnum()));
                 // std::cout << fmt::format("to_str(command->getEnum()) bytes: {}", debugString) << std::endl;
-                misc::Logger::getInstance()->debug(fmt::format("CmdMessenger sending: '{}:{}' as '{}')", command->getEnum(), command->getId(), debugString ));
+                //misc::Logger::getInstance()->debug(fmt::format("CmdMessenger sending: '{}:{}' as '{}')", command->getEnum(), command->getId(), debugString ));
                 // std::cout << toBytes<int, T_IntegerType>(command->getEnum()) << std::endl;
 
                 // Pack the command to send
@@ -194,7 +194,7 @@ namespace rip
 
                     // Send the message
                     debugString = byteStringToHexDebugString(message);
-                    misc::Logger::getInstance()->debug(fmt::format("Device->write bytes: {}", debugString));
+                    //misc::Logger::getInstance()->debug(fmt::format("Device->write bytes: {}", debugString));
                     // std::cout << fmt::format("Device baud: {}", device->getBaudrate()) << '\n';
                     device->write(message);
                     // device->flushOutput();
@@ -251,7 +251,7 @@ namespace rip
                         }
 
                         debugString = byteStringToHexDebugString(ack_msg);
-                        misc::Logger::getInstance()->debug(fmt::format("Device->readline bytes: {}", debugString));
+                        //misc::Logger::getInstance()->debug(fmt::format("Device->readline bytes: {}", debugString));
 
                         handleAck(ack_msg, command);
                     }
@@ -332,12 +332,12 @@ namespace rip
                 // NOTE fromBytes consumes the data from the string!
                 if ( acknowledge_command != static_cast<T_IntegerType>(command->getEnum()) )
                 {
-                  std::cout << fmt::format("Acknowledgement command {:d} is not the same as the current command {:d}", acknowledge_command, command->getEnum()) << std::endl;
+                    std::cout << fmt::format("Acknowledgement command {:d} is not the same as the current command {:d}", acknowledge_command, command->getEnum()) << std::endl;
                     throw IncorrectAcknowledgementCommand(fmt::format("Acknowledgement command {} is not the same as the current command {}", acknowledge_command, command->getEnum()));
                 }
                 if (acknowledgement[0] != m_command_separator)
                 {
-                  std::cout << fmt::format("Wanted '{}' but got '{}' !", m_command_separator, acknowledgement[0]) << std::endl;
+                    std::cout << fmt::format("Wanted '{}' but got '{}' !", m_command_separator, acknowledgement[0]) << std::endl;
                     throw IncorrectCommandSeparator(fmt::format("Wanted '{}' but got '{}' !", m_command_separator, acknowledgement[0]));
                 }
 
@@ -414,7 +414,7 @@ namespace rip
                     }
                   }
                 }
-                std::cout << fmt::format("CmdMessenger->receive(), device->readline() output: {}", byteStringToHexDebugString(response)) << '\n';
+                //std::cout << fmt::format("CmdMessenger->receive(), device->readline() output: {}", byteStringToHexDebugString(response)) << '\n';
 
                 if (response.size() == 0)
                 {
