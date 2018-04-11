@@ -49,7 +49,7 @@ namespace rip
                     m_starting_point = pathfollower::RigidTransform2d(*pose);
                 }
 
-                m_pose = std::unique_ptr<pose::RobotPose>(new pose::RobotPose(misc::constants::getInstance()->get<units::Distance>(misc::constants::kWheelbase), pose_parameters["alpha"], pose_parameters["beta"], pose_parameters["kappa"]));
+                m_pose = std::unique_ptr<pose::RobotPose>(new pose::RobotPose(misc::constants::get<units::Distance>(misc::constants::kWheelbase), pose_parameters["alpha"], pose_parameters["beta"], pose_parameters["kappa"]));
 
                 m_path_follower = std::unique_ptr<pathfollower::PathFollower>(new pathfollower::PathFollower(path, config["reversed"].get<bool>(), parameters));
             }

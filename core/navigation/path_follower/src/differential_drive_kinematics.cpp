@@ -11,8 +11,8 @@ namespace rip
 
             Twist2d rip::navigation::pathfollower::DifferentialDriveKinematics::forwardKinematics(const units::Distance& left_wheel_delta, const units::Distance& right_wheel_delta)
             {
-                units::Distance delta_v = (right_wheel_delta - left_wheel_delta) / 2.0 * misc::constants::getInstance()->get<double>(misc::constants::kTrackScrubFactor);
-                units::Angle delta_rotation = delta_v() * 2.0 / misc::constants::getInstance()->get<units::Distance>(misc::constants::kWheelbase)();
+                units::Distance delta_v = (right_wheel_delta - left_wheel_delta) / 2.0 * misc::constants::get<double>(misc::constants::kTrackScrubFactor);
+                units::Angle delta_rotation = delta_v() * 2.0 / misc::constants::get<units::Distance>(misc::constants::kWheelbase)();
                 return DifferentialDriveKinematics::forwardKinematics(left_wheel_delta, right_wheel_delta, delta_rotation);
             }
 
@@ -45,7 +45,7 @@ namespace rip
                     return DriveVelocity(delta.dx()(), delta.dx()());
                 }
 
-                double delta_v = misc::constants::getInstance()->get<units::Distance>(misc::constants::kWheelbase)() * delta.dtheta()() / (2 * misc::constants::getInstance()->get<double>(misc::constants::kTrackScrubFactor));
+                double delta_v = misc::constants::get<units::Distance>(misc::constants::kWheelbase)() * delta.dtheta()() / (2 * misc::constants::get<double>(misc::constants::kTrackScrubFactor));
                 return DriveVelocity(delta.dx()() - delta_v, delta.dx()() + delta_v);
             }
 
