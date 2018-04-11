@@ -24,11 +24,11 @@ namespace rip
                 , m_direction(forward)
             {
                 m_pid->setSetpoint(0);
-                m_pid->setTolerance(10);
+                m_pid->setTolerance(5 * units::deg());
                 m_navx->setType(pid::PidInput::Type::kDisplacement);
                 m_pid->setContinuous(true);
                 m_pid->setInputRange(-180 * units::deg(), 180 * units::deg());
-                m_pid->setOutputRange(-2 * units::in(), 2 * units::in());
+                m_pid->setOutputRange(-2 * units::in() / units::s(), 2 * units::in() / units::s());
             }
 
             DriveStraight::DriveStraight(const std::string& name, std::shared_ptr<Drivetrain> drivetrain,
@@ -45,11 +45,11 @@ namespace rip
                 , m_direction(speed > 0)
             {
                 m_pid->setSetpoint(0);
-                m_pid->setTolerance(10);
+                m_pid->setTolerance(5 * units::deg());
                 m_navx->setType(pid::PidInput::Type::kDisplacement);
                 m_pid->setContinuous(true);
                 m_pid->setInputRange(-180 * units::deg(), 180 * units::deg());
-                m_pid->setOutputRange(-2 * units::in(), 2 * units::in());
+                m_pid->setOutputRange(-2 * units::in() / units::s(), 2 * units::in() / units::s());
             }
 
             bool DriveStraight::isFinished()
@@ -76,6 +76,31 @@ namespace rip
                 // todo: update these values every loop based on navX
                 units::Velocity l_speed = m_speed;
                 units::Velocity r_speed = m_speed;
+
+                m_pid->calculate();
+                double pid_correction = m_pid->get();
+
+                l_speed += pid_correction;
+                r_speed -= pid_correction;
+
+                units::Velocity v_scale;
+
+                if(m_direction)
+                {
+                    // maximum if going forwards
+                    if(l_speed > r_speed) v_scale = l_speed;
+                    else v_scale = r_speed;
+                }
+                else
+                {
+                    // minimum if going backwards
+                    if(l_speed > r_speed) v_scale = r_speed;
+                    else v_scale = l_speed;
+                }
+
+                // Scale each speed appropriately to not exceed the maximum specified
+                l_speed = (l_speed / v_scale) * m_speed;
+                r_speed = (r_speed / v_scale) * m_speed;
 
                 l_dynamics.setSpeed(l_speed);
                 r_dynamics.setSpeed(r_speed);
@@ -158,7 +183,6 @@ namespace rip
                     m_drivetrain->stop();
                 }
 
-                m_pid->calculate();
             }
 
             void DriveStraight::setup(nlohmann::json& state)
@@ -189,6 +213,9 @@ namespace rip
 
                 state["initial_yaw"] = m_initial_yaw;
                 state["direction"] = m_direction;
+
+                m_pid->setSetpoint(m_initial_yaw.to(units::deg));
+                m_pid->enable();
             }
 
             void DriveStraight::teardown(nlohmann::json& state)
