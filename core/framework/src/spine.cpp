@@ -57,8 +57,10 @@ namespace rip
 
         void Spine::stop()
         {
+            misc::Logger::getInstance()->debug("Stopping Appendages");
             for (auto iter : m_appendages)
             {
+                misc::Logger::getInstance()->debug("Stopping {}", iter.first);
                 iter.second->stop();
             }
         }

@@ -9,68 +9,74 @@ namespace rip
     {
         namespace actions
         {
-            TurnToAngle::TurnToAngle(const std::string& name,
-                std::shared_ptr<drivetrains::Drivetrain> drivetrain,
-                const units::AngularVelocity& speed, const units::Angle& angle,
-                std::shared_ptr<NavX> navx, const units::Distance& radius)
-                 : Action(name)
-                 , m_drivetrain(drivetrain)
-                 , m_speed(speed)
-                 , m_desired_angle(angle)
-                 , m_navx(navx)
-                 , m_c2w_radius(radius)
-            {}
+            TurnToAngle::TurnToAngle(const std::string& name, std::shared_ptr<drivetrains::Drivetrain> drivetrain, std::shared_ptr<NavX> navx, const nlohmann::json& config)
+                : Action(name)
+                , m_drivetrain(drivetrain)
+                , m_navx(navx)
+                , m_first(true)
+            {
+                m_turn_angle = config["turn_angle"];
+                m_pid = std::unique_ptr<pid::PidController>(new pid::PidController(navx.get(), this, misc::constants::getInstance()->get<double>(misc::constants::kTurnKp), misc::constants::getInstance()->get<double>(misc::constants::kTurnKi),  misc::constants::getInstance()->get<double>(misc::constants::kTurnKd)));
+                m_pid->setPercentTolerance(1);
+                m_navx->setType(pid::PidInput::Type::kDisplacement);
+                m_pid->setContinuous(true);
+                m_pid->setInputRange(-180 * units::deg(), 180 * units::deg());
+                m_pid->setOutputRange(-18 * units::in() / units::s(), 18 * units::in() / units::s());
+
+                m_max_accel = misc::constants::getInstance()->get<units::Acceleration>(misc::constants::kMaxAcceleration);
+            }
 
             bool TurnToAngle::isFinished()
             {
-                units::Angle current_angle = m_navx->getAngle();
-                m_prior_angle = current_angle;
-                misc::Logger::getInstance()->debug(fmt::format("current angle: {}"
-                , current_angle.to(units::deg)));
-                return std::abs(current_angle.to(units::deg) - m_init.to(units::deg)) >= std::abs(m_desired_angle.to(units::deg));
+                return m_pid->onTarget();
             }
 
             void TurnToAngle::update(nlohmann::json& state)
             {
-                return;
+                units::Angle angle = m_navx->getYaw();
+                misc::Logger::getInstance()->debug("TurnToAngle: {} deg", angle.to(units::deg));
+                m_pid->calculate();
             }
 
             void TurnToAngle::setup(nlohmann::json& state)
             {
-                //initial angle
-
-                m_init = m_navx->getAngle();
-                do
+                m_start_angle = m_navx->getYaw();
+                m_setpoint = m_start_angle + m_turn_angle;
+                while(m_setpoint > 180 * units::deg())
                 {
-                    m_init = m_navx->getAngle();
-                } while(m_init.to(units::deg) == 0);
-                motorcontrollers::MotorDynamics dynamicsLeft, dynamicsRight;
-                misc::Logger::getInstance()->debug(fmt::format("in place turn intended angular velocity (rev/min): {}"
-                , m_speed.to(units::rev / units::minute)));
-
-                if(m_desired_angle() <= 0)
-                {
-                    throw OutofBoundsException("degrees should be positive. Sign of velocity determines turning direction");
+                    m_setpoint -= 360 * units::deg;
                 }
-                if(m_c2w_radius <= 0)
+                while(m_setpoint < -180 * units::deg())
                 {
-                    throw OutofBoundsException("wheel radius should be positive");
+                    m_setpoint += 360 * units::deg;
                 }
-                misc::Logger::getInstance()->debug(fmt::format("wheel linear speed (in/s): {}"
-                , (m_speed * m_c2w_radius / units::rad).to(units::in / units::s)));
-                misc::Logger::getInstance()->debug(fmt::format("init: {}"
-                , m_init.to(units::deg)));
-
-                dynamicsLeft.setSpeed(m_speed * m_c2w_radius / units::rad);
-                dynamicsRight.setSpeed(-1 * m_speed * m_c2w_radius / units::rad);
-                m_drivetrain->drive(dynamicsLeft, dynamicsRight);
+                misc::Logger::getInstance()->debug("Start: {} deg, Setpoint: {} deg", m_start_angle.to(units::deg), m_setpoint.to(units::deg));
+                m_pid->setSetpoint(m_setpoint());
+                m_pid->calculate();
             }
 
             void TurnToAngle::teardown(nlohmann::json& state)
             {
-                misc::Logger::getInstance()->debug(fmt::format("degrees turned: {}"
-                , (m_prior_angle - m_init).to(units::deg)));
+                misc::Logger::getInstance()->debug("Degrees turned: {} deg", (m_navx->getFusedHeading() - m_start_angle).to(units::deg));
                 m_drivetrain->stop();
+            }
+
+            void TurnToAngle::set(double output)
+            {
+                if(m_first)
+                {
+                    motorcontrollers::MotorDynamics left;
+                    motorcontrollers::MotorDynamics right;
+
+                    left.setSpeed(-output);
+                    right.setSpeed(output);
+
+                    left.setAcceleration(m_max_accel);
+                    right.setAcceleration(m_max_accel);
+
+                    m_drivetrain->drive(left, right);
+                    m_first = false;
+                }
             }
         }
     }

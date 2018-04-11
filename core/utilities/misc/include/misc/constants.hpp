@@ -36,6 +36,10 @@ namespace rip
             static const char* kSegmentCompletionTolerance;
             static const char* kWheelbase;
             static const char* kTrackScrubFactor;
+            static const char* kTurnKp;
+            static const char* kTurnKi;
+            static const char* kTurnKd;
+
 
             static std::shared_ptr<constants> getInstance()
             {
