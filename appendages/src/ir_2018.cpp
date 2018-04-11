@@ -19,20 +19,24 @@ namespace rip
         {
         }
 
-        std::array<bool, 4> Ir2018::read()
+        std::array<bool, 5> Ir2018::read()
         {
-            std::array<bool, 4> rv;
+            std::array<bool, 5> rv;
 
             cmdmessenger::ArduinoCmdMessenger messenger;
-                messenger.send<cmdmessenger::ArduinoCmdMessenger::IntegerType>(m_device, m_read, m_id);
-                char data = std::get<0>(messenger.receive<cmdmessenger::ArduinoCmdMessenger::CharType>(m_read_result));
-                rv[0] = !(data & 1 << 4);
-                if(rv[0])
-                {
-                    rv[1] = data & 1 << 0;
-                    rv[2] = data & 1 << 1;
-                    rv[3] = data & 1 << 2;
-                }
+            messenger.send<cmdmessenger::ArduinoCmdMessenger::IntegerType>(m_device, m_read, m_id);
+            char data = std::get<0>(messenger.receive<cmdmessenger::ArduinoCmdMessenger::CharType>(m_read_result));
+            rv[0] = !(data & 1 << 3);
+            rv[1] = (data & 1 << 4);
+            if(rv[0])
+            {
+                rv[2] = data & 1 << 0;
+                rv[3] = data & 1 << 1;
+                rv[4] = data & 1 << 2;
+            }
+
+            misc::Logger::getInstance()->debug("Ir: {} {} {} {} {}", static_cast<bool>(data & 1 << 0), static_cast<bool>(data & 1 << 1), static_cast<bool>(data & 1 << 2), static_cast<bool>(data & 1 << 3), static_cast<bool>(data & 1 << 4));
+
             return rv;
         }
 

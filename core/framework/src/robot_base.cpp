@@ -102,6 +102,13 @@ namespace rip
         {
             misc::Logger::getInstance()->debug("Stopping the robot...");
             m_running = false;
+            misc::Logger::getInstance()->debug("Stopping subsystems");
+            for(auto subsystem : m_subsystems)
+            {
+                misc::Logger::getInstance()->debug("Stopping {}", subsystem.first);
+                subsystem.second->stop();
+            }
+            m_spine->stop();
         }
 
         void RobotBase::run()
@@ -172,6 +179,15 @@ namespace rip
                     m_state_file->flush();
                 }
             }
+
+            misc::Logger::getInstance()->debug("Stopping subsystems");
+            for(auto subsystem : m_subsystems)
+            {
+                misc::Logger::getInstance()->debug("Stopping {}", subsystem.first);
+                subsystem.second->stop();
+            }
+            m_spine->stop();
+
             m_running = false;
         }
     }
