@@ -45,17 +45,8 @@ namespace rip
                 std::string toString() const;
                 friend std::ostream& operator<<(std::ostream& os, const RigidTransform2d& transform);
 
-                RigidTransform2d operator+(const RigidTransform2d& rhs) const
-                {
-                    return RigidTransform2d(m_translation + rhs.m_translation, m_rotation + rhs.m_rotation);
-                }
-
-                RigidTransform2d& operator+=(const RigidTransform2d& rhs)
-                {
-                    m_translation += rhs.m_translation;
-                    m_rotation += rhs.m_rotation;
-                }
-
+                RigidTransform2d operator+(const RigidTransform2d& rhs) const;
+                RigidTransform2d& operator+=(const RigidTransform2d& rhs);
                 RigidTransform2d operator-(const RigidTransform2d& rhs) const;
                 RigidTransform2d& operator-=(const RigidTransform2d& rhs);
 

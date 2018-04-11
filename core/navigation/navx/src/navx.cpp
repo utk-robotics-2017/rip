@@ -747,7 +747,12 @@ namespace rip
 
             bool NavX::diagnostic()
             {
-                //todo
+                for(int i = 0; i < 200; i++)
+                {
+                    misc::Logger::getInstance()->debug("NavX: cal: {}, con: {}, yaw: {}, fused heading: {}, angle: {}", isCalibrating(), isConnected(), getYaw().to(units::deg), getFusedHeading().to(units::deg), getAngle().to(units::deg));
+                    std::this_thread::sleep_for(std::chrono::milliseconds(50));
+                }
+
                 return 0;
             }
 

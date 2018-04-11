@@ -90,8 +90,10 @@ namespace rip
             switch (m_tolerance_type)
             {
             case ToleranceType::kPercent:
+                misc::Logger::getInstance()->debug("Error: {}, Tol: {}", err, m_tolerance/ 100.0 * m_input_range);
                 return std::fabs(err) < m_tolerance / 100.0 * m_input_range;
             case ToleranceType::kAbsolute:
+                misc::Logger::getInstance()->debug("Error: {}, Tol: {}", err, m_tolerance)  ;
                 return std::fabs(err) < m_tolerance;
             case ToleranceType::kNoTolerance:
                 return false;

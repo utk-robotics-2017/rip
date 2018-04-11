@@ -40,6 +40,15 @@ namespace rip
                 }
             }
 
+            bool hasSubsystem(const std::string& name)
+            {
+                if (m_robot->m_subsystems.find(name) != m_robot->m_subsystems.end())
+                {
+                    return true;
+                }
+                return false;
+            }
+
             void runSubsystem(const std::string& name)
             {
                 if (m_robot->m_subsystems.find(name) != m_robot->m_subsystems.end())
@@ -52,7 +61,7 @@ namespace rip
 
             bool hasAppendage(const std::string& name)
             {
-              return m_robot->m_spine->has(name);
+                return m_robot->m_spine->has(name);
             }
 
             bool runAppendage(const std::string& name)

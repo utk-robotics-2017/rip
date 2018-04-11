@@ -35,8 +35,14 @@ namespace rip
             std::unique_ptr<std::istream> in = config_file.createInputStream();
             nlohmann::json j;
             (*in) >> j;
-            std::vector<std::string> devices;
 
+            if(j.find("constants") != j.end())
+            {
+                misc::constants::getInstance()->load(j["constants"]);
+            }
+
+
+            std::vector<std::string> devices;
             if(j.find("devices") != j.end())
             {
                 for (nlohmann::json d : j["devices"])
@@ -68,7 +74,16 @@ namespace rip
                 misc::Logger::getInstance()->error("Subsystems not found in config");
                 throw SubSystemsNotFound();
             }
-            createRoutine(j);
+
+            if(j.find("actions") != j.end())
+            {
+                createRoutine(j["actions"]);
+            }
+            else
+            {
+                misc::Logger::getInstance()->error("Actions not found in config");
+                throw ActionsNotFound();
+            }
 
             if(j.find("state_file") != j.end())
             {
@@ -87,6 +102,13 @@ namespace rip
         {
             misc::Logger::getInstance()->debug("Stopping the robot...");
             m_running = false;
+            misc::Logger::getInstance()->debug("Stopping subsystems");
+            for(auto subsystem : m_subsystems)
+            {
+                misc::Logger::getInstance()->debug("Stopping {}", subsystem.first);
+                subsystem.second->stop();
+            }
+            m_spine->stop();
         }
 
         void RobotBase::run()
@@ -157,6 +179,15 @@ namespace rip
                     m_state_file->flush();
                 }
             }
+
+            misc::Logger::getInstance()->debug("Stopping subsystems");
+            for(auto subsystem : m_subsystems)
+            {
+                misc::Logger::getInstance()->debug("Stopping {}", subsystem.first);
+                subsystem.second->stop();
+            }
+            m_spine->stop();
+
             m_running = false;
         }
     }
