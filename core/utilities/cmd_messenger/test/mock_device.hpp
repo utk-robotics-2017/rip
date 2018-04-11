@@ -3,6 +3,7 @@
 #include "cmd_messenger/exceptions.hpp"
 
 #include <string>
+#include <iostream>
 
 namespace rip
 {
@@ -16,9 +17,33 @@ namespace rip
             public:
                 MockDevice();
 
-                bool isOpen () const
+                bool isOpen () const override
                 {
                   return true;
+                }
+
+                void flush() override
+                {
+
+                }
+
+                void flushInput() override
+                {
+
+                }
+
+                void flushOutput() override
+                {
+
+                }
+
+                std::string read(size_t size) override
+                {
+                    std::string rv;
+                    rv = m_response.substr(0, size);
+                    //std::cout << "MockDevice Read(" << size << "): \"" << rv << "\"" << std::endl;
+                    m_response.erase(0, size);
+                    return rv;
                 }
 
                 /**
@@ -60,7 +85,7 @@ namespace rip
                  * @param command
                  * @param escape
                  */
-                void setSeparators(char field = ',', char command = ';', char escape = '\\');
+                void setSeparators(char field = ',', char command = ';', char escape = '/');
 
                 /**
                  * @brief Convert a type into bytes
@@ -147,17 +172,19 @@ namespace rip
                         return fromBytesString<T>(message);
                     }
                     char* byte_pointer = reinterpret_cast<char*>(&rv);
-                    for (size_t i = 0; i < sizeof(rv); i++)
+                    uint16_t escape_chars_skipped = 0;
+                    for (size_t i = 0; i < (sizeof(rv) + escape_chars_skipped); i++)
                     {
                         // Skip the escape character
                         if (message[i] == m_escape_character)
                         {
                             i++;
+                            escape_chars_skipped++;
                         }
                         *byte_pointer = message[i];
                         byte_pointer ++;
                     }
-                    message.erase(0, sizeof(rv));
+                    message.erase(0, sizeof(rv) + escape_chars_skipped);
                     return rv;
 
                 }

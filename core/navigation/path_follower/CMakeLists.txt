@@ -26,9 +26,11 @@ if(ENABLE_TESTING)
     make_outputs(${CMAKE_CURRENT_SOURCE_DIR} "${${PROJECT_NAME}_TEST_DATA}" ${CMAKE_CURRENT_BINARY_DIR} testDataOutputs)
 
     # Create arduino_gen_test executable, set to c++11, link navx library and google test libraries
-    add_executable(${PROJECT_NAME}_test ${${PROJECT_NAME}_TEST_SOURCES} ${testDataOutputs})
-    set_property(TARGET ${PROJECT_NAME}_test PROPERTY CXX_STANDARD 11)
-    target_link_libraries(${PROJECT_NAME}_test ${PROJECT_NAME})
-    target_link_libraries(${PROJECT_NAME}_test gmock gtest googletest_rip_macros)
+    if (${${PROJECT_NAME}_TEST_SOURCES})
+        add_executable(${PROJECT_NAME}_test ${${PROJECT_NAME}_TEST_SOURCES} ${testDataOutputs})
+        set_property(TARGET ${PROJECT_NAME}_test PROPERTY CXX_STANDARD 11)
+        target_link_libraries(${PROJECT_NAME}_test ${PROJECT_NAME})
+        target_link_libraries(${PROJECT_NAME}_test gmock gtest googletest_rip_macros)
+    endif()
 
 endif()

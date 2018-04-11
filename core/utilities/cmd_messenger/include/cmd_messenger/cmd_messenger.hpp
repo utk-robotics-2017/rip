@@ -165,7 +165,7 @@ namespace rip
 
                 debugString = byteStringToHexDebugString(std::to_string(command->getEnum()));
                 // std::cout << fmt::format("to_str(command->getEnum()) bytes: {}", debugString) << std::endl;
-                misc::Logger::getInstance()->debug(fmt::format("CmdMessenger sending: '{}:{}' as '{}')", command->getEnum(), command->getId(), debugString ));
+                // misc::Logger::getInstance()->debug(fmt::format("CmdMessenger sending: '{}:{}' as '{}')", command->getEnum(), command->getId(), debugString ));
                 // std::cout << toBytes<int, T_IntegerType>(command->getEnum()) << std::endl;
 
                 // Pack the command to send
@@ -186,7 +186,7 @@ namespace rip
 
                 // Send the message
                 debugString = byteStringToHexDebugString(message);
-                std::cout << fmt::format("Device->write bytes: {}", debugString) << std::endl;
+                // std::cout << fmt::format("Device->write bytes: {}", debugString) << std::endl;
                 // std::cout << fmt::format("Device baud: {}", device->getBaudrate()) << '\n';
                 device->write(message);
                 // device->flushOutput();
@@ -241,7 +241,7 @@ namespace rip
                 }
 
                 debugString = byteStringToHexDebugString(ack_msg);
-                std::cout << fmt::format("Device->readline bytes: {}", debugString) << std::endl;
+                //std::cout << fmt::format("Device->readline bytes: {}", debugString) << std::endl;
 
                 handleAck(ack_msg, command);
 
@@ -310,7 +310,7 @@ namespace rip
                     throw IncorrectCommandSeparator(fmt::format("Wanted '{}' but got '{}' !", m_command_separator, acknowledgement[0]));
                 }
 
-                misc::Logger::getInstance()->debug(fmt::format("CmdMessenger: Successfully acknowledged command {}.", command->getId() ));
+                // misc::Logger::getInstance()->debug(fmt::format("CmdMessenger: Successfully acknowledged command {}.", command->getId() ));
             }
 
             /**
@@ -383,7 +383,7 @@ namespace rip
                     }
                   }
                 }
-                std::cout << fmt::format("CmdMessenger->receive(), device->readline() output: {}", byteStringToHexDebugString(response)) << '\n';
+                //std::cout << fmt::format("CmdMessenger->receive(), device->readline() output: {}", byteStringToHexDebugString(response)) << '\n';
 
                 if (response.size() == 0)
                 {

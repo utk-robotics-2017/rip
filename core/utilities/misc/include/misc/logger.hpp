@@ -25,6 +25,7 @@
 #include <time.h>
 
 #include <spdlog/spdlog.h>
+#include <spdlog/sinks/ansicolor_sink.h>
 #include <cppfs/FileHandle.h>
 #include <cppfs/fs.h>
 #include <misc/constants.hpp>
