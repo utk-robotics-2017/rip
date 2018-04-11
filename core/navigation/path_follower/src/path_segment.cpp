@@ -61,7 +61,7 @@ namespace rip
 
             void PathSegment::createMotionProfiler(const MotionState& start_state, const units::Velocity& end_speed)
             {
-                MotionProfileConstraints motion_constraints(m_max_speed, misc::constants::getInstance()->get<units::Acceleration>(misc::constants::kMaxAcceleration));
+                MotionProfileConstraints motion_constraints(m_max_speed, misc::constants::get<units::Acceleration>(misc::constants::kMaxAcceleration));
                 MotionProfileGoal goal_state(length(), end_speed);
                 m_speed_controller = MotionProfileGenerator::generateProfile(motion_constraints, goal_state, start_state);
             }

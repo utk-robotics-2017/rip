@@ -101,7 +101,7 @@ namespace rip
             {
                 PathSegment& current_segment = m_segments.front();
                 units::Distance remaining_distance = current_segment.remainingDistance(current_segment.closestPoint(position));
-                if (remaining_distance < misc::constants::getInstance()->get<units::Distance>(misc::constants::kSegmentCompletionTolerance))
+                if (remaining_distance < misc::constants::get<units::Distance>(misc::constants::kSegmentCompletionTolerance))
                 {
                     removeCurrentSegment();
                 }
@@ -126,7 +126,7 @@ namespace rip
                 for (size_t i = m_segments.size() - 1; i >= 0; --i)
                 {
                     PathSegment& segment = m_segments[i];
-                    max_start_speed += units::sqrt(max_start_speed * max_start_speed + 2 * misc::constants::getInstance()->get<units::Acceleration>(misc::constants::kMaxAcceleration) * segment.length());
+                    max_start_speed += units::sqrt(max_start_speed * max_start_speed + 2 * misc::constants::get<units::Acceleration>(misc::constants::kMaxAcceleration) * segment.length());
                     start_speeds[i] = segment.startState().velocity();
                     if (start_speeds[i] > max_start_speed)
                     {
