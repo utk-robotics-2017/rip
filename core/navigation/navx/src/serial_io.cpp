@@ -2,6 +2,8 @@
 #include <navx/serial_io.hpp>
 #include <time.h>
 #include <unistd.h>
+#include <chrono>
+#include <thread>
 #include <string>
 namespace rip
 {
@@ -9,7 +11,6 @@ namespace rip
     {
         namespace navx
         {
-
             static const double IO_TIMEOUT_SECONDS = 1.0;
 
 #define SERIALIO_DASHBOARD_DEBUG
@@ -51,7 +52,7 @@ namespace rip
                     {
                         delete serial_port;
                     }
-                    catch (std::exception  ex)
+                    catch (std::exception ex)
                     {
                         // This has been seen to happen before....
                         //^top notch exception handling as usual
@@ -64,7 +65,7 @@ namespace rip
 
             SerialPort* SerialIO::getMaybeCreateSerialPort()
             {
-                if (serial_port == 0)
+                while(serial_port == 0)
                 {
                     try
                     {
@@ -80,6 +81,7 @@ namespace rip
                         printf("ERROR Opening Serial Port!\n");
                         serial_port = 0;
                     }
+                    std::this_thread::sleep_for(std::chrono::duration<int, std::milli>(50));
                 }
                 return serial_port;
             }
@@ -258,7 +260,6 @@ namespace rip
                                 printf("SerialPort Run() IntegrationControl Send Exception:  %s\n", ex.what());
                             }
                         }
-
 
                         if (!bstop && (remainder_bytes == 0) && (serial_port->getBytesReceived() < 1))
                         {

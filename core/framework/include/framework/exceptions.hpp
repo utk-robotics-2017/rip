@@ -31,6 +31,7 @@ namespace rip
         NEW_EX(AppendageWithoutLabel)
         NEW_EX(CannotLoadDevice)
         NEW_EX(SubSystemsNotFound)
+        NEW_EX(ActionsNotFound)
     }
 }
 #endif // EXCEPTIONS_HPP

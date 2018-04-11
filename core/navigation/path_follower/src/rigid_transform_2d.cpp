@@ -150,6 +150,18 @@ namespace rip
                 return fmt::format("T: {}, R: {}", m_translation.toString(), m_rotation.toString());
             }
 
+            RigidTransform2d RigidTransform2d::operator+(const RigidTransform2d& rhs) const
+            {
+                return RigidTransform2d(m_translation + rhs.m_translation, m_rotation + rhs.m_rotation);
+            }
+
+            RigidTransform2d&RigidTransform2d::operator+=(const RigidTransform2d& rhs)
+            {
+                m_translation += rhs.m_translation;
+                m_rotation += rhs.m_rotation;
+                return *this;
+            }
+
             std::ostream& operator<<(std::ostream& os, const RigidTransform2d& transform)
             {
                 os << transform.toString() << std::endl;
