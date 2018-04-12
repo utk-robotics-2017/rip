@@ -492,6 +492,7 @@ namespace rip
                       n_chr == '\0'
                       || n_chr == m_field_separator
                       || n_chr == m_command_separator
+                      || n_chr == m_escape_character
                     ) {
                       rv += m_escape_character;
                     }

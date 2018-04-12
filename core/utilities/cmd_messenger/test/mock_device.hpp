@@ -80,6 +80,12 @@ namespace rip
                 void setResponse(const std::string& response);
 
                 /**
+                 * @brief getResponse
+                 * @return current response_tuple
+                 */
+                std::string getResponse();
+
+                /**
                  * @brief setSeparators
                  * @param field
                  * @param command

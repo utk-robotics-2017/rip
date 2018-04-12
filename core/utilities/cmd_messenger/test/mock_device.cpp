@@ -29,7 +29,7 @@ namespace rip
             size_t MockDevice::write(const std::string& message)
             {
                 m_last_sent = message;
-                m_response = std::string(m_correctly_acknowledge ? "0" : "1") + m_field_separator + (char)(message[0] - '0') + m_escape_character + (char)0 + m_command_separator;
+                m_response = std::string(m_correctly_acknowledge ? "0" : "1") + m_field_separator + toBytes<uint16_t>(std::stoi(message.substr(0, message.find(m_field_separator)))) + m_command_separator;
                 return message.size();
             }
 
@@ -46,6 +46,11 @@ namespace rip
             void MockDevice::setResponse(const std::string& response)
             {
                 m_response = response;
+            }
+
+            std::string MockDevice::getResponse()
+            {
+              return m_response;
             }
 
             std::string MockDevice::readline(size_t size, std::string eol)
