@@ -15,6 +15,9 @@ namespace rip
         const char* constants::kTurnKp = "turn_kp";
         const char* constants::kTurnKi = "turn_ki";
         const char* constants::kTurnKd = "turn_kd";
+        const char* constants::kStraightAngleKp = "straight_angle_kp";
+        const char* constants::kStraightAngleKi = "straight_angle_ki";
+        const char* constants::kStraightAngleKd = "straight_angle_kd";
 
         std::shared_ptr<constants> constants::m_singleton = nullptr;
     }
