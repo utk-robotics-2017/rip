@@ -39,6 +39,9 @@ namespace rip
             static const char* kTurnKp;
             static const char* kTurnKi;
             static const char* kTurnKd;
+            static const char* kStraightAngleKp;
+            static const char* kStraightAngleKi;
+            static const char* kStraightAngleKd;
 
             static void load(const nlohmann::json& constants)
             {
