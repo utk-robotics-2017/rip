@@ -23,6 +23,7 @@
 #include <json.hpp>
 #include "framework/action.hpp"
 #include <units/units.hpp>
+#include <misc/logger.hpp>
 
 namespace rip
 {

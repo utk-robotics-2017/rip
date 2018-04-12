@@ -17,8 +17,9 @@ namespace rip
              * We're on the last action, and that action is finished.
              */
             return
+              // at the end of our actions
               m_current == static_cast<int>(m_actions.size())
-              && m_actions[m_current]->isFinished();
+              && m_actions.back()->isFinished();
         }
 
         void SeriesAction::setup(nlohmann::json& state) {}
