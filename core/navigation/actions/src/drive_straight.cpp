@@ -42,11 +42,14 @@ namespace rip
                     m_distance = config["distance"];
                 }
 
-                if(config.find("velocity") != config.end())
+                if(config.find("velocity") == config.end())
                 {
-                    throw ActionConfigException("velocity not in config");
+                    m_velocity = misc::constants::get<units::Velocity>(misc::constants::kMaxVelocity);
                 }
-                m_velocity = config["velocity"];
+                else
+                {
+                    m_velocity = config["velocity"];
+                }
                 m_direction = m_velocity > 0;
 
                 if(config.find("acceleration") != config.end())

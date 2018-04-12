@@ -10,31 +10,67 @@ namespace rip
         namespace actions
         {
             TurnToAngle::TurnToAngle(const std::string& name, std::shared_ptr<drivetrains::Drivetrain> drivetrain, std::shared_ptr<NavX> navx, const nlohmann::json& config)
-                : Action(name)
+                : TimeoutAction(name, config)
                 , m_drivetrain(drivetrain)
                 , m_navx(navx)
                 , m_first(true)
             {
+                if(config.find("turn_angle") == config.end())
+                {
+                    throw ActionConfigException("turn_angle missing from config");
+                }
                 m_turn_angle = config["turn_angle"];
-                m_pid = std::unique_ptr<pid::PidController>(new pid::PidController(navx.get(), this, misc::constants::get<double>(misc::constants::kTurnKp), misc::constants::get<double>(misc::constants::kTurnKi),  misc::constants::get<double>(misc::constants::kTurnKd)));
+                
+                double kp;
+                if(config.find("kp") != config.end())
+                {
+                    kp = config["kp"];
+                }
+                else
+                {
+                    kp = misc::constants::get<double>(misc::constants::kTurnKp);
+                }
+
+                double ki;
+                if(config.find("ki") != config.end())
+                {
+                    ki = config["ki"];
+                }
+                else
+                {
+                    ki = misc::constants::get<double>(misc::constants::kTurnKi);
+                }
+
+                double kd;
+                if(config.find("kd") != config.end())
+                {
+                    kd = config["kd"];
+                }
+                else
+                {
+                    kd = misc::constants::get<double>(misc::constants::kTurnKd);
+                }
+
+                m_pid = std::unique_ptr<pid::PidController>(new pid::PidController(navx.get(), this, kp, ki, kd));
                 m_pid->setPercentTolerance(1);
                 m_navx->setType(pid::PidInput::Type::kDisplacement);
                 m_pid->setContinuous(true);
                 m_pid->setInputRange(-180 * units::deg(), 180 * units::deg());
-                m_pid->setOutputRange(-18 * units::in() / units::s(), 18 * units::in() / units::s());
+                units::Velocity max_velocity = misc::constants::get<units::Velocity>(misc::constants::kMaxVelocity);
+                m_pid->setOutputRange(-max_velocity(), max_velocity());
 
                 m_max_accel = misc::constants::get<units::Acceleration>(misc::constants::kMaxAcceleration);
             }
 
             bool TurnToAngle::isFinished()
             {
-                return m_pid->onTarget();
+                return m_pid->onTarget() || TimeoutAction::isFinished();
             }
 
             void TurnToAngle::update(nlohmann::json& state)
             {
                 units::Angle angle = m_navx->getYaw();
-                misc::Logger::getInstance()->debug("Conn: {},Setpoint: {} deg,  TurnToAngle: {} deg", m_navx->isConnected(), m_setpoint.to(units::deg), angle.to(units::deg));
+                misc::Logger::getInstance()->debug("Conn: {}, Setpoint: {} deg,  TurnToAngle: {} deg", m_navx->isConnected(), m_setpoint.to(units::deg), angle.to(units::deg));
                 m_pid->calculate();
                 std::this_thread::sleep_for(std::chrono::milliseconds(5));
             }
@@ -54,11 +90,12 @@ namespace rip
                 misc::Logger::getInstance()->debug("Start: {} deg, Setpoint: {} deg", m_start_angle.to(units::deg), m_setpoint.to(units::deg));
                 m_pid->setSetpoint(m_setpoint());
                 m_pid->calculate();
+                TimeoutAction::setup(state);
             }
 
             void TurnToAngle::teardown(nlohmann::json& state)
             {
-                misc::Logger::getInstance()->debug("Degrees turned: {} deg", (m_navx->getFusedHeading() - m_start_angle).to(units::deg));
+                misc::Logger::getInstance()->debug("Degrees turned: {} deg", (m_navx->getYaw() - m_start_angle).to(units::deg));
                 m_drivetrain->stop();
             }
 
