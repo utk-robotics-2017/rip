@@ -19,15 +19,14 @@ namespace rip
                 cmdmessenger::ArduinoCmdMessenger::makeArgumentString<
                   cmdmessenger::ArduinoCmdMessenger::IntegerType,
                   cmdmessenger::ArduinoCmdMessenger::IntegerType>()
-                )
               )
-            , m_attach(
+            )
+            , m_detach(
               createCommand(
-                "kAttachServo",
+                "kDetachServo",
                 command_map,
                 cmdmessenger::ArduinoCmdMessenger::makeArgumentString<
-                  cmdmessenger::ArduinoCmdMessenger::IntegerType,
-                  cmdmessenger::ArduinoCmdMessenger::BooleanType>()
+                  cmdmessenger::ArduinoCmdMessenger::IntegerType>()
               )
             )
         {
@@ -41,13 +40,13 @@ namespace rip
 
         void Servo::stop()
         {
-            attach(false);
+            detach();
         }
 
-        void Servo::attach(bool state)
+        void Servo::detach()
         {
             cmdmessenger::ArduinoCmdMessenger messenger;
-            messenger.send<bool>(m_device, m_attach, m_id, state);
+            messenger.send(m_device, m_detach, m_id);
         }
 
         bool Servo::diagnostic()
@@ -65,7 +64,7 @@ namespace rip
             if (new_val == -1) break;
             else if (new_val == -2)
             {
-              attach(false);
+              detach();
             }
             else
             {
