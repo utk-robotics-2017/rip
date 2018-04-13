@@ -50,8 +50,6 @@ namespace rip
 
                 void RobotWidgetOuter::robotOptionsChanged()
                 {
-                    disconnect(m_ui->options, SIGNAL(currentTextChanged(QString)), this, SLOT(robotChanged(QString)));
-
                     // todo: handle add and remove better
 
                     QString current_text = m_ui->options->currentText();
@@ -65,16 +63,31 @@ namespace rip
                     m_ui->options->clear();
                     m_ui->options->addItems(names);
                     m_ui->options->setCurrentText(current_text);
-
-                    connect(m_ui->options, SIGNAL(currentTextChanged(QString)), this, SLOT(robotChanged(QString)));
                 }
 
                 void RobotWidgetOuter::updateRobot()
                 {
                     m_robot = Storage::getInstance()->selectedRobot();
-                    m_ui->max_speed->setText(QString::fromStdString(fmt::format("{0:0.3f}", m_robot->maxSpeed().to(units::in/units::s))));
-                    m_ui->max_acceleration->setText(QString::fromStdString(fmt::format("{0:0.3f}", m_robot->maxAcceleration().to(units::in/units::s/units::s))));
-                    m_ui->wheelbase->setText(QString::fromStdString(fmt::format("{0:0.3f}", m_robot->wheelbase().to(units::in))));
+                    if(m_robot)
+                    {
+                        m_ui->max_speed->setEnabled(true);
+                        m_ui->max_acceleration->setEnabled(true);
+                        m_ui->wheelbase->setEnabled(true);
+
+                        m_ui->max_speed->setText(QString::fromStdString(fmt::format("{0:0.3f}", m_robot->maxSpeed().to(units::in/units::s))));
+                        m_ui->max_acceleration->setText(QString::fromStdString(fmt::format("{0:0.3f}", m_robot->maxAcceleration().to(units::in/units::s/units::s))));
+                        m_ui->wheelbase->setText(QString::fromStdString(fmt::format("{0:0.3f}", m_robot->wheelbase().to(units::in))));
+                    }
+                    else
+                    {
+                        m_ui->max_speed->setText("N/A");
+                        m_ui->max_acceleration->setText("N/A");
+                        m_ui->wheelbase->setText("N/A");
+
+                        m_ui->max_speed->setEnabled(false);
+                        m_ui->max_acceleration->setEnabled(false);
+                        m_ui->wheelbase->setEnabled(false);
+                    }
                 }
 
                 void RobotWidgetOuter::add()

@@ -17,11 +17,12 @@ namespace rip
             {
 
                 using MotorDynamics = motorcontrollers::MotorDynamics;
+
             public:
                 Drivetrain(const std::string& name)
                     : Subsystem(name)
                 {}
-                    
+
                 enum class Motor
                 {
                     //4 motor drivetrain
@@ -52,8 +53,8 @@ namespace rip
                  *
                  * all range from [-1, 1]
                  */
-                virtual void drive(double front_left, double front_right, double back_left,
-                    double back_rightk) = 0;
+                virtual void drive(double front_left, double front_right, double back_left, double back_rightk) = 0;
+
 
                 /**
                  * Single command to all motors
@@ -68,8 +69,7 @@ namespace rip
                 /**
                  * Command four wheels separately
                  */
-                virtual void drive(const MotorDynamics& front_left, const MotorDynamics& front_right,
-                    const MotorDynamics& back_left, const MotorDynamics& back_right) = 0;
+                virtual void drive(const MotorDynamics& front_left, const MotorDynamics& front_right, const MotorDynamics& back_left, const MotorDynamics& back_right) = 0;
 
                 /**
                  * Reads encoders for every motor you tell it to read, reports back in respective
@@ -90,6 +90,8 @@ namespace rip
                  * reads the encoder for one motor
                  */
                 virtual units::Velocity readEncoderVelocity(const Motor& motor) = 0;
+
+                virtual units::Angle readGyro() = 0;
             };
         }
     }

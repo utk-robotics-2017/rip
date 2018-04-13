@@ -19,6 +19,11 @@ namespace rip
             {
             }
 
+            RigidTransform2d::RigidTransform2d(const pose::Pose& pose)
+                : m_translation(pose.x, pose.y), m_rotation(pose.yaw)
+            {
+            }
+
             RigidTransform2d RigidTransform2d::fromTranslation(const Translation2d& translation)
             {
                 return RigidTransform2d(translation, Rotation2d());
@@ -85,7 +90,7 @@ namespace rip
                 m_rotation = rotation;
             }
 
-            RigidTransform2d RigidTransform2d::transformBy(const RigidTransform2d& other)
+            RigidTransform2d RigidTransform2d::transformBy(const RigidTransform2d& other) const
             {
                 return RigidTransform2d(m_translation.translateBy(other.m_translation.rotateBy(m_rotation)), m_rotation.rotateBy(other.m_rotation));
             }
@@ -143,6 +148,18 @@ namespace rip
             std::string RigidTransform2d::toString() const
             {
                 return fmt::format("T: {}, R: {}", m_translation.toString(), m_rotation.toString());
+            }
+
+            RigidTransform2d RigidTransform2d::operator+(const RigidTransform2d& rhs) const
+            {
+                return RigidTransform2d(m_translation + rhs.m_translation, m_rotation + rhs.m_rotation);
+            }
+
+            RigidTransform2d&RigidTransform2d::operator+=(const RigidTransform2d& rhs)
+            {
+                m_translation += rhs.m_translation;
+                m_rotation += rhs.m_rotation;
+                return *this;
             }
 
             std::ostream& operator<<(std::ostream& os, const RigidTransform2d& transform)

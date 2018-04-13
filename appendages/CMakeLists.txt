@@ -5,11 +5,11 @@ project(appendages)
 file(GLOB_RECURSE ${PROJECT_NAME}_SOURCES "src/*.cpp")
 file(GLOB_RECURSE ${PROJECT_NAME}_HEADERS "include/*.hpp")
 
-add_library(${PROJECT_NAME} EXCLUDE_FROM_ALL ${${PROJECT_NAME}_SOURCES} ${${PROJECT_NAME}_HEADERS})
+add_library(${PROJECT_NAME} STATIC EXCLUDE_FROM_ALL ${${PROJECT_NAME}_SOURCES} ${${PROJECT_NAME}_HEADERS})
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
 target_link_libraries(${PROJECT_NAME}
     fmt json spdlog cppfs
-    cmd_messenger misc)
+    cmd_messenger units misc motor_controllers)
 target_include_directories(${PROJECT_NAME} PUBLIC include)
 
 set_property(GLOBAL PROPERTY AppendageRoot ${CMAKE_CURRENT_SOURCE_DIR})

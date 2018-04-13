@@ -169,7 +169,7 @@ namespace rip
                 return Translation2d(m_x + rhs.m_x, m_y + rhs.m_y);
             }
 
-            Translation2d Translation2d::operator+=(const Translation2d& rhs)
+            Translation2d& Translation2d::operator+=(const Translation2d& rhs)
             {
                 m_x += rhs.m_x;
                 m_y += rhs.m_y;

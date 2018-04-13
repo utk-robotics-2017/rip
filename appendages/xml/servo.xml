@@ -31,15 +31,9 @@
                 servos[indexNum].write(value);
             </code>
         </command>
-        <command id="kAttachServo" name="attachServo" index-num="true">
-            <parameter type="bool" name="state" />
+        <command id="kDetachServo" name="detachServo" index-num="true">
             <code>
-                if (state) {
-                    servos[indexNum].attach(servo_pins[indexNum]);
-                }
-                else {
-                    servos[indexNum].detach();
-                }
+                servos[indexNum].detach();
             </code>
         </command>
     </commands>

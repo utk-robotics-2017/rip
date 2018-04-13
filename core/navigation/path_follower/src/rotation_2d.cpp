@@ -138,6 +138,32 @@ namespace rip
                 return fmt::format("{0:0.2f} deg", angle().to(units::deg));
             }
 
+            Rotation2d Rotation2d::operator+(const Rotation2d& rhs) const
+            {
+                return rotateBy(rhs);
+            }
+
+            Rotation2d& Rotation2d::operator+=(const Rotation2d& rhs)
+            {
+                m_cos_angle = m_cos_angle * rhs.m_cos_angle - m_sin_angle * rhs.m_sin_angle;
+                m_sin_angle = m_cos_angle * rhs.m_sin_angle + m_sin_angle * rhs.m_cos_angle;
+                normalize();
+                return *this;
+            }
+
+            Rotation2d Rotation2d::operator-(const Rotation2d& rhs) const
+            {
+                return rotateBy(rhs.inverse());
+            }
+
+            Rotation2d& Rotation2d::operator-=(const Rotation2d& rhs)
+            {
+                m_cos_angle = m_cos_angle * -rhs.m_cos_angle - m_sin_angle * -rhs.m_sin_angle;
+                m_sin_angle = m_cos_angle * -rhs.m_sin_angle + m_sin_angle * -rhs.m_cos_angle;
+                normalize();
+                return *this;
+            }
+
             std::ostream& operator<<(std::ostream& os, const Rotation2d& rhs)
             {
                 os << rhs.toString() << std::endl;

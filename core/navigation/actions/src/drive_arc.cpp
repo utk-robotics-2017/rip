@@ -112,7 +112,7 @@ namespace rip
                 {
                     for(int i=0; i<2; i++)
                     {
-                        m_adjusted_speeds[i] += 1;
+                        m_adjusted_speeds[i] -= .0001;
                         dynamics[i].setSpeed(m_adjusted_speeds[i]);
                     }
                     m_drivetrain->drive(dynamics[0], dynamics[1]);
@@ -121,7 +121,7 @@ namespace rip
                 {
                     for(int i=0; i<2; i++)
                     {
-                        m_adjusted_speeds[i] -= 1;
+                        m_adjusted_speeds[i] += .0001;
                         dynamics[i].setSpeed(m_adjusted_speeds[i]);
                     }
                     m_drivetrain->drive(dynamics[0], dynamics[1]);
@@ -134,16 +134,16 @@ namespace rip
 
                 if(diff_state > k_dead_zone * expected_state) //angle greater than expected
                 {
-                    m_adjusted_speeds[0] += 1 * units::cm / units::s;
-                    m_adjusted_speeds[1] -= 1 * units::cm / units::s;
+                    m_adjusted_speeds[0] -= .0001 * units::cm / units::s;
+                    m_adjusted_speeds[1] += .0001 * units::cm / units::s;
                     dynamics[0].setSpeed(m_adjusted_speeds[0]);
                     dynamics[1].setSpeed(m_adjusted_speeds[1]);
                     m_drivetrain->drive(dynamics[0], dynamics[1]);
                 }
                 else if(diff_state < k_dead_zone * expected_state * -1)//smaller or equal than expected
                 {
-                    m_adjusted_speeds[1] += 1 * units::cm / units::s;
-                    m_adjusted_speeds[0] -= 1 * units::cm / units::s;
+                    m_adjusted_speeds[1] += .0001 * units::cm / units::s;
+                    m_adjusted_speeds[0] -= .0001 * units::cm / units::s;
                     dynamics[0].setSpeed(m_adjusted_speeds[0]);
                     dynamics[1].setSpeed(m_adjusted_speeds[1]);
                     m_drivetrain->drive(dynamics[0], dynamics[1]);

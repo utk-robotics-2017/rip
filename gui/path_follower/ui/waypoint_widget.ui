@@ -61,8 +61,21 @@
    <item>
     <widget class="QLineEdit" name="speed"/>
    </item>
+   <item>
+    <widget class="QPushButton" name="remove">
+     <property name="text">
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset resource="../resources/icons/icons.qrc">
+       <normaloff>:/icons/minus.png</normaloff>:/icons/minus.png</iconset>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="../resources/icons/icons.qrc"/>
+ </resources>
  <connections/>
 </ui>

@@ -3,8 +3,11 @@
 
 #include <json.hpp>
 
-#include <framework/action.hpp>
+#include <framework/timeout_action.hpp>
 #include <drivetrains/drivetrain.hpp>
+#include <pid/pid_output.hpp>
+#include <pid/pid.hpp>
+#include <navx/navx.hpp>
 
 #include <chrono>
 
@@ -15,14 +18,11 @@ namespace rip
     {
         namespace actions
         {
-            class DriveStraight : public framework::Action
+            class DriveStraight : public framework::TimeoutAction, public pid::PidOutput
             {
             public:
                 DriveStraight(const std::string& name, std::shared_ptr<drivetrains::Drivetrain> drivetrain,
-                     const units::Distance& distance, double p, double i, double d);
-
-                DriveStraight(const std::string& name, std::shared_ptr<drivetrains::Drivetrain> drivetrain,
-                     const units::Time& time, const units::Velocity& speed);
+                              std::shared_ptr<navx::NavX> navx, const nlohmann::json& config);
 
                 /**
                 * Returns whether or not the action has finished execution.
@@ -44,13 +44,63 @@ namespace rip
                  */
                 virtual void teardown(nlohmann::json& state) override;
 
+
+                virtual void set(double output);
+
+                bool useTime() const;
+
+                units::Distance distanceToTravel() const;
+
+                units::Distance distanceTraveled() const;
+
+                void setDistanceToTravel(const units::Distance& distance);
+
+                units::Velocity baseVelocity() const;
+
+                void setBaseVelocity(const units::Velocity& velocity);
+
+                units::Acceleration maxAcceleration() const;
+
+                void setMaxAcceleration(const units::Acceleration& acceleration);
+
+            protected:
+                /* distance to go */
+                units::Distance m_distance;
+                /* Target speed for driving straight */
+                units::Velocity m_velocity;
+
+                /* Maximum acceleration/deceleration */
+                units::Acceleration m_max_accel;
+
+                units::Time m_time;
+
+                bool m_direction;
+
             private:
                 bool m_use_time;
-                units::Distance m_distance;
-                units::Time m_time;
+
+                units::Distance m_init_encoder;
+                units::Distance m_distance_travelled;
+
                 std::chrono::time_point<std::chrono::system_clock> m_start_time;
-                units::Velocity m_speed;
+                std::chrono::time_point<std::chrono::system_clock> m_last_time;
+
+
+
+                /* Drivetrain subsystem -- used to abstract the control of the drive motors */
                 std::shared_ptr<drivetrains::Drivetrain> m_drivetrain;
+
+                /* NavX IMU -- used for gyro & accelerometer */
+                std::shared_ptr<navx::NavX> m_navx;
+
+                /* PID Control for rotational correction */
+                std::unique_ptr<pid::PidController> m_pid;
+
+                /* Initial yaw -- should try to maintain the same yaw since we are driving straight */
+                units::Angle m_initial_yaw;
+
+                bool m_finished;
+                bool m_stop;
             };
 
         }

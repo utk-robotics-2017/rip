@@ -21,8 +21,8 @@ namespace rip
                     m_a.draw(painter);
                     m_b.draw(painter);
 
-                    Translation2d sTrans = m_center - m_a.end();
-                    Translation2d eTrans = m_center - m_b.start();
+                    Translation2d sTrans = m_a.end() - m_center;
+                    Translation2d eTrans = m_b.start() - m_center;
 
                     units::Angle sAngle, eAngle;
                     if (Translation2d::cross(sTrans, eTrans) > 0)
@@ -40,11 +40,9 @@ namespace rip
                     double y = (m_center.y() - m_radius)();
                     double width = m_radius() * 2;
                     double height = m_radius() *  2;
-                    int start_angle = sAngle.to(units::deg)+180;
-                    int end_angle = eAngle.to(units::deg)+180;
+                    int start_angle = sAngle.to(units::deg);
+                    int end_angle = eAngle.to(units::deg);
                     int span_angle = end_angle - start_angle;
-                    span_angle %= 360;
-                    span_angle = span_angle > 360 - span_angle ? span_angle - 360 : span_angle;
                     painter.drawArc(x, y, width, height, start_angle * 16, span_angle * 16);
                 }
 

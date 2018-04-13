@@ -56,6 +56,8 @@ namespace rip
                     std::string selectedRobotName() const;
                     std::string selectedWaypointsName() const;
 
+                    void removeIndividualWaypoint(int i);
+
                 public slots:
                     void selectWorld(const QString& name);
                     void selectRobot(const QString& name);

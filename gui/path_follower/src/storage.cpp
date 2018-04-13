@@ -201,6 +201,14 @@ namespace rip
                         {
                             m_selected_robot = "";
                         }
+
+                        QString filepath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + QDir::separator() + "robots" + QDir::separator() + QString::fromStdString(name) + ".json";
+                        QFile f(filepath);
+                        if(f.exists())
+                        {
+                            f.remove();
+                        }
+
                         emit robotOptionsChanged();
                         return true;
                     }
@@ -216,6 +224,14 @@ namespace rip
                         {
                             m_selected_waypoints = "";
                         }
+
+                        QString filepath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + QDir::separator() + "waypoints" + QDir::separator() + QString::fromStdString(name) + ".json";
+                        QFile f(filepath);
+                        if(f.exists())
+                        {
+                            f.remove();
+                        }
+
                         emit waypointsOptionsChanged();
                         return true;
                     }
@@ -232,6 +248,15 @@ namespace rip
                         {
                             m_selected_world = "";
                         }
+
+                        QString filepath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + QDir::separator() + "worlds" + QDir::separator() + QString::fromStdString(name) + ".json";
+                        QFile f(filepath);
+                        if(f.exists())
+                        {
+                            f.remove();
+                        }
+
+                        emit worldOptionsChanged();
                         return true;
                     }
                     return false;
@@ -325,6 +350,16 @@ namespace rip
                 std::string Storage::selectedWaypointsName() const
                 {
                     return m_selected_waypoints;
+                }
+
+                void Storage::removeIndividualWaypoint(int i)
+                {
+                    std::shared_ptr<WaypointList> waypoints = selectedWaypoints();
+                    if(waypoints)
+                    {
+                        waypoints->removeWaypoint(i);
+                        selectedWaypointsChanged();
+                    }
                 }
 
                 void Storage::selectWorld(const QString& name)

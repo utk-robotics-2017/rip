@@ -26,14 +26,14 @@ namespace rip
 
             MotionState Path::lastMotionState() const
             {
-                if(m_segments.size() > 0)
+                if (m_segments.size() > 0)
                 {
                     MotionState end_state = m_segments.back().endState();
-                    return MotionState(0.0,0.0, end_state.velocity(), end_state.acceleration());
+                    return MotionState(0.0, 0.0, end_state.velocity(), end_state.acceleration());
                 }
                 else
                 {
-                    return MotionState(0.0,0.0,0.0,0.0);
+                    return MotionState(0.0, 0.0, 0.0, 0.0);
                 }
             }
 
@@ -57,20 +57,20 @@ namespace rip
                 rv.closest_point_distance = Translation2d(robot, rv.closest_point).norm();
                 rv.remaining_segment_distance = current_segment.remainingDistance(rv.closest_point);
                 rv.remaining_path_distance = rv.remaining_segment_distance;
-                for(size_t i = 1; i < m_segments.size(); i++)
+                for (size_t i = 1; i < m_segments.size(); i++)
                 {
                     rv.remaining_path_distance += m_segments[i].length();
                 }
                 rv.closest_point_speed = current_segment.speedByDistance(current_segment.length() - rv.remaining_segment_distance);
                 units::Distance lookahead_distance = lookahead.getLookaheadForSpeed(rv.closest_point_speed) + rv.closest_point_distance;
-                if(rv.remaining_segment_distance < lookahead_distance && m_segments.size() > 1)
+                if (rv.remaining_segment_distance < lookahead_distance && m_segments.size() > 1)
                 {
                     lookahead_distance -= rv.remaining_segment_distance;
-                    for(size_t i = 1; i < m_segments.size(); ++i)
+                    for (size_t i = 1; i < m_segments.size(); ++i)
                     {
                         current_segment = m_segments[i];
                         const units::Distance length = current_segment.length();
-                        if(length < lookahead_distance && i < m_segments.size() - 1)
+                        if (length < lookahead_distance && i < m_segments.size() - 1)
                         {
                             lookahead_distance -= length;
                         }
@@ -101,7 +101,7 @@ namespace rip
             {
                 PathSegment& current_segment = m_segments.front();
                 units::Distance remaining_distance = current_segment.remainingDistance(current_segment.closestPoint(position));
-                if(remaining_distance < misc::constants::getInstance()->get<units::Distance>(misc::constants::kSegmentCompletionTolerance))
+                if (remaining_distance < misc::constants::get<units::Distance>(misc::constants::kSegmentCompletionTolerance))
                 {
                     removeCurrentSegment();
                 }
@@ -112,7 +112,7 @@ namespace rip
                 m_previous = m_segments.front();
                 m_segments.erase(m_segments.begin());
                 std::string marker = m_previous.marker();
-                if(!marker.empty())
+                if (!marker.empty())
                 {
                     m_markers_crossed.insert(marker);
                 }
@@ -123,22 +123,22 @@ namespace rip
                 units::Velocity max_start_speed = 0.0;
                 units::Velocity start_speeds[m_segments.size() + 1];
                 start_speeds[m_segments.size()] = 0.0;
-                for(size_t i = m_segments.size() - 1; i >= 0; --i)
+                for (size_t i = m_segments.size() - 1; i >= 0; --i)
                 {
                     PathSegment& segment = m_segments[i];
-                    max_start_speed += units::sqrt(max_start_speed * max_start_speed + 2 * misc::constants::getInstance()->get<units::Acceleration>(misc::constants::kPathFollowingMaxAccel) * segment.length());
+                    max_start_speed += units::sqrt(max_start_speed * max_start_speed + 2 * misc::constants::get<units::Acceleration>(misc::constants::kMaxAcceleration) * segment.length());
                     start_speeds[i] = segment.startState().velocity();
-                    if(start_speeds[i] > max_start_speed)
+                    if (start_speeds[i] > max_start_speed)
                     {
                         start_speeds[i] = max_start_speed;
                     }
                     max_start_speed = start_speeds[i];
                 }
-                for(size_t i = 0; i < m_segments.size(); ++i)
+                for (size_t i = 0; i < m_segments.size(); ++i)
                 {
                     PathSegment& segment = m_segments[i];
                     units::Velocity end_speed = start_speeds[i + 1];
-                    MotionState start_state = (i > 0) ? m_segments[i -1].endState() : MotionState(0,0,0,0);
+                    MotionState start_state = (i > 0) ? m_segments[i - 1].endState() : MotionState(0, 0, 0, 0);
                     start_state = MotionState(0, 0, start_state.velocity(), start_state.velocity()());
                     segment.createMotionProfiler(start_state, end_speed);
                 }
@@ -152,7 +152,7 @@ namespace rip
             std::string Path::toString() const
             {
                 std::string str = "";
-                for(const PathSegment& s : m_segments)
+                for (const PathSegment& s : m_segments)
                 {
                     str += s.toString() + "\n";
                 }

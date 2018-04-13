@@ -21,6 +21,27 @@ namespace rip
                 units::Distance lookahead = m_delta_distance * (speed - m_min_speed) / m_delta_speed + m_min_distance;
                 return units::isnan(lookahead) ? m_min_distance : units::max(m_min_distance, units::min(m_max_distance, lookahead));
             }
+
+            void to_json(nlohmann::json& j, const Lookahead& l)
+            {
+                j = {
+                    {"min_distance", l.m_min_distance},
+                    {"max_distance", l.m_max_distance},
+                    {"min_speed", l.m_min_speed},
+                    {"max_speed", l.m_max_speed}
+                };
+            }
+
+            void from_json(const nlohmann::json& j, Lookahead& l)
+            {
+                l.m_min_distance = j["min_distance"];
+                l.m_max_distance = j["max_distance"];
+                l.m_min_speed = j["min_speed"];
+                l.m_max_speed = j["max_speed"];
+                l.m_delta_distance = l.m_max_distance - l.m_min_distance;
+                l.m_delta_speed = l.m_max_speed - l.m_min_speed;
+            }
+
         }
     }
 }

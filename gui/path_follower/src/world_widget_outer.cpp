@@ -42,8 +42,6 @@ namespace rip
 
                 void WorldWidgetOuter::worldOptionsChanged()
                 {
-                    disconnect(m_ui->options, SIGNAL(currentTextChanged(QString)), this, SLOT(worldChanged(QString)));
-
                     QStringList names;
                     for (const std::string& name : Storage::getInstance()->worldNames())
                     {
@@ -53,8 +51,6 @@ namespace rip
                     m_ui->options->clear();
                     m_ui->options->addItems(names);
                     m_ui->options->setCurrentText(QString::fromStdString(Storage::getInstance()->selectedWorldName()));
-
-                    connect(m_ui->options, SIGNAL(currentTextChanged(QString)), this, SLOT(worldChanged(QString)));
                 }
 
                 void WorldWidgetOuter::add()

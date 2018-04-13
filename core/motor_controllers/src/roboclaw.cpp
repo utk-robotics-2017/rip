@@ -30,8 +30,6 @@ namespace rip
         namespace roboclaw
         {
 
-			std::mutex Roboclaw::global_lock;
-
             Roboclaw::Roboclaw(const nlohmann::json& config, bool test)
                 : Subsystem("")
             {
@@ -705,9 +703,6 @@ namespace rip
 //////////////////////////////////////////////////////////////////////////////////////////////
             std::vector<uint8_t> Roboclaw::readN(uint8_t n, Command cmd)
             {
-                // todo: don't do this --- just trying something out
-                std::lock_guard<std::mutex> lock(Roboclaw::global_lock);
-
                 uint8_t max_reset = 2;
 
                 std::vector<uint8_t> command = {m_address, static_cast<uint8_t>(cmd)};

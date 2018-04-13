@@ -140,6 +140,9 @@ namespace rip
             void send(std::shared_ptr<Device> device, std::shared_ptr<Command> command, Args... args)
             {
                 std::string debugString; // HACK
+                int n_resend = 5; // number of retries for a kError
+                bool try_resend = false;
+
                 if (device == nullptr)
                 {
                     throw EmptyDevice("Device is nullptr!");
@@ -165,7 +168,7 @@ namespace rip
 
                 debugString = byteStringToHexDebugString(std::to_string(command->getEnum()));
                 // std::cout << fmt::format("to_str(command->getEnum()) bytes: {}", debugString) << std::endl;
-                misc::Logger::getInstance()->debug(fmt::format("CmdMessenger sending: '{}:{}' as '{}')", command->getEnum(), command->getId(), debugString ));
+                //misc::Logger::getInstance()->debug(fmt::format("CmdMessenger sending: '{}:{}' as '{}')", command->getEnum(), command->getId(), debugString ));
                 // std::cout << toBytes<int, T_IntegerType>(command->getEnum()) << std::endl;
 
                 // Pack the command to send
@@ -184,66 +187,94 @@ namespace rip
                     message += static_cast<T_CharType>(m_command_separator);
                 }
 
-                // Send the message
-                debugString = byteStringToHexDebugString(message);
-                std::cout << fmt::format("Device->write bytes: {}", debugString) << std::endl;
-                // std::cout << fmt::format("Device baud: {}", device->getBaudrate()) << '\n';
-                device->write(message);
-                // device->flushOutput();
-                device->flush();
-
-                // HACK
-                device->setTimeout(units::s * 1);
-
-                // std::cout << "reading till I see " << std::string(1, m_command_separator) << std::endl;
-
-                // Check Acknowledgement
-                // std::string acknowledgement = device->readline(m_max_response_length, ";");//std::string(1, m_command_separator));
-                std::string ack_msg, new_data;
-                uint8_t retry_count = 0;
-                while (true)
+                /* Loop to enable retry on kError */
+                do
                 {
-                  new_data = device->read(sizeof(char));
-                  if (new_data.size() > 1)
-                  {
-                    throw SerialLibrarySucks("cmdmessenger->send(), device->read(): We asked for 1 char but got more than that...");
-                  }
-                  if (new_data.size() == 0)
-                  {
-                    retry_count++;
-                    if (retry_count > 3)
+                    try_resend = false;
+
+                    // Send the message
+                    debugString = byteStringToHexDebugString(message);
+                    //misc::Logger::getInstance()->debug(fmt::format("Device->write bytes: {}", debugString));
+                    // std::cout << fmt::format("Device baud: {}", device->getBaudrate()) << '\n';
+                    device->write(message);
+                    // device->flushOutput();
+                    device->flush();
+
+                    // HACK
+                    device->setTimeout(units::s * 1);
+
+                    // std::cout << "reading till I see " << std::string(1, m_command_separator) << std::endl;
+
+                    // Check Acknowledgement
+                    // std::string acknowledgement = device->readline(m_max_response_length, ";");//std::string(1, m_command_separator));
+                    std::string ack_msg, new_data;
+                    uint8_t retry_count = 0;
+                    while (true)
                     {
-                      std::cout << "Read retry count exceeded." << '\n';
-                      break;
+                      new_data = device->read(sizeof(char));
+                      if (new_data.size() > 1)
+                      {
+                        throw SerialLibrarySucks("cmdmessenger->send(), device->read(): We asked for 1 char but got more than that...");
+                      }
+                      if (new_data.size() == 0)
+                      {
+                        retry_count++;
+                        if (retry_count > 3)
+                        {
+                         misc::Logger::getInstance()->error("Read retry count exceeded.");
+                          break;
+                        }
+                      }
+                      else
+                      {
+                        ack_msg.append(new_data);
+                        // reset the retry whenever we get data back
+                        retry_count = 0;
+                        if (new_data.front() == m_escape_character)
+                        {
+                          // pass the next byte
+                          ack_msg.append(device->read(sizeof(char)));
+                        }
+                        else if (new_data.front() == m_command_separator)
+                        {
+                          // done reading the command
+                          break;
+                        }
+                      }
                     }
-                  }
-                  else
-                  {
-                    ack_msg.append(new_data);
-                    // reset the retry whenever we get data back
-                    retry_count = 0;
-                    if (new_data.front() == m_escape_character)
+
+                    try
                     {
-                      // pass the next byte
-                      ack_msg.append(device->read(sizeof(char)));
+                        if (ack_msg.length() == 0)
+                        {
+                            throw EmptyDeviceResponse(fmt::format("did not receive any bytes from the device, timeout or crash?"));
+                        }
+
+                        debugString = byteStringToHexDebugString(ack_msg);
+                        //misc::Logger::getInstance()->debug(fmt::format("Device->readline bytes: {}", debugString));
+
+                        handleAck(ack_msg, command);
                     }
-                    else if (new_data.front() == m_command_separator)
+                    catch(rip::utilities::ExceptionBase &e)
                     {
-                      // done reading the command
-                      break;
+                        // clear everything and reopen the serial link
+                        device->flush();
+                        device->close();
+                        device->open();
+
+                        // if we have more resends left, try to resend
+                        if(n_resend > 0)
+                        {
+                            misc::Logger::getInstance()->debug("Retry sending the command");
+
+                            n_resend--;
+                            try_resend = true;
+                        }
+                        // pass the error through when out of retries
+                        else throw;
                     }
-                  }
                 }
-
-                if (ack_msg.length() == 0)
-                {
-                  throw EmptyDeviceResponse(fmt::format("did not receive any bytes from the device, timeout or crash?"));
-                }
-
-                debugString = byteStringToHexDebugString(ack_msg);
-                std::cout << fmt::format("Device->readline bytes: {}", debugString) << std::endl;
-
-                handleAck(ack_msg, command);
+                while(try_resend);
 
                 m_last_device = device;
             }
@@ -301,12 +332,12 @@ namespace rip
                 // NOTE fromBytes consumes the data from the string!
                 if ( acknowledge_command != static_cast<T_IntegerType>(command->getEnum()) )
                 {
-                  std::cout << fmt::format("Acknowledgement command {:d} is not the same as the current command {:d}", acknowledge_command, command->getEnum()) << std::endl;
+                    std::cout << fmt::format("Acknowledgement command {:d} is not the same as the current command {:d}", acknowledge_command, command->getEnum()) << std::endl;
                     throw IncorrectAcknowledgementCommand(fmt::format("Acknowledgement command {} is not the same as the current command {}", acknowledge_command, command->getEnum()));
                 }
                 if (acknowledgement[0] != m_command_separator)
                 {
-                  std::cout << fmt::format("Wanted '{}' but got '{}' !", m_command_separator, acknowledgement[0]) << std::endl;
+                    std::cout << fmt::format("Wanted '{}' but got '{}' !", m_command_separator, acknowledgement[0]) << std::endl;
                     throw IncorrectCommandSeparator(fmt::format("Wanted '{}' but got '{}' !", m_command_separator, acknowledgement[0]));
                 }
 
@@ -383,7 +414,7 @@ namespace rip
                     }
                   }
                 }
-                std::cout << fmt::format("CmdMessenger->receive(), device->readline() output: {}", byteStringToHexDebugString(response)) << '\n';
+                //std::cout << fmt::format("CmdMessenger->receive(), device->readline() output: {}", byteStringToHexDebugString(response)) << '\n';
 
                 if (response.size() == 0)
                 {

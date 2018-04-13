@@ -41,6 +41,11 @@ namespace rip
                 std::string toString() const;
                 friend std::ostream& operator<<(std::ostream& os, const Rotation2d& rhs);
 
+                Rotation2d operator+(const Rotation2d& rhs) const;
+                Rotation2d& operator+=(const Rotation2d& rhs);
+                Rotation2d operator-(const Rotation2d& rhs) const;
+                Rotation2d& operator-=(const Rotation2d& rhs);
+
             protected:
                 double m_cos_angle;
                 double m_sin_angle;
