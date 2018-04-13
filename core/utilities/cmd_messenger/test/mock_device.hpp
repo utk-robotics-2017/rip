@@ -17,6 +17,11 @@ namespace rip
             public:
                 MockDevice();
 
+                void open() override
+                {
+
+                }
+
                 bool isOpen () const override
                 {
                   return true;
