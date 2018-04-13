@@ -1,0 +1,37 @@
+<appendage-template>
+    <includes>
+        <include standard="false">NavX.h</include>
+    </includes>
+    <constructors>
+        <constructor type="NavX" variable="navx">
+        </constructor>
+    </constructors>
+    <setup>
+    </setup>
+    <commands>
+        <command id="kGetYaw" name="getYaw">
+            <return-value name="rv" type="float"/>
+            <code>
+                rv = getYaw();
+            </code>
+        </command>
+        <command id="kGetPitch" name="getPitch">
+            <return-value name="rv" type="float"/>
+            <code>
+                rv = getPitch();
+            </code>
+        </command>
+        <command id="kGetRoll" name="getRoll">
+            <return-value name="rv" type="float"/>
+            <code>
+                rv = getRoll();
+            </code>
+        </command>
+        <command id="kGetStatus" name="getStatus">
+            <return-value name="rv" type="char"/>
+            <code>
+                rv = getStatus();
+            </code>
+        </command>
+    </commands>
+</appendage-template>
