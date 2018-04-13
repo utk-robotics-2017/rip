@@ -15,6 +15,7 @@ namespace rip
             else
             {
                 m_timeout = config["timeout"];
+                misc::Logger::getInstance()->debug(fmt::format("TimeoutAction setup with {}ms timeout value.", m_timeout.to(units::ms)));
                 if(m_timeout > 0)
                 {
                     m_has_timeout = true;
@@ -28,7 +29,7 @@ namespace rip
 
         bool TimeoutAction::isFinished()
         {
-            return m_has_timeout && units::now() > m_start_time + m_timeout;
+            return m_has_timeout && (units::now() > (m_start_time + m_timeout));
         }
 
         void TimeoutAction::update(nlohmann::json& state)
