@@ -59,6 +59,7 @@ namespace rip
             registerAppendage("Servo", &Servo::create);
             registerAppendage("Ultrasonic", &Ultrasonic::create);
             registerAppendage("Ir2018", &Ir2018::create);
+            registerAppendage("NavX", &NavX::create);
         }
     }
 }
