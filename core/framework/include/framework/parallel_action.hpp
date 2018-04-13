@@ -22,6 +22,7 @@
 
 #include <memory>
 #include <vector>
+#include <set>
 
 #include "action.hpp"
 
@@ -67,6 +68,7 @@ namespace rip
 
         private:
             std::vector< std::shared_ptr<Action> > m_actions;
+            std::set< std::shared_ptr<Action> > m_finished;
         };
     }
 }
