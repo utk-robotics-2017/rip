@@ -61,7 +61,6 @@ namespace rip
             protected:
                 units::Angle m_turn_angle;
 
-            private:
                 std::shared_ptr<Drivetrain> m_drivetrain;
                 std::shared_ptr<NavX> m_navx;
 

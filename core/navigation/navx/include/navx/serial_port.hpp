@@ -168,7 +168,9 @@ namespace rip
                     FD_ZERO(&readfds);
                     FD_SET(this->fd, &readfds);
                     tv.tv_sec = 0;
-                    tv.tv_usec = 100000;
+                    //tv.tv_usec = 100000;
+                    // 20 ms timeout
+                    tv.tv_usec = 20000;
                     select(this->fd + 1, &readfds, NULL, NULL, &tv);
                 }
 

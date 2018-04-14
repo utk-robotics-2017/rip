@@ -19,7 +19,7 @@ namespace rip
                 {
                     throw ActionConfigException("turn_angle missing from config");
                 }
-                m_turn_angle = config["turn_angle"];
+                m_turn_angle = config["turn_angle"] * units::deg;
 
                 double kp;
                 if(config.find("kp") != config.end())
@@ -56,10 +56,10 @@ namespace rip
                 m_navx->setType(pid::PidInput::Type::kDisplacement);
                 m_pid->setContinuous(true);
                 m_pid->setInputRange(-180 * units::deg(), 180 * units::deg());
-                units::Velocity max_velocity = misc::constants::get<units::Velocity>(misc::constants::kMaxVelocity);
+                units::Velocity max_velocity = misc::constants::get<double>(misc::constants::kMaxVelocity) * units::in / units::s;
                 m_pid->setOutputRange(-max_velocity(), max_velocity());
 
-                m_max_accel = misc::constants::get<units::Acceleration>(misc::constants::kMaxAcceleration);
+                m_max_accel = misc::constants::get<double>(misc::constants::kMaxAcceleration) * units::in / units::s / units::s;
             }
 
             bool TurnToAngle::isFinished()
@@ -78,7 +78,7 @@ namespace rip
             void TurnToAngle::setup(nlohmann::json& state)
             {
                 m_start_angle = m_navx->getYaw();
-                m_setpoint = m_start_angle + m_turn_angle;
+                m_setpoint = m_turn_angle;
                 while(m_setpoint > 180 * units::deg())
                 {
                     m_setpoint -= 360 * units::deg;
