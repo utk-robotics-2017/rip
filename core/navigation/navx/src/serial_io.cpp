@@ -71,7 +71,7 @@ namespace rip
                     {
                         serial_port = new SerialPort(57600, serial_port_id);
                         serial_port->setReadBufferSize(256);
-                        serial_port->setTimeout(1.0);
+                        serial_port->setTimeout(0.2); // was 1 second
                         serial_port->enableTermination('\n');
                         serial_port->reset();
                     }
@@ -513,6 +513,7 @@ namespace rip
                                 // No packets received and 256 bytes received; this
                                 // condition occurs in the SerialPort.  In this case,
                                 // reset the serial port.
+                                fprintf(stderr, "NavX SerialIO error: No packets received, 256 bytes received");
                                 serial_port->flush();
                                 serial_port->reset();
                                 port_reset_count++;
@@ -564,7 +565,8 @@ namespace rip
                             /* In this case , trigger transmission of a new stream_command, to ensure the    */
                             /* streaming packet type is configured correctly.                                */
 
-                            if ((time(0) - last_valid_packet_time) > 1.0)
+                            // was > 1.0
+                            if ((time(0) - last_valid_packet_time) > 0.25)
                             {
                                 last_stream_command_sent_timestamp = time(0);
                                 stream_response_received = false;
@@ -573,7 +575,8 @@ namespace rip
                         else
                         {
                             /* No data received this time around */
-                            if (time(0) - last_data_received_timestamp  > 1.0)
+                            // was > 1.0
+                            if (time(0) - last_data_received_timestamp  > 0.25)
                             {
                                 resetSerialPort();
                             }
