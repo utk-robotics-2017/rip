@@ -18,8 +18,15 @@ namespace rip
     {
         namespace actions
         {
-            class TurnByAngle : TurnToAngle
+            class TurnByAngle : public TurnToAngle
             {
+                using Drivetrain = drivetrains::Drivetrain;
+                using NavX = navx::NavX;
+            public:
+                TurnByAngle(const std::string& name,
+                            std::shared_ptr<Drivetrain> drivetrain,
+                            std::shared_ptr<NavX> navx, const nlohmann::json& config);
+
                 /**
                  * Run once before the main code
                  */
