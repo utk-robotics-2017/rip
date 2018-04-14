@@ -20,7 +20,7 @@ namespace rip
                     throw ActionConfigException("turn_angle missing from config");
                 }
                 m_turn_angle = config["turn_angle"];
-                
+
                 double kp;
                 if(config.find("kp") != config.end())
                 {

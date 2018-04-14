@@ -70,15 +70,18 @@ namespace rip
                     m_stop = true;
                 }
 
-                double kp = misc::constants::get<double>(misc::constants::kStraightAngleKp);
-                double ki = misc::constants::get<double>(misc::constants::kStraightAngleKi);
-                double kd = misc::constants::get<double>(misc::constants::kStraightAngleKd);
-                m_pid = std::unique_ptr<pid::PidController>(new pid::PidController(m_navx.get(), this, kp, ki, kd));
-                m_pid->setPercentTolerance(1);
-                m_navx->setType(pid::PidInput::Type::kDisplacement);
-                m_pid->setContinuous(true);
-                m_pid->setInputRange(-180 * units::deg(), 180 * units::deg());
-                m_pid->setOutputRange(-2 * units::in() / units::s(), 2 * units::in() / units::s());
+                if(m_navx)
+                {
+                    double kp = misc::constants::get<double>(misc::constants::kStraightAngleKp);
+                    double ki = misc::constants::get<double>(misc::constants::kStraightAngleKi);
+                    double kd = misc::constants::get<double>(misc::constants::kStraightAngleKd);
+                    m_pid = std::unique_ptr<pid::PidController>(new pid::PidController(m_navx.get(), this, kp, ki, kd));
+                    m_pid->setPercentTolerance(1);
+                    m_navx->setType(pid::PidInput::Type::kDisplacement);
+                    m_pid->setContinuous(true);
+                    m_pid->setInputRange(-180 * units::deg(), 180 * units::deg());
+                    m_pid->setOutputRange(-2 * units::in() / units::s(), 2 * units::in() / units::s());
+                }
             }
 
             bool DriveStraight::isFinished()
@@ -147,20 +150,22 @@ namespace rip
                 units::Velocity l_speed = m_velocity;
                 units::Velocity r_speed = m_velocity;
 
-                m_pid->calculate();
-                double pid_correction = m_pid->get();
+                if(m_navx)
+                {
+                    m_pid->calculate();
+                    double pid_correction = m_pid->get();
 
-                l_speed += pid_correction;
-                r_speed -= pid_correction;
+                    l_speed += pid_correction;
+                    r_speed -= pid_correction;
 
-                units::Velocity v_scale;
+                    units::Velocity v_scale;
 
-                v_scale = m_direction ? units::max(l_speed, r_speed) : units::min(l_speed, r_speed);
+                    v_scale = m_direction ? units::max(l_speed, r_speed) : units::min(l_speed, r_speed);
 
-                // Scale each speed appropriately to not exceed the maximum specified
-                l_speed = (l_speed / v_scale) * m_velocity;
-                r_speed = (r_speed / v_scale) * m_velocity;
-
+                    // Scale each speed appropriately to not exceed the maximum specified
+                    l_speed = (l_speed / v_scale) * m_velocity;
+                    r_speed = (r_speed / v_scale) * m_velocity;
+                }
                 l_dynamics.setSpeed(l_speed);
                 r_dynamics.setSpeed(r_speed);
 
@@ -254,13 +259,13 @@ namespace rip
                 state["initial_encoder"] = m_init_encoder;
 
                 // NavX
-                m_navx->zeroYaw();
-                m_initial_yaw = m_navx->getYaw();
-                misc::Logger::getInstance()->debug(
-                            "Inital Yaw: {}", m_initial_yaw.to(units::deg)
-                            );
+                if(m_navx)
+                {
+                    m_initial_yaw = m_navx->getYaw();
+                    misc::Logger::getInstance()->debug("Inital Yaw: {}", m_initial_yaw.to(units::deg));
 
-                state["initial_yaw"] = m_initial_yaw;
+                    state["initial_yaw"] = m_initial_yaw;
+                }
                 state["direction"] = m_direction;
 
                 m_pid->setSetpoint(m_initial_yaw.to(units::deg));

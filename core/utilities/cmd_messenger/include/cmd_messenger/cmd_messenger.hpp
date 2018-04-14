@@ -333,12 +333,12 @@ namespace rip
                 if ( acknowledge_command != static_cast<T_IntegerType>(command->getEnum()) )
                 {
                     std::cout << fmt::format("Acknowledgement command {:d} is not the same as the current command {:d}", acknowledge_command, command->getEnum()) << std::endl;
-                    throw IncorrectAcknowledgementCommand(fmt::format("Acknowledgement command {} is not the same as the current command {}", acknowledge_command, command->getEnum()));
+                    throw IncorrectAcknowledgementCommand("Acknowledgement command {} is not the same as the current command {}", acknowledge_command, command->getEnum());
                 }
                 if (acknowledgement[0] != m_command_separator)
                 {
                     std::cout << fmt::format("Wanted '{}' but got '{}' !", m_command_separator, acknowledgement[0]) << std::endl;
-                    throw IncorrectCommandSeparator(fmt::format("Wanted '{}' but got '{}' !", m_command_separator, acknowledgement[0]));
+                    throw IncorrectCommandSeparator("Wanted '{}' but got '{}' !", m_command_separator, acknowledgement[0]);
                 }
 
                 // misc::Logger::getInstance()->debug(fmt::format("CmdMessenger: Successfully acknowledged command {}.", command->getId() ));
