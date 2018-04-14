@@ -78,7 +78,7 @@ namespace rip
             void TurnToAngle::setup(nlohmann::json& state)
             {
                 m_start_angle = m_navx->getYaw();
-                m_setpoint = m_start_angle + m_turn_angle;
+                m_setpoint = m_turn_angle;
                 while(m_setpoint > 180 * units::deg())
                 {
                     m_setpoint -= 360 * units::deg;
