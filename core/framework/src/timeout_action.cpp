@@ -14,8 +14,8 @@ namespace rip
             }
             else
             {
-                m_timeout = units::ms * config["timeout"];
-                misc::Logger::getInstance()->debug(fmt::format("TimeoutAction setup with {}ms timeout value.", m_timeout.to(units::ms)));
+                m_timeout = config["timeout"];
+                misc::Logger::getInstance()->debug(fmt::format("TimeoutAction setup with {} s timeout value.", m_timeout.to(units::s)));
                 if(m_timeout > 0)
                 {
                     m_has_timeout = true;

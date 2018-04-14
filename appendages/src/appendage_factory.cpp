@@ -8,6 +8,7 @@
 #include "appendages/roboclaw.hpp"
 #include "appendages/servo.hpp"
 #include "appendages/ultrasonic.hpp"
+#include "appendages/navx.hpp"
 #include "appendages/ir_2018.hpp"
 
 #include "appendages/exceptions.hpp"

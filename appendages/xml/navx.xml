@@ -1,5 +1,6 @@
 <appendage-template>
     <includes>
+        <include standard="true">Wire.h</include>
         <include standard="false">NavX.h</include>
     </includes>
     <constructors>
@@ -7,30 +8,31 @@
         </constructor>
     </constructors>
     <setup>
+      Wire.begin();
     </setup>
     <commands>
-        <command id="kGetYaw" name="getYaw">
+        <command id="kGetYaw" name="getYaw" index-num="false">
             <return-value name="rv" type="float"/>
             <code>
-                rv = getYaw();
+                rv = NavX::getYaw();
             </code>
         </command>
-        <command id="kGetPitch" name="getPitch">
+        <command id="kGetPitch" name="getPitch" index-num="false">
             <return-value name="rv" type="float"/>
             <code>
-                rv = getPitch();
+                rv = NavX::getPitch();
             </code>
         </command>
-        <command id="kGetRoll" name="getRoll">
+        <command id="kGetRoll" name="getRoll" index-num="false">
             <return-value name="rv" type="float"/>
             <code>
-                rv = getRoll();
+                rv = NavX::getRoll();
             </code>
         </command>
-        <command id="kGetStatus" name="getStatus">
+        <command id="kGetStatus" name="getStatus" index-num="false">
             <return-value name="rv" type="char"/>
             <code>
-                rv = getStatus();
+                rv = NavX::getStatus();
             </code>
         </command>
     </commands>

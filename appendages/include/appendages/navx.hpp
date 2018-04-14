@@ -21,17 +21,17 @@ namespace rip
              * @brief returns yaw
              * @return float
              */
-            float getYaw();
+            units::Angle getYaw();
             /**
              * @brief reports the pitch of the device
              * @return float
              */
-            float getPitch();
+			units::Angle getPitch();
             /**
              * @brief reports the roll of the device
              * @return float
              */
-            float getRoll();
+			units::Angle getRoll();
             /**
              * @brief gets the status of the device.
              * @return code representing status of device
