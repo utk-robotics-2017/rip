@@ -43,7 +43,7 @@
                     // hasn't started yet
                     if(pulseIn(ir_2018_pins[indexNum], HIGH) > 1000)
                     {
-                        rv = 1 << 4 + i << 3;
+                        rv = (1 << 4) + (1 << 3);
                         cmdMessenger.sendBinCmd(kAcknowledge, kReadIr2018);
                         cmdMessenger.sendCmdStart(kReadIr2018Result);
                         cmdMessenger.sendCmdBinArg(rv);

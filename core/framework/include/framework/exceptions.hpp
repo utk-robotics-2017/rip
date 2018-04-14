@@ -32,6 +32,7 @@ namespace rip
         NEW_EX(CannotLoadDevice)
         NEW_EX(SubSystemsNotFound)
         NEW_EX(ActionsNotFound)
+        NEW_EX(ActinoConfigException)
     }
 }
 #endif // EXCEPTIONS_HPP

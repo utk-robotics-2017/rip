@@ -38,7 +38,7 @@ namespace rip
 
             if(j.find("constants") != j.end())
             {
-                misc::constants::getInstance()->load(j["constants"]);
+                misc::constants::load(j["constants"]);
             }
 
 

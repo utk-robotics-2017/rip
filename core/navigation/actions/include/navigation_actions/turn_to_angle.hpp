@@ -4,7 +4,7 @@
 #include <json.hpp>
 #include <drivetrains/drivetrain.hpp>
 #include <chrono>
-#include <framework/action.hpp>
+#include <framework/timeout_action.hpp>
 #include <navx/navx.hpp>
 #include <pid/pid_output.hpp>
 #include <pid/pid.hpp>
@@ -16,7 +16,7 @@ namespace rip
     {
         namespace actions
         {
-            class TurnToAngle : public framework::Action, public pid::PidOutput
+            class TurnToAngle : public framework::TimeoutAction, public pid::PidOutput
             {
                 using Drivetrain = drivetrains::Drivetrain;
                 using NavX = navx::NavX;
@@ -58,13 +58,15 @@ namespace rip
 
                 virtual void set(double output);
 
+            protected:
+                units::Angle m_turn_angle;
+
             private:
                 std::shared_ptr<Drivetrain> m_drivetrain;
                 std::shared_ptr<NavX> m_navx;
 
                 bool m_first;
                 units::Angle m_start_angle;
-                units::Angle m_turn_angle;
                 units::Angle m_setpoint;
                 units::Acceleration m_max_accel;
 

@@ -25,7 +25,7 @@ namespace rip
              */
             void write(int value);
 
-            void attach(bool state);
+            void detach();
 
             /**
              * Stop
@@ -57,7 +57,7 @@ namespace rip
             Servo(const nlohmann::json& config, const std::map<std::string, int>& command_map, std::shared_ptr<cmdmessenger::Device> device);
 
             std::shared_ptr<cmdmessenger::Command> m_write;
-            std::shared_ptr<cmdmessenger::Command> m_attach;
+            std::shared_ptr<cmdmessenger::Command> m_detach;
         };
     }
 }

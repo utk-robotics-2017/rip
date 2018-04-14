@@ -31,8 +31,9 @@ namespace rip
              * Thrown if a parameter is out of bounds
              * @param OutofBoundsException [description]
              */
-            NEW_EX(OutofBoundsException);
-            NEW_EX(FileNotFound);
+            NEW_EX(OutofBoundsException)
+            NEW_EX(FileNotFound)
+            NEW_EX(ActionConfigException)
         }
     }
 }
