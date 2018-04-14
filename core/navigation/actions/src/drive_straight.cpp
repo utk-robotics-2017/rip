@@ -31,7 +31,7 @@ namespace rip
                     {
                         throw ActionConfigException("time not in config");
                     }
-                    m_time = config["time"];
+                    m_time = config["time"] * rip::units::s;
                 }
                 else
                 {
@@ -39,16 +39,16 @@ namespace rip
                     {
                         throw ActionConfigException("distance not in config");
                     }
-                    m_distance = config["distance"];
+                    m_distance = config["distance"] * rip::units::in;
                 }
 
                 if(config.find("velocity") == config.end())
                 {
-                    m_velocity = misc::constants::get<units::Velocity>(misc::constants::kMaxVelocity);
+                    m_velocity = misc::constants::get<double>(misc::constants::kMaxVelocity) * rip::units::in / rip::units::s;
                 }
                 else
                 {
-                    m_velocity = config["velocity"];
+                    m_velocity = config["velocity"] * rip::units::in / rip::units::s;
                 }
                 m_direction = m_velocity > 0;
 
@@ -58,7 +58,7 @@ namespace rip
                 }
                 else
                 {
-                    m_max_accel = misc::constants::get<units::Acceleration>(misc::constants::kMaxAcceleration);
+                    m_max_accel = misc::constants::get<double>(misc::constants::kMaxAcceleration) * rip::units::in / rip::units::s / rip::units::s;
                 }
 
                 if(config.find("stop_after") != config.end())
@@ -184,11 +184,10 @@ namespace rip
                         m_velocity.to(units::in / units::s)
                         );
 
-                misc::Logger::getInstance()->debug(
-                            "NavX | Yaw: {} | Angle Diff: {}",
-                            m_navx->getYaw().to(units::deg),
-                            (m_navx->getYaw() - m_initial_yaw).to(units::deg)
-                            );
+                if(m_navx)
+                {
+                    misc::Logger::getInstance()->debug("NavX | Yaw: {} | Angle Diff: {}", m_navx->getYaw().to(units::deg), (m_navx->getYaw() - m_initial_yaw).to(units::deg));
+                }
 
                 // just for now...
                 if (!m_use_time)
@@ -265,11 +264,13 @@ namespace rip
                     misc::Logger::getInstance()->debug("Inital Yaw: {}", m_initial_yaw.to(units::deg));
 
                     state["initial_yaw"] = m_initial_yaw;
+
+                    m_pid->setSetpoint(m_initial_yaw.to(units::deg));
+                    m_pid->enable(); // Not sure if this does anything...
+
                 }
                 state["direction"] = m_direction;
 
-                m_pid->setSetpoint(m_initial_yaw.to(units::deg));
-                m_pid->enable(); // Not sure if this does anything...
 
                 TimeoutAction::setup(state);
             }

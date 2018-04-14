@@ -40,6 +40,14 @@ namespace rip
         void TimeoutAction::setup(nlohmann::json& state)
         {
             m_start_time = units::now();
+            misc::Logger::getInstance()->debug(
+                  "TimeoutAction setup(): m_timeout: {0:f}",
+                  m_timeout.to(units::s)
+            );
+            misc::Logger::getInstance()->debug(
+                  "TimeoutAction setup(): m_start_time: {0:f}",
+                  m_start_time.to(units::s)
+            );
         }
 
         void TimeoutAction::teardown(nlohmann::json& state)

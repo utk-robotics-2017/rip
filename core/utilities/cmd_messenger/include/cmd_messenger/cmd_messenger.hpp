@@ -341,7 +341,7 @@ namespace rip
                     throw IncorrectCommandSeparator("Wanted '{}' but got '{}' !", m_command_separator, acknowledgement[0]);
                 }
 
-                misc::Logger::getInstance()->info("CmdMessenger: Successfully acknowledged command {}.", command->getId());
+                // misc::Logger::getInstance()->debug(fmt::format("CmdMessenger: Successfully acknowledged command {}.", command->getId() ));
             }
 
             /**
@@ -523,6 +523,7 @@ namespace rip
                       n_chr == '\0'
                       || n_chr == m_field_separator
                       || n_chr == m_command_separator
+                      || n_chr == m_escape_character
                     ) {
                       rv += m_escape_character;
                     }
