@@ -42,6 +42,7 @@ namespace rip
             static const char* kStraightAngleKp;
             static const char* kStraightAngleKi;
             static const char* kStraightAngleKd;
+            static const char* kStraightThreshTime;
 
             static void load(const nlohmann::json& constants)
             {

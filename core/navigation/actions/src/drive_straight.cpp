@@ -1,6 +1,7 @@
 #include "navigation_actions/drive_straight.hpp"
 #include <misc/logger.hpp>
 #include <algorithm>
+#include <cmath>
 
 #include "navigation_actions/exceptions.hpp"
 
@@ -29,7 +30,8 @@ namespace rip
                         throw ActionConfigException("time not in config");
                     }
                     m_time = config["time"] * rip::units::s;
-                }else
+                }
+                else
                 {
                     if(config.find("distance") == config.end())
                     {
@@ -41,7 +43,8 @@ namespace rip
                 if(config.find("velocity") == config.end())
                 {
                     m_velocity = misc::constants::get<double>(misc::constants::kMaxVelocity) * rip::units::in / rip::units::s;
-                }else
+                }
+                else
                 {
                     m_velocity = config["velocity"] * rip::units::in / rip::units::s;
                 }
@@ -50,7 +53,8 @@ namespace rip
                 if(config.find("acceleration") != config.end())
                 {
                     m_max_accel = config["acceleration"];
-                }else
+                }
+                else
                 {
                     m_max_accel = misc::constants::get<double>(misc::constants::kMaxAcceleration) * rip::units::in / rip::units::s / rip::units::s;
                 }
@@ -58,9 +62,19 @@ namespace rip
                 if(config.find("stop_after") != config.end())
                 {
                     m_stop = config["stop_after"];
-                }else
+                }
+                else
                 {
                     m_stop = true;
+                }
+
+                if(config.find("threshold_time") != config.end())
+                {
+                    m_threshold_time = config["threshold_time"] * units::s;
+                }
+                else
+                {
+                    m_threshold_time = misc::constants::get<double>(misc::constants::kStraightThreshTime) * units::s;
                 }
 
                 if(m_navx)
@@ -178,33 +192,26 @@ namespace rip
                 // just for now...
                 if(!m_use_time)
                 {
-                    // get the encoder values from the Roboclaw & determine the greatest value
+                    // get the encoder values from the Roboclaw & average them
                     std::vector<units::Distance> dists = m_drivetrain->readEncoders(motors);
-                    m_distance_travelled = *(std::max_element(dists.begin(), dists.end()));
-
-                    // todo: Distance PID
-                    // Average?
-                    // set a threshold for stopping -- this tries to account for the delay in actually stopping
-                    // this is quite arbitrary right now but should be kinda close
-                    units::Distance threshold = m_distance + m_init_encoder - (m_velocity * (0.1 * units::s));
-
+                    m_distance_travelled = std::accumulate(dists.begin(), dists.end(), 0 * units::in) / dists.size();
                     state["current_distance"] = m_distance_travelled;
-                    state["distance_threshold"] = threshold;
 
                     // going forward encoder > threshold
                     // going backwards encoder < threshold
-                    if((m_direction && m_distance_travelled >= threshold) || (!m_direction && m_distance_travelled <= threshold))
+                    if((m_direction && m_distance_travelled >= m_threshold) || (!m_direction && m_distance_travelled <= m_threshold))
                     {
-                        misc::Logger::getInstance()->debug("Left: {} {} | Right: {} {} | Target: {}", dists[0].to(units::in), dists[1].to(units::in), dists[2].to(units::in), dists[3].to(units::in), threshold.to(units::in));
+                        misc::Logger::getInstance()->debug("Left: {} {} | Right: {} {} | Target: {}", dists[0].to(units::in), dists[1].to(units::in), dists[2].to(units::in), dists[3].to(units::in), m_threshold.to(units::in));
 
                         m_finished = true;
                     }
-                }else
+                }
+                else
                 {
                     m_last_time = std::chrono::system_clock::now();
                     units::Time diff = std::chrono::duration_cast<std::chrono::milliseconds>(m_last_time - m_start_time).count() * units::ms;
 
-                    units::Time threshold = m_time - (0.1 * units::s);
+                    units::Time threshold = m_time - m_threshold_time;
 
                     if(diff >= threshold)
                     {
@@ -230,7 +237,7 @@ namespace rip
 
                 // Drivetrain Encoders
                 std::vector<units::Distance> dists = m_drivetrain->readEncoders(motors);
-                m_init_encoder = *(std::max_element(dists.begin(), dists.end()));
+                m_init_encoder = std::accumulate(dists.begin(), dists.end(), 0 * units::in) / dists.size();
 
                 state["initial_encoder"] = m_init_encoder;
 
@@ -248,6 +255,24 @@ namespace rip
                 }
                 state["direction"] = m_direction;
 
+                // determine if we will accelerate to full speed
+                units::Time time_to_accel = m_direction * m_velocity / m_max_accel;
+                units::Distance dist_accel = 0.5 * m_max_accel * time_to_accel * time_to_accel;
+                units::Velocity max_velocity = m_velocity;
+
+                if(dist_accel > m_distance)
+                {
+                    time_to_accel = sqrt((2 * m_direction * m_distance) / m_max_accel);
+                    max_velocity = m_direction * m_max_accel * time_to_accel;
+                }
+                state["expected_velocity"] = max_velocity;
+
+                // set a threshold for stopping -- this tries to account for the delay in actually stopping
+                // this is quite arbitrary right now but should be kinda close
+                m_threshold = m_distance + m_init_encoder - (max_velocity * m_threshold_time);
+                state["distance_threshold"] = m_threshold;
+
+                misc::Logger::getInstance()->debug("Expected Max Velocity: {} | Distance Threshold: {}", max_velocity.to(units::in / units::s), m_threshold.to(units::in));
 
                 TimeoutAction::setup(state);
             }
