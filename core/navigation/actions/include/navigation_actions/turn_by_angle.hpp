@@ -20,8 +20,6 @@ namespace rip
         {
             class TurnByAngle : public TurnToAngle
             {
-                using Drivetrain = drivetrains::Drivetrain;
-                using NavX = navx::NavX;
             public:
                 TurnByAngle(const std::string& name,
                             std::shared_ptr<Drivetrain> drivetrain,

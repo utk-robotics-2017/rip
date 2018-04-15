@@ -2,7 +2,7 @@
 #define LOOP_ACTION_HPP
 
 #include "framework/action.hpp"
-#include "framework/loop_condition.hpp"
+#include "framework/condition.hpp"
 
 namespace rip
 {
@@ -14,7 +14,7 @@ namespace rip
         class LoopAction : public Action
         {
         public:
-            LoopAction(const std::string& name, std::shared_ptr<Action> action, std::shared_ptr<Action> reset_action, std::shared_ptr<LoopCondition> condition);
+            LoopAction(const std::string& name, std::shared_ptr<Action> action, std::shared_ptr<Action> reset_action, std::shared_ptr<Condition> condition);
 
             virtual void setup(nlohmann::json& state) override;
             virtual void update(nlohmann::json& state) override;
@@ -24,7 +24,7 @@ namespace rip
         private:
             std::shared_ptr<Action> m_action;
             std::shared_ptr<Action> m_reset_action;
-            std::shared_ptr<LoopCondition> m_condition;
+            std::shared_ptr<Condition> m_condition;
 
             bool m_reset;
             bool m_previous_reset;

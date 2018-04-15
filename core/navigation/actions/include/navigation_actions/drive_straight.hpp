@@ -20,9 +20,12 @@ namespace rip
         {
             class DriveStraight : public framework::TimeoutAction, public pid::PidOutput
             {
+            protected:
+                using Drivetrain = drivetrains::Drivetrain;
+                using NavX = navx::NavX;
             public:
-                DriveStraight(const std::string& name, std::shared_ptr<drivetrains::Drivetrain> drivetrain,
-                              std::shared_ptr<navx::NavX> navx, const nlohmann::json& config);
+                DriveStraight(const std::string& name, std::shared_ptr<Drivetrain> drivetrain,
+                              std::shared_ptr<NavX> navx, const nlohmann::json& config);
 
                 /**
                 * Returns whether or not the action has finished execution.
@@ -76,7 +79,7 @@ namespace rip
 
                 bool m_direction;
 
-            private:
+            protected:
                 bool m_use_time;
 
                 units::Distance m_init_encoder;
@@ -85,13 +88,11 @@ namespace rip
                 std::chrono::time_point<std::chrono::system_clock> m_start_time;
                 std::chrono::time_point<std::chrono::system_clock> m_last_time;
 
-
-
                 /* Drivetrain subsystem -- used to abstract the control of the drive motors */
-                std::shared_ptr<drivetrains::Drivetrain> m_drivetrain;
+                std::shared_ptr<Drivetrain> m_drivetrain;
 
                 /* NavX IMU -- used for gyro & accelerometer */
-                std::shared_ptr<navx::NavX> m_navx;
+                std::shared_ptr<NavX> m_navx;
 
                 /* PID Control for rotational correction */
                 std::unique_ptr<pid::PidController> m_pid;

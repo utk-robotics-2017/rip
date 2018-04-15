@@ -18,6 +18,7 @@ namespace rip
         {
             class TurnToAngle : public framework::TimeoutAction, public pid::PidOutput
             {
+            protected:
                 using Drivetrain = drivetrains::Drivetrain;
                 using NavX = navx::NavX;
 
