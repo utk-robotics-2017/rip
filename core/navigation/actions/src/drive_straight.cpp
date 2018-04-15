@@ -13,11 +13,8 @@ namespace rip
             using drivetrains::Drivetrain;
             using navx::NavX;
 
-            DriveStraight::DriveStraight(const std::string& name, std::shared_ptr<Drivetrain> drivetrain,
-                                         std::shared_ptr<NavX> navx, const nlohmann::json& config)
-                : TimeoutAction(name, config)
-                , m_drivetrain(drivetrain)
-                , m_navx(navx)
+            DriveStraight::DriveStraight(const std::string& name, std::shared_ptr<Drivetrain> drivetrain, std::shared_ptr<NavX> navx, const nlohmann::json& config)
+                    : TimeoutAction(name, config), m_drivetrain(drivetrain), m_navx(navx), m_finished(false)
             {
                 if(config.find("use_time") == config.end())
                 {
@@ -32,8 +29,7 @@ namespace rip
                         throw ActionConfigException("time not in config");
                     }
                     m_time = config["time"] * rip::units::s;
-                }
-                else
+                }else
                 {
                     if(config.find("distance") == config.end())
                     {
@@ -45,8 +41,7 @@ namespace rip
                 if(config.find("velocity") == config.end())
                 {
                     m_velocity = misc::constants::get<double>(misc::constants::kMaxVelocity) * rip::units::in / rip::units::s;
-                }
-                else
+                }else
                 {
                     m_velocity = config["velocity"] * rip::units::in / rip::units::s;
                 }
@@ -55,8 +50,7 @@ namespace rip
                 if(config.find("acceleration") != config.end())
                 {
                     m_max_accel = config["acceleration"];
-                }
-                else
+                }else
                 {
                     m_max_accel = misc::constants::get<double>(misc::constants::kMaxAcceleration) * rip::units::in / rip::units::s / rip::units::s;
                 }
@@ -64,8 +58,7 @@ namespace rip
                 if(config.find("stop_after") != config.end())
                 {
                     m_stop = config["stop_after"];
-                }
-                else
+                }else
                 {
                     m_stop = true;
                 }
@@ -136,12 +129,10 @@ namespace rip
 
             void DriveStraight::update(nlohmann::json& state)
             {
-                const std::vector<Drivetrain::Motor> motors = {
-                    Drivetrain::Motor::kFrontLeft,
-                    Drivetrain::Motor::kBackLeft,
-                    Drivetrain::Motor::kFrontRight,
-                    Drivetrain::Motor::kBackRight
-                };
+                const std::vector<Drivetrain::Motor> motors = {Drivetrain::Motor::kFrontLeft,
+                                                               Drivetrain::Motor::kBackLeft,
+                                                               Drivetrain::Motor::kFrontRight,
+                                                               Drivetrain::Motor::kBackRight};
 
                 motorcontrollers::MotorDynamics l_dynamics;
                 motorcontrollers::MotorDynamics r_dynamics;
@@ -177,12 +168,7 @@ namespace rip
 
                 std::vector<units::Velocity> vel = m_drivetrain->readEncoderVelocities(motors);
 
-                misc::Logger::getInstance()->debug(
-                            "Encoder Velocity | Left: {} {} | Right: {} {} | Target: {}",
-                            vel[0].to(units::in / units::s), vel[1].to(units::in / units::s),
-                        vel[2].to(units::in / units::s), vel[3].to(units::in / units::s),
-                        m_velocity.to(units::in / units::s)
-                        );
+                misc::Logger::getInstance()->debug("Encoder Velocity | Left: {} {} | Right: {} {} | Target: {}", vel[0].to(units::in / units::s), vel[1].to(units::in / units::s), vel[2].to(units::in / units::s), vel[3].to(units::in / units::s), m_velocity.to(units::in / units::s));
 
                 if(m_navx)
                 {
@@ -190,7 +176,7 @@ namespace rip
                 }
 
                 // just for now...
-                if (!m_use_time)
+                if(!m_use_time)
                 {
                     // get the encoder values from the Roboclaw & determine the greatest value
                     std::vector<units::Distance> dists = m_drivetrain->readEncoders(motors);
@@ -207,29 +193,22 @@ namespace rip
 
                     // going forward encoder > threshold
                     // going backwards encoder < threshold
-                    if ( (m_direction && m_distance_travelled >= threshold) || (!m_direction && m_distance_travelled <= threshold))
+                    if((m_direction && m_distance_travelled >= threshold) || (!m_direction && m_distance_travelled <= threshold))
                     {
-                        misc::Logger::getInstance()->debug(
-                                    "Left: {} {} | Right: {} {} | Target: {}",
-                                    dists[0].to(units::in), dists[1].to(units::in),
-                                dists[2].to(units::in), dists[3].to(units::in),
-                                threshold.to(units::in));
+                        misc::Logger::getInstance()->debug("Left: {} {} | Right: {} {} | Target: {}", dists[0].to(units::in), dists[1].to(units::in), dists[2].to(units::in), dists[3].to(units::in), threshold.to(units::in));
 
                         m_finished = true;
                     }
-                }
-                else
+                }else
                 {
                     m_last_time = std::chrono::system_clock::now();
                     units::Time diff = std::chrono::duration_cast<std::chrono::milliseconds>(m_last_time - m_start_time).count() * units::ms;
 
                     units::Time threshold = m_time - (0.1 * units::s);
 
-                    if (diff >= threshold)
+                    if(diff >= threshold)
                     {
-                        misc::Logger::getInstance()->debug(
-                                    "Drove for {} | Target: {}",
-                                    diff.to(units::s), m_time.to(units::s));
+                        misc::Logger::getInstance()->debug("Drove for {} | Target: {}", diff.to(units::s), m_time.to(units::s));
                         m_finished = true;
                     }
                 }
@@ -243,12 +222,10 @@ namespace rip
                 m_start_time = std::chrono::system_clock::now();
                 m_finished = false;
 
-                const std::vector<Drivetrain::Motor> motors = {
-                    Drivetrain::Motor::kFrontLeft,
-                    Drivetrain::Motor::kBackLeft,
-                    Drivetrain::Motor::kFrontRight,
-                    Drivetrain::Motor::kBackRight
-                };
+                const std::vector<Drivetrain::Motor> motors = {Drivetrain::Motor::kFrontLeft,
+                                                               Drivetrain::Motor::kBackLeft,
+                                                               Drivetrain::Motor::kFrontRight,
+                                                               Drivetrain::Motor::kBackRight};
 
 
                 // Drivetrain Encoders

@@ -1,3 +1,4 @@
+#include <misc/logger.hpp>
 #include "framework/loop_action.hpp"
 
 namespace rip
@@ -21,58 +22,69 @@ namespace rip
 
         void LoopAction::update(nlohmann::json& state)
         {
+            rip::misc::Logger::getInstance()->debug("R: {} PR: {}", m_reset, m_previous_reset);
             if(m_reset)
             {
-                if(m_reset_action->isFinished())
+
+                if(!m_previous_reset)
                 {
-                    m_reset_action->teardown(state);
-                    m_reset = false;
+                    rip::misc::Logger::getInstance()->debug("Reset Action Setup");
+                    m_reset_action->setup(state);
                 }
                 else
                 {
-                    if(m_previous_reset)
+                    if(m_reset_action->isFinished())
                     {
-                        m_reset_action->update(state);
+                        rip::misc::Logger::getInstance()->debug("Reset Action Finished");
+                        m_reset_action->teardown(state);
+                        m_reset = false;
                     }
                     else
                     {
-                        m_reset_action->setup(state);
+                        rip::misc::Logger::getInstance()->debug("Reset Action Update");
+                        m_reset_action->update(state);
                     }
                 }
+
                 m_previous_reset = true;
             }
             else
             {
-                if(m_action->isFinished())
+                if(m_previous_reset)
                 {
-                    m_action->teardown(state);
-                    if(m_condition->loop())
-                    {
-                        m_reset = true;
-                    }
-                    else
-                    {
-                        m_finished = true;
-                    }
+                    rip::misc::Logger::getInstance()->debug("Action Setup");
+                    m_action->setup(state);
                 }
                 else
                 {
-                    if(m_previous_reset)
+                    if(m_action->isFinished())
                     {
-                        m_action->setup(state);
+                        rip::misc::Logger::getInstance()->debug("Action Finished");
+                        m_action->teardown(state);
+                        if(m_condition->loop())
+                        {
+                            rip::misc::Logger::getInstance()->debug("Resetting");
+                            m_reset = true;
+                        }
+                        else
+                        {
+                            m_finished = true;
+                        }
                     }
                     else
                     {
+                        rip::misc::Logger::getInstance()->debug("Action Update");
                         m_action->update(state);
                     }
                 }
+
                 m_previous_reset = false;
             }
         }
 
         void LoopAction::teardown(nlohmann::json& state)
         {
-
+            rip::misc::Logger::getInstance()->debug("Loop Teardown");
         }
 
         bool LoopAction::isFinished()
