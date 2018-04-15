@@ -84,6 +84,8 @@ namespace rip
 
                 units::Distance m_init_encoder;
                 units::Distance m_distance_travelled;
+                units::Distance m_threshold;
+                units::Time m_threshold_time;
 
                 std::chrono::time_point<std::chrono::system_clock> m_start_time;
                 std::chrono::time_point<std::chrono::system_clock> m_last_time;
