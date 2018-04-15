@@ -9,29 +9,14 @@ namespace rip
     namespace pid
     {
 
-        template <typename T>
+        template<typename T>
         T clamp(T value, T min, T max)
         {
             return std::max(min, std::min(max, value));
         }
 
         PidController::PidController(PidInput* input, PidOutput* output, const double p, const double i, const double d, const double f)
-            : m_original_input(input)
-            , m_output(output)
-            , m_p(p)
-            , m_i(i)
-            , m_d(d)
-            , m_f(f)
-            , m_setpoint(0)
-            , m_minimum_input(-1.0)
-            , m_maximum_input(1.0)
-            , m_input_range(2.0)
-            , m_minimum_output(-1.0)
-            , m_maximum_output(1.0)
-            , m_previous_error(0)
-            , m_total_error(0)
-            , m_last_time(std::chrono::high_resolution_clock::now())
-            , m_setpoint_time(std::chrono::high_resolution_clock::now())
+                : m_original_input(input), m_output(output), m_p(p), m_i(i), m_d(d), m_f(f), m_enabled(false), m_setpoint(0), m_minimum_input(-1.0), m_maximum_input(1.0), m_input_range(2.0), m_minimum_output(-1.0), m_maximum_output(1.0), m_previous_error(0), m_total_error(0), m_last_time(std::chrono::high_resolution_clock::now()), m_setpoint_time(std::chrono::high_resolution_clock::now())
         {
             m_filter = LinearDigitalFilter::movingAverage(m_original_input, 1);
             m_input = &m_filter;
@@ -87,18 +72,18 @@ namespace rip
         bool PidController::onTarget() const
         {
             double err = error();
-            switch (m_tolerance_type)
+            switch(m_tolerance_type)
             {
-            case ToleranceType::kPercent:
-                misc::Logger::getInstance()->debug("Error: {}, Tol: {}", err, m_tolerance/ 100.0 * m_input_range);
-                return std::fabs(err) < m_tolerance / 100.0 * m_input_range;
-            case ToleranceType::kAbsolute:
-                misc::Logger::getInstance()->debug("Error: {}, Tol: {}", err, m_tolerance)  ;
-                return std::fabs(err) < m_tolerance;
-            case ToleranceType::kNoTolerance:
-                return false;
-            default:
-                assert(false);
+                case ToleranceType::kPercent:
+                    misc::Logger::getInstance()->debug("Error: {}, Tol: {}", err, m_tolerance / 100.0 * m_input_range);
+                    return std::fabs(err) < m_tolerance / 100.0 * m_input_range;
+                case ToleranceType::kAbsolute:
+                    misc::Logger::getInstance()->debug("Error: {}, Tol: {}", err, m_tolerance);
+                    return std::fabs(err) < m_tolerance;
+                case ToleranceType::kNoTolerance:
+                    return false;
+                default:
+                    assert(false);
             }
             return false;
         }
@@ -171,7 +156,7 @@ namespace rip
 
         void PidController::calculate()
         {
-            if (m_original_input == nullptr || m_output == nullptr)
+            if(m_original_input == nullptr || m_output == nullptr)
             {
 
                 misc::Logger::getInstance()->debug_if(m_original_input == nullptr, "Input null");
@@ -179,7 +164,7 @@ namespace rip
                 return;
             }
 
-            if (m_enabled)
+            if(m_enabled)
             {
                 std::chrono::high_resolution_clock::time_point time_now = std::chrono::high_resolution_clock::now();
                 std::chrono::duration<double, std::milli> dt = time_now - m_last_time;
@@ -198,28 +183,27 @@ namespace rip
                 // Storage for function input-outputs
                 double error = continuousError(m_setpoint - input);
                 misc::Logger::getInstance()->debug("Error: {}", error);
-                if (type == PidInput::Type::kRate)
+                if(type == PidInput::Type::kRate)
                 {
-                    if (m_p != 0)
+                    if(m_p != 0)
                     {
                         m_total_error = clamp(m_total_error + error, m_minimum_output / m_p, m_maximum_output / m_p);
                     }
 
                     m_result = m_d * error + m_p * m_total_error + m_f;
-                }
-                else
+                }else
                 {
-                    if (m_i != 0)
+                    if(m_i != 0)
                     {
                         m_total_error = clamp(m_total_error + error, m_minimum_output / m_i, m_maximum_output / m_i);
                     }
 
-                    m_result = m_p * error + m_i * m_total_error + m_d * (error - m_previous_error)  / (dt.count() / 1000.0) + m_f;
+                    m_result = m_p * error + m_i * m_total_error + m_d * (error - m_previous_error) / (dt.count() / 1000.0) + m_f;
                 }
 
                 m_result = clamp(m_result, m_minimum_output, m_maximum_output);
                 misc::Logger::getInstance()->debug("Result: {}", m_result);
-                if (m_enabled)
+                if(m_enabled)
                 {
                     m_output->set(m_result);
                 }
@@ -232,11 +216,10 @@ namespace rip
 
         double PidController::calculateFeedForward()
         {
-            if (m_input->type() == PidInput::Type::kRate)
+            if(m_input->type() == PidInput::Type::kRate)
             {
                 return m_f * setpoint();
-            }
-            else
+            }else
             {
                 double temp = m_f * deltaSetpoint();
                 m_previous_setpoint = m_setpoint;
@@ -247,16 +230,15 @@ namespace rip
 
         double PidController::continuousError(double error) const
         {
-            if (m_continuous && m_input_range != 0)
+            if(m_continuous && m_input_range != 0)
             {
                 error = std::fmod(error, m_input_range);
-                if (std::fabs(error) > m_input_range / 2)
+                if(std::fabs(error) > m_input_range / 2)
                 {
-                    if (error > 0)
+                    if(error > 0)
                     {
                         return error - m_input_range;
-                    }
-                    else
+                    }else
                     {
                         return error + m_input_range;
                     }

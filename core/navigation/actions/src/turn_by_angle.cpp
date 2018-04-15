@@ -10,6 +10,13 @@ namespace rip
         namespace actions
         {
 
+            TurnByAngle::TurnByAngle(const std::string& name, std::shared_ptr<drivetrains::Drivetrain> drivetrain, std::shared_ptr<NavX> navx, const nlohmann::json& config)
+                : TurnToAngle(name, drivetrain, navx, config)
+            {
+
+            }
+
+
             void TurnByAngle::setup(nlohmann::json& state)
             {
                 m_start_angle = m_navx->getYaw();

@@ -52,7 +52,8 @@ namespace rip
                 }
 
                 m_pid = std::unique_ptr<pid::PidController>(new pid::PidController(navx.get(), this, kp, ki, kd));
-                m_pid->setPercentTolerance(1);
+                m_pid->enable();
+                m_pid->setPercentTolerance(1.0 / 3.6);
                 m_navx->setType(pid::PidInput::Type::kDisplacement);
                 m_pid->setContinuous(true);
                 m_pid->setInputRange(-180 * units::deg(), 180 * units::deg());
