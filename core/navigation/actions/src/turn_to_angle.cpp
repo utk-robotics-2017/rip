@@ -9,10 +9,10 @@ namespace rip
     {
         namespace actions
         {
-            TurnToAngle::TurnToAngle(const std::string& name, std::shared_ptr<drivetrains::Drivetrain> drivetrain, std::shared_ptr<NavX> navx, const nlohmann::json& config)
+            TurnToAngle::TurnToAngle(const std::string& name, std::shared_ptr<drivetrains::Drivetrain> drivetrain, std::shared_ptr<Imu> imu, const nlohmann::json& config)
                 : TimeoutAction(name, config)
                 , m_drivetrain(drivetrain)
-                , m_navx(navx)
+                , m_imu(imu)
                 , m_first(true)
             {
                 if(config.find("turn_angle") == config.end())
@@ -51,10 +51,10 @@ namespace rip
                     kd = misc::constants::get<double>(misc::constants::kTurnKd);
                 }
 
-                m_pid = std::unique_ptr<pid::PidController>(new pid::PidController(navx.get(), this, kp, ki, kd));
+                m_pid = std::unique_ptr<pid::PidController>(new pid::PidController(m_imu.get(), this, kp, ki, kd));
                 m_pid->enable();
                 m_pid->setPercentTolerance(1.0 / 3.6);
-                m_navx->setType(pid::PidInput::Type::kDisplacement);
+                m_imu->setType(pid::PidInput::Type::kDisplacement);
                 m_pid->setContinuous(true);
                 m_pid->setInputRange(-180 * units::deg(), 180 * units::deg());
                 units::Velocity max_velocity = misc::constants::get<double>(misc::constants::kMaxVelocity) * units::in / units::s;
@@ -70,15 +70,15 @@ namespace rip
 
             void TurnToAngle::update(nlohmann::json& state)
             {
-                units::Angle angle = m_navx->getYaw();
-                misc::Logger::getInstance()->debug("Conn: {}, Setpoint: {} deg,  TurnToAngle: {} deg", m_navx->isConnected(), m_setpoint.to(units::deg), angle.to(units::deg));
+                units::Angle angle = m_imu->getYaw();
+                misc::Logger::getInstance()->debug("Cal: {}, Setpoint: {} deg,  TurnToAngle: {} deg", m_imu->isCalibrated(), m_setpoint.to(units::deg), angle.to(units::deg));
                 m_pid->calculate();
                 std::this_thread::sleep_for(std::chrono::milliseconds(5));
             }
 
             void TurnToAngle::setup(nlohmann::json& state)
             {
-                m_start_angle = m_navx->getYaw();
+                m_start_angle = m_imu->getYaw();
                 m_setpoint = m_turn_angle;
                 while(m_setpoint > 180 * units::deg())
                 {
@@ -96,7 +96,7 @@ namespace rip
 
             void TurnToAngle::teardown(nlohmann::json& state)
             {
-                misc::Logger::getInstance()->debug("Degrees turned: {} deg", (m_navx->getYaw() - m_start_angle).to(units::deg));
+                misc::Logger::getInstance()->debug("Degrees turned: {} deg", (m_imu->getYaw() - m_start_angle).to(units::deg));
                 m_drivetrain->stop();
             }
 

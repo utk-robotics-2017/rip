@@ -8,10 +8,10 @@ namespace rip
         {
             DriveStraightUntil::DriveStraightUntil(const std::string& name,
                                                    std::shared_ptr<Drivetrain> drivetrain,
-                                                   std::shared_ptr<NavX> navx,
+                                                   std::shared_ptr<Imu> imu,
                                                    std::shared_ptr<Condition> condition,
                                                    const nlohmann::json& config)
-                : DriveStraight(name, drivetrain, navx, config)
+                : DriveStraight(name, drivetrain, imu, config)
                 , m_condition(condition)
             {}
 

@@ -7,7 +7,7 @@
 #include <drivetrains/drivetrain.hpp>
 #include <pid/pid_output.hpp>
 #include <pid/pid.hpp>
-#include <navx/navx.hpp>
+#include <appendages/bno055.hpp>
 
 #include <chrono>
 
@@ -22,10 +22,10 @@ namespace rip
             {
             protected:
                 using Drivetrain = drivetrains::Drivetrain;
-                using NavX = navx::NavX;
+                using Imu = appendages::Bno055;
             public:
                 DriveStraight(const std::string& name, std::shared_ptr<Drivetrain> drivetrain,
-                              std::shared_ptr<NavX> navx, const nlohmann::json& config);
+                              std::shared_ptr<Imu> gyro, const nlohmann::json& config);
 
                 /**
                 * Returns whether or not the action has finished execution.
@@ -93,8 +93,8 @@ namespace rip
                 /* Drivetrain subsystem -- used to abstract the control of the drive motors */
                 std::shared_ptr<Drivetrain> m_drivetrain;
 
-                /* NavX IMU -- used for gyro & accelerometer */
-                std::shared_ptr<NavX> m_navx;
+                /* IMU -- used for gyro & accelerometer */
+                std::shared_ptr<Imu> m_imu;
 
                 /* PID Control for rotational correction */
                 std::unique_ptr<pid::PidController> m_pid;

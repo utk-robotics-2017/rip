@@ -10,8 +10,8 @@ namespace rip
         namespace actions
         {
 
-            TurnByAngle::TurnByAngle(const std::string& name, std::shared_ptr<drivetrains::Drivetrain> drivetrain, std::shared_ptr<NavX> navx, const nlohmann::json& config)
-                : TurnToAngle(name, drivetrain, navx, config)
+            TurnByAngle::TurnByAngle(const std::string& name, std::shared_ptr<drivetrains::Drivetrain> drivetrain, std::shared_ptr<Imu> imu, const nlohmann::json& config)
+                : TurnToAngle(name, drivetrain, imu, config)
             {
 
             }
@@ -19,7 +19,7 @@ namespace rip
 
             void TurnByAngle::setup(nlohmann::json& state)
             {
-                m_start_angle = m_navx->getYaw();
+                m_start_angle = m_imu->getYaw();
                 m_setpoint = m_start_angle + m_turn_angle;
                 while(m_setpoint > 180 * units::deg())
                 {

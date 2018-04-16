@@ -11,11 +11,8 @@ namespace rip
     {
         namespace actions
         {
-            using drivetrains::Drivetrain;
-            using navx::NavX;
-
-            DriveStraight::DriveStraight(const std::string& name, std::shared_ptr<Drivetrain> drivetrain, std::shared_ptr<NavX> navx, const nlohmann::json& config)
-                    : TimeoutAction(name, config), m_drivetrain(drivetrain), m_navx(navx), m_finished(false)
+            DriveStraight::DriveStraight(const std::string& name, std::shared_ptr<Drivetrain> drivetrain, std::shared_ptr<Imu> imu, const nlohmann::json& config)
+                    : TimeoutAction(name, config), m_drivetrain(drivetrain), m_imu(imu), m_finished(false)
             {
                 if(config.find("use_time") == config.end())
                 {
@@ -77,14 +74,14 @@ namespace rip
                     m_threshold_time = misc::constants::get<double>(misc::constants::kStraightThreshTime) * units::s;
                 }
 
-                if(m_navx)
+                if(m_imu)
                 {
                     double kp = misc::constants::get<double>(misc::constants::kStraightAngleKp);
                     double ki = misc::constants::get<double>(misc::constants::kStraightAngleKi);
                     double kd = misc::constants::get<double>(misc::constants::kStraightAngleKd);
-                    m_pid = std::unique_ptr<pid::PidController>(new pid::PidController(m_navx.get(), this, kp, ki, kd));
+                    m_pid = std::unique_ptr<pid::PidController>(new pid::PidController(m_imu.get(), this, kp, ki, kd));
                     m_pid->setPercentTolerance(1);
-                    m_navx->setType(pid::PidInput::Type::kDisplacement);
+                    m_imu->setType(pid::PidInput::Type::kDisplacement);
                     m_pid->setContinuous(true);
                     m_pid->setInputRange(-180 * units::deg(), 180 * units::deg());
                     m_pid->setOutputRange(-2 * units::in() / units::s(), 2 * units::in() / units::s());
@@ -155,7 +152,7 @@ namespace rip
                 units::Velocity l_speed = m_velocity;
                 units::Velocity r_speed = m_velocity;
 
-                if(m_navx)
+                if(m_imu)
                 {
                     m_pid->calculate();
                     double pid_correction = m_pid->get();
@@ -184,9 +181,9 @@ namespace rip
 
                 misc::Logger::getInstance()->debug("Encoder Velocity | Left: {} {} | Right: {} {} | Target: {}", vel[0].to(units::in / units::s), vel[1].to(units::in / units::s), vel[2].to(units::in / units::s), vel[3].to(units::in / units::s), m_velocity.to(units::in / units::s));
 
-                if(m_navx)
+                if(m_imu)
                 {
-                    misc::Logger::getInstance()->debug("NavX | Yaw: {} | Angle Diff: {}", m_navx->getYaw().to(units::deg), (m_navx->getYaw() - m_initial_yaw).to(units::deg));
+                    misc::Logger::getInstance()->debug("NavX | Yaw: {} | Angle Diff: {}", m_imu->getYaw().to(units::deg), (m_imu->getYaw() - m_initial_yaw).to(units::deg));
                 }
 
                 // just for now...
@@ -241,10 +238,10 @@ namespace rip
 
                 state["initial_encoder"] = m_init_encoder;
 
-                // NavX
-                if(m_navx)
+                // Gyro
+                if(m_imu)
                 {
-                    m_initial_yaw = m_navx->getYaw();
+                    m_initial_yaw = m_imu->getYaw();
                     misc::Logger::getInstance()->debug("Inital Yaw: {}", m_initial_yaw.to(units::deg));
 
                     state["initial_yaw"] = m_initial_yaw;

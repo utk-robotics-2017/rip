@@ -5,7 +5,7 @@
 #include <drivetrains/drivetrain.hpp>
 #include <chrono>
 #include <framework/timeout_action.hpp>
-#include <navx/navx.hpp>
+#include <appendages/bno055.hpp>
 #include <pid/pid_output.hpp>
 #include <pid/pid.hpp>
 #include <cmath>
@@ -20,7 +20,7 @@ namespace rip
             {
             protected:
                 using Drivetrain = drivetrains::Drivetrain;
-                using NavX = navx::NavX;
+                using Imu = appendages::Bno055;
 
             public:
                 /**
@@ -33,7 +33,7 @@ namespace rip
                  */
                 TurnToAngle(const std::string& name,
                             std::shared_ptr<Drivetrain> drivetrain,
-                            std::shared_ptr<NavX> navx, const nlohmann::json& config);
+                            std::shared_ptr<Imu> imu, const nlohmann::json& config);
 
                 /**
                 * Returns whether or not the action has finished execution.
@@ -63,7 +63,7 @@ namespace rip
                 units::Angle m_turn_angle;
 
                 std::shared_ptr<Drivetrain> m_drivetrain;
-                std::shared_ptr<NavX> m_navx;
+                std::shared_ptr<Imu> m_imu;
 
                 bool m_first;
                 units::Angle m_start_angle;

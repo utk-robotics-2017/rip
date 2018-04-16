@@ -1,0 +1,48 @@
+<appendage-template>
+    <includes>
+        <include standard="true">Wire.h</include>
+        <include standard="false">Adafruit_Sensor.h</include>
+        <include standard="false">Adafruit_BNO055.h</include>
+    </includes>
+    <constructors>
+        <constructor type="Adafruit_BNO055" variable="bno055s">
+            <argument name="address" type="int"/>
+        </constructor>
+    </constructors>
+    <setup>
+        bno055s[$i$].begin();
+    </setup>
+    <commands>
+        <command id="kGetYaw" name="getYaw">
+            <return-value type="float" name="rv"/>
+            /* Get a new sensor event */
+            sensors_event_t event;
+            bno055s[indexNum].getEvent(&event);
+
+            // In radians
+            rv = event.orientation.z;
+        </command>
+        <command id="kGetPitch" name="getPitch">
+            <return-value type="float" name="rv"/>
+            /* Get a new sensor event */
+            sensors_event_t event;
+            bno055s[indexNum].getEvent(&event);
+
+            // In radians
+            rv = event.orientation.y;
+        </command>
+        <command id="kGetRoll" name="getRoll">
+            <return-value type="float" name="rv"/>
+            /* Get a new sensor event */
+            sensors_event_t event;
+            bno055s[indexNum].getEvent(&event);
+
+            // In radians
+            rv = event.orientation.x;
+        </command>
+        <command id="kGetCalibrationStatus" name="getCalibrationStatus">
+            <return-value type="char" name="rv"/>
+            rv = bno055s[indexNum].isFullyCalibrated();
+        </command>
+    </commands>
+</appendage-template>

@@ -23,7 +23,7 @@ namespace rip
             public:
                 TurnByAngle(const std::string& name,
                             std::shared_ptr<Drivetrain> drivetrain,
-                            std::shared_ptr<NavX> navx, const nlohmann::json& config);
+                            std::shared_ptr<Imu> imu, const nlohmann::json& config);
 
                 /**
                  * Run once before the main code
