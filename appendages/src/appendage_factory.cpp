@@ -10,6 +10,7 @@
 #include "appendages/ultrasonic.hpp"
 #include "appendages/navx.hpp"
 #include "appendages/ir_2018.hpp"
+#include "appendages/bno055.hpp"
 
 #include "appendages/exceptions.hpp"
 
@@ -61,6 +62,7 @@ namespace rip
             registerAppendage("Ultrasonic", &Ultrasonic::create);
             registerAppendage("Ir2018", &Ir2018::create);
             registerAppendage("NavX", &NavX::create);
+            registerAppendage("Bno055", &Bno055::create);
         }
     }
 }

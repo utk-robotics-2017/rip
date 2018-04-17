@@ -19,6 +19,10 @@ namespace rip
 
             double get() override;
 
+            void stop() override;
+
+            bool diagnostic() override;
+
         protected:
             friend class AppendageFactory;
 
