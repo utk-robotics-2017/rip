@@ -9,11 +9,11 @@ namespace rip
         Bno055::Bno055(const nlohmann::json& config, const std::map<std::string, int>& command_map, std::shared_ptr<cmdmessenger::Device> device)
                 : Appendage(config, device)
                 , m_yaw(createCommand("kGetYaw", command_map, cmdmessenger::ArduinoCmdMessenger::makeArgumentString<cmdmessenger::ArduinoCmdMessenger::IntegerType>()))
-                , m_yaw_result(createCommand("kGetYawResult", command_map, cmdmessenger::ArduinoCmdMessenger::makeArgumentString<cmdmessenger::ArduinoCmdMessenger::FloatType>()))
+                , m_yaw_result(createCommand("kGetYawResult", command_map, cmdmessenger::ArduinoCmdMessenger::makeArgumentString<cmdmessenger::ArduinoCmdMessenger::IntegerType>()))
                 , m_pitch(createCommand("kGetPitch", command_map, cmdmessenger::ArduinoCmdMessenger::makeArgumentString<cmdmessenger::ArduinoCmdMessenger::IntegerType>()))
-                , m_pitch_result(createCommand("kGetPitchResult", command_map, cmdmessenger::ArduinoCmdMessenger::makeArgumentString<cmdmessenger::ArduinoCmdMessenger::FloatType>()))
+                , m_pitch_result(createCommand("kGetPitchResult", command_map, cmdmessenger::ArduinoCmdMessenger::makeArgumentString<cmdmessenger::ArduinoCmdMessenger::IntegerType>()))
                 , m_roll(createCommand("kGetRoll", command_map, cmdmessenger::ArduinoCmdMessenger::makeArgumentString<cmdmessenger::ArduinoCmdMessenger::IntegerType>()))
-                , m_roll_result(createCommand("kGetRollResult", command_map, cmdmessenger::ArduinoCmdMessenger::makeArgumentString<cmdmessenger::ArduinoCmdMessenger::FloatType>()))
+                , m_roll_result(createCommand("kGetRollResult", command_map, cmdmessenger::ArduinoCmdMessenger::makeArgumentString<cmdmessenger::ArduinoCmdMessenger::IntegerType>()))
                 , m_calibrated(createCommand("kGetCalibrationStatus", command_map, cmdmessenger::ArduinoCmdMessenger::makeArgumentString<cmdmessenger::ArduinoCmdMessenger::IntegerType>()))
                 , m_caribrated_result(createCommand("kGetCalibrationStatusResult", command_map, cmdmessenger::ArduinoCmdMessenger::makeArgumentString<cmdmessenger::ArduinoCmdMessenger::CharType>()))
 
@@ -24,21 +24,21 @@ namespace rip
         {
             cmdmessenger::ArduinoCmdMessenger messenger;
             messenger.send<cmdmessenger::ArduinoCmdMessenger::IntegerType>(m_device, m_yaw, m_id);
-            return std::get<0>(messenger.receive<cmdmessenger::ArduinoCmdMessenger::FloatType>(m_yaw_result)) * units::rad;
+            return static_cast<double>(std::get<0>(messenger.receive<cmdmessenger::ArduinoCmdMessenger::IntegerType>(m_yaw_result))) / 1000.0 * units::rad;
         }
 
         units::Angle Bno055::getPitch()
         {
             cmdmessenger::ArduinoCmdMessenger messenger;
             messenger.send<cmdmessenger::ArduinoCmdMessenger::IntegerType>(m_device, m_pitch, m_id);
-            return std::get<0>(messenger.receive<cmdmessenger::ArduinoCmdMessenger::FloatType>(m_pitch_result)) * units::rad;
+            return static_cast<double>(std::get<0>(messenger.receive<cmdmessenger::ArduinoCmdMessenger::IntegerType>(m_pitch_result))) / 1000.0 * units::rad;
         }
 
         units::Angle Bno055::getRoll()
         {
             cmdmessenger::ArduinoCmdMessenger messenger;
             messenger.send<cmdmessenger::ArduinoCmdMessenger::IntegerType>(m_device, m_roll, m_id);
-            return std::get<0>(messenger.receive<cmdmessenger::ArduinoCmdMessenger::FloatType>(m_roll_result)) * units::rad;
+            return static_cast<double>(std::get<0>(messenger.receive<cmdmessenger::ArduinoCmdMessenger::IntegerType>(m_roll_result))) / 1000.0 * units::rad;
         }
 
         bool Bno055::isCalibrated()

@@ -389,10 +389,10 @@ namespace rip
             }
 
             std::string rv = "";
-
+            int i = 0;
             for (auto it : sorted_commands)
             {
-                rv += fmt::format("\t{},\n", it.second);
+                rv += fmt::format("\t{} = {},\n", it.second, i++);
             }
 
             rv.pop_back(); // Remove last newline

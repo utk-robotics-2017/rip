@@ -14,36 +14,36 @@
     </setup>
     <commands>
         <command id="kGetYaw" name="getYaw">
-            <return-value type="float" name="rv"/>
+            <return-value type="int16_t" name="rv"/>
             <code>
             /* Get a new sensor event */
             sensors_event_t event;
             bno055s[indexNum].getEvent(&event);
 
             // In radians
-            rv = event.orientation.z;
+            rv = event.orientation.z * 1000.0;
             </code>
         </command>
         <command id="kGetPitch" name="getPitch">
-            <return-value type="float" name="rv"/>
+            <return-value type="int16_t" name="rv"/>
             <code>
             /* Get a new sensor event */
             sensors_event_t event;
             bno055s[indexNum].getEvent(&event);
 
             // In radians
-            rv = event.orientation.y;
+            rv = event.orientation.y * 1000.0;
             </code>
         </command>
         <command id="kGetRoll" name="getRoll">
-            <return-value type="float" name="rv"/>
+            <return-value type="int16_t" name="rv"/>
             <code>
             /* Get a new sensor event */
             sensors_event_t event;
             bno055s[indexNum].getEvent(&event);
 
             // In radians
-            rv = event.orientation.x;
+            rv = event.orientation.x * 1000.0;
             </code>
         </command>
         <command id="kGetCalibrationStatus" name="getCalibrationStatus">
