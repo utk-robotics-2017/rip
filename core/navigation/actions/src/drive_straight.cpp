@@ -83,7 +83,7 @@ namespace rip
                     m_pid->setPercentTolerance(1);
                     m_imu->setType(pid::PidInput::Type::kDisplacement);
                     m_pid->setContinuous(true);
-                    m_pid->setInputRange(-180 * units::deg(), 180 * units::deg());
+                    m_pid->setInputRange(0, 2 * M_PI);
                     m_pid->setOutputRange(-2 * units::in() / units::s(), 2 * units::in() / units::s());
                 }
             }
@@ -157,8 +157,12 @@ namespace rip
                     m_pid->calculate();
                     double pid_correction = m_pid->get();
 
-                    l_speed += pid_correction;
-                    r_speed -= pid_correction;
+                    misc::Logger::getInstance()->debug("PID Correction value: {}\n", pid_correction);
+
+                    l_speed += (pid_correction * units::in / units::s);
+                    r_speed -= (pid_correction * units::in / units::s);
+
+                    misc::Logger::getInstance()->debug("Updated: {} {}\n", l_speed.to(units::in / units::s), r_speed.to(units::in / units::s));
 
                     units::Velocity v_scale;
 
@@ -167,6 +171,9 @@ namespace rip
                     // Scale each speed appropriately to not exceed the maximum specified
                     l_speed = (l_speed / v_scale) * m_velocity;
                     r_speed = (r_speed / v_scale) * m_velocity;
+
+                    misc::Logger::getInstance()->debug("Scaled: {} {}\n", l_speed.to(units::in / units::s), r_speed.to(units::in / units::s));
+
                 }
                 l_dynamics.setSpeed(l_speed);
                 r_dynamics.setSpeed(r_speed);
@@ -183,7 +190,7 @@ namespace rip
 
                 if(m_imu)
                 {
-                    misc::Logger::getInstance()->debug("NavX | Yaw: {} | Angle Diff: {}", m_imu->getYaw().to(units::deg), (m_imu->getYaw() - m_initial_yaw).to(units::deg));
+                    misc::Logger::getInstance()->debug("NavX | Yaw: {} | Angle Diff: {} {}", m_imu->getYaw().to(units::deg), (m_imu->getYaw() - m_initial_yaw).to(units::deg), (m_imu->getYaw() - m_initial_yaw).to(units::rad));
                 }
 
                 // just for now...
@@ -242,13 +249,12 @@ namespace rip
                 if(m_imu)
                 {
                     m_initial_yaw = m_imu->getYaw();
-                    misc::Logger::getInstance()->debug("Inital Yaw: {}", m_initial_yaw.to(units::deg));
+                    misc::Logger::getInstance()->debug("Inital Yaw: {} {}", m_initial_yaw.to(units::deg), m_initial_yaw.to(units::rad));
 
                     state["initial_yaw"] = m_initial_yaw;
 
-                    m_pid->setSetpoint(m_initial_yaw.to(units::deg));
+                    m_pid->setSetpoint(m_initial_yaw());
                     m_pid->enable(); // Not sure if this does anything...
-
                 }
                 state["direction"] = m_direction;
 
@@ -263,6 +269,8 @@ namespace rip
                     max_velocity = m_direction * m_max_accel * time_to_accel;
                 }
                 state["expected_velocity"] = max_velocity;
+
+                m_velocity = max_velocity;
 
                 // set a threshold for stopping -- this tries to account for the delay in actually stopping
                 // this is quite arbitrary right now but should be kinda close
