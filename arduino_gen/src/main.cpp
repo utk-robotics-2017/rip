@@ -6,9 +6,9 @@
 #include <cppfs/fs.h>
 #include <cppfs/FileHandle.h>
 
-#include "misc/exception_base.hpp"
 #include "arduino_gen/arduino_gen.hpp"
-#include "misc/exception_base.hpp"
+#include "arduino_gen/utils.hpp"
+#include "arduino_gen/exceptions.hpp"
 
 #include <misc/exception_base.hpp>
 
@@ -22,7 +22,8 @@ int main(int argc, char* argv[])
     args::ValueFlag<std::string> arduino(parser, "ARDUINO", "Name of the arduino", {'a', "arduino"}, args::Options::Required | args::Options::Single);
     args::ValueFlag<std::string> config(parser, "CONFIG", "Location of the config json file", {'c', "config"}, args::Options::Required | args::Options::Single);
     args::ValueFlag<std::string> parent_folder(parser, "PARENT_FOLDER", "Parent folder of the folder to put all the output files", {"parent_folder"}, "/Robot/CurrentArduinoCode", args::Options::Single);
-    args::ValueFlag<std::string> appendages(parser, "APPENDAGES_FOLDER", "Folder of where to look for appendage files", {"appendages"}, "./appendages", args::Options::Single);
+    args::ValueFlag<std::string> rip_appendages(parser, "RIP_APPENDAGES_FOLDER", "Folder of where to look for appendage files", {"rip_appendages"}, "./appendages", args::Options::Single);
+    args::ValueFlagList<std::string> add_appendages(parser, "ADDITIONAL_APPENDAGES", "Additional folders of where to look for appendage files, semicolon delimited or with more --add_appdanges flags.", {"add_appendages"});
     args::Flag noCopy(parser, "NO_COPY", "Don't copy existing files", {"no_copy"}, args::Options::Single);
     args::Flag noGit(parser, "NO_GIT", "Don't git commit the files when uploading", {"no_git"}, args::Options::Single);
 
@@ -67,7 +68,7 @@ int main(int argc, char* argv[])
      * args::get(arduino) is guarenteed to have a value
      * args::get(config) is guarenteed to have a value
      * args::get(parent_folder) is guarenteed to have a value, defaults to: /Robot/CurrentArduinoCode
-     * args::get(appendages) is guarenteed to have a value, defaults to: ./appendages
+     * args::get(rip_appendages) is guarenteed to have a value, defaults to: ./appendages
      * args::get(build) defaults to: false
      * args::get(upload) defaults to: false
      * build and upload are guarenteed to be mutually exclusive
@@ -87,14 +88,33 @@ int main(int argc, char* argv[])
         return EXIT_FAILURE;
     }
 
-    cppfs::FileHandle appendages_fh = cppfs::fs::open(args::get(appendages));
+    /*
+    cppfs::FileHandle appendages_fh = cppfs::fs::open(args::get(rip_appendages));
     if (!appendages_fh.exists() || !appendages_fh.isDirectory())
     {
-        std::cerr << fmt::format("The appendages folder \"{}\" doesn't exist.", args::get(appendages)) << std::endl;
+        std::cerr << fmt::format("The appendages folder \"{}\" doesn't exist.", args::get(rip_appendages)) << std::endl;
         return EXIT_FAILURE;
     }
+    */
 
-    rip::arduinogen::ArduinoGen ag(args::get(arduino), args::get(parent_folder), "/Robot/CurrentArduinoCode", args::get(appendages));
+    std::vector<std::string> appendage_folders;
+    appendage_folders.emplace_back(args::get(rip_appendages));
+    for (std::string folders : args::get(add_appendages))
+    {
+        rip::arduinogen::split(folders, ';', std::back_inserter(appendage_folders));
+    }
+
+    for (std::string appendage_folder : appendage_folders)
+    {
+        cppfs::FileHandle appendage_folder_fh = cppfs::fs::open(appendage_folder);
+        if (!appendage_folder_fh.exists() || !appendage_folder_fh.isDirectory())
+        {
+            //std::cerr << fmt::format("The appendages folder \"{}\" doesn't exist. Skipping it.", *it) << std::endl;
+            throw rip::arduinogen::FileIoException(fmt::format("The appendages folder \"{}\" doesn't exist.", appendage_folder));
+        }
+    }
+
+    rip::arduinogen::ArduinoGen ag(args::get(arduino), args::get(parent_folder), "/Robot/CurrentArduinoCode", appendage_folders);
 
     try
     {

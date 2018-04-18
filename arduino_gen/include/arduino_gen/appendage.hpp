@@ -28,7 +28,7 @@ namespace rip
              */
             Appendage(nlohmann::json data,
                       std::multimap<std::string, std::shared_ptr<Appendage>>& appendages,
-                      std::string appendage_data_folder = "appendages", bool test = true);
+                      std::vector<std::string> appendage_data_folders = { "appendages" }, bool test = true);
 
             /**
              * @brief Returns the label for this appendage
@@ -96,7 +96,7 @@ namespace rip
 
             static std::map< std::string, nlohmann::json > m_type_cache;
 
-            std::string m_appendage_data_folder;
+            std::vector<std::string> m_appendage_data_folders;
 
 			std::vector<std::string> m_core_fields;
         };

@@ -112,7 +112,7 @@ namespace rip
 
                 std::multimap< std::string, std::shared_ptr<Appendage> > appendage_map;
                 std::shared_ptr<Appendage> appendage;
-                ASSERT_THROW(appendage = std::make_shared<Appendage>(j, appendage_map), AppendageDataException);
+                RIP_ASSERT_THROW(appendage = std::make_shared<Appendage>(j, appendage_map), AppendageDataException);
             }
 
             TEST(Appendage_data, Appendage_incorrect_bool)
@@ -199,7 +199,7 @@ namespace rip
                 std::multimap<std::string, std::shared_ptr<Appendage>> appendage_map;
                 std::shared_ptr<Appendage> appendage;
 
-                RIP_ASSERT_NO_THROW(appendage = std::make_shared<Appendage>(j, appendage_map, "", false));
+                RIP_ASSERT_NO_THROW(appendage = std::make_shared<Appendage>(j, appendage_map, std::vector<std::string>{}, false));
 
                 ASSERT_EQ(appendage->getCoreJson(0).dump(4),
                     "{\n"
@@ -221,7 +221,7 @@ namespace rip
                 std::multimap<std::string, std::shared_ptr<Appendage>> appendage_map;
                 std::shared_ptr<Appendage> appendage;
 
-                RIP_ASSERT_NO_THROW(appendage = std::make_shared<Appendage>(j, appendage_map, "", false));
+                RIP_ASSERT_NO_THROW(appendage = std::make_shared<Appendage>(j, appendage_map, std::vector<std::string>{}, false));
 
                 ASSERT_EQ(appendage->getCoreJson(7).dump(4),
                     "{\n"

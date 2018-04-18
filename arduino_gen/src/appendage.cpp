@@ -15,10 +15,10 @@ namespace rip
 
         Appendage::Appendage(nlohmann::json j,
                              std::multimap< std::string, std::shared_ptr<Appendage> >& appendages,
-                             std::string appendage_data_folder,
+                             std::vector<std::string> appendage_data_folders,
                              bool test)
             : m_data(j),
-              m_appendage_data_folder(appendage_data_folder)
+              m_appendage_data_folders(appendage_data_folders)
         {
             if(test)
             {
@@ -138,13 +138,20 @@ namespace rip
                     }
                 }
 
-                cppfs::FileHandle type_template = cppfs::fs::open(fmt::format("{}/json/{}.json", m_appendage_data_folder, type_file));
-                if(!type_template.exists() || !type_template.isFile())
+                cppfs::FileHandle type_template;
+                for (std::string folder : m_appendage_data_folders)
+                {
+                    type_template = cppfs::fs::open(fmt::format("{}/json/{}.json", folder, type_file));
+                    if(type_template.exists() && type_template.isFile())
+                    {
+                        break;
+                    }
+                }
+
+                if (!type_template.exists())
                 {
                     throw AppendageDataException(fmt::format("Type template file not found for {}", type));
                 }
-
-                //std::unique_ptr<std::ifstream> i = type_template.createInputStream();
 
                 nlohmann::json j;
                 (*type_template.createInputStream()) >> j;

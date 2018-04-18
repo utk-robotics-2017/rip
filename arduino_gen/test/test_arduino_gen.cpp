@@ -29,7 +29,7 @@ namespace rip
 
         TEST_F(ArduinoGenTest, includes_no_appendages)
         {
-            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", "test/data/arduino_gen"));
+            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", { "test/data/arduino_gen" }));
 
             RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/no_appendages.json"));
 
@@ -40,7 +40,7 @@ namespace rip
 
         TEST_F(ArduinoGenTest, includes_one_empty_appendage)
         {
-            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", "test/data/arduino_gen"));
+            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", { "test/data/arduino_gen" }));
 
             RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/one_empty_appendage.json"));
 
@@ -51,7 +51,7 @@ namespace rip
 
         TEST_F(ArduinoGenTest, includes_one_appendage)
         {
-            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", "test/data/arduino_gen"));
+            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", { "test/data/arduino_gen" }));
 
             RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/one_appendage.json"));
 
@@ -62,7 +62,7 @@ namespace rip
 
         TEST_F(ArduinoGenTest, includes_two_appendages_same)
         {
-            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", "test/data/arduino_gen"));
+            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", { "test/data/arduino_gen" }));
 
             RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/two_appendages_same.json"));
 
@@ -73,7 +73,7 @@ namespace rip
 
         TEST_F(ArduinoGenTest, includes_two_appendages_different)
         {
-            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", "test/data/arduino_gen"));
+            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", { "test/data/arduino_gen" }));
 
             RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/two_appendages_different.json"));
 
@@ -85,7 +85,7 @@ namespace rip
 
         TEST_F(ArduinoGenTest, constructors_no_appendages)
         {
-            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", "test/data/arduino_gen"));
+            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", { "test/data/arduino_gen" }));
 
             RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/no_appendages.json"));
 
@@ -96,7 +96,7 @@ namespace rip
 
         TEST_F(ArduinoGenTest, constructors_one_empty_appendage)
         {
-            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", "test/data/arduino_gen"));
+            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", { "test/data/arduino_gen" }));
 
             RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/one_empty_appendage.json"));
 
@@ -107,7 +107,7 @@ namespace rip
 
         TEST_F(ArduinoGenTest, constructors_one_appendage)
         {
-            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", "test/data/arduino_gen"));
+            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", { "test/data/arduino_gen" }));
 
             RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/one_appendage.json"));
 
@@ -120,7 +120,7 @@ namespace rip
 
         TEST_F(ArduinoGenTest, constructors_two_appendages_same)
         {
-            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", "test/data/arduino_gen"));
+            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", { "test/data/arduino_gen" }));
 
             RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/two_appendages_same.json"));
 
@@ -134,7 +134,7 @@ namespace rip
 
         TEST_F(ArduinoGenTest, constructors_two_appendages_different)
         {
-            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", "test/data/arduino_gen"));
+            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", { "test/data/arduino_gen" }));
 
             RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/two_appendages_different.json"));
 
@@ -153,7 +153,7 @@ namespace rip
 
         TEST_F(ArduinoGenTest, setup_no_appendages)
         {
-            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", "test/data/arduino_gen"));
+            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", { "test/data/arduino_gen" }));
 
             RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/no_appendages.json"));
 
@@ -164,7 +164,7 @@ namespace rip
 
         TEST_F(ArduinoGenTest, setup_one_empty_appendage)
         {
-            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", "test/data/arduino_gen"));
+            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", { "test/data/arduino_gen" }));
 
             RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/one_empty_appendage.json"));
 
@@ -175,7 +175,7 @@ namespace rip
 
         TEST_F(ArduinoGenTest, setup_one_appendage)
         {
-            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", "test/data/arduino_gen"));
+            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", { "test/data/arduino_gen" }));
 
             RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/one_appendage.json"));
 
@@ -186,7 +186,7 @@ namespace rip
 
         TEST_F(ArduinoGenTest, setup_two_appendages_same)
         {
-            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", "test/data/arduino_gen"));
+            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", { "test/data/arduino_gen" }));
 
             RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/two_appendages_same.json"));
 
@@ -198,7 +198,7 @@ namespace rip
 
         TEST_F(ArduinoGenTest, setup_two_appendages_different)
         {
-            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", "test/data/arduino_gen"));
+            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", { "test/data/arduino_gen" }));
 
             RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/two_appendages_different.json"));
 
@@ -210,7 +210,7 @@ namespace rip
 
         TEST_F(ArduinoGenTest, loop_no_appendages)
         {
-            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", "test/data/arduino_gen"));
+            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", { "test/data/arduino_gen" }));
 
             RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/no_appendages.json"));
 
@@ -221,7 +221,7 @@ namespace rip
 
         TEST_F(ArduinoGenTest, loop_one_empty_appendage)
         {
-            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", "test/data/arduino_gen"));
+            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", { "test/data/arduino_gen" }));
 
             RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/one_empty_appendage.json"));
 
@@ -232,7 +232,7 @@ namespace rip
 
         TEST_F(ArduinoGenTest, loop_one_appendage)
         {
-            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", "test/data/arduino_gen"));
+            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", { "test/data/arduino_gen" }));
 
             RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/one_appendage.json"));
 
@@ -243,7 +243,7 @@ namespace rip
 
         TEST_F(ArduinoGenTest, loop_two_appendages_same)
         {
-            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", "test/data/arduino_gen"));
+            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", { "test/data/arduino_gen" }));
 
             RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/two_appendages_same.json"));
 
@@ -255,7 +255,7 @@ namespace rip
 
         TEST_F(ArduinoGenTest, loop_two_appendages_different)
         {
-            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", "test/data/arduino_gen"));
+            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", { "test/data/arduino_gen" }));
 
             RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/two_appendages_different.json"));
 
@@ -267,7 +267,7 @@ namespace rip
 
         TEST_F(ArduinoGenTest, command_enums_no_appendages)
         {
-            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", "test/data/arduino_gen"));
+            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", { "test/data/arduino_gen" }));
 
             RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/no_appendages.json"));
 
@@ -284,7 +284,7 @@ namespace rip
 
         TEST_F(ArduinoGenTest, command_enums_one_empty_appendage)
         {
-            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", "test/data/arduino_gen"));
+            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", { "test/data/arduino_gen" }));
 
             RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/one_empty_appendage.json"));
 
@@ -301,7 +301,7 @@ namespace rip
 
         TEST_F(ArduinoGenTest, command_enums_one_appendage)
         {
-            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", "test/data/arduino_gen"));
+            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", { "test/data/arduino_gen" }));
 
             RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/one_appendage.json"));
 
@@ -320,7 +320,7 @@ namespace rip
 
         TEST_F(ArduinoGenTest, command_enums_two_appendages_same)
         {
-            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", "test/data/arduino_gen"));
+            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", { "test/data/arduino_gen" }));
 
             RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/two_appendages_same.json"));
 
@@ -339,7 +339,7 @@ namespace rip
 
         TEST_F(ArduinoGenTest, command_enums_two_appendages_different)
         {
-            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", "test/data/arduino_gen"));
+            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", { "test/data/arduino_gen" }));
 
             RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/two_appendages_different.json"));
 
@@ -359,7 +359,7 @@ namespace rip
 
         TEST_F(ArduinoGenTest, command_attaches_no_appendages)
         {
-            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", "test/data/arduino_gen"));
+            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", { "test/data/arduino_gen" }));
 
             RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/no_appendages.json"));
 
@@ -370,7 +370,7 @@ namespace rip
 
         TEST_F(ArduinoGenTest, command_attaches_one_empty_appendage)
         {
-            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", "test/data/arduino_gen"));
+            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", { "test/data/arduino_gen" }));
 
             RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/one_empty_appendage.json"));
 
@@ -381,7 +381,7 @@ namespace rip
 
         TEST_F(ArduinoGenTest, command_attaches_one_appendage)
         {
-            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", "test/data/arduino_gen"));
+            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", { "test/data/arduino_gen" }));
 
             RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/one_appendage.json"));
 
@@ -392,7 +392,7 @@ namespace rip
 
         TEST_F(ArduinoGenTest, command_attaches_two_appendages_same)
         {
-            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", "test/data/arduino_gen"));
+            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", { "test/data/arduino_gen" }));
 
             RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/two_appendages_same.json"));
 
@@ -403,7 +403,7 @@ namespace rip
 
         TEST_F(ArduinoGenTest, command_attaches_two_appendages_different)
         {
-            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", "test/data/arduino_gen"));
+            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", { "test/data/arduino_gen" }));
 
             RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/two_appendages_different.json"));
 
@@ -415,7 +415,7 @@ namespace rip
 
         TEST_F(ArduinoGenTest, command_callbacks_no_appendages)
         {
-            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", "test/data/arduino_gen"));
+            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", { "test/data/arduino_gen" }));
 
             RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/no_appendages.json"));
 
@@ -426,7 +426,7 @@ namespace rip
 
         TEST_F(ArduinoGenTest, command_callbacks_one_empty_appendage)
         {
-            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", "test/data/arduino_gen"));
+            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", { "test/data/arduino_gen" }));
 
             RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/one_empty_appendage.json"));
 
@@ -437,7 +437,7 @@ namespace rip
 
         TEST_F(ArduinoGenTest, command_callbacks_one_appendage)
         {
-            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", "test/data/arduino_gen"));
+            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", { "test/data/arduino_gen" }));
 
             RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/one_appendage.json"));
 
@@ -460,7 +460,7 @@ namespace rip
 
         TEST_F(ArduinoGenTest, command_callbacks_two_appendages_same)
         {
-            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", "test/data/arduino_gen"));
+            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", { "test/data/arduino_gen" }));
 
             RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/two_appendages_same.json"));
 
@@ -483,7 +483,7 @@ namespace rip
 
         TEST_F(ArduinoGenTest, command_callbacks_two_appendages_different)
         {
-            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", "test/data/arduino_gen"));
+            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", { "test/data/arduino_gen" }));
 
             RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/two_appendages_different.json"));
 
@@ -524,12 +524,14 @@ namespace rip
 
         TEST_F(ArduinoGenTest, arduino_code_no_appendages)
         {
-            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", "test/data/arduino_gen"));
+            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", { "test/data/arduino_gen" }));
 
             RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/no_appendages.json"));
 
             ASSERT_EQ(ag->getArduinoCode(),
                 "// Auto-generated by ArduinoGen\n"
+                "\n"
+                "#define MAXCALLBACKS 7\n"
                 "\n"
                 "#include \"CmdMessenger.h\"\n"
                 "\n"
@@ -619,12 +621,14 @@ namespace rip
 
         TEST_F(ArduinoGenTest, arduino_code_one_empty_appendage)
         {
-            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", "test/data/arduino_gen"));
+            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", { "test/data/arduino_gen" }));
 
             RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/one_empty_appendage.json"));
 
             ASSERT_EQ(ag->getArduinoCode(),
                 "// Auto-generated by ArduinoGen\n"
+                "\n"
+                "#define MAXCALLBACKS 7\n"
                 "\n"
                 "#include \"CmdMessenger.h\"\n"
                 "\n"
@@ -714,12 +718,14 @@ namespace rip
 
         TEST_F(ArduinoGenTest, arduino_code_one_appendage)
         {
-            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", "test/data/arduino_gen"));
+            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", { "test/data/arduino_gen" }));
 
             RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/one_appendage.json"));
 
             ASSERT_EQ(ag->getArduinoCode(),
                 "// Auto-generated by ArduinoGen\n"
+                "\n"
+                "#define MAXCALLBACKS 9\n"
                 "\n"
                 "#include \"CmdMessenger.h\"\n"
                 "#include <NewPing.h>\n"
@@ -825,12 +831,14 @@ namespace rip
 
         TEST_F(ArduinoGenTest, arduino_code_two_appendages_same)
         {
-            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", "test/data/arduino_gen"));
+            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", { "test/data/arduino_gen" }));
 
             RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/two_appendages_same.json"));
 
             ASSERT_EQ(ag->getArduinoCode(),
                 "// Auto-generated by ArduinoGen\n"
+                "\n"
+                "#define MAXCALLBACKS 9\n"
                 "\n"
                 "#include \"CmdMessenger.h\"\n"
                 "#include <NewPing.h>\n"
@@ -939,12 +947,14 @@ namespace rip
 
         TEST_F(ArduinoGenTest, arduino_code_two_appendages_different)
         {
-            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", "test/data/arduino_gen"));
+            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", { "test/data/arduino_gen" }));
 
             RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/two_appendages_different.json"));
 
             ASSERT_EQ(ag->getArduinoCode(),
                 "// Auto-generated by ArduinoGen\n"
+                "\n"
+                "#define MAXCALLBACKS 10\n"
                 "\n"
                 "#include \"CmdMessenger.h\"\n"
                 "#include \"Servo.h\"\n"
@@ -1079,7 +1089,7 @@ namespace rip
 
         TEST_F(ArduinoGenTest, get_core_config_no_appendages)
         {
-            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", "test/data/arduino_gen"));
+            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", { "test/data/arduino_gen" }));
 
             RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/no_appendages.json"));
 
@@ -1101,7 +1111,7 @@ namespace rip
 
         TEST_F(ArduinoGenTest, get_core_config_one_empty_appendage)
         {
-            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", "test/data/arduino_gen"));
+            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", { "test/data/arduino_gen" }));
 
             RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/one_empty_appendage.json"));
 
@@ -1129,7 +1139,7 @@ namespace rip
 
         TEST_F(ArduinoGenTest, get_core_config_one_appendage)
         {
-            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", "test/data/arduino_gen"));
+            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", { "test/data/arduino_gen" }));
 
             RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/one_appendage.json"));
 
@@ -1159,7 +1169,7 @@ namespace rip
 
         TEST_F(ArduinoGenTest, get_core_config_two_appendages_same)
         {
-            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", "test/data/arduino_gen"));
+            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", { "test/data/arduino_gen" }));
 
             RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/two_appendages_same.json"));
 
@@ -1194,7 +1204,7 @@ namespace rip
 
         TEST_F(ArduinoGenTest, get_core_config_two_appendages_different)
         {
-            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", "test/data/arduino_gen"));
+            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", { "test/data/arduino_gen" }));
 
             RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/two_appendages_different.json"));
 
@@ -1230,7 +1240,7 @@ namespace rip
 
         TEST_F(ArduinoGenTest, get_upload_script)
         {
-            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", "test/data/arduino_gen"));
+            std::unique_ptr<ArduinoGen> ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", { "test/data/arduino_gen" }));
 
             ASSERT_EQ(ag->getUploadScript(),
                 "#!/usr/bin/env bash\n"
@@ -1275,7 +1285,7 @@ namespace rip
 
             // Construct, readConfig, and generateOutput
             std::unique_ptr<ArduinoGen> ag;
-            RIP_ASSERT_NO_THROW(ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", "test/data/arduino_gen")));
+            RIP_ASSERT_NO_THROW(ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", { "test/data/arduino_gen" })));
             RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/two_appendages_different.json"));
             RIP_ASSERT_NO_THROW(ag->generateOutput(false));
 
@@ -1316,6 +1326,8 @@ namespace rip
             ASSERT_TRUE(source.isFile());
             EXPECT_EQ(source.readFile(),
                 "// Auto-generated by ArduinoGen\n"
+                "\n"
+                "#define MAXCALLBACKS 10\n"
                 "\n"
                 "#include \"CmdMessenger.h\"\n"
                 "#include \"Servo.h\"\n"
@@ -1589,7 +1601,7 @@ namespace rip
             );
 
             // Construct, readConfig, and generateOutput
-            RIP_ASSERT_NO_THROW(ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", "test/data/arduino_gen")));
+            RIP_ASSERT_NO_THROW(ag = std::unique_ptr<ArduinoGen>(new ArduinoGen("mega", "./test", "./test/CurrentArduinoCode", { "test/data/arduino_gen" })));
             RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/two_appendages_different.json"));
             RIP_ASSERT_NO_THROW(ag->generateOutput(true));
 
@@ -1626,6 +1638,8 @@ namespace rip
             ASSERT_TRUE(source.isFile());
             EXPECT_EQ(source.readFile(),
                 "// Auto-generated by ArduinoGen\n"
+                "\n"
+                "#define MAXCALLBACKS 10\n"
                 "\n"
                 "#include \"CmdMessenger.h\"\n"
                 "#include \"Servo.h\"\n"

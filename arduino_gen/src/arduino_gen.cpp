@@ -28,11 +28,11 @@ namespace rip
     namespace arduinogen
     {
 
-        ArduinoGen::ArduinoGen(std::string arduino, std::string parent_folder, std::string current_arduino_code_dir, std::string appendage_data_folder)
+        ArduinoGen::ArduinoGen(std::string arduino, std::string parent_folder, std::string current_arduino_code_dir, std::vector<std::string> appendage_data_folders)
             : m_arduino(arduino)
             , m_parent_folder(parent_folder)
             , m_current_arduino_code_dir(current_arduino_code_dir)
-            , m_appendage_data_folder(appendage_data_folder)
+            , m_appendage_data_folders(appendage_data_folders)
         {
             assert(m_arduino.size() > 0);
             assert(m_parent_folder.size() > 0);
@@ -59,7 +59,7 @@ namespace rip
                 std::string type = appendage_json["type"];
 
                 m_appendages.insert(std::make_pair(type, std::make_shared<Appendage>(appendage_json,
-                                                   m_appendages, m_appendage_data_folder, true)));
+                                                   m_appendages, m_appendage_data_folders, true)));
             }
 
             loadTemplates();
@@ -239,7 +239,18 @@ namespace rip
                 std::vector<std::shared_ptr<Appendage>> appendages = get_mmap_values_at_index(m_appendages, type);
 
                 tinyxml2::XMLDocument doc;
-                loadXmlFile(doc, fmt::format("{0}/xml/{1}.xml", m_appendage_data_folder, type_file), { "code", "setup", "loop" });
+                for (std::string folder : m_appendage_data_folders)
+                {
+                    try
+                    {
+                        loadXmlFile(doc, fmt::format("{0}/xml/{1}.xml", folder, type_file), { "code", "setup", "loop" });
+                        break;
+                    }
+                    catch (FileIoException e)
+                    {
+                        continue;
+                    }
+                }
 
                 const tinyxml2::XMLElement* element = doc.FirstChildElement("appendage-template");
 
@@ -393,7 +404,7 @@ namespace rip
             int i = 0;
             for (auto it : sorted_commands)
             {
-                rv += fmt::format("\t{} = {},\n", it.second, i++);
+                rv += fmt::format("\t{},\n", it.second);
             }
 
             rv.pop_back(); // Remove last newline

@@ -29,7 +29,7 @@ namespace rip
             /**
              * @brief Constructor
              */
-            ArduinoGen(std::string arduino, std::string parent_folder, std::string current_arduino_code_dir = "/Robot/CurrentArduinoCode", std::string appendage_data_folder = "appendages");
+            ArduinoGen(std::string arduino, std::string parent_folder, std::string current_arduino_code_dir = "/Robot/CurrentArduinoCode", std::vector<std::string> appendage_data_folders = { "appendages" });
 
             /**
              * @brief Reads the config file with the appendages
@@ -128,7 +128,7 @@ namespace rip
 
             std::map<std::string, int> m_commands;
 
-            std::string m_appendage_data_folder;
+            std::vector<std::string> m_appendage_data_folders;
 
             std::multimap< std::string, std::shared_ptr<Appendage> > m_appendages;
 

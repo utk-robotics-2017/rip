@@ -23,7 +23,12 @@ namespace rip
         {
             std::string file, escaped, expression, suffix;
 
-            file = cppfs::fs::open(filename).readFile();
+            cppfs::FileHandle fileHandle = cppfs::fs::open(filename);
+            if (!fileHandle.exists() || !fileHandle.isFile())
+            {
+                throw FileIoException("File \"{}\" doesn't exist or isn't a file.", filename);
+            }
+            file = fileHandle.readFile();
 
             for (std::string element : elements_to_escape)
             {

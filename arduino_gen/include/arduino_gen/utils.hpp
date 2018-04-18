@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <vector>
 #include <map>
+#include <sstream>
 
 namespace rip
 {
@@ -61,6 +62,22 @@ namespace rip
         }
 
         void replace(std::string& base, const std::string& replacee, const std::string& replacer);
+
+        template<typename T>
+        void split(const std::string &s, char delim, T result)
+        {
+            std::stringstream ss(s);
+            std::string item;
+            while (std::getline(ss, item, delim))
+            {
+                if (!item.empty())
+                {
+                    *(result++) = item;
+                }
+            }
+        }
+
+        std::vector<std::string> split(const std::string &s, char delim);
     }
 }
 

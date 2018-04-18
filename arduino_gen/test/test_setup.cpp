@@ -66,7 +66,7 @@ namespace rip
                 j["label"] = "Whatever";
                 j["pin"] = 1;
 
-                appendages.emplace_back(std::make_shared<Appendage>(j, not_used, "", false));
+                appendages.emplace_back(std::make_shared<Appendage>(j, not_used, std::vector<std::string>{}, false));
 
                 std::string setupStr;
                 ASSERT_THROW(setupStr = setup->toString(appendages), PatternNotFoundException);
@@ -91,7 +91,7 @@ namespace rip
                 j["label"] = "Whatever";
                 j["pin"] = 1;
 
-                appendages.emplace_back(std::make_shared<Appendage>(j, not_used, "", false));
+                appendages.emplace_back(std::make_shared<Appendage>(j, not_used, std::vector<std::string>{}, false));
 
                 std::string setupStr;
                 RIP_ASSERT_NO_THROW(setupStr = setup->toString(appendages));
@@ -119,7 +119,7 @@ namespace rip
                 j["pin"] = 1;
                 j["pullup"] = "_PULLUP";
 
-                appendages.emplace_back(std::make_shared<Appendage>(j, not_used, "", false));
+                appendages.emplace_back(std::make_shared<Appendage>(j, not_used, std::vector<std::string>{}, false));
 
                 std::string setupStr;
                 RIP_ASSERT_NO_THROW(setupStr = setup->toString(appendages));
