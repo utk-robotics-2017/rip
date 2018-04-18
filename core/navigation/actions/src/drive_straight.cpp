@@ -265,12 +265,16 @@ namespace rip
 
                 if(dist_accel > m_distance)
                 {
-                    time_to_accel = sqrt((2 * m_direction * m_distance) / m_max_accel);
-                    max_velocity = m_direction * m_max_accel * time_to_accel;
+                    time_to_accel = sqrt((2 * abs(m_distance)) / m_max_accel);
+                    max_velocity = m_max_accel * time_to_accel;
+                }
+                if(!m_direction)
+                {
+                    max_velocity = -max_velocity;
                 }
                 state["expected_velocity"] = max_velocity;
 
-                m_velocity = max_velocity;
+                if(abs(m_velocity) > abs(max_velocity)) m_velocity = max_velocity;
 
                 // set a threshold for stopping -- this tries to account for the delay in actually stopping
                 // this is quite arbitrary right now but should be kinda close
