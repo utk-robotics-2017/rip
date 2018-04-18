@@ -511,7 +511,7 @@ namespace rip
 			{
 				ticks = readM1Encoder();
 			}
-			if(continuous)
+			if(!continuous)
 			{
 				ticks %= static_cast<int32_t>(m_ticks_per_rev);
 			}
