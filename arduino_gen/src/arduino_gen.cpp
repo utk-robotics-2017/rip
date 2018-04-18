@@ -208,6 +208,7 @@ namespace rip
             std::string code_template(std::istreambuf_iterator<char>(*code_template_istream), {});
 
             return fmt::format(code_template,
+                fmt::arg("max_callbacks", m_commands.size()),
                 fmt::arg("includes", getIncludes()),
                 fmt::arg("constructors", getConstructors()),
                 fmt::arg("setup", getSetup()),
