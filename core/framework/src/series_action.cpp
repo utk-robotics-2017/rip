@@ -13,13 +13,22 @@ namespace rip
 
         bool SeriesAction::isFinished()
         {
-            return m_current == static_cast<int>(m_actions.size());
+            /**
+             * We're on the last action, and that action is finished.
+             */
+            return
+              // at the end of our actions
+              m_current == static_cast<int>(m_actions.size())
+              && m_actions.back()->isFinished();
         }
 
         void SeriesAction::setup(nlohmann::json& state) {}
 
         void SeriesAction::update(nlohmann::json& state)
         {
+            // don't run if we're past the end
+            if (m_current >= m_actions.size()) return;
+
             // If new sub-action then set it up
             if (m_current != m_previous)
             {

@@ -8,7 +8,7 @@
     </setup>
 
     <commands>
-        <command id="kReadDigitalInput" name="readDigitalInput" index-num="true">
+        <command id="kDigitalInputRead" name="digitalInputRead" index-num="true">
             <return-value name="rv" type="char"/>
             <code>
                 rv = digitalRead(digital_input_pins[index_num]);

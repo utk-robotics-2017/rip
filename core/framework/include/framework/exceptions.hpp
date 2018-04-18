@@ -28,7 +28,11 @@ namespace rip
         NEW_EX(AppendageNotFound)
         NEW_EX(FileNotFound)
         NEW_EX(AppendageWithoutType)
+        NEW_EX(AppendageWithoutLabel)
         NEW_EX(CannotLoadDevice)
+        NEW_EX(SubSystemsNotFound)
+        NEW_EX(ActionsNotFound)
+        NEW_EX(ActinoConfigException)
     }
 }
 #endif // EXCEPTIONS_HPP

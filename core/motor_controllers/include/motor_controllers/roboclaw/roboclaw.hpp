@@ -24,9 +24,11 @@
 #include <array>
 #include <vector>
 #include <tuple>
+#include <thread>
+#include <mutex>
 #include <json.hpp>
 #include <fmt/format.h>
-
+#include <misc/logger.hpp>
 #include <units/units.hpp>
 #include <framework/subsystem.hpp>
 
@@ -156,6 +158,7 @@ namespace rip
                     kFlagBootLoader           = 255
                 }; // enum class Command
 
+                static std::mutex global_lock;
 
                 /**
                  * @brief Constructor
@@ -664,6 +667,7 @@ namespace rip
 
                 virtual bool diagnostic() override;
 
+
             private:
                 static const uint8_t kMaxRetries = 10;
 
@@ -787,13 +791,13 @@ namespace rip
                 double m_ticks_per_rev;
                 units::Distance m_wheel_radius;
                 //serial members
-                const char* m_device;
+                std::string m_device;
                 uint32_t m_baudrate;
                 serial_t m_serial;
                 //advanced
                 unsigned int m_databits, m_stopbits;
                 bool m_xonxoff, m_rtscts;
-                bool m_faking = false;
+                bool m_faking = false, m_advanced_serial = false;
                 serial_parity_t m_parity;
                 //TODO: support advanced serial opening
 

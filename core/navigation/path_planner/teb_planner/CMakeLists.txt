@@ -14,6 +14,8 @@ add_library(${PROJECT_NAME} ${${PROJECT_NAME}_SOURCES} ${${PROJECT_NAME}_HEADERS
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
 target_link_libraries(${PROJECT_NAME} fmt json optional units geometry misc ${SUITESPARSE_LIBRARIES} ${G2O_LIBRARIES})
 target_include_directories(${PROJECT_NAME} PUBLIC include ${SUITESPARSE_INCLUDE_DIRS})
-
+if(ENABLE_TESTING)
+    target_link_libraries(${PROJECT_NAME} gcov)
+endif()
 message("CSPARSE INC: ${CSPARSE_INCLUDE_DIRS}")
 message("SUITESPARSE INC: ${SUITESPARSE_INCLUDE_DIRS}")

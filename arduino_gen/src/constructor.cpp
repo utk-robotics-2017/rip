@@ -66,10 +66,10 @@ namespace rip
                 {
                     if (appendage->has(argument.getName()))
                     {
-                        if (appendage->isType(argument.getName(), "string"))
-                        {
-                            rv += fmt::format("\"{}\"", argument.toString(appendage));
-                        }
+						if (argument.getType() == "string")
+						{
+							rv += fmt::format("\"{}\"", argument.toString(appendage));
+						}
                         else
                         {
                             rv += argument.toString(appendage);

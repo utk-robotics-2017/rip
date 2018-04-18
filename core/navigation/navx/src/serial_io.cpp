@@ -2,6 +2,8 @@
 #include <navx/serial_io.hpp>
 #include <time.h>
 #include <unistd.h>
+#include <chrono>
+#include <thread>
 #include <string>
 namespace rip
 {
@@ -9,7 +11,6 @@ namespace rip
     {
         namespace navx
         {
-
             static const double IO_TIMEOUT_SECONDS = 1.0;
 
 #define SERIALIO_DASHBOARD_DEBUG
@@ -51,7 +52,7 @@ namespace rip
                     {
                         delete serial_port;
                     }
-                    catch (std::exception  ex)
+                    catch (std::exception ex)
                     {
                         // This has been seen to happen before....
                         //^top notch exception handling as usual
@@ -64,13 +65,13 @@ namespace rip
 
             SerialPort* SerialIO::getMaybeCreateSerialPort()
             {
-                if (serial_port == 0)
+                while(serial_port == 0)
                 {
                     try
                     {
                         serial_port = new SerialPort(57600, serial_port_id);
                         serial_port->setReadBufferSize(256);
-                        serial_port->setTimeout(1.0);
+                        serial_port->setTimeout(0.2); // was 1 second
                         serial_port->enableTermination('\n');
                         serial_port->reset();
                     }
@@ -80,6 +81,7 @@ namespace rip
                         printf("ERROR Opening Serial Port!\n");
                         serial_port = 0;
                     }
+                    std::this_thread::sleep_for(std::chrono::duration<int, std::milli>(50));
                 }
                 return serial_port;
             }
@@ -258,7 +260,6 @@ namespace rip
                                 printf("SerialPort Run() IntegrationControl Send Exception:  %s\n", ex.what());
                             }
                         }
-
 
                         if (!bstop && (remainder_bytes == 0) && (serial_port->getBytesReceived() < 1))
                         {
@@ -512,6 +513,7 @@ namespace rip
                                 // No packets received and 256 bytes received; this
                                 // condition occurs in the SerialPort.  In this case,
                                 // reset the serial port.
+                                fprintf(stderr, "NavX SerialIO error: No packets received, 256 bytes received");
                                 serial_port->flush();
                                 serial_port->reset();
                                 port_reset_count++;
@@ -563,7 +565,8 @@ namespace rip
                             /* In this case , trigger transmission of a new stream_command, to ensure the    */
                             /* streaming packet type is configured correctly.                                */
 
-                            if ((time(0) - last_valid_packet_time) > 1.0)
+                            // was > 1.0
+                            if ((time(0) - last_valid_packet_time) > 0.25)
                             {
                                 last_stream_command_sent_timestamp = time(0);
                                 stream_response_received = false;
@@ -572,7 +575,8 @@ namespace rip
                         else
                         {
                             /* No data received this time around */
-                            if (time(0) - last_data_received_timestamp  > 1.0)
+                            // was > 1.0
+                            if (time(0) - last_data_received_timestamp  > 0.25)
                             {
                                 resetSerialPort();
                             }

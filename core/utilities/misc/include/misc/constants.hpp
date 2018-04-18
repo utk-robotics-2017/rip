@@ -20,6 +20,9 @@
 #ifndef CONSTANTS_HPP
 #define CONSTANTS_HPP
 
+#include <memory>
+#include <json.hpp>
+
 namespace rip
 {
     namespace misc
@@ -28,6 +31,49 @@ namespace rip
         {
             static const char* kArduinoGenHome;
             static const char* kLoggerName;
+            static const char* kMaxVelocity;
+            static const char* kMaxAcceleration;
+            static const char* kSegmentCompletionTolerance;
+            static const char* kWheelbase;
+            static const char* kTrackScrubFactor;
+            static const char* kTurnKp;
+            static const char* kTurnKi;
+            static const char* kTurnKd;
+            static const char* kStraightAngleKp;
+            static const char* kStraightAngleKi;
+            static const char* kStraightAngleKd;
+            static const char* kStraightThreshTime;
+
+            static void load(const nlohmann::json& constants)
+            {
+                getInstance()->m_constants = constants;
+            }
+
+            template <typename T>
+            static T get(const std::string& name)
+            {
+                return getInstance()->m_constants[name].get<T>();
+            }
+
+            template <typename T>
+            static void set(const std::string& name, T value)
+            {
+                getInstance()->m_constants[name] = value;
+            }
+
+        private:
+            static std::shared_ptr<constants> getInstance()
+            {
+                if(!m_singleton)
+                {
+                    m_singleton = std::make_shared<constants>();
+                }
+                return m_singleton;
+            }
+
+            static std::shared_ptr<constants> m_singleton;
+            nlohmann::json m_constants;
+
         };
     }
 }

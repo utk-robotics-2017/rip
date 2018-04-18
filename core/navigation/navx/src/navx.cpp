@@ -2,6 +2,7 @@
 #include <spdlog/spdlog.h>
 #include <sstream>
 #include <string>
+#include <memory>
 #include <iomanip>
 #include <navx/navx.hpp>
 #include <navx/navx_protocol.hpp>
@@ -14,6 +15,9 @@
 #include "navx/offset_tracker.hpp"
 #include "navx/continuous_angle_tracker.hpp"
 #include "navx/serial_io.hpp"
+#include <misc/logger.hpp>
+#include <fmt/format.h>
+
 namespace rip
 {
     namespace navigation
@@ -126,7 +130,7 @@ namespace rip
                     navx->displacement[1] = navx_update.disp_y;
                     navx->displacement[2] = navx_update.disp_z;
 
-                    navx->yaw_angle_tracker->nextAngle((navx->getYaw())());
+                    navx->yaw_angle_tracker->nextAngle((navx->getYaw()).to(units::deg));
                     navx->last_sensor_timestamp = sensor_timestamp;
                 }
 
@@ -272,26 +276,30 @@ namespace rip
             };
 
             NavX::NavX(std::string serial_port_id, NavX::serialDataType data_type, uint8_t update_rate_hz)
+                :Subsystem("navx")
             {
                 serialInit(serial_port_id, data_type, update_rate_hz);
             }
 
             NavX::NavX(std::string serial_port_id)
+                :Subsystem("navx")
             {
                 serialInit(serial_port_id, serialDataType::kProcessedData, NAVX_DEFAULT_UPDATE_RATE_HZ);
+                misc::Logger::getInstance()->debug(fmt::format("navx constructed, device: {}"
+                , serial_port_id));
             }
 
-            units::Angle NavX::getPitch()
+            units::Angle NavX::getPitch() const
             {
                 return static_cast<float>(pitch) * units::deg;
             }
 
-            units::Angle NavX::getRoll()
+            units::Angle NavX::getRoll() const
             {
                 return static_cast<float>(roll) * units::degrees;
             }
 
-            units::Angle NavX::getYaw()
+            units::Angle NavX::getYaw() const
             {
                 if (navx_internal->isBoardYawResetSupported())
                 {
@@ -303,7 +311,7 @@ namespace rip
                 }
             }
 
-            units::Angle NavX::getCompassHeading()
+            units::Angle NavX::getCompassHeading() const
             {
                 return static_cast<float>(compass_heading) * units::degrees;
             }
@@ -313,111 +321,113 @@ namespace rip
                 if (navx_internal->isBoardYawResetSupported())
                 {
                     io->zeroYaw();
+                    //yaw_angle_tracker->reset();
                 }
                 else
                 {
+                    //yaw_angle_tracker->reset();
                     yaw_offset_tracker->setOffset();
                 }
             }
 
-            bool NavX::isCalibrating()
+            bool NavX::isCalibrating() const
             {
                 return !((cal_status &
                           NAVX_CAL_STATUS_IMU_CAL_STATE_MASK) ==
                          NAVX_CAL_STATUS_IMU_CAL_COMPLETE);
             }
 
-            bool NavX::isConnected()
+            bool NavX::isConnected() const
             {
                 return io->isConnected();
             }
 
-            double NavX::getByteCount()
+            double NavX::getByteCount() const
             {
                 return io->getByteCount();
             }
 
-            double NavX::getUpdateCount()
+            double NavX::getUpdateCount() const
             {
                 return io->getUpdateCount();
             }
 
-            long NavX::getLastSensorTimestamp()
+            long NavX::getLastSensorTimestamp() const
             {
                 return this->last_sensor_timestamp;
             }
 
-            units::Acceleration NavX::getWorldLinearAccelX()
+            units::Acceleration NavX::getWorldLinearAccelX() const
             {
                 return static_cast<double>(this->world_linear_accel_x) * units::AccelerationOfGravity;
             }
 
-            units::Acceleration NavX::getWorldLinearAccelY()
+            units::Acceleration NavX::getWorldLinearAccelY() const
             {
                 return static_cast<double>(this->world_linear_accel_y) * units::AccelerationOfGravity;
             }
 
-            units::Acceleration NavX::getWorldLinearAccelZ()
+            units::Acceleration NavX::getWorldLinearAccelZ() const
             {
                 return static_cast<double>(this->world_linear_accel_z) * units::AccelerationOfGravity;
             }
 
-            bool NavX::isMoving()
+            bool NavX::isMoving() const
             {
                 return is_moving;
             }
 
-            bool NavX::isRotating()
+            bool NavX::isRotating() const
             {
                 return is_rotating;
             }
 
-            units::Pressure NavX::getBarometricPressure()
+            units::Pressure NavX::getBarometricPressure() const
             {
                 return static_cast<float>(baro_pressure) * units::millibar;
             }
 
-            units::Distance NavX::getAltitude()
+            units::Distance NavX::getAltitude() const
             {
                 return static_cast<float>(altitude) * units::m;
             }
 
-            bool NavX::isAltitudeValid()
+            bool NavX::isAltitudeValid() const
             {
                 return this->altitude_valid;
             }
 
-            units::Angle NavX::getFusedHeading()
+            units::Angle NavX::getFusedHeading() const
             {
                 return static_cast<float>(fused_heading) * units::degrees;
             }
 
-            bool NavX::isMagneticDisturbance()
+            bool NavX::isMagneticDisturbance() const
             {
                 return magnetic_disturbance;
             }
 
-            bool NavX::isMagnetometerCalibrated()
+            bool NavX::isMagnetometerCalibrated() const
             {
                 return is_magnetometer_calibrated;
             }
 
-            float NavX::getQuaternionW()
+            float NavX::getQuaternionW() const
             {
                 return quaternionW;
             }
 
-            float NavX::getQuaternionX()
+            float NavX::getQuaternionX() const
             {
                 return quaternionX;
             }
 
-            float NavX::getQuaternionY()
+            float NavX::getQuaternionY() const
             {
                 return quaternionY;
             }
 
-            float NavX::getQuaternionZ()
+            float NavX::getQuaternionZ() const
             {
                 return quaternionZ;
             }
@@ -440,32 +450,32 @@ namespace rip
                 integrator->updateDisplacement(accel_x_g, accel_y_g, update_rate_hz, is_moving);
             }
 
-            units::Velocity NavX::getVelocityX()
+            units::Velocity NavX::getVelocityX() const
             {
                 return units::m / units::s * (navx_internal->isDisplacementSupported() ? velocity[0] : integrator->getVelocityX());
             }
 
-            units::Velocity NavX::getVelocityY()
+            units::Velocity NavX::getVelocityY() const
             {
                 return units::m / units::s * (navx_internal->isDisplacementSupported() ? velocity[1] : integrator->getVelocityY());
             }
 
-            units::Velocity NavX::getVelocityZ()
+            units::Velocity NavX::getVelocityZ() const
             {
                 return units::m / units::s * (navx_internal->isDisplacementSupported() ? velocity[2] : 0.f);
             }
 
-            units::Distance NavX::getDisplacementX()
+            units::Distance NavX::getDisplacementX() const
             {
                 return units::m * (navx_internal->isDisplacementSupported() ? displacement[0] : integrator->getVelocityX());
             }
 
-            units::Distance NavX::getDisplacementY()
+            units::Distance NavX::getDisplacementY() const
             {
                 return units::m * (navx_internal->isDisplacementSupported() ? displacement[1] : integrator->getVelocityY());
             }
 
-            units::Distance NavX::getDisplacementZ()
+            units::Distance NavX::getDisplacementZ() const
             {
                 return units::m * (navx_internal->isDisplacementSupported() ? displacement[2] : 0.f);
             }
@@ -558,12 +568,12 @@ namespace rip
                 }
             }
 
-            units::Angle NavX::getAngle()
+            units::Angle NavX::getAngle() const
             {
                 return yaw_angle_tracker->getAngle() * units::deg;
             }
 
-            units::AngularVelocity NavX::getRate()
+            units::AngularVelocity NavX::getRate() const
             {
                 return yaw_angle_tracker->getRate() * units::degrees / units::s;
             }
@@ -575,60 +585,60 @@ namespace rip
 
             static const float DEV_UNITS_MAX = 32768.0f;
 
-            float NavX::getRawGyroX()
+            float NavX::getRawGyroX() const
             {
                 return this->raw_gyro_x / (DEV_UNITS_MAX / (float)gyro_fsr_dps);
             }
 
-            float NavX::getRawGyroY()
+            float NavX::getRawGyroY() const
             {
                 return this->raw_gyro_y / (DEV_UNITS_MAX / (float)gyro_fsr_dps);
             }
 
-            float NavX::getRawGyroZ()
+            float NavX::getRawGyroZ() const
             {
                 return this->raw_gyro_z / (DEV_UNITS_MAX / (float)gyro_fsr_dps);
             }
 
-            float NavX::getRawAccelX()
+            float NavX::getRawAccelX() const
             {
                 return this->raw_accel_x / (DEV_UNITS_MAX / (float)accel_fsr_g);
             }
 
-            float NavX::getRawAccelY()
+            float NavX::getRawAccelY() const
             {
                 return this->raw_accel_y / (DEV_UNITS_MAX / (float)accel_fsr_g);
             }
 
 
-            float NavX::getRawAccelZ()
+            float NavX::getRawAccelZ() const
             {
                 return this->raw_accel_z / (DEV_UNITS_MAX / (float)accel_fsr_g);
             }
 
             static const float UTESLA_PER_DEV_UNIT = 0.15f;
 
-            float NavX::getRawMagX()
+            float NavX::getRawMagX() const
             {
                 return this->cal_mag_x / UTESLA_PER_DEV_UNIT;
             }
 
-            float NavX::getRawMagY()
+            float NavX::getRawMagY() const
             {
                 return this->cal_mag_y / UTESLA_PER_DEV_UNIT;
             }
 
-            float NavX::getRawMagZ()
+            float NavX::getRawMagZ() const
             {
                 return this->cal_mag_z / UTESLA_PER_DEV_UNIT;
             }
 
-            units::Temperature NavX::getTempC()
+            units::Temperature NavX::getTempC() const
             {
                 return static_cast<float>(this->mpu_temp_c) * units::degC;
             }
 
-            NavX::BoardYawAxis NavX::getBoardYawAxis()
+            NavX::BoardYawAxis NavX::getBoardYawAxis() const
             {
                 BoardYawAxis yaw_axis;
                 short yaw_axis_info = (short)(capability_flags >> 3);
@@ -659,7 +669,7 @@ namespace rip
                 return yaw_axis;
             }
 
-            std::string NavX::getFirmwareVersion()
+            std::string NavX::getFirmwareVersion() const
             {
                 std::ostringstream os;
                 os << (int)fw_ver_major << "." << (int)fw_ver_minor;
@@ -705,13 +715,13 @@ namespace rip
                 return deregistered;
             }
 
-            int NavX::getActualUpdateRate()
+            int NavX::getActualUpdateRate() const
             {
                 uint8_t actual_update_rate = getActualUpdateRateInternal(getRequestedUpdateRate());
                 return (int)actual_update_rate;
             }
 
-            uint8_t NavX::getActualUpdateRateInternal(uint8_t update_rate)
+            uint8_t NavX::getActualUpdateRateInternal(uint8_t update_rate) const
             {
 #define NAVX_MOTION_PROCESSOR_UPDATE_RATE_HZ 200
                 int integer_update_rate = (int)update_rate;
@@ -720,7 +730,7 @@ namespace rip
                 return (uint8_t)realized_update_rate;
             }
 
-            int NavX::getRequestedUpdateRate()
+            int NavX::getRequestedUpdateRate() const
             {
                 return (int)update_rate_hz;
             }
@@ -729,6 +739,35 @@ namespace rip
             {
                 io->stop();
             }
+
+            void NavX::stop()
+            {
+                close();
+            }
+
+            bool NavX::diagnostic()
+            {
+                for(int i = 0; i < 200; i++)
+                {
+                    misc::Logger::getInstance()->debug("NavX: cal: {}, con: {}, yaw: {}, fused heading: {}, angle: {}", isCalibrating(), isConnected(), getYaw().to(units::deg), getFusedHeading().to(units::deg), getAngle().to(units::deg));
+                    std::this_thread::sleep_for(std::chrono::milliseconds(50));
+                }
+
+                return 0;
+            }
+
+            double NavX::get()
+            {
+                return getYaw()();
+            }
+
+            std::shared_ptr<NavX> NavX::makeNavX(const nlohmann::json& config)
+            {
+                std::string device = config["device"];
+                return std::make_shared<NavX>(device);
+            }
+
+
         }
     }
 }

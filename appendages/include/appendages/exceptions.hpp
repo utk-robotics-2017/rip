@@ -17,8 +17,8 @@
  *  \$$    $$   | $$   | $$  \$$\      | $$  | $$|   $$ \| $$
  *   \$$$$$$     \$$    \$$   \$$       \$$   \$$ \$$$$$$ \$$
  */
-#ifndef EXCEPTIONS_HPP
-#define EXCEPTIONS_HPP
+#ifndef APPENDAGES_EXCEPTIONS_HPP
+#define APPENDAGES_EXCEPTIONS_HPP
 #include <misc/exception_base.hpp>
 
 namespace rip
@@ -28,7 +28,9 @@ namespace rip
         NEW_EX(CommandNotFound)
         NEW_EX(AppendageWithoutType)
         NEW_EX(AppendageWithoutLabel)
-        NEW_EX(AppendageWithId)
+        NEW_EX(AppendageWithoutId)
+        NEW_EX(AppendageMissingField)
+        NEW_EX(AppendageNotImplemented)
     }
 }
-#endif // EXCEPTIONS_HPP
+#endif // APPENDAGES_EXCEPTIONS_HPP

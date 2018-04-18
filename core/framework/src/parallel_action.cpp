@@ -11,21 +11,26 @@ namespace rip
 
         bool ParallelAction::isFinished()
         {
-            for (std::shared_ptr<Action> action : m_actions)
-            {
-                if (!action->isFinished())
-                {
-                    return false;
-                }
-            }
-            return true;
+            return m_actions.size() == m_finished.size();
         }
 
         void ParallelAction::update(nlohmann::json& state)
         {
             for (std::shared_ptr<Action> action : m_actions)
             {
-                action->update(state);
+                if (m_finished.find(action) != m_finished.end())
+                {
+                    continue;
+                }
+                if (action->isFinished())
+                {
+                    m_finished.insert(action);
+                    action->teardown(state);
+                }
+                else
+                {
+                    action->update(state);
+                }
             }
         }
 
@@ -37,13 +42,9 @@ namespace rip
             }
         }
 
+        // all actions should have already been torn down
         void ParallelAction::teardown(nlohmann::json& state)
-        {
-            for (std::shared_ptr<Action> action : m_actions)
-            {
-                action->teardown(state);
-            }
-        }
+        {}
     }
 
 }
