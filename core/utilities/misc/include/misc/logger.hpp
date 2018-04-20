@@ -63,7 +63,7 @@ namespace rip
                             end(sinks));
                     spdlog::set_pattern("[%H:%M:%S %z] [thread %t] [%I] %v");
                     spdlog::register_logger(logger);
-                    spdlog::set_level(spdlog::level::debug);
+                    spdlog::set_level(spdlog::level::warn);
 
                     first = false;
                 }

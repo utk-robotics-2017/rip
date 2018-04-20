@@ -131,6 +131,7 @@ namespace rip
                 misc::Logger::getInstance()->debug("Setting up action: {}", action->name());
                 action->setup(state);
 
+                /*
                 // Reset the state file
                 if(m_state_file != nullptr)
                 {
@@ -138,6 +139,7 @@ namespace rip
                     (*m_state_file) << state;
                     m_state_file->flush();
                 }
+                */
 
                 // If ever interrupted then stop
                 if (!m_running)
@@ -150,6 +152,7 @@ namespace rip
                 {
                     action->update(state);
 
+                    /*
                     // Reset the state file
                     if(m_state_file != nullptr)
                     {
@@ -157,6 +160,7 @@ namespace rip
                         (*m_state_file) << state;
                         m_state_file->flush();
                     }
+                     */
 
                     // std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<int>(m_update_time.to(units::ms))));
                 }
@@ -171,6 +175,7 @@ namespace rip
                 misc::Logger::getInstance()->debug("Tearing down action: {}", action->name());
                 action->teardown(state);
 
+                /*
                 // Reset the state file
                 if(m_state_file != nullptr)
                 {
@@ -178,6 +183,7 @@ namespace rip
                     (*m_state_file) << state;
                     m_state_file->flush();
                 }
+                 */
             }
 
             misc::Logger::getInstance()->debug("Stopping subsystems");
