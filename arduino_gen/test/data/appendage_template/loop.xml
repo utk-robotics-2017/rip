@@ -1,5 +1,7 @@
 <appendage-template>
     <loop>
-        //Loop
+        <code>
+            //Loop
+        </code>
     </loop>
 </appendage-template>

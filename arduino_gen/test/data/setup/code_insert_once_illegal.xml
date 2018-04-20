@@ -1,0 +1,5 @@
+<setup>
+    <code insert="once">
+        // Trying to use i: $i$
+    </code>
+</setup>

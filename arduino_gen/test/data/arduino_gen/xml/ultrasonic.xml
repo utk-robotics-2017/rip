@@ -10,10 +10,14 @@
         </constructor>
     </constructors>
     <setup>
-        // Ultrasonic triggerPin: $triggerPin$
+        <code>
+            // Ultrasonic triggerPin: $triggerPin$
+        </code>
     </setup>
     <loop>
-        // Ultrasonic echoPin: $echoPin$
+        <code>
+            // Ultrasonic echoPin: $echoPin$
+        </code>
     </loop>
     <commands>
         <command id="kReadUltrasonic" name="readUltraSonic" index-num="true">

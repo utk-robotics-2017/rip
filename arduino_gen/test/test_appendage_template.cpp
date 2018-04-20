@@ -27,7 +27,7 @@ namespace rip
             TEST(AppendageTemplate_constructor, no_attributes_no_elements)
             {
                 tinyxml2::XMLDocument doc;
-                ASSERT_EQ(loadXmlFile(doc, "test/data/appendage_template/no_attributes_no_elements.xml", { "code", "setup", "loop" }), tinyxml2::XML_SUCCESS);
+                ASSERT_EQ(loadXmlFile(doc, "test/data/appendage_template/no_attributes_no_elements.xml", { "code" }), tinyxml2::XML_SUCCESS);
 
                 tinyxml2::XMLElement* appendageTemplateElement = doc.FirstChildElement("appendage-template");
                 ASSERT_NE(appendageTemplateElement, nullptr);
@@ -47,7 +47,7 @@ namespace rip
             TEST(AppendageTemplate_constructor, includes)
             {
                 tinyxml2::XMLDocument doc;
-                ASSERT_EQ(loadXmlFile(doc, "test/data/appendage_template/includes.xml", { "code", "setup", "loop" }), tinyxml2::XML_SUCCESS);
+                ASSERT_EQ(loadXmlFile(doc, "test/data/appendage_template/includes.xml", { "code" }), tinyxml2::XML_SUCCESS);
 
                 tinyxml2::XMLElement* appendageTemplateElement = doc.FirstChildElement("appendage-template");
                 ASSERT_NE(appendageTemplateElement, nullptr);
@@ -67,7 +67,7 @@ namespace rip
             TEST(AppendageTemplate_constructor, constructors)
             {
                 tinyxml2::XMLDocument doc;
-                ASSERT_EQ(loadXmlFile(doc, "test/data/appendage_template/constructors.xml", { "code", "setup", "loop" }), tinyxml2::XML_SUCCESS);
+                ASSERT_EQ(loadXmlFile(doc, "test/data/appendage_template/constructors.xml", { "code" }), tinyxml2::XML_SUCCESS);
 
                 tinyxml2::XMLElement* appendageTemplateElement = doc.FirstChildElement("appendage-template");
                 ASSERT_NE(appendageTemplateElement, nullptr);
@@ -87,7 +87,7 @@ namespace rip
             TEST(AppendageTemplate_constructor, setup)
             {
                 tinyxml2::XMLDocument doc;
-                ASSERT_EQ(loadXmlFile(doc, "test/data/appendage_template/setup.xml", { "code", "setup", "loop" }), tinyxml2::XML_SUCCESS);
+                ASSERT_EQ(loadXmlFile(doc, "test/data/appendage_template/setup.xml", { "code" }), tinyxml2::XML_SUCCESS);
 
                 tinyxml2::XMLElement* appendageTemplateElement = doc.FirstChildElement("appendage-template");
                 ASSERT_NE(appendageTemplateElement, nullptr);
@@ -107,7 +107,7 @@ namespace rip
             TEST(AppendageTemplate_constructor, loop)
             {
                 tinyxml2::XMLDocument doc;
-                ASSERT_EQ(loadXmlFile(doc, "test/data/appendage_template/loop.xml", { "code", "setup", "loop" }), tinyxml2::XML_SUCCESS);
+                ASSERT_EQ(loadXmlFile(doc, "test/data/appendage_template/loop.xml", { "code" }), tinyxml2::XML_SUCCESS);
 
                 tinyxml2::XMLElement* appendageTemplateElement = doc.FirstChildElement("appendage-template");
                 ASSERT_NE(appendageTemplateElement, nullptr);
@@ -127,7 +127,7 @@ namespace rip
             TEST(AppendageTemplate_constructor, commands)
             {
                 tinyxml2::XMLDocument doc;
-                ASSERT_EQ(loadXmlFile(doc, "test/data/appendage_template/commands.xml", { "code", "setup", "loop" }), tinyxml2::XML_SUCCESS);
+                ASSERT_EQ(loadXmlFile(doc, "test/data/appendage_template/commands.xml", { "code" }), tinyxml2::XML_SUCCESS);
 
                 tinyxml2::XMLElement* appendageTemplateElement = doc.FirstChildElement("appendage-template");
                 ASSERT_NE(appendageTemplateElement, nullptr);
@@ -147,7 +147,7 @@ namespace rip
             TEST(AppendageTemplate_constructor, everything)
             {
                 tinyxml2::XMLDocument doc;
-                ASSERT_EQ(loadXmlFile(doc, "test/data/appendage_template/everything.xml", { "code", "setup", "loop" }), tinyxml2::XML_SUCCESS);
+                ASSERT_EQ(loadXmlFile(doc, "test/data/appendage_template/everything.xml", { "code" }), tinyxml2::XML_SUCCESS);
 
                 tinyxml2::XMLElement* appendageTemplateElement = doc.FirstChildElement("appendage-template");
                 ASSERT_NE(appendageTemplateElement, nullptr);
@@ -167,7 +167,7 @@ namespace rip
             TEST(AppendageTemplate_constructor, two_includes)
             {
                 tinyxml2::XMLDocument doc;
-                ASSERT_EQ(loadXmlFile(doc, "test/data/appendage_template/two_includes.xml", { "code", "setup", "loop" }), tinyxml2::XML_SUCCESS);
+                ASSERT_EQ(loadXmlFile(doc, "test/data/appendage_template/two_includes.xml", { "code" }), tinyxml2::XML_SUCCESS);
 
                 tinyxml2::XMLElement* appendageTemplateElement = doc.FirstChildElement("appendage-template");
                 ASSERT_NE(appendageTemplateElement, nullptr);
@@ -181,7 +181,7 @@ namespace rip
             TEST(AppendageTemplate_constructor, two_constructors)
             {
                 tinyxml2::XMLDocument doc;
-                ASSERT_EQ(loadXmlFile(doc, "test/data/appendage_template/two_constructors.xml", { "code", "setup", "loop" }), tinyxml2::XML_SUCCESS);
+                ASSERT_EQ(loadXmlFile(doc, "test/data/appendage_template/two_constructors.xml", { "code" }), tinyxml2::XML_SUCCESS);
 
                 tinyxml2::XMLElement* appendageTemplateElement = doc.FirstChildElement("appendage-template");
                 ASSERT_NE(appendageTemplateElement, nullptr);
@@ -195,7 +195,7 @@ namespace rip
             TEST(AppendageTemplate_constructor, two_setup)
             {
                 tinyxml2::XMLDocument doc;
-                ASSERT_EQ(loadXmlFile(doc, "test/data/appendage_template/two_setup.xml", { "code", "setup", "loop" }), tinyxml2::XML_SUCCESS);
+                ASSERT_EQ(loadXmlFile(doc, "test/data/appendage_template/two_setup.xml", { "code" }), tinyxml2::XML_SUCCESS);
 
                 tinyxml2::XMLElement* appendageTemplateElement = doc.FirstChildElement("appendage-template");
                 ASSERT_NE(appendageTemplateElement, nullptr);
@@ -209,7 +209,7 @@ namespace rip
             TEST(AppendageTemplate_constructor, two_loop)
             {
                 tinyxml2::XMLDocument doc;
-                ASSERT_EQ(loadXmlFile(doc, "test/data/appendage_template/two_loop.xml", { "code", "setup", "loop" }), tinyxml2::XML_SUCCESS);
+                ASSERT_EQ(loadXmlFile(doc, "test/data/appendage_template/two_loop.xml", { "code" }), tinyxml2::XML_SUCCESS);
 
                 tinyxml2::XMLElement* appendageTemplateElement = doc.FirstChildElement("appendage-template");
                 ASSERT_NE(appendageTemplateElement, nullptr);
@@ -223,7 +223,7 @@ namespace rip
             TEST(AppendageTemplate_constructor, two_commands)
             {
                 tinyxml2::XMLDocument doc;
-                ASSERT_EQ(loadXmlFile(doc, "test/data/appendage_template/two_commands.xml", { "code", "setup", "loop" }), tinyxml2::XML_SUCCESS);
+                ASSERT_EQ(loadXmlFile(doc, "test/data/appendage_template/two_commands.xml", { "code" }), tinyxml2::XML_SUCCESS);
 
                 tinyxml2::XMLElement* appendageTemplateElement = doc.FirstChildElement("appendage-template");
                 ASSERT_NE(appendageTemplateElement, nullptr);

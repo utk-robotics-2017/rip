@@ -42,6 +42,12 @@ namespace rip
          * @brief An exception for when a regex pattern was not found.
          */
         NEW_EX(PatternNotFoundException)
+
+        /**
+         * @class IllegalPatternException
+         * @brief An exception for when an illegal regex pattern is found.
+         */
+        NEW_EX(IllegalPatternException)
     }
 }
 

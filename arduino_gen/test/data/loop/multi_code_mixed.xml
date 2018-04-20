@@ -1,0 +1,11 @@
+<loop>
+    <code insert="each">
+        // Do something with $i$
+    </code>
+    <code insert="once">
+        // Sleep once (50 * $n$)
+    </code>
+    <code insert="each">
+        // Do something else with $i$
+    </code>
+</loop>

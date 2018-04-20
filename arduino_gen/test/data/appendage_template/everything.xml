@@ -13,10 +13,14 @@
         </constructor>
     </constructors>
     <setup>
-        //Setup 2, Electric Boogaloo
+        <code>
+            //Setup 2, Electric Boogaloo
+        </code>
     </setup>
     <loop>
-        //Loop 3, Return of the monster
+        <code>
+            //Loop 3, Return of the monster
+        </code>
     </loop>
     <commands>
         <command id="ThreeDog" name="Night" index-num="true">

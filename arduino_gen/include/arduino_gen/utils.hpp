@@ -2,7 +2,9 @@
 #define UTILS_HPP
 
 #include <algorithm>
+#include <regex>
 #include <vector>
+#include <set>
 #include <map>
 #include <sstream>
 
@@ -63,8 +65,8 @@ namespace rip
 
         void replace(std::string& base, const std::string& replacee, const std::string& replacer);
 
-        template<typename T>
-        void split(const std::string &s, char delim, T result)
+        template<typename Out>
+        void split(const std::string &s, char delim, Out result)
         {
             std::stringstream ss(s);
             std::string item;
@@ -78,6 +80,21 @@ namespace rip
         }
 
         std::vector<std::string> split(const std::string &s, char delim);
+
+        template<typename Out>
+        void fill_regex(const std::string& str, const std::regex& reg, std::function<std::string(std::smatch)> selector, Out result)
+        {
+            std::sregex_iterator reg_begin = std::sregex_iterator(begin(str), end(str), reg);
+            std::sregex_iterator reg_end = std::sregex_iterator();
+
+            for(std::sregex_iterator reg_iter = reg_begin; reg_iter != reg_end; ++reg_iter)
+            {
+                *(result++) = selector(*reg_iter);
+            }
+        }
+
+        std::set<std::string> fill_regex_set(const std::string&, const std::regex& regex, std::function<std::string(std::smatch)> selector);
+        std::vector<std::string> fill_regex_vector(const std::string&, const std::regex& regex, std::function<std::string(std::smatch)> selector);
     }
 }
 

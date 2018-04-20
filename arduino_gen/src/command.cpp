@@ -55,6 +55,11 @@ namespace rip
             if (code_elements.size() == 1)
             {
                 m_code = std::unique_ptr<Code>(new Code(code_elements[0]));
+                if (m_code->getInsert() != "each")
+                {
+                    throw AttributeException(fmt::format("Command codes cannot accept insert. Line number {}",
+                                                         xml->GetLineNum()));
+                }
             }
             else
             {

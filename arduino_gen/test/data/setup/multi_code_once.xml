@@ -1,0 +1,12 @@
+<setup>
+    <code insert="once">
+        // Code 1
+        // n: $n$
+        // End  1
+    </code>
+    <code insert="once">
+        // Code 2
+        // n: $n$
+        // End  2
+    </code>
+</setup>

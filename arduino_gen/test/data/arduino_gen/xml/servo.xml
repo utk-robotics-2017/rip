@@ -10,10 +10,14 @@
         </constructor>
     </constructors>
     <setup>
-        servos[$i$].attach($pin$);
+        <code>
+            servos[$i$].attach($pin$);
+        </code>
     </setup>
     <loop>
-        // Servo pin: $pin$
+        <code>
+            // Servo pin: $pin$
+        </code>
     </loop>
     <commands>
         <command id="kSetServo" name="setServo" index-num="true">

@@ -243,7 +243,7 @@ namespace rip
                 {
                     try
                     {
-                        loadXmlFile(doc, fmt::format("{0}/xml/{1}.xml", folder, type_file), { "code", "setup", "loop" });
+                        loadXmlFile(doc, fmt::format("{0}/xml/{1}.xml", folder, type_file), { "code" });
                         break;
                     }
                     catch (FileIoException e)
@@ -339,7 +339,7 @@ namespace rip
                 }
             }
 
-            if (rv.size() > 0)
+            if (rv.size() > 1)
             {
                 rv.pop_back();
                 rv.pop_back();
@@ -360,11 +360,13 @@ namespace rip
                 }
             }
 
-            if (rv.size() > 0)
+            
+            if (rv.size() > 1)
             {
                 rv.pop_back();
                 rv.pop_back();
             }
+
 
             return rv;
         }
@@ -443,7 +445,7 @@ namespace rip
                 }
             }
 
-            if (rv.size() > 0)
+            if (rv.size() > 1)
             {
                 rv.pop_back();
                 rv.pop_back();

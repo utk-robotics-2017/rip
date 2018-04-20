@@ -14,5 +14,19 @@ namespace rip
             split(s, delim, std::back_inserter(elems));
             return elems;
         }
+
+        std::set<std::string> fill_regex_set(const std::string& str, const std::regex& reg, std::function<std::string(std::smatch)> selector)
+        {
+            std::set<std::string> matches;
+            fill_regex(str, reg, selector, std::inserter(matches, end(matches)));
+            return matches;
+        }
+
+        std::vector<std::string> fill_regex_vector(const std::string& str, const std::regex& reg, std::function<std::string(std::smatch)> selector)
+        {
+            std::vector<std::string> matches;
+            fill_regex(str, reg, selector, std::back_inserter(matches));
+            return matches;
+        }
     }
 }

@@ -34,8 +34,11 @@ namespace rip
 
             std::string getCode() const;
 
+            std::string getInsert() const;
+
         private:
             std::string m_code;
+            std::string m_insert;
 
             /**
              * @brief Removes extra whitespace from the code element

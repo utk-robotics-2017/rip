@@ -22,7 +22,7 @@ namespace rip
          * @class Loop
          * @brief
          */
-        class Loop : private Code
+        class Loop : private XmlElement
         {
         public:
             /**
@@ -41,6 +41,7 @@ namespace rip
             std::string toString(std::vector< std::shared_ptr<Appendage> > appendages);
 
         private:
+            std::vector<std::shared_ptr<Code>> m_codes;
         };
     } // namespace arduinogen
 }

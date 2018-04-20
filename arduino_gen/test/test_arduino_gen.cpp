@@ -191,7 +191,7 @@ namespace rip
             RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/two_appendages_same.json"));
 
             ASSERT_EQ(ag->getSetup(),
-                "\t// Ultrasonic triggerPin: 1\n\n"
+                "\t// Ultrasonic triggerPin: 1\n"
                 "\t// Ultrasonic triggerPin: 3"
             );
         }
@@ -248,7 +248,7 @@ namespace rip
             RIP_ASSERT_NO_THROW(ag->readConfig("test/data/arduino_gen/two_appendages_same.json"));
 
             ASSERT_EQ(ag->getLoop(),
-                "\t// Ultrasonic echoPin: 2\n\n"
+                "\t// Ultrasonic echoPin: 2\n"
                 "\t// Ultrasonic echoPin: 4"
             );
         }
@@ -876,7 +876,7 @@ namespace rip
                 "\n"
                 "\tattachCommandCallbacks();\n"
                 "\n"
-                "\t// Ultrasonic triggerPin: 1\n\n"
+                "\t// Ultrasonic triggerPin: 1\n"
                 "\t// Ultrasonic triggerPin: 3\n"
                 "\n"
                 "\t// Flash led 3 times at the end of setup\n"
@@ -894,7 +894,7 @@ namespace rip
                 "\t// Process incoming serial data, and perform callbacks\n"
                 "\tcmdMessenger.feedinSerialData();\n"
                 "\n"
-                "\t// Ultrasonic echoPin: 2\n\n"
+                "\t// Ultrasonic echoPin: 2\n"
                 "\t// Ultrasonic echoPin: 4\n"
                 "}\n"
                 "\n"

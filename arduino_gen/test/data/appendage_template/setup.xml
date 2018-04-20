@@ -1,5 +1,7 @@
 <appendage-template>
     <setup>
-        //Setup
+        <code>
+            //Setup
+        </code>
     </setup>
 </appendage-template>

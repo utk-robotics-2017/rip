@@ -23,16 +23,13 @@ namespace rip
          * @class Setup
          * @brief The container for the setup part of
          */
-        class Setup : private Code
+        class Setup : private XmlElement
         {
         public:
             /**
              * @brief Constructor
              */
             Setup(const tinyxml2::XMLElement* xml);
-
-            Setup(const Setup& other) = delete;
-            Setup& operator=(const Setup& other) = delete;
 
             /**
              * Create the code for the part of the setup function for this appendage type
@@ -44,6 +41,7 @@ namespace rip
             std::string toString(std::vector< std::shared_ptr<Appendage> > appendages) const;
 
         private:
+            std::vector<std::shared_ptr<Code>> m_codes;
         };
     } // arduinogen
 }

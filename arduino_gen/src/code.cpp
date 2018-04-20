@@ -17,8 +17,24 @@ namespace rip
     {
         Code::Code(const tinyxml2::XMLElement* xml)
             : XmlElement(xml)
+            , m_insert("")
         {
             m_code = processCode(getText());
+
+            try
+            {
+                m_insert = getAttribute("insert")->Value();
+            }
+            catch (AttributeException e)
+            {
+                m_insert = "each";
+            }
+
+            if (m_insert != "each" && m_insert != "once")
+            {
+                throw AttributeException(fmt::format("Code attribute \"insert\" can only accept \"each\" or \"once\". line number {}",
+                                                     xml->GetLineNum()));
+            }
 
             // If there are any extra attributes, throw an exception
             if (!isAttributesEmpty())
@@ -38,6 +54,11 @@ namespace rip
         std::string Code::getCode() const
         {
             return m_code;
+        }
+
+        std::string Code::getInsert() const
+        {
+            return m_insert;
         }
 
         std::string Code::processCode(const std::string& code)
