@@ -59,14 +59,13 @@ namespace rip
                 RIP_ASSERT_NO_THROW(loop = std::unique_ptr<Loop>(new Loop(loopElement)));
 
                 std::vector<std::shared_ptr<Appendage>> appendages;
-                std::multimap<std::string, std::shared_ptr<Appendage>> not_used;
 
                 nlohmann::json j;
                 j["type"] = "Analog Input";
                 j["label"] = "Whatever";
                 j["pin"] = 1;
 
-                appendages.emplace_back(std::make_shared<Appendage>(j, not_used, std::vector<std::string>{}, false));
+                appendages.emplace_back(std::make_shared<Appendage>(j, std::vector<std::string>{}, false));
 
                 std::string loopStr;
                 ASSERT_THROW(loopStr = loop->toString(appendages), PatternNotFoundException);
@@ -84,14 +83,13 @@ namespace rip
                 RIP_ASSERT_NO_THROW(loop = std::unique_ptr<Loop>(new Loop(loopElement)));
 
                 std::vector<std::shared_ptr<Appendage>> appendages;
-                std::multimap<std::string, std::shared_ptr<Appendage>> not_used;
 
                 nlohmann::json j;
                 j["type"] = "Analog Input";
                 j["label"] = "Whatever";
                 j["pin"] = 1;
 
-                appendages.emplace_back(std::make_shared<Appendage>(j, not_used, std::vector<std::string>{}, false));
+                appendages.emplace_back(std::make_shared<Appendage>(j, std::vector<std::string>{}, false));
 
                 std::string loopStr;
                 RIP_ASSERT_NO_THROW(loopStr = loop->toString(appendages));
@@ -111,7 +109,6 @@ namespace rip
                 RIP_ASSERT_NO_THROW(loop = std::unique_ptr<Loop>(new Loop(loopElement)));
 
                 std::vector<std::shared_ptr<Appendage>> appendages;
-                std::multimap<std::string, std::shared_ptr<Appendage>> not_used;
 
                 nlohmann::json j;
                 j["type"] = "Digital Input";
@@ -119,7 +116,7 @@ namespace rip
                 j["pin"] = 1;
                 j["pullup"] = "_PULLUP";
 
-                appendages.emplace_back(std::make_shared<Appendage>(j, not_used, std::vector<std::string>{}, false));
+                appendages.emplace_back(std::make_shared<Appendage>(j, std::vector<std::string>{}, false));
 
                 std::string loopStr;
                 RIP_ASSERT_NO_THROW(loopStr = loop->toString(appendages));
@@ -139,13 +136,12 @@ namespace rip
                 RIP_ASSERT_NO_THROW(loop = std::unique_ptr<Loop>(new Loop(loopElement)));
 
                 std::vector<std::shared_ptr<Appendage>> appendages;
-                std::multimap<std::string, std::shared_ptr<Appendage>> not_used;
 
                 nlohmann::json j;
                 j["type"] = "Not A Real Type";
                 j["label"] = "Not A Real Label";
-                appendages.emplace_back(std::make_shared<Appendage>(j, not_used, std::vector<std::string>{}, false));
-                appendages.emplace_back(std::make_shared<Appendage>(j, not_used, std::vector<std::string>{}, false));
+                appendages.emplace_back(std::make_shared<Appendage>(j, std::vector<std::string>{}, false));
+                appendages.emplace_back(std::make_shared<Appendage>(j, std::vector<std::string>{}, false));
 
                 std::string loopStr;
                 RIP_ASSERT_NO_THROW(loopStr = loop->toString(appendages));
@@ -182,13 +178,12 @@ namespace rip
                 RIP_ASSERT_NO_THROW(loop = std::unique_ptr<Loop>(new Loop(loopElement)));
 
                 std::vector<std::shared_ptr<Appendage>> appendages;
-                std::multimap<std::string, std::shared_ptr<Appendage>> not_used;
 
                 nlohmann::json j;
                 j["type"] = "Not A Real Type";
                 j["label"] = "Not A Real Label";
-                appendages.emplace_back(std::make_shared<Appendage>(j, not_used, std::vector<std::string>{}, false));
-                appendages.emplace_back(std::make_shared<Appendage>(j, not_used, std::vector<std::string>{}, false));
+                appendages.emplace_back(std::make_shared<Appendage>(j, std::vector<std::string>{}, false));
+                appendages.emplace_back(std::make_shared<Appendage>(j, std::vector<std::string>{}, false));
 
                 std::string loopStr;
                 RIP_ASSERT_NO_THROW(loopStr = loop->toString(appendages));
@@ -225,13 +220,12 @@ namespace rip
                 RIP_ASSERT_NO_THROW(loop = std::unique_ptr<Loop>(new Loop(loopElement)));
 
                 std::vector<std::shared_ptr<Appendage>> appendages;
-                std::multimap<std::string, std::shared_ptr<Appendage>> not_used;
 
                 nlohmann::json j;
                 j["type"] = "Not A Real Type";
                 j["label"] = "Not A Real Label";
-                appendages.emplace_back(std::make_shared<Appendage>(j, not_used, std::vector<std::string>{}, false));
-                appendages.emplace_back(std::make_shared<Appendage>(j, not_used, std::vector<std::string>{}, false));
+                appendages.emplace_back(std::make_shared<Appendage>(j, std::vector<std::string>{}, false));
+                appendages.emplace_back(std::make_shared<Appendage>(j, std::vector<std::string>{}, false));
 
                 std::string loopStr;
                 RIP_ASSERT_NO_THROW(loopStr = loop->toString(appendages));
@@ -258,13 +252,12 @@ namespace rip
                 RIP_ASSERT_NO_THROW(loop = std::unique_ptr<Loop>(new Loop(loopElement)));
 
                 std::vector<std::shared_ptr<Appendage>> appendages;
-                std::multimap<std::string, std::shared_ptr<Appendage>> not_used;
 
                 nlohmann::json j;
                 j["type"] = "Not A Real Type";
                 j["label"] = "Not A Real Label";
-                appendages.emplace_back(std::make_shared<Appendage>(j, not_used, std::vector<std::string>{}, false));
-                appendages.emplace_back(std::make_shared<Appendage>(j, not_used, std::vector<std::string>{}, false));
+                appendages.emplace_back(std::make_shared<Appendage>(j, std::vector<std::string>{}, false));
+                appendages.emplace_back(std::make_shared<Appendage>(j, std::vector<std::string>{}, false));
 
                 std::string loopStr;
                 RIP_ASSERT_NO_THROW(loopStr = loop->toString(appendages));
@@ -290,13 +283,12 @@ namespace rip
                 RIP_ASSERT_NO_THROW(loop = std::unique_ptr<Loop>(new Loop(loopElement)));
 
                 std::vector<std::shared_ptr<Appendage>> appendages;
-                std::multimap<std::string, std::shared_ptr<Appendage>> not_used;
 
                 nlohmann::json j;
                 j["type"] = "Not A Real Type";
                 j["label"] = "Not A Real Label";
-                appendages.emplace_back(std::make_shared<Appendage>(j, not_used, std::vector<std::string>{}, false));
-                appendages.emplace_back(std::make_shared<Appendage>(j, not_used, std::vector<std::string>{}, false));
+                appendages.emplace_back(std::make_shared<Appendage>(j, std::vector<std::string>{}, false));
+                appendages.emplace_back(std::make_shared<Appendage>(j, std::vector<std::string>{}, false));
 
                 std::string loopStr;
                 RIP_ASSERT_THROW(loopStr = loop->toString(appendages), IllegalPatternException);

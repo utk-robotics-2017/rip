@@ -1556,7 +1556,7 @@ namespace rip
             files.erase(std::find(files.begin(), files.end(), "platformio.ini"));
 
             // Make sure there aren't any extra files
-            ASSERT_EQ(files.size(), 0);
+            ASSERT_EQ(files.size(), 0u);
 
             // Check the file permissions
             #ifndef _WIN32
@@ -1868,7 +1868,7 @@ namespace rip
             files.erase(std::find(files.begin(), files.end(), "platformio.ini"));
 
             // Make sure there aren't any extra files
-            ASSERT_EQ(files.size(), 0);
+            ASSERT_EQ(files.size(), 0u);
 
             // Check the file permissions
             #ifndef _WIN32

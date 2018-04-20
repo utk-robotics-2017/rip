@@ -50,7 +50,7 @@ namespace rip
             std::string rv = "";
             std::regex replace_regex("\\$(\\w+)\\$");
 
-            for (int i = 0; i < m_codes.size(); i++)
+            for (size_t i = 0; i < m_codes.size(); i++)
             {
                 std::shared_ptr<Code> code = m_codes[i];
 

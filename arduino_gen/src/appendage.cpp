@@ -14,7 +14,6 @@ namespace rip
 		std::map< std::string, nlohmann::json > Appendage::m_type_cache = std::map< std::string, nlohmann::json >();
 
         Appendage::Appendage(nlohmann::json j,
-                             std::multimap< std::string, std::shared_ptr<Appendage> >& appendages,
                              std::vector<std::string> appendage_data_folders,
                              bool test)
             : m_data(j),

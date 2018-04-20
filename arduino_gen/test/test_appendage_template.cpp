@@ -61,7 +61,7 @@ namespace rip
                 EXPECT_EQ(appendageTemplate->GetConstructors(), nullptr);
                 EXPECT_EQ(appendageTemplate->GetSetup(), nullptr);
                 EXPECT_EQ(appendageTemplate->GetLoop(), nullptr);
-                EXPECT_EQ(appendageTemplate->GetCommands().size(), 0);
+                EXPECT_EQ(appendageTemplate->GetCommands().size(), 0u);
             }
 
             TEST(AppendageTemplate_constructor, constructors)
@@ -81,7 +81,7 @@ namespace rip
                 EXPECT_NE(appendageTemplate->GetConstructors(), nullptr);
                 EXPECT_EQ(appendageTemplate->GetSetup(), nullptr);
                 EXPECT_EQ(appendageTemplate->GetLoop(), nullptr);
-                EXPECT_EQ(appendageTemplate->GetCommands().size(), 0);
+                EXPECT_EQ(appendageTemplate->GetCommands().size(), 0u);
             }
 
             TEST(AppendageTemplate_constructor, setup)
@@ -101,7 +101,7 @@ namespace rip
                 EXPECT_EQ(appendageTemplate->GetConstructors(), nullptr);
                 EXPECT_NE(appendageTemplate->GetSetup(), nullptr);
                 EXPECT_EQ(appendageTemplate->GetLoop(), nullptr);
-                EXPECT_EQ(appendageTemplate->GetCommands().size(), 0);
+                EXPECT_EQ(appendageTemplate->GetCommands().size(), 0u);
             }
 
             TEST(AppendageTemplate_constructor, loop)
@@ -121,7 +121,7 @@ namespace rip
                 EXPECT_EQ(appendageTemplate->GetConstructors(), nullptr);
                 EXPECT_EQ(appendageTemplate->GetSetup(), nullptr);
                 EXPECT_NE(appendageTemplate->GetLoop(), nullptr);
-                EXPECT_EQ(appendageTemplate->GetCommands().size(), 0);
+                EXPECT_EQ(appendageTemplate->GetCommands().size(), 0u);
             }
 
             TEST(AppendageTemplate_constructor, commands)
@@ -141,7 +141,7 @@ namespace rip
                 EXPECT_EQ(appendageTemplate->GetConstructors(), nullptr);
                 EXPECT_EQ(appendageTemplate->GetSetup(), nullptr);
                 EXPECT_EQ(appendageTemplate->GetLoop(), nullptr);
-                EXPECT_EQ(appendageTemplate->GetCommands().size(), 2);
+                EXPECT_EQ(appendageTemplate->GetCommands().size(), 2u);
             }
 
             TEST(AppendageTemplate_constructor, everything)
@@ -161,7 +161,7 @@ namespace rip
                 EXPECT_NE(appendageTemplate->GetConstructors(), nullptr);
                 EXPECT_NE(appendageTemplate->GetSetup(), nullptr);
                 EXPECT_NE(appendageTemplate->GetLoop(), nullptr);
-                EXPECT_EQ(appendageTemplate->GetCommands().size(), 3);
+                EXPECT_EQ(appendageTemplate->GetCommands().size(), 3u);
             }
 
             TEST(AppendageTemplate_constructor, two_includes)

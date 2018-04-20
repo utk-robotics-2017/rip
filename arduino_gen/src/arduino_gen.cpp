@@ -59,7 +59,7 @@ namespace rip
                 std::string type = appendage_json["type"];
 
                 m_appendages.insert(std::make_pair(type, std::make_shared<Appendage>(appendage_json,
-                                                   m_appendages, m_appendage_data_folders, true)));
+                                                   m_appendage_data_folders, true)));
             }
 
             loadTemplates();
@@ -360,7 +360,7 @@ namespace rip
                 }
             }
 
-            
+
             if (rv.size() > 1)
             {
                 rv.pop_back();
@@ -403,7 +403,6 @@ namespace rip
             }
 
             std::string rv = "";
-            int i = 0;
             for (auto it : sorted_commands)
             {
                 rv += fmt::format("\t{},\n", it.second);
@@ -465,7 +464,7 @@ namespace rip
             {
                 std::vector<std::shared_ptr<Appendage>> appendages_of_type = get_mmap_values_at_index(m_appendages, type);
 
-                for (int i = 0; i < appendages_of_type.size(); i++)
+                for (size_t i = 0; i < appendages_of_type.size(); i++)
                 {
                     config["appendages"].emplace_back(appendages_of_type[i]->getCoreJson(i));
                 }

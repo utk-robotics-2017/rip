@@ -90,7 +90,7 @@ namespace rip
                 }
                 else
                 {
-                    // TODO(Anthony): throw exception
+                    throw AppendageDataException("Appendage doesn't have value for \"{}\" and argument doesn't have a default value.", m_name);
                 }
             }
         }

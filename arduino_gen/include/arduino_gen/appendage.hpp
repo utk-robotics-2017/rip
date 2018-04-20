@@ -26,9 +26,7 @@ namespace rip
              * @param appendages The list of appendages for if this is a derivative appendage
              * @param test Whether to test the type or not (default: true)
              */
-            Appendage(nlohmann::json data,
-                      std::multimap<std::string, std::shared_ptr<Appendage>>& appendages,
-                      std::vector<std::string> appendage_data_folders = { "appendages" }, bool test = true);
+            Appendage(nlohmann::json data, std::vector<std::string> appendage_data_folders = { "appendages" }, bool test = true);
 
             /**
              * @brief Returns the label for this appendage

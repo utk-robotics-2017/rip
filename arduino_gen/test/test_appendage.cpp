@@ -20,13 +20,10 @@ namespace rip
                 j["pin"] = 1;
                 j["pullup"] = false;
 
-
-                std::multimap< std::string, std::shared_ptr<Appendage> > appendage_map;
-
-                ASSERT_THROW(std::make_shared<Appendage>(j, appendage_map), AppendageDataException);
+                ASSERT_THROW(std::make_shared<Appendage>(j), AppendageDataException);
 
                 j["type"] = "";
-                ASSERT_THROW(std::make_shared<Appendage>(j, appendage_map), AppendageDataException);
+                ASSERT_THROW(std::make_shared<Appendage>(j), AppendageDataException);
             }
 
             TEST(Appendage_type_check, Appendage_label)
@@ -36,13 +33,10 @@ namespace rip
                 j["pin"] = 1;
                 j["pullup"] = false;
 
-
-                std::multimap< std::string, std::shared_ptr<Appendage> > appendage_map;
-
-                ASSERT_THROW(std::make_shared<Appendage>(j, appendage_map), AppendageDataException);
+                ASSERT_THROW(std::make_shared<Appendage>(j), AppendageDataException);
 
                 j["label"] = "";
-                ASSERT_THROW(std::make_shared<Appendage>(j, appendage_map), AppendageDataException);
+                ASSERT_THROW(std::make_shared<Appendage>(j), AppendageDataException);
             }
 
             TEST(Appendage_type_check, Appendage_missing_parameter)
@@ -52,9 +46,7 @@ namespace rip
                 j["type"] = "Digital Input";
                 j["pin"] = 1;
 
-                std::multimap< std::string, std::shared_ptr<Appendage> > appendage_map;
-
-                ASSERT_THROW(std::make_shared<Appendage>(j, appendage_map), AppendageDataException);
+                ASSERT_THROW(std::make_shared<Appendage>(j), AppendageDataException);
             }
 
             TEST(Appendage_type_check, Appendage_extra_parameter)
@@ -66,8 +58,7 @@ namespace rip
                 j["pullup"] = false;
                 j["extra"] = 1;
 
-                std::multimap< std::string, std::shared_ptr<Appendage> > appendage_map;
-                ASSERT_THROW(std::make_shared<Appendage>(j, appendage_map), AppendageDataException);
+                ASSERT_THROW(std::make_shared<Appendage>(j), AppendageDataException);
             }
 
             TEST(Appendage_data, Appendage_missing_data)
@@ -78,9 +69,8 @@ namespace rip
                 j["pin"] = 1;
                 j["pullup"] = "";
 
-                std::multimap< std::string, std::shared_ptr<Appendage> > appendage_map;
                 std::shared_ptr<Appendage> appendage;
-                RIP_ASSERT_NO_THROW(appendage = std::make_shared<Appendage>(j, appendage_map));
+                RIP_ASSERT_NO_THROW(appendage = std::make_shared<Appendage>(j));
 
                 ASSERT_THROW(appendage->getString("extra"), AppendageDataException);
 
@@ -95,9 +85,8 @@ namespace rip
                 j["pin"] = 1;
                 j["pullup"] = "";
 
-                std::multimap< std::string, std::shared_ptr<Appendage> > appendage_map;
                 std::shared_ptr<Appendage> appendage;
-                RIP_ASSERT_NO_THROW(appendage = std::make_shared<Appendage>(j, appendage_map));
+                RIP_ASSERT_NO_THROW(appendage = std::make_shared<Appendage>(j));
 
                 ASSERT_THROW(appendage->isType("label", "unknown"), AppendageDataException);
             }
@@ -110,9 +99,8 @@ namespace rip
                 j["pin"] = 1;
                 j["pullup"] = false;
 
-                std::multimap< std::string, std::shared_ptr<Appendage> > appendage_map;
                 std::shared_ptr<Appendage> appendage;
-                RIP_ASSERT_THROW(appendage = std::make_shared<Appendage>(j, appendage_map), AppendageDataException);
+                RIP_ASSERT_THROW(appendage = std::make_shared<Appendage>(j), AppendageDataException);
             }
 
             TEST(Appendage_data, Appendage_incorrect_bool)
@@ -125,9 +113,8 @@ namespace rip
                 j["an_int"] = 1;
                 j["a_float"] = 4.0f;
 
-                std::multimap< std::string, std::shared_ptr<Appendage> > appendage_map;
                 std::shared_ptr<Appendage> appendage;
-                ASSERT_THROW(appendage = std::make_shared<Appendage>(j, appendage_map), AppendageDataException);
+                ASSERT_THROW(appendage = std::make_shared<Appendage>(j), AppendageDataException);
             }
 
             TEST(Appendage_data, Appendage_incorrect_float)
@@ -140,9 +127,8 @@ namespace rip
                 j["an_int"] = 1;
                 j["a_float"] = "str";
 
-                std::multimap< std::string, std::shared_ptr<Appendage> > appendage_map;
                 std::shared_ptr<Appendage> appendage;
-                ASSERT_THROW(appendage = std::make_shared<Appendage>(j, appendage_map), AppendageDataException);
+                ASSERT_THROW(appendage = std::make_shared<Appendage>(j), AppendageDataException);
             }
 
             TEST(Appendage_data, Appendage_incorrect_int)
@@ -155,9 +141,8 @@ namespace rip
                 j["an_int"] = false;
                 j["a_float"] = 1.0f;
 
-                std::multimap< std::string, std::shared_ptr<Appendage> > appendage_map;
                 std::shared_ptr<Appendage> appendage;
-                ASSERT_THROW(appendage = std::make_shared<Appendage>(j, appendage_map), AppendageDataException);
+                ASSERT_THROW(appendage = std::make_shared<Appendage>(j), AppendageDataException);
             }
 
             TEST(Appendage_data, Appendage_incorrect_string)
@@ -170,9 +155,8 @@ namespace rip
                 j["an_int"] = 1;
                 j["a_float"] = 3.0f;
 
-                std::multimap< std::string, std::shared_ptr<Appendage> > appendage_map;
                 std::shared_ptr<Appendage> appendage;
-                ASSERT_THROW(appendage = std::make_shared<Appendage>(j, appendage_map), AppendageDataException);
+                ASSERT_THROW(appendage = std::make_shared<Appendage>(j), AppendageDataException);
             }
 
             TEST(Appendage_type_check, DigitalInput)
@@ -183,10 +167,7 @@ namespace rip
                 j["pin"] = 1;
                 j["pullup"] = "";
 
-                std::multimap< std::string, std::shared_ptr<Appendage> > appendage_map;
-
-                RIP_ASSERT_NO_THROW(std::make_shared<Appendage>(j, appendage_map));
-
+                RIP_ASSERT_NO_THROW(std::make_shared<Appendage>(j));
             }
 
             TEST(Appendage_core_config, getCoreJson)
@@ -196,10 +177,8 @@ namespace rip
                 j["type"] = "something";
                 j["pin"] = 1;
 
-                std::multimap<std::string, std::shared_ptr<Appendage>> appendage_map;
                 std::shared_ptr<Appendage> appendage;
-
-                RIP_ASSERT_NO_THROW(appendage = std::make_shared<Appendage>(j, appendage_map, std::vector<std::string>{}, false));
+                RIP_ASSERT_NO_THROW(appendage = std::make_shared<Appendage>(j, std::vector<std::string>{}, false));
 
                 ASSERT_EQ(appendage->getCoreJson(0).dump(4),
                     "{\n"
@@ -218,10 +197,8 @@ namespace rip
                 j["pin"] = 2;
                 j["not"] = "used";
 
-                std::multimap<std::string, std::shared_ptr<Appendage>> appendage_map;
                 std::shared_ptr<Appendage> appendage;
-
-                RIP_ASSERT_NO_THROW(appendage = std::make_shared<Appendage>(j, appendage_map, std::vector<std::string>{}, false));
+                RIP_ASSERT_NO_THROW(appendage = std::make_shared<Appendage>(j, std::vector<std::string>{}, false));
 
                 ASSERT_EQ(appendage->getCoreJson(7).dump(4),
                     "{\n"

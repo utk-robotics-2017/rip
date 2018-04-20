@@ -64,7 +64,7 @@ namespace rip
                 j["somethingElse"] = false;
 
                 std::multimap<std::string, std::shared_ptr<Appendage>> appendage_map;
-                appendage_map.emplace(std::make_pair("A Type", std::make_shared<Appendage>(j, appendage_map, std::vector<std::string>{}, false)));
+                appendage_map.emplace(std::make_pair("A Type", std::make_shared<Appendage>(j, std::vector<std::string>{}, false)));
 
                 std::vector<std::shared_ptr<Appendage>> appendages = get_mmap_values_at_index(appendage_map, "A Type");
 
@@ -89,7 +89,7 @@ namespace rip
                 j["somethingElse"] = false;
 
                 std::multimap<std::string, std::shared_ptr<Appendage>> appendage_map;
-                appendage_map.emplace(std::make_pair("A Type", std::make_shared<Appendage>(j, appendage_map, std::vector<std::string>{}, false)));
+                appendage_map.emplace(std::make_pair("A Type", std::make_shared<Appendage>(j, std::vector<std::string>{}, false)));
 
                 std::vector<std::shared_ptr<Appendage>> appendages = get_mmap_values_at_index(appendage_map, "A Type");
 
@@ -116,7 +116,7 @@ namespace rip
                 j["somethingElse"] = false;
 
                 std::multimap<std::string, std::shared_ptr<Appendage>> appendage_map;
-                appendage_map.emplace(std::make_pair("A Type", std::make_shared<Appendage>(j, appendage_map, std::vector<std::string>{}, false)));
+                appendage_map.emplace(std::make_pair("A Type", std::make_shared<Appendage>(j, std::vector<std::string>{}, false)));
 
                 std::vector<std::shared_ptr<Appendage>> appendages = get_mmap_values_at_index(appendage_map, "A Type");
 
