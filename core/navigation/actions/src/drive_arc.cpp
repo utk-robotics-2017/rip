@@ -9,8 +9,7 @@ namespace rip
             DriveArc::DriveArc(const std::string& name, bool right,
                 std::shared_ptr<drivetrains::Drivetrain> drivetrain,
                 const units::AngularVelocity& speed, const units::Angle& angle,
-                const units::Distance& radius, const units::Distance& axle_length,
-                std::shared_ptr<NavX> navx)
+                const units::Distance& radius, const units::Distance& axle_length)
                 : Action(name)
                 , m_right(right)
                 , m_drivetrain(drivetrain)
@@ -18,7 +17,6 @@ namespace rip
                 , m_angle(angle)
                 , m_radius(radius)
                 , m_axle_length(axle_length)
-                , m_navx(navx)
             {
                 m_arc_length = angle.to(units::rad) * radius;
                 m_linear_speed = radius * speed / units::rad;
@@ -27,8 +25,7 @@ namespace rip
             DriveArc::DriveArc(const std::string& name, bool right,
                 std::shared_ptr<drivetrains::Drivetrain> drivetrain,
                 const units::Velocity& speed, const units::Distance& arc_length,
-                const units::Distance& radius, const units::Distance& axle_length,
-                std::shared_ptr<NavX> navx)
+                const units::Distance& radius, const units::Distance& axle_length)
                 : Action(name)
                 , m_right(right)
                 , m_drivetrain(drivetrain)
@@ -36,7 +33,6 @@ namespace rip
                 , m_arc_length(arc_length)
                 , m_radius(radius)
                 , m_axle_length(axle_length)
-                , m_navx(navx)
             {
                 m_angle = arc_length / radius * units::rad;
                 m_angular_speed = speed / radius * units::rad;
@@ -50,28 +46,29 @@ namespace rip
 
             void DriveArc::update(nlohmann::json& state)
             {
+                /*
                 std::chrono::time_point<std::chrono::system_clock> current = std::chrono::system_clock::now();
                 units::Time diff = std::chrono::duration_cast<std::chrono::milliseconds>(current - m_start_time).count() * units::s;
                 std::array<Motor, 2> motors;
                 std::array<motorcontrollers::MotorDynamics, 2> dynamics;
                 double diff_state, actual_state, expected_state;
-
+                */
                 /**
                  * Units to be used on the json (since units cannot be serialized)
                  * Distance: cm
                  * Time: seconds
                  * Angle: degrees
-                 */
-		if(!m_right)
-		{
-		    motors[0] = Motor::kFrontLeft;
-		    motors[1] = Motor::kFrontRight;
-		}
-		else
-		{
-		    motors[0] = Motor::kFrontRight;
-		    motors[1] = Motor::kFrontLeft;
-		}
+                 *
+                if(!m_right)
+                {
+                    motors[0] = Motor::kFrontLeft;
+                    motors[1] = Motor::kFrontRight;
+                }
+                else
+                {
+                    motors[0] = Motor::kFrontRight;
+                    motors[1] = Motor::kFrontLeft;
+                }
                 // get actual state and expected state in pairs
                 state[this->name()] = {
                     {"encoderDistance", {
@@ -126,7 +123,7 @@ namespace rip
                     }
                     m_drivetrain->drive(dynamics[0], dynamics[1]);
                 }
-
+                
                 // yaw adjustment
                 actual_state = state[this->name()]["angle"]["actual"];
                 expected_state = state[this->name()]["angle"]["expected"];
@@ -140,6 +137,7 @@ namespace rip
                     dynamics[1].setSpeed(m_adjusted_speeds[1]);
                     m_drivetrain->drive(dynamics[0], dynamics[1]);
                 }
+                
                 else if(diff_state < k_dead_zone * expected_state * -1)//smaller or equal than expected
                 {
                     m_adjusted_speeds[1] += .0001 * units::cm / units::s;
@@ -148,6 +146,7 @@ namespace rip
                     dynamics[1].setSpeed(m_adjusted_speeds[1]);
                     m_drivetrain->drive(dynamics[0], dynamics[1]);
                 }
+                */
             }
 
             void DriveArc::setup(nlohmann::json& state)
@@ -171,11 +170,12 @@ namespace rip
                 m_start_time = std::chrono::system_clock::now();
                 m_init_dist = readAverageDistance();
 
+                /*
                 do
                 {
                     m_init_angle = m_navx->getAngle();
                 } while(m_init_angle.to(units::deg) == 0);
-
+                */
                 misc::Logger::getInstance()->debug(fmt::format("arc turn intended linear velocity(in/s): {}"
                 , m_linear_speed.to(units::in / units::s)));
 
