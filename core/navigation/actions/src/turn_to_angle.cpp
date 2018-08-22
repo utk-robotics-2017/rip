@@ -15,6 +15,8 @@ namespace rip
                 , m_imu(imu)
                 , m_first(true)
             {
+                printf("hi16\n");
+
                 if(config.find("turn_angle") == config.end())
                 {
                     throw ActionConfigException("turn_angle missing from config");
@@ -24,12 +26,15 @@ namespace rip
                 double kp;
                 if(config.find("kp") != config.end())
                 {
+ 
                     kp = config["kp"];
                 }
                 else
                 {
+                    printf("hi18\n");
                     kp = misc::constants::get<double>(misc::constants::kTurnKp);
                 }
+                printf("hi19\n");
 
                 double ki;
                 if(config.find("ki") != config.end())
@@ -51,7 +56,11 @@ namespace rip
                     kd = misc::constants::get<double>(misc::constants::kTurnKd);
                 }
 
+                printf("hi20\n");
+
                 m_pid = std::unique_ptr<pid::PidController>(new pid::PidController(m_imu.get(), this, kp, ki, kd));
+                printf("hi21\n");
+
                 m_pid->enable();
                 m_pid->setPercentTolerance(1.0 / 3.6);
                 m_imu->setType(pid::PidInput::Type::kDisplacement);

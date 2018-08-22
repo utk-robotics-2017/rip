@@ -36,6 +36,7 @@ namespace rip
                     }
                     m_distance = config["distance"] * rip::units::in;
                 }
+                printf("hi11\n");
 
                 if(config.find("velocity") == config.end())
                 {
@@ -43,16 +44,23 @@ namespace rip
                 }
                 else
                 {
+                    printf("hi12\n");
+
                     m_velocity = config["velocity"] * rip::units::in / rip::units::s;
                 }
                 m_direction = m_velocity > 0;
+                                printf("hi13\n");
 
                 if(config.find("acceleration") != config.end())
                 {
+                    printf("hi14\n");
+
                     m_max_accel = config["acceleration"];
                 }
                 else
                 {
+                    printf("hi15\n");
+
                     m_max_accel = misc::constants::get<double>(misc::constants::kMaxAcceleration) * rip::units::in / rip::units::s / rip::units::s;
                 }
 
@@ -71,11 +79,15 @@ namespace rip
                 }
                 else
                 {
+                    printf("hi16\n");
+
                     m_threshold_time = misc::constants::get<double>(misc::constants::kStraightThreshTime) * units::s;
                 }
+                printf("hi17\n");
 
                 if(m_imu)
                 {
+                    printf("oops\n");
                     double kp = misc::constants::get<double>(misc::constants::kStraightAngleKp);
                     double ki = misc::constants::get<double>(misc::constants::kStraightAngleKi);
                     double kd = misc::constants::get<double>(misc::constants::kStraightAngleKd);

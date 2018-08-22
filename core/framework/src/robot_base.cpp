@@ -7,6 +7,7 @@
 #include <framework/exceptions.hpp>
 #include <misc/logger.hpp>
 #include <spdlog/spdlog.h>
+#include <cstdio>
 
 namespace rip
 {
@@ -74,9 +75,10 @@ namespace rip
                 misc::Logger::getInstance()->error("Subsystems not found in config");
                 throw SubSystemsNotFound();
             }
-
+            printf("hi1\n");
             if(j.find("actions") != j.end())
             {
+                printf("hi3\n");
                 createRoutine(j["actions"]);
             }
             else
@@ -84,7 +86,7 @@ namespace rip
                 misc::Logger::getInstance()->error("Actions not found in config");
                 throw ActionsNotFound();
             }
-
+            printf("hi2\n");
             if(j.find("state_file") != j.end())
             {
                 m_state_file = cppfs::fs::open(j["state_file"]).createOutputStream();

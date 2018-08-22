@@ -18,6 +18,8 @@ namespace rip
                 , m_radius(radius)
                 , m_axle_length(axle_length)
             {
+                printf("hi7\n");
+
                 m_arc_length = angle.to(units::rad) * radius;
                 m_linear_speed = radius * speed / units::rad;
             }
@@ -34,6 +36,8 @@ namespace rip
                 , m_radius(radius)
                 , m_axle_length(axle_length)
             {
+                printf("hi7\n");
+
                 m_angle = arc_length / radius * units::rad;
                 m_angular_speed = speed / radius * units::rad;
             }

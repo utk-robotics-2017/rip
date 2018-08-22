@@ -18,6 +18,7 @@ namespace rip
         namespace actions
         {
             using Motor = rip::navigation::drivetrains::Drivetrain::Motor;
+            //TODO: replace navx functionality with abstract IMU
             // using NavX = navx::NavX;
             class DriveArc : public framework::Action
             {
@@ -58,6 +59,7 @@ namespace rip
                 virtual bool isFinished() override;
                 /**
                  * Iteratively called until {@see Action#isFinished()} returns true
+                 * TODO: replace P loop with full PID loop
                  */
                 virtual void update(nlohmann::json& state) override;
                 /**
