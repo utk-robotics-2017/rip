@@ -5,7 +5,7 @@
 #include <drivetrains/drivetrain.hpp>
 #include <chrono>
 #include <framework/timeout_action.hpp>
-#include <navx/navx.hpp>
+#include <imu/imu.hpp>
 #include <pid/pid_output.hpp>
 #include <pid/pid.hpp>
 #include <cmath>

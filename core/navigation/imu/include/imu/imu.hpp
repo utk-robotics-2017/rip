@@ -21,22 +21,32 @@ namespace rip
                 Imu(const std::string& name)
                     : Subsystem(name)
                 {}
+
                 /**
-                 * 
+                 *
                  */
                 virtual units::Angle getYaw();
+
                 /**
-                 * 
+                 *
                  */
                 virtual units::Angle getPitch();
+
                 /**
-                 * 
+                 *
                  */
                 virtual units::Angle getRoll();
+
                 /**
-                 * 
+                 *
                  */
                 virtual bool isCalibrated();
+
+                /**
+                 *
+                 */
+                virtual units::AngularVelocity getRate();
+
                 // virtual void zeroYaw();
                 // virtual void getAngle();
             };

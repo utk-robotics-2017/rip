@@ -20,19 +20,25 @@ namespace rip
             public:
                 Bno055(const std::string& name, Bno bno) ;
                 /**
-                 * 
+                 *
                  */
                 virtual units::Angle getYaw();
                 /**
-                 * 
+                 *
                  */
                 virtual units::Angle getPitch();
                 /**
-                 * 
+                 *
                  */
                 virtual units::Angle getRoll();
+
                 /**
-                 * 
+                 *
+                 */
+                virtual units::AngularVelocity getRate();
+
+                /**
+                 *
                  */
                 virtual bool isCalibrated();
                 // virtual void zeroYaw();

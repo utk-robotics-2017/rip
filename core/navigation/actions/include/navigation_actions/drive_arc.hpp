@@ -6,7 +6,7 @@
 #include <fmt/format.h>
 #include <framework/action.hpp>
 #include <drivetrains/drivetrain.hpp>
-//#include <navx/navx.hpp>
+#include <imu/imu.hpp>
 #include "exceptions.hpp"
 #include <chrono>
 
@@ -18,8 +18,8 @@ namespace rip
         namespace actions
         {
             using Motor = rip::navigation::drivetrains::Drivetrain::Motor;
-            //TODO: replace navx functionality with abstract IMU
-            // using NavX = navx::NavX;
+            using IMU = rip::navigation::imu::Imu;
+
             class DriveArc : public framework::Action
             {
             public:
@@ -38,7 +38,8 @@ namespace rip
                 DriveArc(const std::string& name, bool right,
                     std::shared_ptr<drivetrains::Drivetrain> drivetrain,
                     const units::AngularVelocity& speed, const units::Angle& angle,
-                    const units::Distance& radius, const units::Distance& axle_length);
+                    const units::Distance& radius, const units::Distance& axle_length,
+                    std::shared_ptr<IMU> imu);
                 /**
                  * Drives the robot in an arc with specified radius, arc length,
                  * angular velocity for the turn
@@ -53,7 +54,9 @@ namespace rip
                 DriveArc(const std::string& name, bool right,
                     std::shared_ptr<drivetrains::Drivetrain> drivetrain,
                     const units::Velocity& speed, const units::Distance& arc_length,
-                    const units::Distance& radius, const units::Distance& axle_length);                /**
+                    const units::Distance& radius, const units::Distance& axle_length,
+                    std::shared_ptr<IMU> imu);
+                /**
                 * Returns whether or not the action has finished execution.
                 */
                 virtual bool isFinished() override;
@@ -83,7 +86,7 @@ namespace rip
                 units::AngularVelocity m_angular_speed;
                 units::Velocity m_linear_speed;
                 units::Angle m_angle;
-                //std::shared_ptr<NavX> m_navx;
+                std::shared_ptr<IMU> m_imu;
                 const double k_dead_zone = 0.0001; //percent
                 /**
                  * radius is distance from center of robot/differential drivetrain

@@ -14,7 +14,7 @@ namespace rip
 
         namespace imu
         {
-            /** 
+            /**
              * NavX abstract implementation
              */
             class NavX : public Imu
@@ -22,19 +22,23 @@ namespace rip
             public:
                 NavX(const std::string& name, Nav_x navx);
                 /**
-                 * 
+                 *
                  */
                 virtual units::Angle getYaw();
                 /**
-                 * 
+                 *
                  */
                 virtual units::Angle getPitch();
                 /**
-                 * 
+                 *
                  */
                 virtual units::Angle getRoll();
                 /**
-                 * 
+                 *
+                 */
+                virtual units::AngularVelocity getRate();
+                /**
+                 *
                  */
                 virtual bool isCalibrated();
                 // virtual void zeroYaw();

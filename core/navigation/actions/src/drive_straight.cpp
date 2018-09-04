@@ -36,7 +36,7 @@ namespace rip
                     }
                     m_distance = config["distance"] * rip::units::in;
                 }
-                
+
 
                 if(config.find("velocity") == config.end())
                 {
@@ -44,22 +44,22 @@ namespace rip
                 }
                 else
                 {
-                    
+
 
                     m_velocity = config["velocity"] * rip::units::in / rip::units::s;
                 }
                 m_direction = m_velocity > 0;
-                                
+
 
                 if(config.find("acceleration") != config.end())
                 {
-                    
+
 
                     m_max_accel = config["acceleration"];
                 }
                 else
                 {
-                    
+
 
                     m_max_accel = misc::constants::get<double>(misc::constants::kMaxAcceleration) * rip::units::in / rip::units::s / rip::units::s;
                 }
@@ -79,11 +79,11 @@ namespace rip
                 }
                 else
                 {
-                    
+
 
                     m_threshold_time = misc::constants::get<double>(misc::constants::kStraightThreshTime) * units::s;
                 }
-                
+
 
                 if(m_imu)
                 {
@@ -160,7 +160,7 @@ namespace rip
                 motorcontrollers::MotorDynamics l_dynamics;
                 motorcontrollers::MotorDynamics r_dynamics;
 
-                // todo: update these values every loop based on navX
+                // todo: update these values every loop based on IMU
                 units::Velocity l_speed = m_velocity;
                 units::Velocity r_speed = m_velocity;
 
@@ -202,7 +202,7 @@ namespace rip
 
                 if(m_imu)
                 {
-                    misc::Logger::getInstance()->debug("NavX | Yaw: {} | Angle Diff: {} {}", m_imu->getYaw().to(units::deg), (m_imu->getYaw() - m_initial_yaw).to(units::deg), (m_imu->getYaw() - m_initial_yaw).to(units::rad));
+                    misc::Logger::getInstance()->debug("IMU | Yaw: {} | Angle Diff: {} {}", m_imu->getYaw().to(units::deg), (m_imu->getYaw() - m_initial_yaw).to(units::deg), (m_imu->getYaw() - m_initial_yaw).to(units::rad));
                 }
 
                 // just for now...

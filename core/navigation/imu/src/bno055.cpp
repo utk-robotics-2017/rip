@@ -24,6 +24,11 @@ namespace rip
                 return m_bno.getRoll();
             }
 
+            units::AngularVelocity Bno055::getRate()
+            {
+                return m_bno.getRate();
+            }
+
             bool Bno055::isCalibrated()
             {
                 return m_bno.isCalibrated();

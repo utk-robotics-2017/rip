@@ -7,7 +7,7 @@
 #include <drivetrains/drivetrain.hpp>
 #include <pid/pid_output.hpp>
 #include <pid/pid.hpp>
-#include <appendages/bno055.hpp>
+#include <imu/imu.hpp>
 
 #include <chrono>
 
@@ -22,7 +22,7 @@ namespace rip
             {
             protected:
                 using Drivetrain = drivetrains::Drivetrain;
-                using Imu = appendages::Bno055;
+                using Imu = imu::Imu;
             public:
                 DriveStraight(const std::string& name, std::shared_ptr<Drivetrain> drivetrain,
                               std::shared_ptr<Imu> gyro, const nlohmann::json& config);

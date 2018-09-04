@@ -5,7 +5,7 @@
 #include <drivetrains/drivetrain.hpp>
 #include <chrono>
 #include <framework/timeout_action.hpp>
-#include <appendages/bno055.hpp>
+#include <imu/imu.hpp>
 #include <pid/pid_output.hpp>
 #include <pid/pid.hpp>
 #include <cmath>
@@ -20,7 +20,7 @@ namespace rip
             {
             protected:
                 using Drivetrain = drivetrains::Drivetrain;
-                using Imu = appendages::Bno055;
+                using Imu = imu::Imu;
 
             public:
                 /**
@@ -28,7 +28,7 @@ namespace rip
                  * wheels in opposite directions at the same speed.
                  * @param name       name of action
                  * @param drivetrain drive train
-                 * @param navx       NavX (Imu)
+                 * @param imu        IMU
                  * @oaram config     Parameters used for turning to angle
                  */
                 TurnToAngle(const std::string& name,
@@ -37,7 +37,7 @@ namespace rip
 
                 /**
                 * Returns whether or not the action has finished execution.
-                * Returns true when navX reports change in angle that was
+                * Returns true when IMU reports change in angle that was
                 * requested
                 */
                 virtual bool isFinished() override;

@@ -24,6 +24,11 @@ namespace rip
                 return m_navx.getRoll();
             }
 
+            units::AngularVelocity NavX::getRate()
+            {
+                return m_navx.getRate();
+            }
+
             bool NavX::isCalibrated()
             {
                 return m_navx.isCalibrating();
