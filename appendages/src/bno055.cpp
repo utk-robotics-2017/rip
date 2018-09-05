@@ -14,6 +14,8 @@ namespace rip
                 , m_pitch_result(createCommand("kGetPitchResult", command_map, cmdmessenger::ArduinoCmdMessenger::makeArgumentString<cmdmessenger::ArduinoCmdMessenger::FloatType>()))
                 , m_roll(createCommand("kGetRoll", command_map, cmdmessenger::ArduinoCmdMessenger::makeArgumentString<cmdmessenger::ArduinoCmdMessenger::IntegerType>()))
                 , m_roll_result(createCommand("kGetRollResult", command_map, cmdmessenger::ArduinoCmdMessenger::makeArgumentString<cmdmessenger::ArduinoCmdMessenger::FloatType>()))
+                , m_rate(createCommand("kGetRate", command_map, cmdmessenger::ArduinoCmdMessenger::makeArgumentString<cmdmessenger::ArduinoCmdMessenger::IntegerType>()))
+                , m_rate_result(createCommand("kGetRateResult", command_map, cmdmessenger::ArduinoCmdMessenger::makeArgumentString<cmdmessenger::ArduinoCmdMessenger::FloatType>()))
                 , m_calibrated(createCommand("kGetCalibrationStatus", command_map, cmdmessenger::ArduinoCmdMessenger::makeArgumentString<cmdmessenger::ArduinoCmdMessenger::IntegerType>()))
                 , m_caribrated_result(createCommand("kGetCalibrationStatusResult", command_map, cmdmessenger::ArduinoCmdMessenger::makeArgumentString<cmdmessenger::ArduinoCmdMessenger::CharType>()))
 
@@ -39,6 +41,13 @@ namespace rip
             cmdmessenger::ArduinoCmdMessenger messenger;
             messenger.send<cmdmessenger::ArduinoCmdMessenger::IntegerType>(m_device, m_roll, m_id);
             return std::get<0>(messenger.receive<cmdmessenger::ArduinoCmdMessenger::FloatType>(m_roll_result)) * units::deg;
+        }
+
+        units::AngularVelocity Bno055::getRate()
+        {
+            cmdmessenger::ArduinoCmdMessenger messenger;
+            messenger.send<cmdmessenger::ArduinoCmdMessenger::IntegerType>(m_device, m_rate, m_id);
+            return std::get<0>(messenger.receive<cmdmessenger::ArduinoCmdMessenger::FloatType>(m_rate_result)) * units::deg / units::s;
         }
 
         bool Bno055::isCalibrated()

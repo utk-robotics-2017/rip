@@ -2,6 +2,7 @@
 #define IMU_HPP
 #include <units/units.hpp>
 #include <framework/subsystem.hpp>
+#include <pid/pid_input.hpp>
 // Supported IMUs
 // #include <navx/navx.hpp>
 // #include <appendages/bno055.hpp>
@@ -15,7 +16,7 @@ namespace rip
             /**
              * Abstract base class for IMUs
              */
-            class Imu : public framework::Subsystem
+            class Imu : public framework::Subsystem, public pid::PidInput
             {
             public:
                 Imu(const std::string& name)

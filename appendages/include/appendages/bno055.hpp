@@ -15,6 +15,7 @@ namespace rip
             units::Angle getYaw();
             units::Angle getPitch();
             units::Angle getRoll();
+            units::AngularVelocity getRate();
             bool isCalibrated();
 
             double get() override;
@@ -51,6 +52,8 @@ namespace rip
             std::shared_ptr<cmdmessenger::Command> m_pitch_result;
             std::shared_ptr<cmdmessenger::Command> m_roll;
             std::shared_ptr<cmdmessenger::Command> m_roll_result;
+            std::shared_ptr<cmdmessenger::Command> m_rate;
+            std::shared_ptr<cmdmessenger::Command> m_rate_result;
             std::shared_ptr<cmdmessenger::Command> m_calibrated;
             std::shared_ptr<cmdmessenger::Command> m_caribrated_result;
 
