@@ -1,0 +1,2 @@
+/usr/bin/ar qc libmotor_controllers.a  CMakeFiles/motor_controllers.dir/src/motor_dynamics.cpp.o CMakeFiles/motor_controllers.dir/src/roboclaw.cpp.o CMakeFiles/motor_controllers.dir/src/config.cpp.o
+/usr/bin/ranlib libmotor_controllers.a

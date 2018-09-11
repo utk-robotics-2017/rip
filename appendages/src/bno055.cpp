@@ -69,12 +69,12 @@ namespace rip
         bool Bno055::diagnostic()
         {
             misc::Logger::getInstance()->debug("Starting IMU appendage diagnostic utility");
-            misc::Logger::getInstance()->debug("Reading yaw, pitch, roll for 5s");
+            misc::Logger::getInstance()->debug("Reading yaw, pitch, roll & rate for 5s");
             std::chrono::time_point<std::chrono::system_clock> start_time = std::chrono::system_clock::now();
 
             while(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - start_time).count() < 5000)
             {
-                misc::Logger::getInstance()->debug("Yaw: {} Pitch: {} Roll: {}", getYaw().to(units::deg), getPitch().to(units::deg), getRoll().to(units::deg));
+                misc::Logger::getInstance()->debug("Yaw: {} Pitch: {} Roll: {}, Rate: {}", getYaw().to(units::deg), getPitch().to(units::deg), getRoll().to(units::deg), getRate().to(units::deg / units::s));
                 std::this_thread::sleep_for(std::chrono::milliseconds(125));
             }
             misc::Logger::getInstance()->debug("IMU appendage diagnostics complete");

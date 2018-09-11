@@ -1,0 +1,7 @@
+[
+    {
+        "type": "bno055",
+        "label": "bno",
+        "address": 40
+    }
+]

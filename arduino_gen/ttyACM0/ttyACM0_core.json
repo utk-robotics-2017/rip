@@ -1,0 +1,28 @@
+{
+    "appendages": [
+        {
+            "index": 0,
+            "label": "bno",
+            "type": "bno055"
+        }
+    ],
+    "commands": {
+        "kAcknowledge": 0,
+        "kError": 1,
+        "kGetCalibrationStatus": 15,
+        "kGetCalibrationStatusResult": 16,
+        "kGetPitch": 9,
+        "kGetPitchResult": 10,
+        "kGetRate": 13,
+        "kGetRateResult": 14,
+        "kGetRoll": 11,
+        "kGetRollResult": 12,
+        "kGetYaw": 7,
+        "kGetYawResult": 8,
+        "kPing": 4,
+        "kPingResult": 5,
+        "kPong": 6,
+        "kSetLed": 3,
+        "kUnknown": 2
+    }
+}

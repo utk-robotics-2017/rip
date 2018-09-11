@@ -1,0 +1,2 @@
+/usr/bin/ar qc libperipherycpp.a  CMakeFiles/peripherycpp.dir/src/gpio.cpp.o CMakeFiles/peripherycpp.dir/src/serial.cpp.o CMakeFiles/peripherycpp.dir/src/i2c.cpp.o CMakeFiles/peripherycpp.dir/src/spi.cpp.o CMakeFiles/peripherycpp.dir/src/mmio.cpp.o
+/usr/bin/ranlib libperipherycpp.a

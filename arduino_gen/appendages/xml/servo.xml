@@ -1,0 +1,40 @@
+<appendage-template>
+    <includes>
+        <include standard="false">Servo.h</include>
+    </includes>
+    <constructors>
+        <constructor type="Servo" variable="servos">
+        </constructor>
+        <constructor type="unsigned char" variable="servo_pins" type-is-class="false">
+            <argument name="pin" type="int" />
+        </constructor>
+        <constructor type="int" variable="servo_init_write" type-is-class="false">
+          <argument type="int" name="initialValue" />
+        </constructor>
+    </constructors>
+    <setup>
+        servos[$i$].attach($pin$);
+        servos[$i$].write($initialValue$);
+        delay(500);
+        servos[$i$].detach();
+    </setup>
+    <loop>
+        // Servo pin: $pin$
+    </loop>
+    <commands>
+        <command id="kSetServo" name="setServo" index-num="true">
+            <parameter type="int" name="value" />
+            <code>
+                if (!servos[indexNum].attached()) {
+                    servos[indexNum].attach(servo_pins[indexNum]);
+                }
+                servos[indexNum].write(value);
+            </code>
+        </command>
+        <command id="kDetachServo" name="detachServo" index-num="true">
+            <code>
+                servos[indexNum].detach();
+            </code>
+        </command>
+    </commands>
+</appendage-template>

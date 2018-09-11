@@ -1,0 +1,2 @@
+/usr/bin/ar qc libdrivetrains.a  CMakeFiles/drivetrains.dir/src/one_roboclaw_drivetrain.cpp.o CMakeFiles/drivetrains.dir/src/two_roboclaw_drivetrain.cpp.o CMakeFiles/drivetrains.dir/src/two_roboclaw_appendage_drivetrain.cpp.o
+/usr/bin/ranlib libdrivetrains.a

@@ -1,0 +1,60 @@
+Performing C++ SOURCE FILE Test SUPPORTS_INITIALIZER_LIST failed with the following output:
+Change Dir: /home/sebastian/Programming/rip/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_9fb3d/fast"
+/usr/bin/make -f CMakeFiles/cmTC_9fb3d.dir/build.make CMakeFiles/cmTC_9fb3d.dir/build
+make[1]: Entering directory '/home/sebastian/Programming/rip/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_9fb3d.dir/src.cxx.o
+/usr/bin/c++     -Wno-psabi -fdiagnostics-color=always -DSUPPORTS_INITIALIZER_LIST   -o CMakeFiles/cmTC_9fb3d.dir/src.cxx.o -c /home/sebastian/Programming/rip/CMakeFiles/CMakeTmp/src.cxx
+In file included from [01m[K/usr/include/c++/5/initializer_list:36:0[m[K,
+                 from [01m[K/home/sebastian/Programming/rip/CMakeFiles/CMakeTmp/src.cxx:2[m[K:
+[01m[K/usr/include/c++/5/bits/c++0x_warning.h:32:2:[m[K [01;31m[Kerror: [m[K#error This file requires compiler and library support for the ISO C++ 2011 standard. This support must be enabled with the -std=c++11 or -std=gnu++11 compiler options.
+ #error This file requires compiler and library support \
+[01;32m[K  ^[m[K
+CMakeFiles/cmTC_9fb3d.dir/build.make:65: recipe for target 'CMakeFiles/cmTC_9fb3d.dir/src.cxx.o' failed
+make[1]: *** [CMakeFiles/cmTC_9fb3d.dir/src.cxx.o] Error 1
+make[1]: Leaving directory '/home/sebastian/Programming/rip/CMakeFiles/CMakeTmp'
+Makefile:126: recipe for target 'cmTC_9fb3d/fast' failed
+make: *** [cmTC_9fb3d/fast] Error 2
+
+Source file was:
+
+  #include <initializer_list>
+  int main() {}
+Performing C++ SOURCE FILE Test SUPPORTS_TYPE_TRAITS failed with the following output:
+Change Dir: /home/sebastian/Programming/rip/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_6defa/fast"
+/usr/bin/make -f CMakeFiles/cmTC_6defa.dir/build.make CMakeFiles/cmTC_6defa.dir/build
+make[1]: Entering directory '/home/sebastian/Programming/rip/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_6defa.dir/src.cxx.o
+/usr/bin/c++     -Wno-psabi -fdiagnostics-color=always -DSUPPORTS_TYPE_TRAITS   -o CMakeFiles/cmTC_6defa.dir/src.cxx.o -c /home/sebastian/Programming/rip/CMakeFiles/CMakeTmp/src.cxx
+In file included from [01m[K/usr/include/c++/5/type_traits:35:0[m[K,
+                 from [01m[K/home/sebastian/Programming/rip/CMakeFiles/CMakeTmp/src.cxx:2[m[K:
+[01m[K/usr/include/c++/5/bits/c++0x_warning.h:32:2:[m[K [01;31m[Kerror: [m[K#error This file requires compiler and library support for the ISO C++ 2011 standard. This support must be enabled with the -std=c++11 or -std=gnu++11 compiler options.
+ #error This file requires compiler and library support \
+[01;32m[K  ^[m[K
+[01m[K/home/sebastian/Programming/rip/CMakeFiles/CMakeTmp/src.cxx:[m[K In function ‘[01m[Kint main()[m[K’:
+[01m[K/home/sebastian/Programming/rip/CMakeFiles/CMakeTmp/src.cxx:4:31:[m[K [01;31m[Kerror: [m[K‘[01m[Kis_copy_assignable[m[K’ is not a member of ‘[01m[Kstd[m[K’
+   int main() { static_assert(!std::is_copy_assignable<C>::value, ""); }
+[01;32m[K                               ^[m[K
+[01m[K/home/sebastian/Programming/rip/CMakeFiles/CMakeTmp/src.cxx:4:56:[m[K [01;31m[Kerror: [m[Kexpected primary-expression before ‘[01m[K>[m[K’ token
+   int main() { static_assert(!std::is_copy_assignable<C>::value, ""); }
+[01;32m[K                                                        ^[m[K
+[01m[K/home/sebastian/Programming/rip/CMakeFiles/CMakeTmp/src.cxx:4:57:[m[K [01;31m[Kerror: [m[K‘[01m[K::value[m[K’ has not been declared
+   int main() { static_assert(!std::is_copy_assignable<C>::value, ""); }
+[01;32m[K                                                         ^[m[K
+[01m[K/home/sebastian/Programming/rip/CMakeFiles/CMakeTmp/src.cxx:4:68:[m[K [01;31m[Kerror: [m[K‘[01m[Kstatic_assert[m[K’ was not declared in this scope
+   int main() { static_assert(!std::is_copy_assignable<C>::value, ""); }
+[01;32m[K                                                                    ^[m[K
+CMakeFiles/cmTC_6defa.dir/build.make:65: recipe for target 'CMakeFiles/cmTC_6defa.dir/src.cxx.o' failed
+make[1]: *** [CMakeFiles/cmTC_6defa.dir/src.cxx.o] Error 1
+make[1]: Leaving directory '/home/sebastian/Programming/rip/CMakeFiles/CMakeTmp'
+Makefile:126: recipe for target 'cmTC_6defa/fast' failed
+make: *** [cmTC_6defa/fast] Error 2
+
+Source file was:
+
+  #include <type_traits>
+  class C { void operator=(const C&); };
+  int main() { static_assert(!std::is_copy_assignable<C>::value, ""); }

@@ -1,0 +1,2 @@
+/usr/bin/ar qc libnavx.a  CMakeFiles/navx.dir/src/inertial_data_integrator.cpp.o CMakeFiles/navx.dir/src/navx.cpp.o CMakeFiles/navx.dir/src/continuous_angle_tracker.cpp.o CMakeFiles/navx.dir/src/offset_tracker.cpp.o CMakeFiles/navx.dir/src/serial_io.cpp.o
+/usr/bin/ranlib libnavx.a

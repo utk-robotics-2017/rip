@@ -1,0 +1,2 @@
+/usr/bin/ar qc libimu.a  CMakeFiles/imu.dir/src/navx.cpp.o CMakeFiles/imu.dir/src/bno055.cpp.o
+/usr/bin/ranlib libimu.a

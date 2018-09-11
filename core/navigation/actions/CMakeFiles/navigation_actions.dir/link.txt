@@ -1,0 +1,2 @@
+/usr/bin/ar qc libnavigation_actions.a  CMakeFiles/navigation_actions.dir/src/drive_straight_trapezoid.cpp.o CMakeFiles/navigation_actions.dir/src/drive_straight_until.cpp.o CMakeFiles/navigation_actions.dir/src/follow_path.cpp.o CMakeFiles/navigation_actions.dir/src/drive_straight.cpp.o CMakeFiles/navigation_actions.dir/src/turn_by_angle.cpp.o CMakeFiles/navigation_actions.dir/src/turn_to_angle.cpp.o CMakeFiles/navigation_actions.dir/src/drive_arc.cpp.o
+/usr/bin/ranlib libnavigation_actions.a

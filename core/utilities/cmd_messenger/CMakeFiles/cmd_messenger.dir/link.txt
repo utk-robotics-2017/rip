@@ -1,0 +1,2 @@
+/usr/bin/ar qc libcmd_messenger.a  CMakeFiles/cmd_messenger.dir/src/cmd_messenger.cpp.o CMakeFiles/cmd_messenger.dir/src/command.cpp.o CMakeFiles/cmd_messenger.dir/src/device.cpp.o
+/usr/bin/ranlib libcmd_messenger.a

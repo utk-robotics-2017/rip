@@ -1,0 +1,2 @@
+/usr/bin/ar qc libmisc.a  CMakeFiles/misc.dir/src/constants.cpp.o CMakeFiles/misc.dir/src/settings_base.cpp.o
+/usr/bin/ranlib libmisc.a

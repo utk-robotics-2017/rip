@@ -1,0 +1,18 @@
+<appendage-template>
+    <constructors type="char" variable="digital_input_pins">
+        <parameter name="pin" type="int"/>
+    </constructors>
+
+    <setup>
+        pinMode(digital_input_pins[i], INPUT$pullup$);
+    </setup>
+
+    <commands>
+        <command id="kDigitalInputRead" name="digitalInputRead" index-num="true">
+            <return-value name="rv" type="char"/>
+            <code>
+                rv = digitalRead(digital_input_pins[index_num]);
+            </code>
+        </command>
+    </commands>
+</appendage-template>
