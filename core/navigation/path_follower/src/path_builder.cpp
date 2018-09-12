@@ -32,6 +32,11 @@ namespace rip
                 p.verifySpeeds();
                 return p;
             }
+
+            Waypoint PathBuilder::getPoint(const std::vector<Waypoint>& waypoints, int i)
+            {
+                return waypoints[i];
+            }
         }
     }
 }
