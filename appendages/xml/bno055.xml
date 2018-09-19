@@ -54,7 +54,7 @@
             imu::Vector<3> vec = bno055s[indexNum].getVector(Adafruit_BNO055::VECTOR_GYROSCOPE);
 
             // In degrees
-            rv = vec.x;
+            rv = vec.x();
             </code>
         </command>
         <command id="kGetCalibrationStatus" name="getCalibrationStatus">
