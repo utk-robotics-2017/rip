@@ -9,6 +9,11 @@ namespace rip
             Bno055::Bno055(const std::string& name, Bno bno) : Imu(name), m_bno(bno)
             {}
 
+            Bno055::~Bno055()
+            {
+                stop();
+            }
+
             units::Angle Bno055::getYaw()
             {
                 return m_bno.getYaw();
@@ -39,6 +44,11 @@ namespace rip
             void Bno055::stop()
             {
                 m_bno.stop();
+            }
+
+            double Bno055::get()
+            {
+                return m_bno.getYaw()();
             }
 
             bool Bno055::diagnostic()

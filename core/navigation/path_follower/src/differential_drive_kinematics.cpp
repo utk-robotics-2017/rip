@@ -49,6 +49,9 @@ namespace rip
                 return DriveVelocity(delta.dx()() - delta_v, delta.dx()() + delta_v);
             }
 
+            DifferentialDriveKinematics::DriveVelocity::DriveVelocity(const units::Velocity& left, const units::Velocity& right)
+            : m_left(left), m_right(right) {}
+
             units::Velocity DifferentialDriveKinematics::DriveVelocity::left() const
             {
                 return m_left;

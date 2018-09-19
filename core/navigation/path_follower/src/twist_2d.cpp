@@ -6,6 +6,7 @@ namespace rip
     {
         namespace pathfollower
         {
+            Twist2d::Twist2d() : m_dx(0), m_dy(0), m_dtheta(0) {}
             Twist2d::Twist2d(const units::Distance& dx, const units::Distance& dy, const units::Angle& dtheta)
                 : m_dx(dx), m_dy(dy), m_dtheta(dtheta)
             {}

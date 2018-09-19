@@ -26,27 +26,27 @@ namespace rip
                 /**
                  *
                  */
-                virtual units::Angle getYaw();
+                virtual units::Angle getYaw() = 0;
 
                 /**
                  *
                  */
-                virtual units::Angle getPitch();
+                virtual units::Angle getPitch() = 0;
 
                 /**
                  *
                  */
-                virtual units::Angle getRoll();
+                virtual units::Angle getRoll() = 0;
 
                 /**
                  *
                  */
-                virtual bool isCalibrated();
+                virtual bool isCalibrated() = 0;
 
                 /**
                  *
                  */
-                virtual units::AngularVelocity getRate();
+                virtual units::AngularVelocity getRate() = 0;
 
                 // virtual void zeroYaw();
                 // virtual void getAngle();
